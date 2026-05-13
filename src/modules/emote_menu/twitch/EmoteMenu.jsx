@@ -1,5 +1,5 @@
 import React from 'react';
-import {EmoteMenuTypes, SettingIds, ShadowDOMComponentIds} from '../../../constants.js';
+import {ChatLayoutTypes, EmoteMenuTypes, SettingIds, ShadowDOMComponentIds} from '../../../constants.js';
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
 import twitch from '../../../utils/twitch.js';
@@ -162,9 +162,13 @@ function loadEmoteMenu(onMount, onError) {
     onMount();
   }
 
+  const chatLayoutPosition = settings.get(SettingIds.CHAT_LAYOUT);
+  const placement = chatLayoutPosition === ChatLayoutTypes.RIGHT ? 'top-end' : 'top-start';
+
   shadowDOM.mount(
     ShadowDOMComponentIds.EMOTE_MENU,
     <SafeEmoteMenu
+      key={placement}
       onError={onError}
       onMount={onMount}
       setHandleOpen={setHandleOpen}
@@ -172,6 +176,7 @@ function loadEmoteMenu(onMount, onError) {
       boundingQuerySelector={CHAT_TEXT_AREA}
       emoteMenuToggleButtonSelector={EMOTE_MENU_TOGGLE_BUTTON_SELECTOR}
       offsetOptions={{mainAxis: 8}}
+      placement={placement}
     />
   );
 }
@@ -187,6 +192,7 @@ class EmoteMenuModule {
     });
     watcher.on('load.chat', () => this.load());
     settings.on(`changed.${SettingIds.EMOTE_MENU}`, () => this.load());
+    settings.on(`changed.${SettingIds.CHAT_LAYOUT}`, () => this.load());
   }
 
   load() {

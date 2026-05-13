@@ -35,6 +35,7 @@ function getCategories() {
 }
 
 function EmoteMenu({
+  placement = 'top-end',
   setHandleOpen,
   appendToChat,
   boundingQuerySelector,
@@ -89,7 +90,7 @@ function EmoteMenu({
     strategy: 'fixed',
     open: opened,
     onOpenChange: (isOpen) => (isOpen ? handleOpen() : handleClose()),
-    placement: 'top-end',
+    placement,
     middleware: [offset(offsetOptions)],
     whileElementsMounted: autoUpdate,
   });
