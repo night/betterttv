@@ -168,7 +168,6 @@ function loadEmoteMenu(onMount, onError) {
   shadowDOM.mount(
     ShadowDOMComponentIds.EMOTE_MENU,
     <SafeEmoteMenu
-      key={placement}
       onError={onError}
       onMount={onMount}
       setHandleOpen={setHandleOpen}
