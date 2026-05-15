@@ -163,8 +163,12 @@ function loadEmoteMenu(onMount, onError) {
     onMount();
   }
 
-  const chatLayoutPosition = settings.get(SettingIds.CHAT_LAYOUT);
-  const placement = isStandaloneWindow() || chatLayoutPosition === ChatLayoutTypes.RIGHT ? 'top-end' : 'top-start';
+  let placement = 'top-end';
+
+  if (!isStandaloneWindow()) {
+    const chatLayoutPosition = settings.get(SettingIds.CHAT_LAYOUT);
+    placement = chatLayoutPosition === ChatLayoutTypes.RIGHT ? 'top-end' : 'top-start';
+  }
 
   shadowDOM.mount(
     ShadowDOMComponentIds.EMOTE_MENU,
