@@ -1,14 +1,14 @@
 import {saveAs} from 'file-saver';
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import formatMessage from '../../../i18n/index.js';
-import {SETTINGS_STORAGE_KEY} from '../../../settings.js';
 import storage from '../../../storage.js';
-import {loadLegacySettings} from '../../../utils/legacy-settings.js';
 import Footer from '../components/Footer.jsx';
 import PageScrollBody from '../components/PageScrollBody.jsx';
 import SettingGroup from '../components/SettingGroup.jsx';
 import SettingWrapper from '../components/SettingWrapper.jsx';
+import ImportSetting from '../components/ImportSetting.jsx';
+import ResetSetting from '../components/ResetSetting.jsx';
 import {Button} from '@mantine/core';
 import useAuthStore, {getCredentials, setCredentials} from '../../../stores/auth.js';
 import {revokeAccessToken} from '../../../utils/oauth.js';
@@ -18,111 +18,31 @@ import useCloudBackupSettings from '../../../common/hooks/CloudBackup.jsx';
 import SettingSwitch from '../components/SettingSwitch.jsx';
 import useProRequiredState from '../../../common/hooks/ProRequiredState.jsx';
 import Promotion from '../components/Promotion.jsx';
-
-function loadJSON(string) {
-  let json = null;
-  try {
-    json = JSON.parse(string);
-  } catch (e) {
-    json = null;
-  }
-  return json;
-}
-
-function getDataURLFromUpload(input) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = ({target}) => resolve(target.result);
-    const file = input.files[0];
-    if (!file) {
-      resolve(null);
-      return;
-    }
-    reader.readAsText(file);
-  });
-}
+import {EXT_VER} from '../../../constants.js';
 
 function BackupSetting({description, disabled}) {
   function backupFile() {
     const rv = storage.getStorage();
-    saveAs(new Blob([JSON.stringify(rv)], {type: 'application/json;charset=utf-8'}), 'bttv_settings.backup');
+    const version = `v${EXT_VER}`;
+    const now = new Date();
+
+    const date = [
+      now.toLocaleDateString('en-US', {month: 'long'}),
+      now.toLocaleDateString('en-US', {day: 'numeric'}),
+      now.toLocaleDateString('en-US', {year: 'numeric'}),
+    ].join(' ');
+
+    const filename = formatMessage({defaultMessage: 'BetterTTV Settings Backup ({version}) {date}'}, {version, date});
+    const filenameWithExtension = `${filename}.json`;
+    const blob = new Blob([JSON.stringify(rv)], {type: 'application/json;charset=utf-8'});
+
+    saveAs(blob, filenameWithExtension);
   }
 
   return (
     <SettingWrapper reverse name={formatMessage({defaultMessage: 'Backup Settings'})} description={description}>
       <Button size="lg" onClick={backupFile} disabled={disabled}>
         {formatMessage({defaultMessage: 'Backup'})}
-      </Button>
-    </SettingWrapper>
-  );
-}
-
-function ImportSetting({description, disabled, importing, setImporting}) {
-  const fileImportRef = useRef(null);
-
-  async function importFile(target) {
-    setImporting(true);
-    const data = loadJSON(await getDataURLFromUpload(target));
-    if (data == null) {
-      setImporting(false);
-      return;
-    }
-    let importLegacy = true;
-    const sanitizedData = {};
-    for (const key of Object.keys(data)) {
-      const nonPrefixedKey = key.split('bttv_')[1];
-      storage.set(nonPrefixedKey, data[key]);
-      sanitizedData[nonPrefixedKey] = data[key];
-      if (nonPrefixedKey === SETTINGS_STORAGE_KEY) {
-        importLegacy = false;
-      }
-    }
-    if (importLegacy) {
-      storage.set(SETTINGS_STORAGE_KEY, loadLegacySettings(sanitizedData));
-    }
-    setTimeout(() => window.location.reload(), 1000);
-  }
-
-  return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Import Settings'})} description={description}>
-      <input type="file" hidden ref={fileImportRef} onChange={({target}) => importFile(target)} />
-      <Button onClick={() => fileImportRef.current?.click()} disabled={disabled} loading={importing} size="lg">
-        {formatMessage({defaultMessage: 'Import'})}
-      </Button>
-    </SettingWrapper>
-  );
-}
-
-function ResetSetting({description, disabled, setResetting}) {
-  const [_, setCloudBackupSettings] = useCloudBackupSettings();
-
-  async function resetDefault() {
-    setResetting(true);
-    setCloudBackupSettings({enabled: false});
-    storage.set(SETTINGS_STORAGE_KEY, null);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    window.location.reload();
-  }
-
-  function handleReset() {
-    openConfirmModal({
-      title: formatMessage({defaultMessage: 'Reset to Default'}),
-      description: formatMessage({
-        defaultMessage: 'Are you sure you want to reset your settings to default? This cannot be reversed.',
-      }),
-      onConfirm: resetDefault,
-      labels: {
-        confirm: formatMessage({defaultMessage: 'Reset'}),
-        cancel: formatMessage({defaultMessage: 'Cancel'}),
-      },
-      confirmProps: {color: 'red', size: 'lg', variant: 'elevated'},
-    });
-  }
-
-  return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Reset to Default'})} description={description}>
-      <Button size="lg" color="red" disabled={disabled} onClick={handleReset}>
-        {formatMessage({defaultMessage: 'Reset'})}
       </Button>
     </SettingWrapper>
   );
