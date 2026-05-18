@@ -126,10 +126,6 @@ class CloudBackup extends SafeEventEmitter {
     try {
       const currentSettings = settings.getSettings();
 
-      if (currentSettings.version !== serverSettings.version) {
-        return;
-      }
-
       ignoringInternalSettingChanges = true;
 
       for (let [key, value] of Object.entries(serverSettings)) {
