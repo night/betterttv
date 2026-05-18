@@ -168,19 +168,17 @@ function EmoteMenu({
 
   const toggle = useCallback(() => (opened ? handleClose() : handleOpen()), [opened, handleClose, handleOpen]);
 
-  const handleEmoteMenuViewStoreUpdate = useCallback(
-    (newData) => {
-      const parsedData = updateEmoteListData(newData);
+  const handleEmoteMenuViewStoreUpdate = useCallback(() => {
+    const currentSearch = emoteListDataRef.current.search;
+    const parsedData = updateEmoteListData(currentSearch);
 
-      let newCoords = getCoordsOfSelected(parsedData.rows, selected);
-      if (newCoords == null) {
-        newCoords = getFirstCoords(parsedData.rows);
-      }
+    let newCoords = getCoordsOfSelected(parsedData.rows, selected);
+    if (newCoords == null) {
+      newCoords = getFirstCoords(parsedData.rows);
+    }
 
-      handleCoordsChange(newCoords);
-    },
-    [selected, handleCoordsChange, updateEmoteListData]
-  );
+    handleCoordsChange(newCoords);
+  }, [selected, handleCoordsChange, updateEmoteListData]);
 
   useEmoteMenuViewStoreUpdated(opened, handleEmoteMenuViewStoreUpdate);
 
