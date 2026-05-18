@@ -19,7 +19,6 @@ function setHandleOpen(newHandleOpen) {
   handleOpen = newHandleOpen;
 }
 
-let mountedPanelRoot;
 let mountedChatDropdownButtonRoot;
 
 export default class SettingsModule {
@@ -88,5 +87,9 @@ export default class SettingsModule {
         />
       );
     }
+  }
+
+  openSettings({scrollToSettingPanelId} = {scrollToSettingPanelId: null}) {
+    handleOpen?.(true, {scrollToSettingPanelId});
   }
 }
