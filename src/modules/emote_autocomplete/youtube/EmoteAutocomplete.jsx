@@ -9,7 +9,7 @@ import shadowDom from '../../shadow_dom/index.js';
 import EmoteRow from '../components/EmoteRow.jsx';
 import styles from './EmoteAutocomplete.module.css';
 
-const CHAT_TEXT_AREA = '#input-container';
+const CHAT_TEXT_AREA = '.yt-live-chat-renderer #input-container';
 
 let removeDirtyListener = null;
 
