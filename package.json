@@ -33,7 +33,7 @@
     "@fortawesome/fontawesome-svg-core": "7.2.0",
     "@fortawesome/free-brands-svg-icons": "7.2.0",
     "@fortawesome/free-solid-svg-icons": "7.2.0",
-    "@mantine/core": "^9.1.1",
+    "@mantine/core": "^9.2.1",
     "@mantine/hooks": "^9.1.1",
     "@mantine/modals": "^9.2.0",
     "@sentry/browser": "10.53.0",
