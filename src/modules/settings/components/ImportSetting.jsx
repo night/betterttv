@@ -93,16 +93,16 @@ function ImportSetting({description, disabled, importing, setImporting}) {
     openConfirmModal({
       title: formatMessage({defaultMessage: 'Sync to Cloud Backup?'}),
       description: formatMessage({
-        defaultMessage:
-          'Your settings were imported successfully, Would you like to sync your imported settings to the cloud?',
+        defaultMessage: 'Your settings were imported successfully, Would you like to sync them to the cloud?',
       }),
       onConfirm: () => cloudBackup._handleInternalSettingsChange(sanitizedData, true),
       onCancel: () => setCloudBackupSettings({enabled: false}),
-      onClose: () => window.location.reload(),
+      onClose: () => setTimeout(() => window.location.reload(), 500),
       labels: {
         confirm: formatMessage({defaultMessage: 'Sync to Cloud'}),
         cancel: formatMessage({defaultMessage: 'Disable Cloud Backup'}),
       },
+      confirmProps: {color: 'red', size: 'lg', variant: 'elevated'},
     });
   }
 

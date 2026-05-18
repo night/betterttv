@@ -2,13 +2,13 @@ import {saveAs} from 'file-saver';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import formatMessage from '../../../i18n/index.js';
-import {SETTINGS_STORAGE_KEY} from '../../../settings.js';
 import storage from '../../../storage.js';
 import Footer from '../components/Footer.jsx';
 import PageScrollBody from '../components/PageScrollBody.jsx';
 import SettingGroup from '../components/SettingGroup.jsx';
 import SettingWrapper from '../components/SettingWrapper.jsx';
 import ImportSetting from '../components/ImportSetting.jsx';
+import ResetSetting from '../components/ResetSetting.jsx';
 import {Button} from '@mantine/core';
 import useAuthStore, {getCredentials, setCredentials} from '../../../stores/auth.js';
 import {revokeAccessToken} from '../../../utils/oauth.js';
@@ -43,44 +43,6 @@ function BackupSetting({description, disabled}) {
     <SettingWrapper reverse name={formatMessage({defaultMessage: 'Backup Settings'})} description={description}>
       <Button size="lg" onClick={backupFile} disabled={disabled}>
         {formatMessage({defaultMessage: 'Backup'})}
-      </Button>
-    </SettingWrapper>
-  );
-}
-
-function ResetSetting({description, disabled, setResetting}) {
-  const [cloudBackupSettings, setCloudBackupSettings] = useCloudBackupSettings();
-
-  function resetDefault() {
-    setResetting(true);
-
-    if (cloudBackupSettings.enabled) {
-      setCloudBackupSettings({enabled: false});
-    }
-
-    storage.set(SETTINGS_STORAGE_KEY, null);
-    window.location.reload();
-  }
-
-  function handleReset() {
-    openConfirmModal({
-      title: formatMessage({defaultMessage: 'Reset to Default'}),
-      description: formatMessage({
-        defaultMessage: 'Are you sure you want to reset your settings to default? This cannot be reversed.',
-      }),
-      onConfirm: resetDefault,
-      labels: {
-        confirm: formatMessage({defaultMessage: 'Reset'}),
-        cancel: formatMessage({defaultMessage: 'Cancel'}),
-      },
-      confirmProps: {color: 'red', size: 'lg', variant: 'elevated'},
-    });
-  }
-
-  return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Reset to Default'})} description={description}>
-      <Button size="lg" color="red" disabled={disabled} onClick={handleReset}>
-        {formatMessage({defaultMessage: 'Reset'})}
       </Button>
     </SettingWrapper>
   );
