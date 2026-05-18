@@ -167,7 +167,7 @@ class CloudBackup extends SafeEventEmitter {
     }
   }
 
-  async _handleInternalSettingsChange(newSettings) {
+  async _handleInternalSettingsChange(newSettings, forceOverwrite = false) {
     if (ignoringInternalSettingChanges) {
       return;
     }
@@ -193,6 +193,11 @@ class CloudBackup extends SafeEventEmitter {
       }
 
       if (error instanceof HTTPError && error.data?.message === 'Version mismatch') {
+        if (forceOverwrite) {
+          this.updateBackupSettings({version: newSettings.version});
+          return this._handleInternalSettingsChange(newSettings);
+        }
+
         const {expected: expectedVersion} = error.data;
         this.handleVersionMismatch(expectedVersion);
       }

@@ -1,14 +1,14 @@
 import {saveAs} from 'file-saver';
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import formatMessage from '../../../i18n/index.js';
 import {SETTINGS_STORAGE_KEY} from '../../../settings.js';
 import storage from '../../../storage.js';
-import {loadLegacySettings} from '../../../utils/legacy-settings.js';
 import Footer from '../components/Footer.jsx';
 import PageScrollBody from '../components/PageScrollBody.jsx';
 import SettingGroup from '../components/SettingGroup.jsx';
 import SettingWrapper from '../components/SettingWrapper.jsx';
+import ImportSetting from '../components/ImportSetting.jsx';
 import {Button} from '@mantine/core';
 import useAuthStore, {getCredentials, setCredentials} from '../../../stores/auth.js';
 import {revokeAccessToken} from '../../../utils/oauth.js';
@@ -18,30 +18,7 @@ import useCloudBackupSettings from '../../../common/hooks/CloudBackup.jsx';
 import SettingSwitch from '../components/SettingSwitch.jsx';
 import useProRequiredState from '../../../common/hooks/ProRequiredState.jsx';
 import Promotion from '../components/Promotion.jsx';
-import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY, EXT_VER} from '../../../constants.js';
-
-function loadJSON(string) {
-  let json = null;
-  try {
-    json = JSON.parse(string);
-  } catch (e) {
-    json = null;
-  }
-  return json;
-}
-
-function getDataURLFromUpload(input) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = ({target}) => resolve(target.result);
-    const file = input.files[0];
-    if (!file) {
-      resolve(null);
-      return;
-    }
-    reader.readAsText(file);
-  });
-}
+import {EXT_VER} from '../../../constants.js';
 
 function BackupSetting({description, disabled}) {
   function backupFile() {
@@ -66,66 +43,6 @@ function BackupSetting({description, disabled}) {
     <SettingWrapper reverse name={formatMessage({defaultMessage: 'Backup Settings'})} description={description}>
       <Button size="lg" onClick={backupFile} disabled={disabled}>
         {formatMessage({defaultMessage: 'Backup'})}
-      </Button>
-    </SettingWrapper>
-  );
-}
-
-function ImportSetting({description, disabled, importing, setImporting}) {
-  const fileImportRef = useRef(null);
-
-  async function importFile(target) {
-    setImporting(true);
-
-    try {
-      const dataUrl = await getDataURLFromUpload(target);
-      let data = loadJSON(dataUrl);
-
-      if (data == null) {
-        return;
-      }
-
-      let importLegacy = true;
-      const sanitizedData = {};
-
-      for (const key of Object.keys(data)) {
-        const nonPrefixedKey = key.split('bttv_')[1];
-        let value = data[key];
-
-        if (nonPrefixedKey === SETTINGS_STORAGE_KEY) {
-          importLegacy = false;
-        }
-
-        if (nonPrefixedKey === CLOUD_BACKUP_SETTINGS_STORAGE_KEY) {
-          value = {enabled: false};
-        }
-
-        storage.set(nonPrefixedKey, value);
-        sanitizedData[nonPrefixedKey] = value;
-      }
-
-      if (importLegacy) {
-        const migratedSettings = loadLegacySettings(sanitizedData);
-        storage.set(SETTINGS_STORAGE_KEY, migratedSettings);
-      }
-
-      window.location.reload();
-    } finally {
-      setImporting(false);
-    }
-  }
-
-  return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Import Settings'})} description={description}>
-      <input
-        type="file"
-        hidden
-        ref={fileImportRef}
-        accept=".backup,.json"
-        onChange={({target}) => importFile(target)}
-      />
-      <Button onClick={() => fileImportRef.current?.click()} disabled={disabled} loading={importing} size="lg">
-        {formatMessage({defaultMessage: 'Import'})}
       </Button>
     </SettingWrapper>
   );
