@@ -10,7 +10,7 @@ import formatMessage from '../../i18n/index.js';
 import Icon from './Icon.jsx';
 import {faArrowDown, faArrowTurnDown, faArrowUp} from '@fortawesome/free-solid-svg-icons';
 import {Kbd, Text} from '@mantine/core';
-import scrollbarStyles from '../styles/Scrollbar.module.css';
+import Scrollbar from './Scrollbar.jsx';
 
 const MAX_ITEMS_SHOWN = 12;
 const MAX_WIDTH = 540;
@@ -237,7 +237,7 @@ function Autocomplete({
         <Text className={styles.floatRight}>{formatMessage({defaultMessage: 'Close'})}</Text>
         <Kbd>Esc</Kbd>
       </div>
-      <div className={classNames(styles.autocompleteBody, scrollbarStyles.scroll)} ref={itemsBodyRef}>
+      <Scrollbar ref={itemsBodyRef} className={styles.autocompleteBody}>
         {items.map((item, index) => (
           <React.Fragment key={getItemKey(item)}>
             {renderRow({
@@ -257,7 +257,7 @@ function Autocomplete({
             })}
           </React.Fragment>
         ))}
-      </div>
+      </Scrollbar>
       {showKeyboardNavigationTips ? (
         <div className={styles.autocompleteFooter}>
           <Kbd className={styles.kbd}>
