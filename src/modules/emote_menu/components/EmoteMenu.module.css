@@ -60,9 +60,16 @@
   width: 2px;
   bottom: 0;
   top: 0;
-  left: 0;
   cursor: col-resize;
   z-index: 2;
+}
+
+.resizeHandleTopEnd {
+  left: 0;
+}
+
+.resizeHandleTopStart {
+  right: 0;
 }
 
 .hidden {
