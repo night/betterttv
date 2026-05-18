@@ -2,7 +2,7 @@ import debounce from 'lodash.debounce';
 import isEqual from 'lodash.isequal';
 import {getExtensionSettings, updateExtensionSettings} from '../../actions/extension.js';
 import {openConfirmModal} from '../../common/utils/modal.js';
-import {FlagSettings} from '../../constants.js';
+import {FlagSettings, SettingIds} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
 import socketClient, {EventNames} from '../../socket-client.js';
@@ -126,14 +126,14 @@ class CloudBackup extends SafeEventEmitter {
     try {
       const currentSettings = settings.getSettings();
 
-      if (currentSettings.version !== serverSettings.version) {
-        return;
-      }
-
       ignoringInternalSettingChanges = true;
 
       for (let [key, value] of Object.entries(serverSettings)) {
         if (key === 'version') {
+          continue;
+        }
+
+        if (SettingIds[key] == null) {
           continue;
         }
 
