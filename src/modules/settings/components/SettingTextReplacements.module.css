@@ -1,0 +1,72 @@
+.panelContent {
+  padding: 0;
+  overflow: hidden;
+}
+
+.table {
+  font-size: var(--mantine-font-size-md);
+
+  th {
+    font-weight: 500;
+  }
+
+  th,
+  td {
+    padding: 8px 12px;
+    height: 36px;
+  }
+
+  --table-border-color: var(--mantine-color-default-border);
+
+  td:hover {
+    background-color: var(--table-hover-color);
+  }
+}
+
+.actionsColumn {
+  width: 0;
+}
+
+.inputDataCell,
+.actionsDataCell {
+  padding: 0 !important;
+}
+
+.cellInput {
+  font-size: var(--mantine-font-size-md);
+  padding-left: 12px;
+}
+
+.cellInput:focus {
+  box-shadow: unset;
+}
+
+.inputRoot,
+.cellInput,
+.inputWrapper {
+  height: 100%;
+}
+
+.inputRoot {
+  min-width: 160px;
+}
+
+.actionIcon {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionIconIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.emptyText {
+  padding: 20px;
+  text-align: center;
+}

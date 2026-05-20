@@ -1,4 +1,5 @@
-import {PlatformTypes} from '../../constants.js';
+import {PlatformTypes, SettingIds} from '../../constants.js';
+import settings from '../../settings.js';
 import socketClient from '../../socket-client.js';
 import {getCurrentChannel} from '../../utils/channel.js';
 import debug from '../../utils/debug.js';
@@ -9,6 +10,20 @@ import watcher from '../../watcher.js';
 import anonChat from '../anon_chat/index.js';
 import chatTabCompletion from '../chat_tab_completion/index.js';
 import emojis from '../emotes/emojis.js';
+
+function applyTextReplacements(sendState) {
+  const replacements = settings.get(SettingIds.TEXT_REPLACEMENTS);
+  if (replacements == null) return;
+
+  const replacementMap = {};
+  for (const {alias, replacement} of Object.values(replacements)) {
+    if (alias && replacement) replacementMap[alias.toLowerCase()] = replacement;
+  }
+
+  if (Object.keys(replacementMap).length === 0) return;
+
+  sendState.message = sendState.message.replace(/\S+/g, (word) => replacementMap[word.toLowerCase()] ?? word);
+}
 
 const PATCHED_SENTINEL = Symbol('patched symbol');
 
@@ -30,6 +45,7 @@ class SendState {
 
 let twitchSendMessage;
 const methodList = [
+  (msgObj) => applyTextReplacements(msgObj),
   (msgObj) => chatTabCompletion.onSendMessage(msgObj),
   (msgObj) => anonChat.onSendMessage(msgObj),
   (msgObj) => emojis.onSendMessage(msgObj),

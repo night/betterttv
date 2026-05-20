@@ -114,7 +114,8 @@ function SideNavigation({open, setOpen}) {
           active={
             page === PageTypes.SETTINGS ||
             page === PageTypes.HIGHLIGHT_KEYWORDS ||
-            page === PageTypes.BLACKLIST_KEYWORDS
+            page === PageTypes.BLACKLIST_KEYWORDS ||
+            page === PageTypes.TEXT_REPLACEMENTS
           }
           value={PageTypes.SETTINGS}
           setPage={setPage}

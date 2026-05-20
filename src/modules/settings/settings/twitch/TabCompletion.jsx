@@ -1,18 +1,32 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds} from '../../../../constants.js';
+import {PageTypes, SettingIds} from '../../../../constants.js';
 import formatMessage from '../../../../i18n/index.js';
 import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
 import SettingSwitch from '../../components/SettingSwitch.jsx';
 import SettingGroup from '../../components/SettingGroup.jsx';
+import SettingWrapper from '../../components/SettingWrapper.jsx';
+import {PageContext} from '../../contexts/PageContext.jsx';
+import {Button} from '@mantine/core';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Tab Completion'});
 
 function TabCompletion(props, ref) {
+  const {setPage} = useContext(PageContext);
   const [value, setValue] = useStorageState(SettingIds.TAB_COMPLETION_EMOTE_PRIORITY);
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
+      <SettingWrapper
+        name={formatMessage({defaultMessage: 'Text Replacements'})}
+        reverse
+        description={formatMessage({
+          defaultMessage: 'Create custom text replacements so typing a trigger in chat sends a different string.',
+        })}>
+        <Button size="lg" onClick={() => setPage(PageTypes.TEXT_REPLACEMENTS)}>
+          {formatMessage({defaultMessage: 'Edit'})}
+        </Button>
+      </SettingWrapper>
       <SettingSwitch
         name={formatMessage({defaultMessage: 'Prioritize Emotes'})}
         description={formatMessage({defaultMessage: 'Prefer emotes over usernames when using tab completion.'})}
