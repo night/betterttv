@@ -11,6 +11,8 @@ export const API_ENDPOINT = process.env.API_ENDPOINT;
 export const API_VERSION = process.env.API_VERSION;
 export const SOCKET_ENDPOINT = process.env.SOCKET_ENDPOINT;
 
+export const CLOUD_BACKUP_SETTINGS_STORAGE_KEY = 'cloudBackupSettings';
+
 export const SettingIds = {
   ANON_CHAT: 'anonChat',
   ANON_CHAT_WHITELISTED_CHANNELS: 'anonChatWhitelistedChannels',

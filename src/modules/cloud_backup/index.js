@@ -2,7 +2,7 @@ import debounce from 'lodash.debounce';
 import isEqual from 'lodash.isequal';
 import {getExtensionSettings, updateExtensionSettings} from '../../actions/extension.js';
 import {openConfirmModal} from '../../common/utils/modal.js';
-import {FlagSettings} from '../../constants.js';
+import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY, FlagSettings} from '../../constants.js';
 import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
 import socketClient, {EventNames} from '../../socket-client.js';
@@ -11,8 +11,6 @@ import useAuthStore from '../../stores/auth.js';
 import HTTPError from '../../utils/http-error.js';
 import {isUserPro} from '../../utils/pro.js';
 import SafeEventEmitter from '../../utils/safe-event-emitter.js';
-
-const CLOUD_BACKUP_SETTINGS_STORAGE_KEY = 'cloudBackupSettings';
 
 let unlistenSettingsChange = null;
 let unlistenSocketChange = null;
@@ -165,7 +163,7 @@ class CloudBackup extends SafeEventEmitter {
     }
   }
 
-  async _handleInternalSettingsChange(newSettings) {
+  async _handleInternalSettingsChange(newSettings, forceOverwrite = false) {
     if (ignoringInternalSettingChanges) {
       return;
     }
@@ -191,6 +189,11 @@ class CloudBackup extends SafeEventEmitter {
       }
 
       if (error instanceof HTTPError && error.data?.message === 'Version mismatch') {
+        if (forceOverwrite) {
+          this.updateBackupSettings({version: newSettings.version});
+          return this._handleInternalSettingsChange(newSettings);
+        }
+
         const {expected: expectedVersion} = error.data;
         this.handleVersionMismatch(expectedVersion);
       }
