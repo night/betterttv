@@ -300,11 +300,13 @@ class EmoteMenuViewStore extends SafeEventEmitter {
         const emoteCanonicalId = emote.canonicalId;
 
         if (emoteStorage.favorites.includes(emoteCanonicalId)) {
-          favorites.emotes.push({...emote, category: favorites.category, canonicalId: emoteCanonicalId});
+          const category = {...favorites.category, provider: emote.category.provider};
+          favorites.emotes.push({...emote, category, canonicalId: emoteCanonicalId});
         }
 
         if (emoteStorage.frecents.includes(emoteCanonicalId)) {
-          frecents.emotes.push({...emote, category: frecents.category, canonicalId: emoteCanonicalId});
+          const category = {...frecents.category, provider: emote.category.provider};
+          frecents.emotes.push({...emote, category, canonicalId: emoteCanonicalId});
         }
       }
 
