@@ -138,7 +138,7 @@ document.addEventListener('visibilitychange', () => {
       video.muted = false;
       isMuted = false;
     }
-  } else if (!document.pictureInPictureElement) {
+  } else if (!document.pictureInPictureElement && !video.muted) {
     video.muted = true;
     isMuted = true;
   }
