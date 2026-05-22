@@ -77,8 +77,8 @@ function loadLegacyButton() {
     return;
   }
 
-  const chatSettingsButtonContainer = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
-  if (chatSettingsButtonContainer == null) {
+  const chatSettingsContainer = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
+  if (chatSettingsContainer == null) {
     return;
   }
 
@@ -90,10 +90,15 @@ function loadLegacyButton() {
   const buttonContainer = document.createElement('div');
   buttonContainer.setAttribute('id', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
 
-  chatSettingsButtonContainer.insertBefore(
-    buttonContainer,
-    chatSettingsButtonContainer.lastChild.querySelector(':has(div[data-a-target="chat-settings"])')
+  const chatSettingsButtonContainer = chatSettingsContainer.querySelector(
+    'div:has(button[data-a-target="chat-settings"])'
   );
+
+  if (chatSettingsButtonContainer == null) {
+    return;
+  }
+
+  chatSettingsButtonContainer.after(buttonContainer);
 
   const button = document.createElement('button');
   button.classList.add(styles.button);
