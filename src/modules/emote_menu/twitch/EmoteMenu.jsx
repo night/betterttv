@@ -89,7 +89,11 @@ function loadLegacyButton() {
 
   const buttonContainer = document.createElement('div');
   buttonContainer.setAttribute('id', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
-  chatSettingsButtonContainer.insertBefore(buttonContainer, chatSettingsButtonContainer.lastChild);
+
+  chatSettingsButtonContainer.insertBefore(
+    buttonContainer,
+    chatSettingsButtonContainer.lastChild.querySelector(':has(div[data-a-target="chat-settings"])')
+  );
 
   const button = document.createElement('button');
   button.classList.add(styles.legacyButton);
