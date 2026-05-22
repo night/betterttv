@@ -96,7 +96,7 @@ function loadLegacyButton() {
   );
 
   const button = document.createElement('button');
-  button.classList.add(styles.legacyButton);
+  button.classList.add(styles.button);
   buttonContainer.appendChild(button);
   button.addEventListener('click', () => handleOpen?.());
 }
