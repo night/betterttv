@@ -308,22 +308,20 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
         </Button>
       }
       className={styles.settingGroupContent}>
-      {entryList.length > 0 ? (
-        filteredEntryList.length > 0 ? (
-          <KeywordsTable
-            entryList={filteredEntryList}
-            showColorColumn={showColorColumn}
-            colorColumn={colorColumn}
-            updateHandler={updateHandler}
-            deleteHandler={deleteHandler}
-            keywordInputRefCallback={keywordInputRefCallback}
-            onPaste={handlePaste}
-          />
-        ) : (
-          <Text className={styles.noKeywordsText} c="dimmed">
-            {formatMessage({defaultMessage: 'No keywords match your search.'})}
-          </Text>
-        )
+      {filteredEntryList.length > 0 ? (
+        <KeywordsTable
+          entryList={filteredEntryList}
+          showColorColumn={showColorColumn}
+          colorColumn={colorColumn}
+          updateHandler={updateHandler}
+          deleteHandler={deleteHandler}
+          keywordInputRefCallback={keywordInputRefCallback}
+          onPaste={handlePaste}
+        />
+      ) : entryList.length > 0 ? (
+        <Text className={styles.noKeywordsText} c="dimmed">
+          {formatMessage({defaultMessage: 'No keywords match your search.'})}
+        </Text>
       ) : (
         <Text className={styles.noKeywordsText} c="dimmed">
           {formatMessage({defaultMessage: 'No keywords found, start by adding a new entry.'})}
