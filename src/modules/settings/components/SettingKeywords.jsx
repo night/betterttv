@@ -27,9 +27,17 @@ import Icon from '../../../common/components/Icon.jsx';
 import usePortalRef from '../../../common/hooks/PortalRef.jsx';
 import useCurrentChannel from '../../../common/hooks/CurrentChannel.jsx';
 
-function KeywordRow({id, data, updateHandler, deleteHandler, colorColumn, keywordInputRefCallback, ...props}) {
+function KeywordRow({
+  id,
+  data,
+  updateHandler,
+  deleteHandler,
+  colorColumn,
+  keywordInputRefCallback,
+  currentChannel,
+  ...props
+}) {
   const portalRef = usePortalRef();
-  const currentChannel = useCurrentChannel();
   const onUpdate = useCallback((newKeywordData) => updateHandler(id, newKeywordData), [updateHandler, id]);
   const onDelete = useCallback(() => deleteHandler(id), [deleteHandler, id]);
   const keywordInputRef = useCallback((ref) => keywordInputRefCallback(id, ref), [keywordInputRefCallback, id]);
@@ -92,8 +100,8 @@ function KeywordRow({id, data, updateHandler, deleteHandler, colorColumn, keywor
             variant="unstyled"
             renderOption={() => (
               <div className={styles.channelOption}>
-                <Avatar src={currentChannel.avatar} size={28} radius="xl" />
-                <Text size="md">{currentChannel.displayName}</Text>
+                <Avatar src={currentChannel?.avatar} size={28} radius="xl" />
+                <Text size="md">{currentChannel?.displayName}</Text>
               </div>
             )}
             classNames={{input: styles.channelsInput, pill: styles.channelsPill}}
@@ -161,6 +169,7 @@ function KeywordsTable({
   updateHandler,
   deleteHandler,
   keywordInputRefCallback,
+  currentChannel,
   onPaste,
 }) {
   return (
@@ -184,6 +193,7 @@ function KeywordsTable({
             updateHandler={updateHandler}
             deleteHandler={deleteHandler}
             keywordInputRefCallback={keywordInputRefCallback}
+            currentChannel={currentChannel}
           />
         ))}
       </TableTbody>
@@ -193,6 +203,7 @@ function KeywordsTable({
 
 // TODO: Down the line we could explore virtualizing this list, as some user's have thousands of entries
 function SettingKeywords({value, setValue, colorColumn = null}) {
+  const currentChannel = useCurrentChannel();
   const [search, setSearch] = useState('');
   const entryList = useMemo(() => Object.entries(value ?? {}).reverse(), [value]);
 
@@ -316,6 +327,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
           updateHandler={updateHandler}
           deleteHandler={deleteHandler}
           keywordInputRefCallback={keywordInputRefCallback}
+          currentChannel={currentChannel}
           onPaste={handlePaste}
         />
       ) : entryList.length > 0 ? (
