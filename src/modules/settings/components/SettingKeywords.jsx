@@ -14,7 +14,7 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import React, {useCallback, useMemo, useRef} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import styles from './SettingKeywords.module.css';
 import {KeywordTypes} from '../../../utils/keywords.js';
@@ -136,6 +136,24 @@ function createNewEntry(defaultKeyword = '') {
   return {keyword: defaultKeyword, id: nextKeywordId, type: KeywordTypes.MESSAGE};
 }
 
+function getTargetLabel(type) {
+  switch (type) {
+    case KeywordTypes.USER:
+      return 'username';
+    case KeywordTypes.BADGE:
+      return 'badge';
+    default:
+      return 'message';
+  }
+}
+
+function keywordMatchesSearch(row, query) {
+  const keyword = row.keyword?.toLowerCase() ?? '';
+  const channels = (row.channels ?? []).join(' ').toLowerCase();
+  const target = getTargetLabel(row.type);
+  return keyword.includes(query) || channels.includes(query) || target.includes(query);
+}
+
 function KeywordsTable({
   entryList,
   showColorColumn,
@@ -173,13 +191,26 @@ function KeywordsTable({
   );
 }
 
-// TODO: Down the line we could explore virtualizing this list, as some user's have thousands of entries, and possibly adding a search
-function SettingKeywords({title, value, setValue, colorColumn = null}) {
+// TODO: Down the line we could explore virtualizing this list, as some user's have thousands of entries
+function SettingKeywords({value, setValue, colorColumn = null}) {
+  const [search, setSearch] = useState('');
   const entryList = useMemo(() => Object.entries(value ?? {}).reverse(), [value]);
+
+  const filteredEntryList = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    if (query.length === 0) {
+      return entryList;
+    }
+
+    return entryList.filter(([, row]) => keywordMatchesSearch(row, query));
+  }, [entryList, search]);
+
   const showColorColumn = colorColumn != null;
   const pendingKeywordFocusRef = useRef(null);
 
   const newEntryHandler = useCallback(() => {
+    setSearch('');
     const newEntry = createNewEntry();
 
     setValue((prevKeywords) => {
@@ -261,7 +292,16 @@ function SettingKeywords({title, value, setValue, colorColumn = null}) {
 
   return (
     <Panel
-      title={title}
+      title={
+        <TextInput
+          size="lg"
+          value={search}
+          placeholder={formatMessage({defaultMessage: 'Search keywords...'})}
+          onChange={({target: {value: searchValue}}) => setSearch(searchValue)}
+          classNames={{input: styles.searchInput, root: styles.searchInputRoot}}
+          radius="lg"
+        />
+      }
       rightContent={
         <Button size="lg" className={styles.newEntryButton} onClick={newEntryHandler}>
           {formatMessage({defaultMessage: 'New Entry'})}
@@ -269,15 +309,21 @@ function SettingKeywords({title, value, setValue, colorColumn = null}) {
       }
       className={styles.settingGroupContent}>
       {entryList.length > 0 ? (
-        <KeywordsTable
-          entryList={entryList}
-          showColorColumn={showColorColumn}
-          colorColumn={colorColumn}
-          updateHandler={updateHandler}
-          deleteHandler={deleteHandler}
-          keywordInputRefCallback={keywordInputRefCallback}
-          onPaste={handlePaste}
-        />
+        filteredEntryList.length > 0 ? (
+          <KeywordsTable
+            entryList={filteredEntryList}
+            showColorColumn={showColorColumn}
+            colorColumn={colorColumn}
+            updateHandler={updateHandler}
+            deleteHandler={deleteHandler}
+            keywordInputRefCallback={keywordInputRefCallback}
+            onPaste={handlePaste}
+          />
+        ) : (
+          <Text className={styles.noKeywordsText} c="dimmed">
+            {formatMessage({defaultMessage: 'No keywords match your search.'})}
+          </Text>
+        )
       ) : (
         <Text className={styles.noKeywordsText} c="dimmed">
           {formatMessage({defaultMessage: 'No keywords found, start by adding a new entry.'})}
