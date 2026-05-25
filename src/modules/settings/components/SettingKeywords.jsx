@@ -201,7 +201,6 @@ function KeywordsTable({
   );
 }
 
-// TODO: Down the line we could explore virtualizing this list, as some user's have thousands of entries
 function SettingKeywords({value, setValue, colorColumn = null}) {
   const currentChannel = useCurrentChannel();
   const [search, setSearch] = useState('');
