@@ -110,6 +110,8 @@
   "overrides": {
     "postcss-url": {
       "minimatch": "^3.1.5"
-    }
+    },
+    "brace-expansion@>=5.0.0 <5.0.6": "^5.0.6",
+    "uuid@<11.1.1": "^11.1.1"
   }
 }
