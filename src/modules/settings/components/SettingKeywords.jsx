@@ -144,24 +144,6 @@ function createNewEntry(defaultKeyword = '') {
   return {keyword: defaultKeyword, id: nextKeywordId, type: KeywordTypes.MESSAGE};
 }
 
-function getTargetLabel(type) {
-  switch (type) {
-    case KeywordTypes.USER:
-      return 'username';
-    case KeywordTypes.BADGE:
-      return 'badge';
-    default:
-      return 'message';
-  }
-}
-
-function keywordMatchesSearch(row, query) {
-  const keyword = row.keyword?.toLowerCase() ?? '';
-  const channels = (row.channels ?? []).join(' ').toLowerCase();
-  const target = getTargetLabel(row.type);
-  return keyword.includes(query) || channels.includes(query) || target.includes(query);
-}
-
 function KeywordsTable({
   entryList,
   showColorColumn,
@@ -213,7 +195,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
       return entryList;
     }
 
-    return entryList.filter(([, row]) => keywordMatchesSearch(row, query));
+    return entryList.filter(([, row]) => row.keyword.toLowerCase().includes(query));
   }, [entryList, search]);
 
   const showColorColumn = colorColumn != null;
