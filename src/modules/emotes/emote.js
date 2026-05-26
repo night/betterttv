@@ -16,7 +16,7 @@ export default class Emote {
     restrictionCallback = null,
     metadata = null,
     modifier,
-    parentCategory,
+    parentCategory = null,
   }) {
     this.id = id;
     this.category = category;

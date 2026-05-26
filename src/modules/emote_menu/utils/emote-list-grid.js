@@ -1,5 +1,5 @@
 export function getEmoteKey(emote) {
-  if (typeof emote.parentCategory !== 'undefined') {
+  if (typeof emote.parentCategory != null) {
     return `${emote.parentCategory.id}-${emote.category.id}-${emote.id}`;
   }
 
