@@ -16,6 +16,7 @@ export default class Emote {
     restrictionCallback = null,
     metadata = null,
     modifier,
+    parentCategory = null,
   }) {
     this.id = id;
     this.category = category;
@@ -26,6 +27,11 @@ export default class Emote {
     this.animated = animated;
     this.metadata = metadata;
     this.modifier = modifier ?? false;
+    this.parentCategory = parentCategory;
+  }
+
+  clone(extraProps = {}) {
+    return new Emote({...this, ...extraProps});
   }
 
   isUsable(channel, user) {

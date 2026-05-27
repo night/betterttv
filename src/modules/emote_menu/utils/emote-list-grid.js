@@ -1,4 +1,8 @@
 export function getEmoteKey(emote) {
+  if (emote.parentCategory != null) {
+    return `${emote.parentCategory.id}-${emote.category.id}-${emote.id}`;
+  }
+
   return `${emote.category.id}-${emote.id}`;
 }
 
