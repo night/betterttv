@@ -14,7 +14,7 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import React, {useCallback, useMemo, useRef} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import styles from './SettingKeywords.module.css';
 import {KeywordTypes} from '../../../utils/keywords.js';
@@ -27,9 +27,17 @@ import Icon from '../../../common/components/Icon.jsx';
 import usePortalRef from '../../../common/hooks/PortalRef.jsx';
 import useCurrentChannel from '../../../common/hooks/CurrentChannel.jsx';
 
-function KeywordRow({id, data, updateHandler, deleteHandler, colorColumn, keywordInputRefCallback, ...props}) {
+function KeywordRow({
+  id,
+  data,
+  updateHandler,
+  deleteHandler,
+  colorColumn,
+  keywordInputRefCallback,
+  currentChannel,
+  ...props
+}) {
   const portalRef = usePortalRef();
-  const currentChannel = useCurrentChannel();
   const onUpdate = useCallback((newKeywordData) => updateHandler(id, newKeywordData), [updateHandler, id]);
   const onDelete = useCallback(() => deleteHandler(id), [deleteHandler, id]);
   const keywordInputRef = useCallback((ref) => keywordInputRefCallback(id, ref), [keywordInputRefCallback, id]);
@@ -92,8 +100,8 @@ function KeywordRow({id, data, updateHandler, deleteHandler, colorColumn, keywor
             variant="unstyled"
             renderOption={() => (
               <div className={styles.channelOption}>
-                <Avatar src={currentChannel.avatar} size={28} radius="xl" />
-                <Text size="md">{currentChannel.displayName}</Text>
+                <Avatar src={currentChannel?.avatar} size={28} radius="xl" />
+                <Text size="md">{currentChannel?.displayName}</Text>
               </div>
             )}
             classNames={{input: styles.channelsInput, pill: styles.channelsPill}}
@@ -143,6 +151,7 @@ function KeywordsTable({
   updateHandler,
   deleteHandler,
   keywordInputRefCallback,
+  currentChannel,
   onPaste,
 }) {
   return (
@@ -166,6 +175,7 @@ function KeywordsTable({
             updateHandler={updateHandler}
             deleteHandler={deleteHandler}
             keywordInputRefCallback={keywordInputRefCallback}
+            currentChannel={currentChannel}
           />
         ))}
       </TableTbody>
@@ -173,13 +183,26 @@ function KeywordsTable({
   );
 }
 
-// TODO: Down the line we could explore virtualizing this list, as some user's have thousands of entries, and possibly adding a search
-function SettingKeywords({title, value, setValue, colorColumn = null}) {
+function SettingKeywords({value, setValue, colorColumn = null}) {
+  const currentChannel = useCurrentChannel();
+  const [search, setSearch] = useState('');
   const entryList = useMemo(() => Object.entries(value ?? {}).reverse(), [value]);
+
+  const filteredEntryList = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    if (query.length === 0) {
+      return entryList;
+    }
+
+    return entryList.filter(([, row]) => row.keyword.toLowerCase().includes(query));
+  }, [entryList, search]);
+
   const showColorColumn = colorColumn != null;
   const pendingKeywordFocusRef = useRef(null);
 
   const newEntryHandler = useCallback(() => {
+    setSearch('');
     const newEntry = createNewEntry();
 
     setValue((prevKeywords) => {
@@ -261,23 +284,37 @@ function SettingKeywords({title, value, setValue, colorColumn = null}) {
 
   return (
     <Panel
-      title={title}
+      title={
+        <TextInput
+          size="lg"
+          value={search}
+          placeholder={formatMessage({defaultMessage: 'Search keywords...'})}
+          onChange={({target: {value: searchValue}}) => setSearch(searchValue)}
+          classNames={{input: styles.searchInput, root: styles.searchInputRoot}}
+          radius="lg"
+        />
+      }
       rightContent={
         <Button size="lg" className={styles.newEntryButton} onClick={newEntryHandler}>
           {formatMessage({defaultMessage: 'New Entry'})}
         </Button>
       }
       className={styles.settingGroupContent}>
-      {entryList.length > 0 ? (
+      {filteredEntryList.length > 0 ? (
         <KeywordsTable
-          entryList={entryList}
+          entryList={filteredEntryList}
           showColorColumn={showColorColumn}
           colorColumn={colorColumn}
           updateHandler={updateHandler}
           deleteHandler={deleteHandler}
           keywordInputRefCallback={keywordInputRefCallback}
+          currentChannel={currentChannel}
           onPaste={handlePaste}
         />
+      ) : entryList.length > 0 ? (
+        <Text className={styles.noKeywordsText} c="dimmed">
+          {formatMessage({defaultMessage: 'No keywords match your search.'})}
+        </Text>
       ) : (
         <Text className={styles.noKeywordsText} c="dimmed">
           {formatMessage({defaultMessage: 'No keywords found, start by adding a new entry.'})}

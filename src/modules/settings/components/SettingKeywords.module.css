@@ -7,6 +7,15 @@
   margin-left: auto;
 }
 
+.searchInputRoot {
+  width: 100%;
+  max-width: 240px;
+}
+
+.searchInput {
+  height: 32px;
+}
+
 .table {
   font-size: var(--mantine-font-size-md);
 
