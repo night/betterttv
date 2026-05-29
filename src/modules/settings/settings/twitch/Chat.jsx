@@ -1,14 +1,18 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, ChatFlags} from '../../../../constants.js';
+import {ChatFlags, PageTypes, SettingIds} from '../../../../constants.js';
 import formatMessage from '../../../../i18n/index.js';
 import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
 import SettingCheckbox from '../../components/SettingCheckbox.jsx';
 import SettingCheckboxGroup from '../../components/SettingCheckboxGroup.jsx';
+import SettingWrapper from '../../components/SettingWrapper.jsx';
+import {PageContext} from '../../contexts/PageContext.jsx';
+import {Button} from '@mantine/core';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat'});
 
 function ChatModule(props, ref) {
+  const {setPage} = useContext(PageContext);
   const [chat, setChat] = useStorageState(SettingIds.CHAT);
 
   return (
@@ -19,6 +23,16 @@ function ChatModule(props, ref) {
       value={chat}
       onChange={setChat}
       flags={Object.values(ChatFlags)}>
+      <SettingWrapper
+        name={formatMessage({defaultMessage: 'Text Replacements'})}
+        reverse
+        description={formatMessage({
+          defaultMessage: 'Create custom text replacements so typing a trigger in chat sends a different string.',
+        })}>
+        <Button size="lg" onClick={() => setPage(PageTypes.TEXT_REPLACEMENTS)}>
+          {formatMessage({defaultMessage: 'Edit'})}
+        </Button>
+      </SettingWrapper>
       <SettingCheckbox
         value={ChatFlags.CHAT_REPLIES}
         name={formatMessage({defaultMessage: 'Chat Replies'})}
@@ -68,7 +82,7 @@ SettingStore.registerSetting(React.forwardRef(ChatModule), {
   settingPanelId: SettingPanelIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['bits', 'highlights', 'community', 'chat', 'replies', 'clips', 'subs', 'subscriptions'],
+  keywords: ['bits', 'highlights', 'community', 'chat', 'replies', 'clips', 'subs', 'subscriptions', 'text', 'replacements'],
 });
 
 export default React.forwardRef(ChatModule);

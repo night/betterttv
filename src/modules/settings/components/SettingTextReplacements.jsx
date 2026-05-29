@@ -18,7 +18,11 @@ function ReplacementRow({id, data, updateHandler, deleteHandler, triggerInputRef
           classNames={{input: styles.cellInput, root: styles.inputRoot, wrapper: styles.inputWrapper}}
           ref={triggerInputRef}
           defaultValue={data.alias}
-          onBlur={({target: {value}}) => onUpdate({alias: value.trim()})}
+          onBlur={(e) => {
+            const cleaned = e.target.value.trim().replace(/\s+/g, '');
+            e.target.value = cleaned;
+            onUpdate({alias: cleaned});
+          }}
           placeholder={formatMessage({defaultMessage: 'trigger'})}
         />
       </TableTd>

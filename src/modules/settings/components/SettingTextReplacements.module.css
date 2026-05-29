@@ -1,30 +1,13 @@
 .panelContent {
-  padding: 0;
-  overflow: hidden;
+  composes: settingGroupContent from './SettingKeywords.module.css';
 }
 
 .table {
-  font-size: var(--mantine-font-size-md);
-
-  th {
-    font-weight: 500;
-  }
-
-  th,
-  td {
-    padding: 8px 12px;
-    height: 36px;
-  }
-
-  --table-border-color: var(--mantine-color-default-border);
-
-  td:hover {
-    background-color: var(--table-hover-color);
-  }
+  composes: table from './SettingKeywords.module.css';
 }
 
 .actionsColumn {
-  width: 0;
+  composes: actionsColumn from './SettingKeywords.module.css';
 }
 
 .inputDataCell,
@@ -52,21 +35,13 @@
 }
 
 .actionIcon {
-  width: 36px;
-  height: 36px;
-  padding: 8px;
-  border-radius: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  composes: actionIcon from './SettingKeywords.module.css';
 }
 
 .actionIconIcon {
-  width: 12px;
-  height: 12px;
+  composes: actionIconIcon from './SettingKeywords.module.css';
 }
 
 .emptyText {
-  padding: 20px;
-  text-align: center;
+  composes: noKeywordsText from './SettingKeywords.module.css';
 }

@@ -45,6 +45,7 @@ class SendState {
 
 let twitchSendMessage;
 const methodList = [
+  // must run first so triggers are substituted before emoji shortcuts and history recording
   (msgObj) => applyTextReplacements(msgObj),
   (msgObj) => chatTabCompletion.onSendMessage(msgObj),
   (msgObj) => anonChat.onSendMessage(msgObj),

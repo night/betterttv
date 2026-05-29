@@ -169,6 +169,7 @@ class ChatTabcompletionModule {
     prefix = prefix.toLowerCase();
 
     const aliasList = includeEmotes ? this.getTextReplacementMatches(prefix) : [];
+    const aliasReplacementSet = new Set(aliasList);
 
     if (includeEmotes) {
       const emoteSet = new Set();
@@ -180,12 +181,14 @@ class ChatTabcompletionModule {
         if (!normalizedStartsWith(code, prefix)) return;
         emoteSet.add(code);
       });
-      emoteList = Array.from(emoteSet);
+      emoteList = Array.from(emoteSet).filter((code) => !aliasReplacementSet.has(code));
       emoteList.sort((a, b) => a.localeCompare(b));
     }
 
     if (includeUsers) {
-      userList = Array.from(this.userList).filter((word) => normalizedStartsWith(word, prefix));
+      userList = Array.from(this.userList).filter(
+        (word) => normalizedStartsWith(word, prefix) && !aliasReplacementSet.has(word)
+      );
       userList.sort((a, b) => a.localeCompare(b));
     }
 
