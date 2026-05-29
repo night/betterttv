@@ -15,7 +15,8 @@ const CHAT_INPUT = '.chat-input';
 
 // For legacy button
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-legacy-emote-picker-button-container';
-const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
+const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR =
+  '.chat-input div[data-test-selector="chat-input-buttons-container"] div:has(button[data-a-target="chat-settings"])';
 
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-container';
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
@@ -76,8 +77,8 @@ function loadLegacyButton() {
     return;
   }
 
-  const container = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
-  if (container == null) {
+  const chatSettingsContainer = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
+  if (chatSettingsContainer == null) {
     return;
   }
 
@@ -86,13 +87,21 @@ function loadLegacyButton() {
     chatInput.classList.add(styles.hideShieldModeButton);
   }
 
-  const rightContainer = container.lastChild;
   const buttonContainer = document.createElement('div');
   buttonContainer.setAttribute('id', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
-  rightContainer.insertBefore(buttonContainer, rightContainer.lastChild);
+
+  const chatSettingsButtonContainer = chatSettingsContainer.querySelector(
+    'div:has(button[data-a-target="chat-settings"])'
+  );
+
+  if (chatSettingsButtonContainer == null) {
+    return;
+  }
+
+  chatSettingsButtonContainer.after(buttonContainer);
 
   const button = document.createElement('button');
-  button.classList.add(styles.legacyButton);
+  button.classList.add(styles.button);
   buttonContainer.appendChild(button);
   button.addEventListener('click', () => handleOpen?.());
 }

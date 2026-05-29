@@ -297,14 +297,16 @@ class EmoteMenuViewStore extends SafeEventEmitter {
 
     for (const category of [...categories, ...emojiCategories]) {
       for (const emote of category.emotes) {
-        const emoteCanonicalId = emote.canonicalId;
+        const canonicalId = emote.canonicalId;
 
-        if (emoteStorage.favorites.includes(emoteCanonicalId)) {
-          favorites.emotes.push({...emote, category: favorites.category, canonicalId: emoteCanonicalId});
+        if (emoteStorage.favorites.includes(canonicalId)) {
+          const favoriteEmote = emote.clone({parentCategory: favorites.category});
+          favorites.emotes.push(favoriteEmote);
         }
 
-        if (emoteStorage.frecents.includes(emoteCanonicalId)) {
-          frecents.emotes.push({...emote, category: frecents.category, canonicalId: emoteCanonicalId});
+        if (emoteStorage.frecents.includes(canonicalId)) {
+          const frequentEmote = emote.clone({parentCategory: frecents.category});
+          frecents.emotes.push(frequentEmote);
         }
       }
 

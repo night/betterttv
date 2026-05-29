@@ -1,25 +1,11 @@
-.legacyButton {
-  background-size: 18px;
-  background-position: center;
-  background-repeat: no-repeat;
-  cursor: pointer;
-  height: 18px;
-  width: 18px;
-  filter: grayscale(100%);
-  opacity: 0.9;
-  float: left;
-  padding: 15px;
-  background-image: url(assets/icons/legacy_smile.svg) !important;
-}
-
 .button {
+  cursor: pointer;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   height: var(--button-size-default, 30px);
   width: var(--button-size-default, 30px);
-  cursor: pointer;
   border-radius: 100%;
   border-radius: var(--border-radius-rounded);
   border-bottom-right-radius: var(--border-radius-large);
