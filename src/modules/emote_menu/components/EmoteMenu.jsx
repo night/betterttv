@@ -77,7 +77,7 @@ function EmoteMenu({
 
       const selected = getSelectedAtCoords(currentEmoteListData.rows, newCoords);
       if (section == null && selected != null) {
-        setSection(selected.category.id);
+        setSection(selected.parentCategory?.id ?? selected.category.id);
       }
 
       setSelected(selected);
@@ -183,8 +183,8 @@ function EmoteMenu({
 
   useEmoteMenuViewStoreUpdated(opened, handleEmoteMenuViewStoreUpdate);
 
-  useEffect(() => {
-    function handleKeyDown(event) {
+  const handleToggleHotkey = useCallback(
+    (event) => {
       const isPressed =
         (event.altKey && event.key === keyCodes.E) || (isMac() && event.ctrlKey && event.key === keyCodes.E);
       if (!isPressed) {
@@ -194,16 +194,17 @@ function EmoteMenu({
       event.preventDefault();
       toggle();
       markTipAsSeen(EmoteMenuTips.EMOTE_MENU_HOTKEY);
-    }
 
+      document.activeElement.blur();
+    },
+    [toggle, focusRef]
+  );
+
+  useEffect(() => {
     setHandleOpen(toggle);
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [toggle]);
+    document.addEventListener('keydown', handleToggleHotkey);
+    return () => document.removeEventListener('keydown', handleToggleHotkey);
+  }, [handleToggleHotkey, toggle]);
 
   const handleCloseRef = useRef(handleClose);
   useEffect(() => {
@@ -243,6 +244,7 @@ function EmoteMenu({
     (event) => {
       onKeyDown(event);
       handleKeyEvent(event);
+      handleToggleHotkey(event);
 
       /* Events like keydown are sometimes prevented by twitch,
       likely because it can't locate the focused element inside the shadow dom.
