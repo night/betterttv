@@ -88,15 +88,17 @@ function PageTransition({children, className, computeDefaultScrollTop, scrollRef
   );
 }
 
-function HeaderTransition({children, className}) {
-  const direction = usePresenceData();
-  const {initial, exit} = pageMotionVariants[direction];
+const headerMotionVariants = {
+  initial: {opacity: 0, filter: 'blur(2px)', transition: {duration: 0.15, ease: [0.75, 0, 1, 1]}},
+  exit: {opacity: 0, filter: 'blur(2px)', transition: {duration: 0.15, ease: [0, 0, 0.25, 1]}},
+};
 
+function HeaderTransition({children, className}) {
   return (
     <motion.div
-      variants={pageMotionVariants}
-      initial={initial}
-      exit={exit}
+      variants={headerMotionVariants}
+      initial="initial"
+      exit="exit"
       animate={{opacity: 1, filter: 'blur(0px)', x: 0, y: 0}}
       className={className}>
       {children}
