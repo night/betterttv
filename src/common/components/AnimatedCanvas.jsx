@@ -62,8 +62,17 @@ export default function AnimatedCanvas({width = CANVAS_WIDTH, height = CANVAS_HE
       timeRef.current = t + 0.01;
     }
 
-    const requestDrawAnimatedImage = () => window.requestAnimationFrame(drawAnimatedImage);
+    let animationFrameId = null;
+    const requestDrawAnimatedImage = () => {
+      animationFrameId = window.requestAnimationFrame(drawAnimatedImage);
+    };
     const interval = setInterval(() => requestDrawAnimatedImage(), FRAME_INTERVAL);
+    return () => {
+      clearInterval(interval);
+      if (animationFrameId != null) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
     return () => clearInterval(interval);
   }, [documentState, isVisible, ref]);
 
