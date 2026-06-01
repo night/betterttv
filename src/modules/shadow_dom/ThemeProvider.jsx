@@ -3,6 +3,7 @@ import {DEFAULT_PRIMARY_COLOR, SettingIds} from '../../constants.js';
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Button,
   Checkbox,
   createTheme,
@@ -21,6 +22,7 @@ import {
   alpha,
   Loader,
 } from '@mantine/core';
+import badgeStyles from './styles/badge.module.css';
 import buttonStyles from './styles/button.module.css';
 import pillStyles from './styles/pill.module.css';
 import inputStyles from './styles/input.module.css';
@@ -131,6 +133,7 @@ const mantineTheme = createTheme({
       defaultProps: {variant: 'elevated', color: 'dark'},
     }),
     Avatar: Avatar.extend({defaultProps: {color: 'dark'}}),
+    Badge: Badge.extend({classNames: badgeStyles}),
     Kbd: Kbd.extend({defaultProps: {size: 'lg'}, classNames: kbdStyles}),
     Loader: Loader.extend({
       defaultProps: {
