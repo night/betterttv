@@ -63,8 +63,13 @@ export default function AnimatedCanvas({width = CANVAS_WIDTH, height = CANVAS_HE
     }
 
     const requestDrawAnimatedImage = () => window.requestAnimationFrame(drawAnimatedImage);
-    const interval = setInterval(() => requestDrawAnimatedImage(), FRAME_INTERVAL);
-    return () => clearInterval(interval);
+    let requestId = requestDrawAnimatedImage();
+    const interval = setInterval(() => (requestId = requestDrawAnimatedImage()), FRAME_INTERVAL);
+
+    return () => {
+      clearInterval(interval);
+      window.cancelAnimationFrame(requestId);
+    };
   }, [documentState, isVisible, ref]);
 
   return <canvas width={width} height={height} ref={ref} className={className} {...props} />;
