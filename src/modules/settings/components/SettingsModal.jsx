@@ -14,6 +14,7 @@ import SideNavigation from './SideNavigation.jsx';
 import PageHeader from './PageHeader.jsx';
 import {PageContext} from '../contexts/PageContext.jsx';
 import BlacklistKeywords from '../pages/BlacklistKeywords.jsx';
+import TextReplacements from '../pages/TextReplacements.jsx';
 import {AnimatePresence, motion, usePresenceData} from 'framer-motion';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import Icon from '../../../common/components/Icon.jsx';
@@ -27,6 +28,8 @@ function Page({page, search, handleSettingRefCallback}) {
       return <HighlightKeywords />;
     case PageTypes.BLACKLIST_KEYWORDS:
       return <BlacklistKeywords />;
+    case PageTypes.TEXT_REPLACEMENTS:
+      return <TextReplacements />;
     case PageTypes.SETTINGS:
       return <Settings search={search} handleSettingRefCallback={handleSettingRefCallback} />;
     case PageTypes.USER_SETTINGS:
@@ -217,6 +220,12 @@ function SettingsModal({setHandleOpen}) {
         return <Title order={1}>{formatMessage({defaultMessage: 'Changelog'})}</Title>;
       case PageTypes.HIGHLIGHT_KEYWORDS:
       case PageTypes.BLACKLIST_KEYWORDS:
+      case PageTypes.TEXT_REPLACEMENTS: {
+        const PAGE_TITLES = {
+          [PageTypes.HIGHLIGHT_KEYWORDS]: formatMessage({defaultMessage: 'Highlight Keywords'}),
+          [PageTypes.BLACKLIST_KEYWORDS]: formatMessage({defaultMessage: 'Blacklist Keywords'}),
+          [PageTypes.TEXT_REPLACEMENTS]: formatMessage({defaultMessage: 'Text Replacements'}),
+        };
         return (
           <div className={styles.backHeader}>
             <ActionIcon
@@ -229,13 +238,10 @@ function SettingsModal({setHandleOpen}) {
               aria-label={formatMessage({defaultMessage: 'Back to Settings'})}>
               <Icon className={styles.backButtonIcon} icon={faArrowLeft} />
             </ActionIcon>
-            <Title order={1}>
-              {page === PageTypes.HIGHLIGHT_KEYWORDS
-                ? formatMessage({defaultMessage: 'Highlight Keywords'})
-                : formatMessage({defaultMessage: 'Blacklist Keywords'})}
-            </Title>
+            <Title order={1}>{PAGE_TITLES[page]}</Title>
           </div>
         );
+      }
       default:
         return null;
     }

@@ -58,6 +58,7 @@ export const SettingIds = {
   EMOTE_MENU_WIDTH: 'emoteMenuWidth',
   HYPE_CHAT: 'hypeChat',
   PRIMARY_COLOR: 'primaryColor',
+  TEXT_REPLACEMENTS: 'textReplacements',
 };
 
 export const CategoryTypes = {
@@ -148,10 +149,11 @@ export const PageTypes = {
   USER_SETTINGS: 3,
   HIGHLIGHT_KEYWORDS: 4,
   BLACKLIST_KEYWORDS: 5,
+  TEXT_REPLACEMENTS: 6,
 };
 
 export const PageDecendants = {
-  [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS],
+  [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS, PageTypes.TEXT_REPLACEMENTS],
 };
 
 export const NavigationModeTypes = {
