@@ -21,7 +21,7 @@
 .textContainer {
   width: 100%;
   display: flex;
-  gap: 16px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -50,7 +50,6 @@
 
 .title {
   font-weight: 600;
-  flex: 1;
 }
 
 @media (max-width: 400px) {

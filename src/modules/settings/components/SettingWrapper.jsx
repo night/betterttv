@@ -1,7 +1,9 @@
 import React from 'react';
-import {Badge, Text, Title} from '@mantine/core';
+import {Badge, Text, Title, Tooltip} from '@mantine/core';
 import styles from './SettingWrapper.module.css';
 import classNames from 'classnames';
+import formatMessage from '../../../i18n';
+import usePortalRef from '../../../common/hooks/PortalRef.jsx';
 
 function SettingWrapper({
   name,
@@ -13,6 +15,7 @@ function SettingWrapper({
   wrap = false,
   controlClassName = '',
 }) {
+  const portalRef = usePortalRef();
   return (
     <div className={classNames(styles.root, {[styles.shouldWrap]: wrap})}>
       {!reverse ? <div className={classNames(styles.control, controlClassName)}>{children}</div> : null}
@@ -21,14 +24,30 @@ function SettingWrapper({
           <Title order={3} className={styles.title}>
             {name}
             {showProBadge ? (
-              <Badge color="indigo" variant="elevated" size="lg">
-                Pro
-              </Badge>
+              <Tooltip
+                withArrow
+                label={
+                  <Text size="md">
+                    {formatMessage({defaultMessage: 'This feature is only available to BetterTTV Pro users.'})}
+                  </Text>
+                }
+                portalProps={{target: portalRef.current}}>
+                <Badge color="indigo" variant="elevated" size="lg">
+                  {formatMessage({defaultMessage: 'Pro'})}
+                </Badge>
+              </Tooltip>
             ) : null}
             {showBetaBadge ? (
-              <Badge color="orange" variant="elevated" size="lg">
-                Beta
-              </Badge>
+              <Tooltip
+                withArrow
+                label={
+                  <Text size="md">{formatMessage({defaultMessage: 'This feature is new, and may be changed.'})}</Text>
+                }
+                portalProps={{target: portalRef.current}}>
+                <Badge color="orange" variant="elevated" size="lg">
+                  {formatMessage({defaultMessage: 'Beta'})}
+                </Badge>
+              </Tooltip>
             ) : null}
           </Title>
         ) : null}

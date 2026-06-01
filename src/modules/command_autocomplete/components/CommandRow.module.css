@@ -1,0 +1,19 @@
+.nightbotLogo {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border-radius: var(--mantine-radius-md);
+  background-color: var(--mantine-color-indigo-7);
+  color: var(--mantine-color-indigo-1);
+}
+
+.providerLogo {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--mantine-radius-md);
+  object-fit: cover;
+}

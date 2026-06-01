@@ -58,6 +58,7 @@ export const SettingIds = {
   EMOTE_MENU_WIDTH: 'emoteMenuWidth',
   HYPE_CHAT: 'hypeChat',
   PRIMARY_COLOR: 'primaryColor',
+  CHATBOT_COMMAND_AUTOCOMPLETE: 'chatbotCommandAutocomplete',
 };
 
 export const CategoryTypes = {
@@ -217,6 +218,7 @@ export const EmoteMenuTips = {
 
 export const SettingsPromotions = {
   THEME_CUSTOMIZE: 'settingsPromotionDismissedThemeCustomize',
+  CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
 };
 
 /** Default Mantine `theme.primaryColor` key when unset or invalid. */
@@ -294,6 +296,7 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTE_MENU_WIDTH]: 498,
   [SettingIds.HYPE_CHAT]: true,
   [SettingIds.PRIMARY_COLOR]: null,
+  [SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE]: true,
 };
 
 export const FlagSettings = [
@@ -334,6 +337,7 @@ export const ShadowDOMComponentIds = {
   SETTINGS_MENU: 'settings-menu',
   EMOTE_AUTOCOMPLETE: 'emote-autocomplete',
   EMOTE_MENU: 'emote-menu',
+  COMMAND_AUTOCOMPLETE: 'command-autocomplete',
 };
 
 export const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
@@ -351,4 +355,44 @@ export const ExternalLinks = {
   PRIVACY: 'https://betterttv.com/privacy',
   DEVELOPER_API: 'https://betterttv.com/developers/api',
   PRO: 'https://betterttv.com/dashboard/pro',
+};
+
+export const CommandProviders = {
+  NIGHTBOT: 'nightbot',
+  FOSSABOT: 'fossabot',
+  MOOBOT: 'moobot',
+  STREAMELEMENTS: 'streamelements',
+};
+
+export const UserLevels = {
+  EVERYONE: 'everyone',
+  SUBSCRIBER: 'subscriber',
+  REGULAR: 'regular',
+  TWITCH_VIP: 'twitch_vip',
+  MODERATOR: 'moderator',
+  OWNER: 'owner',
+};
+
+export const UserLevelHierarchy = {
+  [UserLevels.EVERYONE]: 0,
+  [UserLevels.SUBSCRIBER]: 1,
+  [UserLevels.REGULAR]: 2,
+  [UserLevels.TWITCH_VIP]: 3,
+  [UserLevels.MODERATOR]: 4,
+  [UserLevels.OWNER]: 5,
+};
+
+export const COMMAND_PREFIX = '!';
+
+export const ProviderSupportedByCommandProvider = {
+  [CommandProviders.NIGHTBOT]: [ProviderTypes.TWITCH, ProviderTypes.YOUTUBE],
+  [CommandProviders.FOSSABOT]: [ProviderTypes.TWITCH],
+  [CommandProviders.MOOBOT]: [ProviderTypes.TWITCH],
+  [CommandProviders.STREAMELEMENTS]: [ProviderTypes.TWITCH],
+};
+
+export const CommandAutocompleteArgumentTypes = {
+  WORD: 'word',
+  PHRASE: 'phrase',
+  USER: 'user',
 };

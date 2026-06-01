@@ -4,3 +4,7 @@
   flex-direction: column;
   gap: 20px;
 }
+
+.panelContainer {
+  scroll-margin-top: 20px;
+}

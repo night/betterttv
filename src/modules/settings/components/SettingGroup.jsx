@@ -9,6 +9,7 @@ function SettingGroup({children, name, rightContent, className, ...restProps}, r
       ref={ref}
       title={name}
       rightContent={rightContent}
+      containerClassName={styles.panelContainer}
       className={classNames(styles.settingGroup, className)}
       {...restProps}>
       {children}

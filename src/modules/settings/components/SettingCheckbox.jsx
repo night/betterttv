@@ -3,9 +3,9 @@ import {Checkbox} from '@mantine/core';
 import styles from './SettingCheckbox.module.css';
 import SettingWrapper from './SettingWrapper.jsx';
 
-function SettingCheckbox({name, description, value, onChange, ...props}) {
+function SettingCheckbox({name, description, value, onChange, showProBadge = false, showBetaBadge = false, ...props}) {
   return (
-    <SettingWrapper name={name} description={description}>
+    <SettingWrapper name={name} description={description} showProBadge={showProBadge} showBetaBadge={showBetaBadge}>
       <Checkbox
         {...props}
         value={String(value)}

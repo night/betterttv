@@ -13,6 +13,7 @@ function EmoteRow({item: emote, active, selected, onMouseOver, onClick}) {
       selected={selected}
       onMouseOver={onMouseOver}
       onClick={onClick}
+      subtitleClassName={styles.subtitle}
     />
   );
 }

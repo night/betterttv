@@ -1,5 +1,6 @@
 import cookies from 'cookies-js';
 import gql from 'graphql-tag';
+import {Editor} from 'slate';
 import {getCurrentChannel, setCurrentChannel} from './channel.js';
 import debug from './debug.js';
 import {getCurrentUser, setCurrentUser} from './user.js';
@@ -652,6 +653,43 @@ export default {
     }
 
     return chatInput.memoizedProps.value;
+  },
+
+  getChatInputCaretOffset() {
+    const element = document.querySelector(CHAT_INPUT);
+    if (element == null) {
+      return null;
+    }
+
+    const {value: currentValue, selectionStart} = element;
+    if (currentValue != null && typeof selectionStart === 'number') {
+      return selectionStart;
+    }
+
+    const chatInputEditor = this.getChatInputEditor(element);
+    const fullText = this.getChatInputValue();
+
+    if (chatInputEditor == null) {
+      return fullText != null ? fullText.length : null;
+    }
+
+    let derived = null;
+
+    try {
+      const focus = chatInputEditor.selection.focus;
+      const start = Editor.start(chatInputEditor, []);
+      derived = Editor.string(chatInputEditor, {anchor: start, focus}).length;
+    } catch (_) {}
+
+    if (derived == null) {
+      return fullText != null ? fullText.length : null;
+    }
+
+    if (fullText != null && derived > fullText.length) {
+      return fullText.length;
+    }
+
+    return derived;
   },
 
   setChatInputValue(text, shouldFocus = true) {

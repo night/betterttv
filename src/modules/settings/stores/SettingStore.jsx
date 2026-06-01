@@ -28,6 +28,7 @@ export const SettingPanelIds = {
   ANON_CHAT: 'anonChat',
   AUTO_PLAY: 'autoPlay',
   AUTO_CLAIM: 'autoClaim',
+  CHATBOTS: 'chatbots',
 };
 
 class SettingStore {

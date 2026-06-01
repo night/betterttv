@@ -62,6 +62,7 @@ function Autocomplete({
   const itemsBodyRef = useRef(null);
   const pendingComplete = useRef(null);
   const lastValueRef = useRef(null);
+  const updateAutocompleteSuggestionsRequestId = useRef(0);
   const [pendingCompleteIndex, setPendingCompleteIndex] = useState(null);
 
   const handleMouseMove = useCallback(() => {
@@ -96,7 +97,7 @@ function Autocomplete({
     navigationMode.current = NavigationModeTypes.ARROW_KEYS;
   }, [open]);
 
-  const updateAutocompleteSuggestions = useCallback(() => {
+  const updateAutocompleteSuggestions = useCallback(async () => {
     const value = getChatInputPartialInput();
 
     if (value === lastValueRef.current) {
@@ -105,10 +106,16 @@ function Autocomplete({
 
     lastValueRef.current = value;
 
+    const requestId = ++updateAutocompleteSuggestionsRequestId.current;
+
     if (value == null) {
       itemsRef.current = [];
     } else {
-      itemsRef.current = computeItems(value).slice(0, MAX_ITEMS_SHOWN);
+      itemsRef.current = (await computeItems(value)).slice(0, MAX_ITEMS_SHOWN);
+    }
+
+    if (requestId !== updateAutocompleteSuggestionsRequestId.current) {
+      return;
     }
 
     setItems(itemsRef.current);

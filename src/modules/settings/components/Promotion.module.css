@@ -17,10 +17,14 @@
   box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
+[data-mantine-color-scheme='light'] .promotion {
+  box-shadow: var(--mantine-shadow-sm);
+  border: 1px solid var(--mantine-color-pink-6);
+}
+
 .content {
   position: relative;
   z-index: 1;
-  gap: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -28,7 +32,13 @@
 
 .title,
 .logo {
+  font-weight: 600;
   color: var(--mantine-color-white);
+}
+
+.title,
+.closeButton {
+  margin-left: 12px;
 }
 
 .logo {
@@ -36,6 +46,43 @@
   height: 20px;
 }
 
+.logoImage {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--mantine-radius-lg);
+  overflow: hidden;
+  object-fit: contain;
+  flex-shrink: 0;
+  color: var(--mantine-color-white);
+  box-shadow: var(--mantine-shadow-sm);
+  /* this is a stylistic choice, to have logos overlap slightly */
+  margin-left: -2px;
+}
+
 .button {
   margin-left: auto;
+}
+
+.botProviderPromotionIcons {
+  display: flex;
+  align-items: center;
+}
+
+.nightbotLogo {
+  background-color: var(--mantine-color-indigo-7);
+  padding: 8px;
+}
+
+.logoImage:nth-child(odd) {
+  rotate: 2.5deg;
+}
+
+.logoImage:nth-child(even) {
+  rotate: -2.5deg;
+}
+
+@media (max-width: 800px) {
+  .panelContainer {
+    display: none;
+  }
 }
