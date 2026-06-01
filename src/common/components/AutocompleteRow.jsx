@@ -38,4 +38,14 @@ function AutocompleteRow({
   );
 }
 
-export default AutocompleteRow;
+export default React.memo(AutocompleteRow, (prev, next) => {
+  return (
+    prev.title === next.title &&
+    prev.subtitle === next.subtitle &&
+    prev.leading === next.leading &&
+    prev.selected === next.selected &&
+    prev.active === next.active &&
+    prev.className === next.className &&
+    prev.subtitleClassName === next.subtitleClassName
+  );
+});

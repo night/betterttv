@@ -12,7 +12,7 @@ import {faArrowDown, faArrowTurnDown, faArrowUp} from '@fortawesome/free-solid-s
 import {Kbd, Text} from '@mantine/core';
 import Scrollbar from './Scrollbar.jsx';
 
-const MAX_ITEMS_SHOWN = 12;
+const MAX_ITEMS_SHOWN = 8;
 const MAX_WIDTH = 540;
 
 const NavigationModeTypes = {
@@ -40,6 +40,24 @@ function travelDown(currentSelection, rowCount) {
   return newSelection;
 }
 
+const AutocompleteListRow = React.memo(function AutocompleteListRow({
+  item,
+  index,
+  renderRow,
+  isSelected,
+  isActive,
+  onCompleteItem,
+  onHoverIndex,
+}) {
+  return renderRow({
+    item,
+    onClick: () => onCompleteItem(item),
+    selected: isSelected,
+    active: isActive,
+    onMouseOver: () => onHoverIndex(index),
+  });
+});
+
 function Autocomplete({
   chatInputQuerySelector,
   onComplete,
@@ -62,6 +80,7 @@ function Autocomplete({
   const itemsBodyRef = useRef(null);
   const pendingComplete = useRef(null);
   const lastValueRef = useRef(null);
+  const updateAutocompleteSuggestionsRef = useRef(null);
   const updateAutocompleteSuggestionsRequestId = useRef(0);
   const [pendingCompleteIndex, setPendingCompleteIndex] = useState(null);
 
@@ -110,7 +129,9 @@ function Autocomplete({
 
     if (value == null) {
       itemsRef.current = [];
+      setPartialInput('');
     } else {
+      setPartialInput(value);
       itemsRef.current = (await computeItems(value)).slice(0, MAX_ITEMS_SHOWN);
     }
 
@@ -119,11 +140,14 @@ function Autocomplete({
     }
 
     setItems(itemsRef.current);
-    setPartialInput(value ?? '');
     handleSelectedChange(0, true);
 
     itemsRef.current.length > 0 ? handleOpen() : close();
-  }, [getChatInputPartialInput, computeItems, handleOpen]);
+  }, [getChatInputPartialInput, computeItems, handleOpen, close, handleSelectedChange]);
+
+  useEffect(() => {
+    updateAutocompleteSuggestionsRef.current = updateAutocompleteSuggestions;
+  }, [updateAutocompleteSuggestions]);
 
   const {refs, floatingStyles, context} = useFloating({
     strategy: 'fixed',
@@ -161,15 +185,27 @@ function Autocomplete({
     [onComplete, close]
   );
 
+  const onHoverIndex = useCallback(
+    (index) => {
+      if (navigationMode.current !== NavigationModeTypes.MOUSE) {
+        return;
+      }
+
+      handleSelectedChange(index);
+    },
+    [handleSelectedChange]
+  );
+
   useEffect(() => {
     if (chatInputElement == null) {
       return;
     }
 
-    function keyupCallback() {
-      updateAutocompleteSuggestions();
+    let pendingPromise = null;
 
+    async function keyupCallback() {
       if (!pendingComplete.current) {
+        pendingPromise = await updateAutocompleteSuggestionsRef.current();
         return;
       }
 
@@ -178,8 +214,12 @@ function Autocomplete({
       handleComplete(itemsRef.current[selectedRef.current]);
     }
 
-    function keydownCallback(event) {
-      if (!opened) {
+    async function keydownCallback(event) {
+      if (pendingPromise != null) {
+        await Promise.allSettled([pendingPromise]);
+      }
+
+      if (itemsRef.current.length === 0) {
         return;
       }
 
@@ -195,7 +235,7 @@ function Autocomplete({
           break;
         case keyCodes.End:
           event.preventDefault();
-          handleSelectedChange(itemsRef.current.length);
+          handleSelectedChange(itemsRef.current.length - 1);
           break;
         case keyCodes.Home:
           event.preventDefault();
@@ -211,8 +251,6 @@ function Autocomplete({
           event.stopPropagation();
           handleSelectedChange(travelDown(selectedRef.current, itemsRef.current.length));
           break;
-        default:
-          handleSelectedChange(0);
       }
     }
 
@@ -225,7 +263,7 @@ function Autocomplete({
       chatInputElement.removeEventListener('keydown', keydownCallback, true);
       chatInputElement.removeEventListener('keyup', keyupCallback, true);
     };
-  }, [chatInputElement, updateAutocompleteSuggestions, opened, refs]);
+  }, [chatInputElement, refs]);
 
   return (
     <div
@@ -246,23 +284,16 @@ function Autocomplete({
       </div>
       <Scrollbar ref={itemsBodyRef} className={styles.autocompleteBody}>
         {items.map((item, index) => (
-          <React.Fragment key={getItemKey(item)}>
-            {renderRow({
-              item,
-              onClick: () => handleComplete(item),
-              selected: selected === index,
-              active: pendingCompleteIndex === index,
-              onMouseOver: () => {
-                // We do this to prevent onMouseOver from triggering when
-                // matches is changing, and the mouse is left over an item that's not index 0
-                if (navigationMode.current !== NavigationModeTypes.MOUSE) {
-                  return;
-                }
-
-                handleSelectedChange(index);
-              },
-            })}
-          </React.Fragment>
+          <AutocompleteListRow
+            key={getItemKey(item)}
+            item={item}
+            index={index}
+            renderRow={renderRow}
+            isSelected={selected === index}
+            isActive={pendingCompleteIndex === index}
+            onCompleteItem={handleComplete}
+            onHoverIndex={onHoverIndex}
+          />
         ))}
       </Scrollbar>
       {showKeyboardNavigationTips ? (

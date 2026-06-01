@@ -12,7 +12,7 @@ import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
 import shadowDom from '../../shadow_dom/index.js';
 import twitch from '../../../utils/twitch.js';
-import CommandRow, {ArgumentDisplayTextByArgumentType} from '../components/CommandRow.jsx';
+import CommandRow from '../components/CommandRow.jsx';
 import useAuthStore from '../../../stores/auth.js';
 import Fuse from 'fuse.js';
 import {getAutocompleteSuggestions} from '../../../actions/autocomplete.js';
@@ -20,7 +20,6 @@ import {getCurrentChannel} from '../../../utils/channel.js';
 import watcher from '../../../watcher.js';
 import {getProSettingValue} from '../../../utils/pro.js';
 import gql from 'graphql-tag';
-import {Editor, Transforms} from 'slate';
 import HTTPError from '../../../utils/http-error.js';
 
 const GET_CHANNEL_CHATBOTS = gql`
@@ -93,18 +92,21 @@ function getChatInputPartialCommand() {
     return null;
   }
 
-  const caret = twitch.getChatInputCaretOffset();
+  if (!value.startsWith(COMMAND_PREFIX)) {
+    return null;
+  }
+
+  const caret = twitch.getChatInputCaretOffset(value);
   if (caret == null) {
     return null;
   }
 
-  const focusedWord = findFocusedWord(value, caret);
-  const firstWord = value.split(' ')[0].trim();
-
-  if (firstWord !== focusedWord) {
+  const firstWord = value.trim().split(/\s+/)[0];
+  if (caret > firstWord.length) {
     return null;
   }
 
+  const focusedWord = findFocusedWord(value, caret);
   if (!focusedWord.startsWith(COMMAND_PREFIX)) {
     return null;
   }
@@ -119,43 +121,19 @@ function getItemKey(item) {
 }
 
 function replaceChatInputPartialCommand(command) {
-  const firstArgument = command.arguments[0];
+  let text = command.name;
 
-  if (firstArgument == null) {
-    twitch.setChatInputValue(command.name);
-    return;
+  if (command.arguments.length > 0) {
+    text = `${text} `;
   }
-
-  const argumentDisplayText = ArgumentDisplayTextByArgumentType[firstArgument.type];
-  const text = `${command.name} ${argumentDisplayText}`;
 
   twitch.setChatInputValue(text);
-
-  const editor = twitch.getChatInputEditor();
-  if (editor == null) {
-    return;
-  }
-
-  // immitate twitch's behavior when an argument is present
-  // selecting the argument after the command name
-
-  requestAnimationFrame(() => {
-    const anchor = Editor.point(editor, {
-      path: [0, 0],
-      offset: command.name.length + 1,
-    });
-
-    const focus = Editor.point(editor, {
-      path: [0, 0],
-      offset: text.length,
-    });
-
-    Transforms.select(editor, {anchor, focus});
-  });
 }
 
 let currentCommands = [];
 let fetchPromise = null;
+
+let listener = null;
 
 class CommandAutocomplete {
   constructor() {
@@ -168,16 +146,22 @@ class CommandAutocomplete {
     );
 
     watcher.on('channel.updated', () => this.markDirty());
-    domObserver.on(CHAT_TEXT_AREA, () => this.renderAutocomplete());
+
+    domObserver.on(CHAT_TEXT_AREA, () => {
+      this.renderAutocomplete();
+      this.updateFocusListener();
+    });
+
     settings.on(`changed.${SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE}`, () => this.load());
   }
 
   load() {
     this.renderAutocomplete();
     this.updateChannelCommandIndex();
+    this.updateFocusListener();
   }
 
-  async computeItems(partialInput) {
+  async ensureCommandsLoaded() {
     if (this.dirty && fetchPromise == null) {
       fetchPromise = this.fetchChannelCommands()
         .then(() => (this.dirty = false))
@@ -188,12 +172,40 @@ class CommandAutocomplete {
       await Promise.allSettled([fetchPromise]);
     }
 
+    return fetchPromise;
+  }
+
+  async computeItems(partialInput) {
+    if (this.dirty) {
+      await this.ensureCommandsLoaded();
+    }
+
     return commandFuse.search(partialInput).map(({item}) => item);
   }
 
   markDirty() {
     fetchPromise = null;
     this.dirty = true;
+    this.updateFocusListener();
+  }
+
+  updateFocusListener() {
+    const chatInputElement = document.querySelector(CHAT_TEXT_AREA);
+    if (chatInputElement == null) {
+      return;
+    }
+
+    const commandAutocompleteEnabled = getProSettingValue(SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE, false);
+
+    chatInputElement.removeEventListener('focus', listener, true);
+    listener = null;
+
+    if (!commandAutocompleteEnabled || !this.dirty) {
+      return;
+    }
+
+    listener = this.ensureCommandsLoaded.bind(this);
+    chatInputElement.addEventListener('focus', listener, true);
   }
 
   async fetchChannelCommands() {
@@ -202,7 +214,6 @@ class CommandAutocomplete {
 
     if (!commandAutocompleteEnabled || currentChannel == null) {
       currentCommands = [];
-      currentChatBots = [];
 
       this.updateChannelCommandIndex();
       return;

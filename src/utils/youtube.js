@@ -49,13 +49,9 @@ export function getYoutubeChatInputPartialCommand(commandPrefix = '!') {
   }
 
   const {value: focusedWord} = findFocusedWord(value, caret);
-  const firstWord = value.split(' ')[0].trim();
+  const firstWord = value.trim().split(/\s+/)[0];
 
   if (caret > firstWord.length) {
-    return null;
-  }
-
-  if (firstWord !== focusedWord) {
     return null;
   }
 

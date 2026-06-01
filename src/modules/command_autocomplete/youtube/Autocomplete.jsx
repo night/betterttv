@@ -33,6 +33,8 @@ function replaceChatInputPartialCommand(command) {
 let currentCommands = [];
 let fetchPromise = null;
 
+let listener = null;
+
 class CommandAutocomplete {
   constructor() {
     this.dirty = true;
@@ -44,16 +46,22 @@ class CommandAutocomplete {
     );
 
     watcher.on('channel.updated', () => this.markDirty());
-    domObserver.on(CHAT_TEXT_AREA, () => this.renderAutocomplete());
+
+    domObserver.on(CHAT_TEXT_AREA, () => {
+      this.renderAutocomplete();
+      this.updateFocusListener();
+    });
+
     settings.on(`changed.${SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE}`, () => this.load());
   }
 
   load() {
     this.renderAutocomplete();
     this.updateChannelCommandIndex();
+    this.updateFocusListener();
   }
 
-  async computeItems(partialInput) {
+  async ensureCommandsLoaded() {
     if (this.dirty && fetchPromise == null) {
       fetchPromise = this.fetchChannelCommands()
         .then(() => (this.dirty = false))
@@ -64,12 +72,35 @@ class CommandAutocomplete {
       await Promise.allSettled([fetchPromise]);
     }
 
+    return fetchPromise;
+  }
+
+  async computeItems(partialInput) {
+    await this.ensureCommandsLoaded();
     return commandFuse.search(partialInput).map(({item}) => item);
   }
 
   markDirty() {
     fetchPromise = null;
     this.dirty = true;
+    this.updateFocusListener();
+  }
+
+  updateFocusListener() {
+    const chatInputElement = document.querySelector(CHAT_TEXT_AREA);
+    if (chatInputElement == null) {
+      return;
+    }
+
+    const commandAutocompleteEnabled = getProSettingValue(SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE, false);
+
+    if (!commandAutocompleteEnabled || !this.dirty) {
+      chatInputElement.removeEventListener('focus', listener, true);
+      listener = null;
+    } else {
+      listener = this.ensureCommandsLoaded.bind(this);
+      chatInputElement.addEventListener('focus', listener, true);
+    }
   }
 
   async fetchChannelCommands() {

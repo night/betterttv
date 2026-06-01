@@ -53,4 +53,6 @@ function CommandRow({item, active, selected, onMouseOver, onClick}) {
   );
 }
 
-export default CommandRow;
+export default React.memo(CommandRow, (prev, next) => {
+  return prev.item === next.item && prev.selected === next.selected && prev.active === next.active;
+});

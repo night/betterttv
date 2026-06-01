@@ -655,7 +655,7 @@ export default {
     return chatInput.memoizedProps.value;
   },
 
-  getChatInputCaretOffset() {
+  getChatInputCaretOffset(fullText = null) {
     const element = document.querySelector(CHAT_INPUT);
     if (element == null) {
       return null;
@@ -667,7 +667,10 @@ export default {
     }
 
     const chatInputEditor = this.getChatInputEditor(element);
-    const fullText = this.getChatInputValue();
+
+    if (fullText == null) {
+      fullText = this.getChatInputValue();
+    }
 
     if (chatInputEditor == null) {
       return fullText != null ? fullText.length : null;

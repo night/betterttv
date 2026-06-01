@@ -18,4 +18,6 @@ function EmoteRow({item: emote, active, selected, onMouseOver, onClick}) {
   );
 }
 
-export default EmoteRow;
+export default React.memo(EmoteRow, (prev, next) => {
+  return prev.item === next.item && prev.selected === next.selected && prev.active === next.active;
+});
