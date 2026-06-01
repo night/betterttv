@@ -114,7 +114,7 @@ function getChatInputPartialCommand() {
   return focusedWord;
 }
 
-const commandFuse = new Fuse([], {keys: ['name']});
+const commandFuse = new Fuse([], {keys: ['name'], threshold: 0.2});
 
 function getItemKey(item) {
   return `${item.provider}:${item.providerId}`;
