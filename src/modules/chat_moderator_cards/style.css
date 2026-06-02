@@ -1,4 +1,5 @@
 .bttv-moderator-card-actions > div {
+  display: inline-block;
   position: relative;
 }
 

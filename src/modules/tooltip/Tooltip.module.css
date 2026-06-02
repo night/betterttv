@@ -1,0 +1,27 @@
+.tooltip {
+  --tooltip-bg: light-dark(black, white);
+
+  padding: 8px;
+  border-radius: var(--mantine-radius-md);
+  background-color: var(--tooltip-bg);
+  box-shadow: var(--mantine-shadow-lg);
+  color: light-dark(white, black);
+  outline: 1px solid var(--tooltip-bg);
+  font-size: var(--mantine-font-size-md);
+  font-weight: 800;
+  line-height: var(--mantine-line-height-sm);
+  text-align: center;
+  z-index: 2000;
+  pointer-events: none;
+  user-select: none;
+  white-space: pre;
+  box-sizing: border-box;
+  overflow: visible;
+  isolation: isolate;
+  transition-property: transform;
+  transition-timing-function: ease;
+}
+
+.arrow {
+  pointer-events: none;
+}

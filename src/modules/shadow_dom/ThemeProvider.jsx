@@ -158,14 +158,20 @@ const resolver = (theme) => ({
   },
   dark: {
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
+    '--mantine-color-text-inverse': 'var(--mantine-color-gray-9)',
+    '--mantine-color-dimmed-inverse': 'var(--mantine-color-gray-6)',
     '--mantine-color-default-border': 'var(--mantine-color-dark-6)',
     '--mantine-color-body-secondary': 'var(--mantine-color-dark-9)',
     '--mantine-color-body': 'var(--mantine-color-dark-8)',
+    '--mantine-color-body-inverse': 'var(--mantine-color-dark-0)',
   },
   light: {
     '--mantine-color-text': 'var(--mantine-color-gray-9)',
+    '--mantine-color-text-inverse': 'var(--mantine-color-dark-0)',
+    '--mantine-color-dimmed-inverse': 'var(--mantine-color-gray-5)',
     '--mantine-color-default-border': 'var(--mantine-color-gray-3)',
     '--mantine-color-body-secondary': 'var(--mantine-color-gray-0)',
+    '--mantine-color-body-inverse': 'var(--mantine-color-gray-9)',
   },
 });
 

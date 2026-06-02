@@ -12,6 +12,7 @@ import watcher from '../../watcher.js';
 import nicknames from '../chat_nicknames/index.js';
 import emotes from '../emotes/index.js';
 import subscribers from '../subscribers/index.js';
+import {bindTooltip} from '../tooltip/index.js';
 
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
@@ -41,7 +42,8 @@ const SUFFIX_EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS).filter((key) =>
 
 const badgeTemplate = (url, description) => {
   const badgeContainer = document.createElement('div');
-  badgeContainer.classList.add('bttv-tooltip-wrapper', 'bttv-chat-badge-container');
+  badgeContainer.classList.add('bttv-chat-badge-container');
+  bindTooltip(badgeContainer, {elementId: `badge-${url}`, content: description});
 
   const image = new Image();
   image.src = url;
@@ -49,12 +51,6 @@ const badgeTemplate = (url, description) => {
   image.classList.add('chat-badge', 'bttv-chat-badge');
   image.setAttribute('data-a-target', 'chat-badge');
   badgeContainer.appendChild(image);
-
-  const tooltip = document.createElement('div');
-  tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--up');
-  tooltip.style.marginBottom = '0.9rem';
-  tooltip.innerText = description;
-  badgeContainer.appendChild(tooltip);
 
   return badgeContainer;
 };

@@ -1,0 +1,75 @@
+import React from 'react';
+import shadowDOM from '../shadow_dom/index.js';
+import TooltipController, {TOOLTIP_TARGET_ATTRIBUTE} from './TooltipController.jsx';
+
+const TOOLTIP_EXPIRY = 5 * 60 * 1000;
+const TOOLTIP_ID = 'tooltip';
+
+const tooltipMap = new Map();
+
+function getTooltipById(id) {
+  return tooltipMap.get(id);
+}
+
+function pruneTooltipMap() {
+  if (tooltipMap.size === 0) {
+    return disposeTooltipController();
+  }
+
+  const activeTooltipIds = new Set();
+  const tooltipElements = document.querySelectorAll(`[${TOOLTIP_TARGET_ATTRIBUTE}]`);
+
+  for (const element of tooltipElements) {
+    activeTooltipIds.add(element.getAttribute(TOOLTIP_TARGET_ATTRIBUTE));
+  }
+
+  if (activeTooltipIds.size === 0) {
+    return disposeTooltipController();
+  }
+
+  for (const [tooltipId] of tooltipMap.entries()) {
+    if (activeTooltipIds.has(tooltipId)) {
+      continue;
+    }
+
+    tooltipMap.delete(tooltipId);
+  }
+
+  if (tooltipMap.size === 0) {
+    return disposeTooltipController();
+  }
+}
+
+let intervalId = null;
+
+function ensureTooltipController() {
+  if (intervalId != null) {
+    intervalId = setInterval(() => {
+      window.requestIdleCallback(pruneTooltipMap);
+    }, TOOLTIP_EXPIRY);
+  }
+
+  if (!shadowDOM.isMounted(TOOLTIP_ID)) {
+    shadowDOM.mount(TOOLTIP_ID, <TooltipController getTooltipById={getTooltipById} />);
+  }
+}
+
+function disposeTooltipController() {
+  clearInterval(intervalId);
+  shadowDOM.unmount(TOOLTIP_ID);
+  intervalId = null;
+}
+
+export function bindTooltip(element, {elementId, content, className = null}) {
+  const id = elementId ?? crypto.randomUUID();
+
+  if (!tooltipMap.has(id)) {
+    tooltipMap.set(id, {content, className});
+  }
+
+  if (!element.hasAttribute(TOOLTIP_TARGET_ATTRIBUTE)) {
+    element.setAttribute(TOOLTIP_TARGET_ATTRIBUTE, id);
+  }
+
+  ensureTooltipController();
+}

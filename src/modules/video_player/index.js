@@ -8,6 +8,7 @@ import {hasFlag} from '../../utils/flags.js';
 import {loadModuleForPlatforms} from '../../utils/modules.js';
 import twitch from '../../utils/twitch.js';
 import watcher from '../../watcher.js';
+import {bindTooltip} from '../tooltip/index.js';
 
 const VIDEO_PLAYER_SELECTOR = '.video-player__container';
 const CANCEL_VOD_RECOMMENDATION_SELECTOR =
@@ -19,7 +20,7 @@ function createPictureInPictureButton(toggled) {
 
   const container = document.createElement('div');
   container.setAttribute('id', 'bttv-picture-in-picture');
-  container.classList.add('bttv-picture-in-picture-wrapper', 'bttv-tooltip-wrapper');
+  container.classList.add('bttv-picture-in-picture-wrapper');
 
   const button = document.createElement('button');
   button.setAttribute('aria-label', label);
@@ -47,11 +48,7 @@ function createPictureInPictureButton(toggled) {
     icon.appendChild(iconPath2);
   }
 
-  const tooltip = document.createElement('div');
-  tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--align-right', 'bttv-tooltip--up');
-  tooltip.setAttribute('role', 'tooltip');
-  tooltip.innerText = label;
-  container.appendChild(tooltip);
+  bindTooltip(container, {content: label});
 
   return container;
 }
