@@ -121,13 +121,7 @@ function getItemKey(item) {
 }
 
 function replaceChatInputPartialCommand(command) {
-  let text = command.name;
-
-  if (command.arguments.length > 0) {
-    text = `${text} `;
-  }
-
-  twitch.setChatInputValue(text);
+  twitch.setChatInputValue(`${command.name} `);
 }
 
 let currentCommands = [];

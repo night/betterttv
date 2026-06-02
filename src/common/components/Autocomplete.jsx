@@ -78,8 +78,9 @@ function Autocomplete({
   const [opened, {open, close}] = useDisclosure(false);
   const chatInputElement = useDomObserver(chatInputQuerySelector);
   const itemsBodyRef = useRef(null);
-  const pendingComplete = useRef(null);
+  const pendingComplete = useRef(false);
   const lastValueRef = useRef(null);
+  const openedRef = useRef(false);
   const updateAutocompleteSuggestionsRef = useRef(null);
   const updateAutocompleteSuggestionsRequestId = useRef(0);
   const [pendingCompleteIndex, setPendingCompleteIndex] = useState(null);
@@ -111,8 +112,14 @@ function Autocomplete({
     }
   }, []);
 
+  const handleClose = useCallback(() => {
+    close();
+    openedRef.current = false;
+  }, [close]);
+
   const handleOpen = useCallback(() => {
     open();
+    openedRef.current = true;
     navigationMode.current = NavigationModeTypes.ARROW_KEYS;
   }, [open]);
 
@@ -142,7 +149,7 @@ function Autocomplete({
     setItems(itemsRef.current);
     handleSelectedChange(0, true);
 
-    itemsRef.current.length > 0 ? handleOpen() : close();
+    itemsRef.current.length > 0 ? handleOpen() : handleClose();
   }, [getChatInputPartialInput, computeItems, handleOpen, close, handleSelectedChange]);
 
   useEffect(() => {
@@ -152,7 +159,7 @@ function Autocomplete({
   const {refs, floatingStyles, context} = useFloating({
     strategy: 'fixed',
     open: opened,
-    onOpenChange: (isOpen) => (isOpen ? open() : close()),
+    onOpenChange: (isOpen) => (isOpen ? handleOpen() : handleClose()),
     placement: 'top-start',
     middleware: [
       floatingOffset({mainAxis: offset}),
@@ -180,9 +187,9 @@ function Autocomplete({
   const handleComplete = useCallback(
     (item) => {
       onComplete(item);
-      close();
+      handleClose();
     },
-    [onComplete, close]
+    [onComplete, handleClose]
   );
 
   const onHoverIndex = useCallback(
@@ -219,7 +226,7 @@ function Autocomplete({
         await Promise.allSettled([pendingPromise]);
       }
 
-      if (itemsRef.current.length === 0) {
+      if (!openedRef.current) {
         return;
       }
 
