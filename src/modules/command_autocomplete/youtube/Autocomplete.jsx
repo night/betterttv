@@ -6,7 +6,6 @@ import settings from '../../../settings.js';
 import shadowDom from '../../shadow_dom/index.js';
 import CommandRow from '../components/CommandRow.jsx';
 import useAuthStore from '../../../stores/auth.js';
-import Fuse from 'fuse.js';
 import {getAutocompleteSuggestions} from '../../../actions/autocomplete.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 import watcher from '../../../watcher.js';
@@ -20,7 +19,28 @@ function getChatInputPartialCommand() {
   return getYoutubeChatInputPartialCommand(COMMAND_PREFIX);
 }
 
-const commandFuse = new Fuse([], {keys: ['name'], threshold: 0.2});
+function normalizeCommandInput(input) {
+  const normalizedInput = input.trim().toLowerCase();
+
+  const searchTerm = normalizedInput.startsWith(COMMAND_PREFIX)
+    ? normalizedInput.slice(COMMAND_PREFIX.length)
+    : normalizedInput;
+
+  return {normalizedInput, searchTerm};
+}
+
+function getMatchingCommands(commands, partialInput) {
+  const {normalizedInput, searchTerm} = normalizeCommandInput(partialInput);
+  if (normalizedInput.length === 0 || normalizedInput === COMMAND_PREFIX) {
+    return commands;
+  }
+
+  if (searchTerm.length >= 3) {
+    return commands.filter((command) => command.name.toLowerCase().slice(COMMAND_PREFIX.length).includes(searchTerm));
+  }
+
+  return commands.filter((command) => command.name.toLowerCase().startsWith(normalizedInput));
+}
 
 function getItemKey(item) {
   return `${item.provider}:${item.providerId}`;
@@ -31,6 +51,7 @@ function replaceChatInputPartialCommand(command) {
 }
 
 let currentCommands = [];
+let sortedCommandIndex = [];
 let fetchPromise = null;
 
 let listener = null;
@@ -77,7 +98,7 @@ class CommandAutocomplete {
 
   async computeItems(partialInput) {
     await this.ensureCommandsLoaded();
-    return commandFuse.search(partialInput).map(({item}) => item);
+    return getMatchingCommands(sortedCommandIndex, partialInput);
   }
 
   markDirty() {
@@ -149,8 +170,7 @@ class CommandAutocomplete {
       return command.userLevel === UserLevels.EVERYONE;
     });
 
-    const sortedSuggestions = filteredSuggestions.sort((a, b) => a.name.localeCompare(b.name));
-    commandFuse.setCollection(sortedSuggestions);
+    sortedCommandIndex = filteredSuggestions.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   renderAutocomplete() {
