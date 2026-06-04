@@ -86,6 +86,8 @@ function injectEmoteSets() {
   } else {
     autocompleteEmotes[index] = emoteSet;
   }
+
+  autocompleteEmoteProvider.forceUpdate();
 }
 
 function patchEmoteImage(image, isConnected) {
@@ -205,7 +207,7 @@ export default class EmoteAutocomplete {
         }
 
         if (twitchComponentDidUpdate != null) {
-          twitchComponentDidUpdate.call(this, ...prevProps);
+          twitchComponentDidUpdate.call(this, prevProps);
         }
       }
 
