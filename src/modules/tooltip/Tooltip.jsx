@@ -6,7 +6,7 @@ import styles from './Tooltip.module.css';
 const VIEWPORT_PADDING = 8;
 const ARROW_PADDING = 4;
 const ARROW_WIDTH = 14;
-const ARROW_HEIGHT = 8;
+const ARROW_HEIGHT = 6;
 
 function Tooltip({state}) {
   const arrowRef = useRef(null);

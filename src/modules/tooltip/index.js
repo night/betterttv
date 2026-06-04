@@ -1,9 +1,9 @@
 import React from 'react';
+import {ShadowDOMComponentIds} from '../../constants.js';
 import shadowDOM from '../shadow_dom/index.js';
 import TooltipController, {TOOLTIP_TARGET_ATTRIBUTE} from './TooltipController.jsx';
 
 const TOOLTIP_EXPIRY = 5 * 60 * 1000;
-const TOOLTIP_ID = 'tooltip';
 
 const tooltipMap = new Map();
 
@@ -49,14 +49,14 @@ function ensureTooltipController() {
     }, TOOLTIP_EXPIRY);
   }
 
-  if (!shadowDOM.isMounted(TOOLTIP_ID)) {
-    shadowDOM.mount(TOOLTIP_ID, <TooltipController getTooltipById={getTooltipById} />);
+  if (!shadowDOM.isMounted(ShadowDOMComponentIds.TOOLTIP_CONTROLLER)) {
+    shadowDOM.mount(ShadowDOMComponentIds.TOOLTIP_CONTROLLER, <TooltipController getTooltipById={getTooltipById} />);
   }
 }
 
 function disposeTooltipController() {
   clearInterval(intervalId);
-  shadowDOM.unmount(TOOLTIP_ID);
+  shadowDOM.unmount(ShadowDOMComponentIds.TOOLTIP_CONTROLLER);
   intervalId = null;
 }
 

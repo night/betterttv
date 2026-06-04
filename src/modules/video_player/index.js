@@ -48,7 +48,7 @@ function createPictureInPictureButton(toggled) {
     icon.appendChild(iconPath2);
   }
 
-  bindTooltip(container, {content: label});
+  bindTooltip(container, {elementId: 'picture-in-picture', content: label});
 
   return container;
 }

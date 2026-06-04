@@ -89,7 +89,7 @@ export default class Emote {
     container.appendChild(image);
 
     bindTooltip(container, {
-      elementId: this.canonicalId,
+      elementId: `emote-${this.canonicalId}`,
       content: (
         <EmoteTooltipContent
           imageSrc={createSrc(this.images, shouldRenderStatic, '4x')}
