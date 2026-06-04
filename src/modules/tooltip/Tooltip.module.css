@@ -21,6 +21,21 @@
   transition-timing-function: ease;
 }
 
+main[data-platform='youtube'] .tooltip {
+  --tooltip-bg: #616161e9;
+  border-radius: 4px;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1;
+  padding: 8px;
+  font-weight: unset;
+  color: #ffffff;
+}
+
+main[data-platform='youtube'] .arrow {
+  display: none;
+}
+
 .arrow {
   pointer-events: none;
 }

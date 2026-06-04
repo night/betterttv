@@ -1,5 +1,6 @@
 .emote {
   white-space: normal;
+  padding: 0px !important;
   padding-inline: 0px !important;
   padding-block: 8px !important;
   max-width: 360px;
@@ -46,4 +47,5 @@
   max-height: 112px;
   max-width: 100%;
   object-fit: contain;
+  border-radius: 4px;
 }

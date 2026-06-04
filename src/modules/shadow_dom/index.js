@@ -7,6 +7,7 @@ import {variablesToCSS} from '../../utils/css.js';
 import extension from '../../utils/extension.js';
 import {getProSettingValue} from '../../utils/pro.js';
 import ThemeProvider, {mantineVariablesResolver, theme} from './ThemeProvider.jsx';
+import {getProvider} from '../../utils/window.js';
 
 const randomPrefix = String.fromCharCode(Math.floor(Math.random() * 26) + 97);
 const APP_CONTAINER_ID = `${randomPrefix}${crypto.randomUUID()}`;
@@ -32,6 +33,7 @@ class ShadowDOM {
     this.shadowRoot = this.host.attachShadow({mode: 'closed', delegatesFocus: true});
     this.mountNode = document.createElement('main');
     this.mountNode.className = SCOPE_CLASS;
+    this.mountNode.setAttribute('data-platform', getProvider());
     this.mantineRoot = document.createElement('div');
     this.mountNode.appendChild(this.mantineRoot);
     this.shadowRoot.appendChild(this.mountNode);
