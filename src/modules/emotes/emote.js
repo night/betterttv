@@ -1,9 +1,12 @@
+import React from 'react';
+import EmoteTooltipContent from '../../common/components/EmoteTooltipContent.jsx';
+import emoteTooltipStyles from '../../common/components/EmoteTooltipContent.module.css';
 import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../constants.js';
-import formatMessage from '../../i18n/index.js';
 import settings from '../../settings.js';
 import {getCanonicalEmoteId} from '../../utils/emote.js';
 import {hasFlag} from '../../utils/flags.js';
 import {createSrc, createSrcSet} from '../../utils/image.js';
+import {bindTooltip} from '../tooltip/index.js';
 
 export default class Emote {
   constructor({
@@ -59,7 +62,7 @@ export default class Emote {
     const shouldRenderStatic = this.animated && !showAnimatedEmotes;
 
     const container = document.createElement('div');
-    container.classList.add('bttv-tooltip-wrapper', 'bttv-emote', categoryClass, idClass);
+    container.classList.add('bttv-emote', categoryClass, idClass);
     if (classNames != null && classNames.length > 0) {
       container.classList.add(...classNames);
     }
@@ -85,21 +88,17 @@ export default class Emote {
     }
     container.appendChild(image);
 
-    const tooltipImage = new Image();
-    tooltipImage.classList.add('bttv-tooltip-emote-image');
-    tooltipImage.src = createSrc(this.images, shouldRenderStatic, '4x');
-
-    const tooltipText = document.createElement('div');
-    tooltipText.textContent = `${this.code}\n${
-      channelName ? `${formatMessage({defaultMessage: 'Channel: {channelName}'}, {channelName})}\n` : ''
-    }${this.category.displayName}`;
-
-    const tooltip = document.createElement('div');
-    tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--up', 'bttv-tooltip--align-center');
-    tooltip.appendChild(tooltipImage);
-    tooltip.appendChild(tooltipText);
-
-    container.appendChild(tooltip);
+    bindTooltip(container, {
+      content: (
+        <EmoteTooltipContent
+          imageSrc={createSrc(this.images, false, '4x')}
+          code={this.code}
+          provider={this.category.displayName}
+          channelName={channelName}
+        />
+      ),
+      className: emoteTooltipStyles.emote,
+    });
 
     return container;
   }

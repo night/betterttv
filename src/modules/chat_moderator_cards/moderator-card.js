@@ -6,6 +6,7 @@ import keyCodes from '../../utils/keycodes.js';
 import twitch from '../../utils/twitch.js';
 import {getCurrentUser} from '../../utils/user.js';
 import nicknames from '../chat_nicknames/index.js';
+import {bindTooltip} from '../tooltip/index.js';
 
 const Commands = {
   BAN: '/ban',
@@ -89,7 +90,7 @@ const MODERATOR_CARD_ACTIONS_SELECTOR =
 
 function createModeratorActionButton(command, duration, tooltipText, buttonText) {
   const container = document.createElement('div');
-  container.classList.add('bttv-tooltip-wrapper');
+  bindTooltip(container, {content: tooltipText});
 
   const action = document.createElement('div');
   action.classList.add('bttv-moderator-card-action');
@@ -103,11 +104,6 @@ function createModeratorActionButton(command, duration, tooltipText, buttonText)
   actionButton.classList.add('actionText');
   actionButton.innerText = buttonText;
   action.appendChild(actionButton);
-
-  const tooltip = document.createElement('div');
-  tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--up', 'bttv-tooltip--align-center');
-  tooltip.innerText = tooltipText;
-  container.appendChild(tooltip);
 
   return container;
 }
