@@ -304,6 +304,29 @@ export default {
     return node;
   },
 
+  getSlateEmoteMapHook() {
+    let hook;
+
+    try {
+      const node = searchReactParents(
+        getReactInstance(document.querySelector(CHAT_WYSIWYG_INPUT_EDITOR)),
+        (n) => {
+          if (!Array.isArray(n.pendingProps?.emotes)) {
+            return false;
+          }
+
+          const h = n.memoizedState?.next;
+          return h?.queue?.dispatch != null && h.memoizedState != null && !Array.isArray(h.memoizedState);
+        },
+        25
+      );
+
+      hook = node?.memoizedState.next;
+    } catch (_) {}
+
+    return hook;
+  },
+
   getClipsBroadcasterInfo() {
     let broadcaster;
     try {

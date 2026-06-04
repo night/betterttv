@@ -51,13 +51,41 @@ function getAutocompleteEmoteProvider() {
 function createTwitchEmoteSet(allEmotes) {
   return {
     emotes: allEmotes.map((emote) => ({
+      __typename: 'Emote',
       id: serializeEmoteId(emote),
       modifiers: null,
       setID: CUSTOM_SET_ID,
       token: emote.code,
+      type: 'SUBSCRIPTIONS',
+      assetType: emote.animated ? 'ANIMATED' : 'STATIC',
     })),
     id: CUSTOM_SET_ID,
   };
+}
+
+function syncSlateEmoteMap(emoteSet) {
+  const slateEmoteMapHook = twitch.getSlateEmoteMapHook();
+  if (slateEmoteMapHook == null) {
+    return;
+  }
+
+  const currentMap = slateEmoteMapHook.memoizedState;
+  const newMap = {...currentMap};
+
+  let emoteMapUpdated = false;
+
+  for (const emote of emoteSet.emotes) {
+    if (currentMap[emote.token] == null) {
+      emoteMapUpdated = true;
+      newMap[emote.token] = emote;
+    }
+  }
+
+  if (!emoteMapUpdated) {
+    return;
+  }
+
+  slateEmoteMapHook.queue.dispatch(newMap);
 }
 
 function injectEmoteSets() {
@@ -86,6 +114,9 @@ function injectEmoteSets() {
   } else {
     autocompleteEmotes[index] = emoteSet;
   }
+
+  syncSlateEmoteMap(emoteSet);
+  autocompleteEmoteProvider.forceUpdate();
 }
 
 function patchEmoteImage(image, isConnected) {
@@ -205,7 +236,7 @@ export default class EmoteAutocomplete {
         }
 
         if (twitchComponentDidUpdate != null) {
-          twitchComponentDidUpdate.call(this, ...prevProps);
+          twitchComponentDidUpdate.call(this, prevProps);
         }
       }
 
