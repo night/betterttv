@@ -28,7 +28,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@floating-ui/react": "^0.27.19",
-    "@formatjs/cli": "6.16.3",
+    "@formatjs/cli": "6.16.6",
     "@formatjs/intl": "4.1.12",
     "@fortawesome/fontawesome-svg-core": "7.2.0",
     "@fortawesome/free-brands-svg-icons": "7.2.0",
