@@ -1,11 +1,12 @@
 import React from 'react';
 import styles from './EmoteTooltipContent.module.css';
+import formatMessage from '../../i18n';
 
 function EmoteTooltipContent({imageSrc, code, provider, channelName}) {
   return (
     <div className={styles.content}>
       <div className={styles.imageWrapper}>
-        <img className={styles.image} src={imageSrc} alt="" />
+        <img className={styles.image} src={imageSrc} alt={formatMessage({defaultMessage: 'Emote {code}'}, {code})} />
       </div>
       <div className={styles.details}>
         <div className={styles.name}>{code}</div>

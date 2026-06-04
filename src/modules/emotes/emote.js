@@ -91,7 +91,7 @@ export default class Emote {
     bindTooltip(container, {
       content: (
         <EmoteTooltipContent
-          imageSrc={createSrc(this.images, shouldRenderStatic, '4x')}
+          imageSrc={createSrc(this.images, false, '4x')}
           code={this.code}
           provider={this.category.displayName}
           channelName={channelName}
