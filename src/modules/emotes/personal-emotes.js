@@ -43,7 +43,7 @@ class PersonalEmotes extends AbstractEmotes {
   getEmotes(user) {
     if (!user) return [];
 
-    const emotes = this.emotes.get(String(user.id));
+    const emotes = this.emotes.get(user.id);
     if (!emotes) return [];
 
     return [...emotes.values()];
@@ -52,7 +52,7 @@ class PersonalEmotes extends AbstractEmotes {
   getEligibleEmote(code, user) {
     if (!user) return null;
 
-    const emotes = this.emotes.get(String(user.id));
+    const emotes = this.emotes.get(user.id);
     if (!emotes) return null;
 
     return emotes.get(code);
@@ -104,11 +104,10 @@ class PersonalEmotes extends AbstractEmotes {
   updatePersonalEmotes({providerId, pro, emotes}) {
     if (!pro) return;
 
-    const providerIdStr = String(providerId);
-    let personalEmotes = this.emotes.get(providerIdStr);
+    let personalEmotes = this.emotes.get(providerId);
     if (!personalEmotes) {
       personalEmotes = new Map();
-      this.emotes.set(providerIdStr, personalEmotes);
+      this.emotes.set(providerId, personalEmotes);
     }
 
     let updated = false;
