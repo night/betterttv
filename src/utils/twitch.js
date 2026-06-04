@@ -305,15 +305,10 @@ export default {
   },
 
   getSlateEmoteMapHook() {
-    // The Slate editor component holds Twitch's emote token map as React state
-    // (the second useState hook, index 1). We find it by walking up the fiber
-    // tree from the editor DOM element.
-    let hook = null;
+    let hook;
     try {
-      const editorEl = document.querySelector(CHAT_WYSIWYG_INPUT_EDITOR);
-      if (editorEl == null) return null;
-      let node = searchReactParents(
-        getReactInstance(editorEl),
+      const node = searchReactParents(
+        getReactInstance(document.querySelector(CHAT_WYSIWYG_INPUT_EDITOR)),
         (n) => {
           if (!Array.isArray(n.pendingProps?.emotes)) return false;
           const h = n.memoizedState?.next;
@@ -321,10 +316,9 @@ export default {
         },
         25
       );
-      if (node != null) {
-        hook = node.memoizedState.next;
-      }
+      hook = node?.memoizedState.next;
     } catch (_) {}
+
     return hook;
   },
 

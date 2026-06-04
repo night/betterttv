@@ -63,13 +63,8 @@ function createTwitchEmoteSet(allEmotes) {
   };
 }
 
-function getSlateEmoteMapHook() {
-  // Delegated to twitch.js which walks up from the editor DOM element
-  return twitch.getSlateEmoteMapHook();
-}
-
 function syncSlateEmoteMap(emoteSet) {
-  const hook = getSlateEmoteMapHook();
+  const hook = twitch.getSlateEmoteMapHook();
   if (hook == null) return;
 
   const currentMap = hook.memoizedState;
