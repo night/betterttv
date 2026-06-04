@@ -22,40 +22,6 @@ export default function TooltipController({getTooltipById}) {
     referenceElement: null,
   });
 
-  const show = useCallback(({targetId, targetElement, content, className}) => {
-    if (targetElement == null || content == null) {
-      return;
-    }
-
-    const currentTooltipId = tooltipStateRef.current?.targetId;
-    const currentTooltipOpen = tooltipStateRef.current?.open;
-    if (currentTooltipId != null && currentTooltipId === targetId && currentTooltipOpen) {
-      return;
-    }
-
-    const newTooltipState = {
-      open: true,
-      targetId,
-      content,
-      className: className ?? null,
-      referenceElement: targetElement,
-    };
-
-    tooltipStateRef.current = newTooltipState;
-    setTooltipState(newTooltipState);
-  }, []);
-
-  const hide = useCallback(() => {
-    if (tooltipStateRef.current == null || !tooltipStateRef.current.open) {
-      return;
-    }
-
-    const newTooltipState = {...tooltipStateRef.current, open: false};
-
-    tooltipStateRef.current = newTooltipState;
-    setTooltipState(newTooltipState);
-  }, []);
-
   const handleMouseEnter = useCallback(
     (event) => {
       const element = getTooltipElement(event.target);
@@ -67,25 +33,50 @@ export default function TooltipController({getTooltipById}) {
         return;
       }
 
-      const id = element.getAttribute(TOOLTIP_TARGET_ATTRIBUTE);
-      if (id == null) {
+      const targetId = element.getAttribute(TOOLTIP_TARGET_ATTRIBUTE);
+      if (targetId == null) {
         return;
       }
 
-      const config = getTooltipById(id);
-      if (config == null) {
+      const config = getTooltipById(targetId);
+      if (config == null || config.content == null) {
         return;
       }
 
-      show({targetId: id, targetElement: element, content: config.content, className: config.className});
+      const currentTooltipId = tooltipStateRef.current?.targetId;
+      const currentTooltipOpen = tooltipStateRef.current?.open;
+      if (currentTooltipId != null && currentTooltipId === targetId && currentTooltipOpen) {
+        return;
+      }
+
+      const newTooltipState = {
+        open: true,
+        targetId,
+        content: config.content,
+        className: config.className ?? null,
+        referenceElement: element,
+      };
+
+      tooltipStateRef.current = newTooltipState;
+      setTooltipState(newTooltipState);
     },
-    [getTooltipById, show]
+    [getTooltipById]
   );
 
-  const handleMouseLeave = useCallback(
-    (event) => (getTooltipElement(event.target) != null ? hide() : undefined),
-    [hide]
-  );
+  const handleMouseLeave = useCallback((event) => {
+    if (getTooltipElement(event.target) == null) {
+      return;
+    }
+
+    if (tooltipStateRef.current == null || !tooltipStateRef.current.open) {
+      return;
+    }
+
+    const newTooltipState = {...tooltipStateRef.current, open: false};
+
+    tooltipStateRef.current = newTooltipState;
+    setTooltipState(newTooltipState);
+  }, []);
 
   useEffect(() => {
     document.addEventListener('mouseenter', handleMouseEnter, true);
