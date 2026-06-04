@@ -4,7 +4,9 @@ import styles from './EmoteTooltipContent.module.css';
 function EmoteTooltipContent({imageSrc, code, provider, channelName}) {
   return (
     <div className={styles.content}>
-      <img className={styles.image} src={imageSrc} alt="" />
+      <div className={styles.imageWrapper}>
+        <img className={styles.image} src={imageSrc} alt="" />
+      </div>
       <div className={styles.details}>
         <div className={styles.name}>{code}</div>
         {channelName != null && channelName.length > 0 ? <div className={styles.channel}>{channelName}</div> : null}
