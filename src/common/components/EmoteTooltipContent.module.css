@@ -1,6 +1,7 @@
 .emote {
   white-space: normal;
-  padding: 8px 0px !important;
+  padding-inline: 0px !important;
+  padding-block: 8px !important;
   max-width: 360px;
 }
 
@@ -32,7 +33,7 @@
 .provider,
 .channel {
   width: 100%;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--mantine-color-dimmed-inverse);
   text-align: center;
 }

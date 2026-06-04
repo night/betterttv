@@ -19,6 +19,7 @@ export default function TooltipController({getTooltipById}) {
     targetId: null,
     content: null,
     className: null,
+    alignment: 'center',
     referenceElement: null,
   });
 
@@ -54,6 +55,7 @@ export default function TooltipController({getTooltipById}) {
         targetId,
         content: config.content,
         className: config.className ?? null,
+        alignment: config.alignment ?? 'center',
         referenceElement: element,
       };
 

@@ -3,11 +3,6 @@ yt-live-chat-text-message-renderer {
   contain: none;
 }
 
-yt-live-chat-text-message-renderer [data-bttv-tooltip] {
-  background-color: var(--yt-live-chat-vem-background-color);
-  color: var(--yt-live-chat-primary-text-color);
-}
-
 yt-live-chat-text-message-renderer .bttv-chat-badge-container {
   align-self: center;
   margin-left: 4px;

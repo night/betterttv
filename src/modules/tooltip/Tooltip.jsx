@@ -5,7 +5,7 @@ import styles from './Tooltip.module.css';
 
 const VIEWPORT_PADDING = 8;
 const ARROW_PADDING = 4;
-const ARROW_WIDTH = 14;
+const ARROW_WIDTH = 12;
 const ARROW_HEIGHT = 6;
 
 function Tooltip({state}) {
@@ -13,12 +13,12 @@ function Tooltip({state}) {
 
   const {refs, floatingStyles, context} = useFloating({
     open: state.open,
-    placement: 'top',
+    placement: `top-${state.alignment ?? 'center'}`,
     strategy: 'fixed',
     elements: {reference: state.referenceElement},
     whileElementsMounted: autoUpdate,
     middleware: [
-      offset({mainAxis: VIEWPORT_PADDING + ARROW_HEIGHT}),
+      offset({mainAxis: ARROW_HEIGHT + ARROW_PADDING}),
       flip({padding: VIEWPORT_PADDING}),
       shift({padding: VIEWPORT_PADDING}),
       arrow({element: arrowRef, padding: ARROW_PADDING}),

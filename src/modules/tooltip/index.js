@@ -60,11 +60,11 @@ function disposeTooltipController() {
   intervalId = null;
 }
 
-export function bindTooltip(element, {elementId, content, className = null}) {
+export function bindTooltip(element, {elementId, content, className = null, alignment = 'center'}) {
   const id = elementId ?? crypto.randomUUID();
 
   if (!tooltipMap.has(id)) {
-    tooltipMap.set(id, {content, className});
+    tooltipMap.set(id, {content, className, alignment});
   }
 
   if (!element.hasAttribute(TOOLTIP_TARGET_ATTRIBUTE)) {

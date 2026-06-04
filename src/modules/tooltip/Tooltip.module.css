@@ -1,14 +1,14 @@
 .tooltip {
   --tooltip-bg: light-dark(black, white);
-
-  padding: 4px 8px;
-  border-radius: var(--mantine-radius-md);
+  padding-inline: 8px;
+  padding-block: 4px;
+  font-weight: 600;
+  line-height: 1.4;
+  font-size: 1.4rem;
+  border-radius: 0.4rem;
   background-color: var(--tooltip-bg);
   box-shadow: var(--mantine-shadow-lg);
   color: light-dark(white, black);
-  font-size: var(--mantine-font-size-md);
-  font-weight: 800;
-  line-height: var(--mantine-line-height-sm);
   text-align: center;
   z-index: 2000;
   pointer-events: none;
