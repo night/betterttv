@@ -42,7 +42,7 @@
 .imageWrapper {
   display: inline-block;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: var(--mantine-radius-sm);
   margin-inline: 8px;
   max-width: calc(100% - 16px);
   line-height: 0;
