@@ -64,20 +64,28 @@ function createTwitchEmoteSet(allEmotes) {
 }
 
 function syncSlateEmoteMap(emoteSet) {
-  const hook = twitch.getSlateEmoteMapHook();
-  if (hook == null) return;
+  const slateEmoteMapHook = twitch.getSlateEmoteMapHook();
+  if (slateEmoteMapHook == null) {
+    return;
+  }
 
-  const currentMap = hook.memoizedState;
-  const additions = {};
+  const currentMap = slateEmoteMapHook.memoizedState;
+  const newMap = {...currentMap};
+
+  let emoteMapUpdated = false;
+
   for (const emote of emoteSet.emotes) {
-    if (!(emote.token in currentMap)) {
-      additions[emote.token] = emote;
+    if (currentMap[emote.token] == null) {
+      emoteMapUpdated = true;
+      newMap[emote.token] = emote;
     }
   }
 
-  if (Object.keys(additions).length === 0) return;
+  if (!emoteMapUpdated) {
+    return;
+  }
 
-  hook.queue.dispatch({...currentMap, ...additions});
+  slateEmoteMapHook.queue.dispatch(newMap);
 }
 
 function injectEmoteSets() {
@@ -107,8 +115,8 @@ function injectEmoteSets() {
     autocompleteEmotes[index] = emoteSet;
   }
 
-  autocompleteEmoteProvider.forceUpdate();
   syncSlateEmoteMap(emoteSet);
+  autocompleteEmoteProvider.forceUpdate();
 }
 
 function patchEmoteImage(image, isConnected) {
