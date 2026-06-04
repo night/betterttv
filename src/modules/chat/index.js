@@ -43,7 +43,7 @@ const SUFFIX_EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS).filter((key) =>
 const badgeTemplate = (url, description) => {
   const badgeContainer = document.createElement('div');
   badgeContainer.classList.add('bttv-chat-badge-container');
-  bindTooltip(badgeContainer, {content: description});
+  bindTooltip(badgeContainer, {content: description, alignment: 'start'});
 
   const image = new Image();
   image.src = url;
