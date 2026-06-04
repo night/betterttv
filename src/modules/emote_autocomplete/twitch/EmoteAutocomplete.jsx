@@ -51,13 +51,38 @@ function getAutocompleteEmoteProvider() {
 function createTwitchEmoteSet(allEmotes) {
   return {
     emotes: allEmotes.map((emote) => ({
+      __typename: 'Emote',
       id: serializeEmoteId(emote),
       modifiers: null,
       setID: CUSTOM_SET_ID,
       token: emote.code,
+      type: 'SUBSCRIPTIONS',
+      assetType: emote.animated ? 'ANIMATED' : 'STATIC',
     })),
     id: CUSTOM_SET_ID,
   };
+}
+
+function getSlateEmoteMapHook() {
+  // Delegated to twitch.js which walks up from the editor DOM element
+  return twitch.getSlateEmoteMapHook();
+}
+
+function syncSlateEmoteMap(emoteSet) {
+  const hook = getSlateEmoteMapHook();
+  if (hook == null) return;
+
+  const currentMap = hook.memoizedState;
+  const additions = {};
+  for (const emote of emoteSet.emotes) {
+    if (!(emote.token in currentMap)) {
+      additions[emote.token] = emote;
+    }
+  }
+
+  if (Object.keys(additions).length === 0) return;
+
+  hook.queue.dispatch({...currentMap, ...additions});
 }
 
 function injectEmoteSets() {
@@ -88,6 +113,7 @@ function injectEmoteSets() {
   }
 
   autocompleteEmoteProvider.forceUpdate();
+  syncSlateEmoteMap(emoteSet);
 }
 
 function patchEmoteImage(image, isConnected) {
