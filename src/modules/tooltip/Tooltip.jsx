@@ -35,7 +35,7 @@ function Tooltip({state}) {
       data-bttv-tooltip
       className={classNames(styles.tooltip, state.className)}
       style={floatingStyles}>
-      <React.Fragment key={state.targetId}>{state.content}</React.Fragment>
+      <React.Fragment key={state.tooltipKey}>{state.content}</React.Fragment>
       <FloatingArrow
         ref={arrowRef}
         context={context}

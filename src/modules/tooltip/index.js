@@ -1,75 +1,19 @@
 import React from 'react';
 import {ShadowDOMComponentIds} from '../../constants.js';
 import shadowDOM from '../shadow_dom/index.js';
-import TooltipController, {TOOLTIP_TARGET_ATTRIBUTE} from './TooltipController.jsx';
+import TooltipController, {TOOLTIP_MARKER_ATTRIBUTE} from './TooltipController.jsx';
 
-const TOOLTIP_EXPIRY = 5 * 60 * 1000;
+export function bindTooltip(element, {content, className = null, alignment = 'center'}) {
+  element.__bttvTooltip = {content, className, alignment};
 
-const tooltipMap = new Map();
+  let tooltipKey = element.getAttribute(TOOLTIP_MARKER_ATTRIBUTE);
 
-function getTooltipById(id) {
-  return tooltipMap.get(id);
-}
-
-function pruneTooltipMap() {
-  if (tooltipMap.size === 0) {
-    return disposeTooltipController();
-  }
-
-  const activeTooltipIds = new Set();
-  const tooltipElements = document.querySelectorAll(`[${TOOLTIP_TARGET_ATTRIBUTE}]`);
-
-  for (const element of tooltipElements) {
-    activeTooltipIds.add(element.getAttribute(TOOLTIP_TARGET_ATTRIBUTE));
-  }
-
-  if (activeTooltipIds.size === 0) {
-    return disposeTooltipController();
-  }
-
-  for (const [tooltipId] of tooltipMap.entries()) {
-    if (activeTooltipIds.has(tooltipId)) {
-      continue;
-    }
-
-    tooltipMap.delete(tooltipId);
-  }
-
-  if (tooltipMap.size === 0) {
-    return disposeTooltipController();
-  }
-}
-
-let intervalId = null;
-
-function ensureTooltipController() {
-  if (intervalId != null) {
-    intervalId = setInterval(() => {
-      window.requestIdleCallback(pruneTooltipMap);
-    }, TOOLTIP_EXPIRY);
+  if (tooltipKey == null || tooltipKey.length === 0) {
+    tooltipKey = crypto.randomUUID();
+    element.setAttribute(TOOLTIP_MARKER_ATTRIBUTE, tooltipKey);
   }
 
   if (!shadowDOM.isMounted(ShadowDOMComponentIds.TOOLTIP_CONTROLLER)) {
-    shadowDOM.mount(ShadowDOMComponentIds.TOOLTIP_CONTROLLER, <TooltipController getTooltipById={getTooltipById} />);
+    shadowDOM.mount(ShadowDOMComponentIds.TOOLTIP_CONTROLLER, <TooltipController />);
   }
-}
-
-function disposeTooltipController() {
-  clearInterval(intervalId);
-  shadowDOM.unmount(ShadowDOMComponentIds.TOOLTIP_CONTROLLER);
-  intervalId = null;
-}
-
-export function bindTooltip(element, {elementId, content, className = null, alignment = 'center'}) {
-  const id = elementId ?? crypto.randomUUID();
-
-  if (!tooltipMap.has(id)) {
-    tooltipMap.set(id, {content, className, alignment});
-  }
-
-  if (!element.hasAttribute(TOOLTIP_TARGET_ATTRIBUTE)) {
-    element.setAttribute(TOOLTIP_TARGET_ATTRIBUTE, id);
-  }
-
-  ensureTooltipController();
 }

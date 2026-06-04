@@ -40,14 +40,10 @@ const EMOTE_MODIFIERS = {
 const PREFIX_EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS).filter((key) => key.endsWith('!'));
 const SUFFIX_EMOTE_MODIFIERS_LIST = Object.keys(EMOTE_MODIFIERS).filter((key) => !key.endsWith('!'));
 
-function serializeBadgeDescription(description) {
-  return description.toLowerCase().replace(/ /g, '-');
-}
-
 const badgeTemplate = (url, description) => {
   const badgeContainer = document.createElement('div');
   badgeContainer.classList.add('bttv-chat-badge-container');
-  bindTooltip(badgeContainer, {elementId: `badge-${serializeBadgeDescription(description)}`, content: description});
+  bindTooltip(badgeContainer, {content: description});
 
   const image = new Image();
   image.src = url;
