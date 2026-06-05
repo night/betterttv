@@ -9,6 +9,6 @@ commandStore.registerCommand({
     {name: 'reason', isRequired: false},
   ],
   description: formatMessage({defaultMessage: `Usage: "/b '<'login'>' [reason]" - Shortcut for /ban`}),
-  handler: (username, reason) => twitch.sendChatMessage(`/ban ${username} ${reason}`),
+  handler: (username, reason) => twitch.sendChatMessage(`/ban ${username} ${reason ?? ''}`.trimEnd()),
   permissionLevel: PermissionLevels.MODERATOR,
 });
