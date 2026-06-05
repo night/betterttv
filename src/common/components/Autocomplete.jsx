@@ -187,6 +187,7 @@ function Autocomplete({
   const handleComplete = useCallback(
     (item) => {
       onComplete(item);
+      lastValueRef.current = null;
       handleClose();
     },
     [onComplete, handleClose]
