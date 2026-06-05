@@ -1,6 +1,5 @@
 import cookies from 'cookies-js';
 import gql from 'graphql-tag';
-import {Editor} from 'slate';
 import {getCurrentChannel, setCurrentChannel} from './channel.js';
 import debug from './debug.js';
 import {getCurrentUser, setCurrentUser} from './user.js';
@@ -661,61 +660,58 @@ export default {
     return chatInputEditor?.memoizedProps?.value?.editor ?? chatInputEditor?.stateNode?.state?.slateEditor;
   },
 
-  getChatInputValue() {
-    const element = document.querySelector(CHAT_INPUT);
+  getChatInputValue(element = null) {
+    element = element ?? document.querySelector(CHAT_INPUT);
 
-    // deprecated
+    if (element == null) {
+      return null;
+    }
+
+    // Legacy textarea
     const {value: currentValue} = element;
     if (currentValue != null) {
       return currentValue;
     }
 
-    const chatInput = this.getChatInput(element);
-    if (chatInput == null) {
-      return null;
-    }
-
-    return chatInput.memoizedProps.value;
+    // The chat input is a contenteditable Slate editor. Reading its textContent
+    // stays up to date as the user types (the browser mutates the DOM directly),
+    // unlike the React-controlled value which is committed asynchronously and
+    // lags behind fast keystrokes. Slate pads void/empty nodes with U+FEFF
+    // markers, so strip them out.
+    return element.textContent.replace(/\uFEFF/g, '');
   },
 
-  getChatInputCaretOffset(fullText = null) {
-    const element = document.querySelector(CHAT_INPUT);
+  getChatInputCaretOffset(fullText = null, element = null) {
+    element = element ?? document.querySelector(CHAT_INPUT);
     if (element == null) {
       return null;
     }
 
+    // Legacy textarea
     const {value: currentValue, selectionStart} = element;
     if (currentValue != null && typeof selectionStart === 'number') {
       return selectionStart;
     }
 
-    const chatInputEditor = this.getChatInputEditor(element);
+    // The chat input is a contenteditable. Measure the caret offset in the same
+    // (textContent) space as getChatInputValue by walking a DOM range from the
+    // start of the input to the caret, so emotes/void nodes count consistently.
+    // Slate keeps the FEFF markers out of its model, but they appear in the DOM,
+    // so strip them just like getChatInputValue does.
+    const selection = element.ownerDocument.getSelection();
+    if (selection != null && selection.rangeCount > 0 && element.contains(selection.focusNode)) {
+      const range = element.ownerDocument.createRange();
+      range.selectNodeContents(element);
+      range.setEnd(selection.focusNode, selection.focusOffset);
+      return range.toString().replace(/\uFEFF/g, '').length;
+    }
 
+    // No live selection (e.g. the input isn't focused); fall back to the end.
     if (fullText == null) {
-      fullText = this.getChatInputValue();
+      fullText = this.getChatInputValue(element);
     }
 
-    if (chatInputEditor == null) {
-      return fullText != null ? fullText.length : null;
-    }
-
-    let derived = null;
-
-    try {
-      const focus = chatInputEditor.selection.focus;
-      const start = Editor.start(chatInputEditor, []);
-      derived = Editor.string(chatInputEditor, {anchor: start, focus}).length;
-    } catch (_) {}
-
-    if (derived == null) {
-      return fullText != null ? fullText.length : null;
-    }
-
-    if (fullText != null && derived > fullText.length) {
-      return fullText.length;
-    }
-
-    return derived;
+    return fullText != null ? fullText.length : null;
   },
 
   setChatInputValue(text, shouldFocus = true) {

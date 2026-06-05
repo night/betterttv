@@ -78,15 +78,10 @@ function getCurrentUserLevel() {
   return UserLevels.EVERYONE;
 }
 
-function findFocusedWord(value, selectionStart = 0) {
-  const subString = value.substring(0, selectionStart);
-  const focusedWords = subString.split(/\s+/);
-  const focusedWord = focusedWords[focusedWords.length - 1];
-  return focusedWord;
-}
-
 function getChatInputPartialCommand() {
-  const value = twitch.getChatInputValue();
+  const element = document.querySelector(CHAT_TEXT_AREA);
+  const value = twitch.getChatInputValue(element);
+
   if (value == null) {
     return null;
   }
@@ -95,22 +90,16 @@ function getChatInputPartialCommand() {
     return null;
   }
 
-  const caret = twitch.getChatInputCaretOffset(value);
+  const caret = twitch.getChatInputCaretOffset(value, element);
   if (caret == null) {
     return null;
   }
 
-  const firstWord = value.trim().split(/\s+/)[0];
-  if (caret > firstWord.length) {
-    return null;
-  }
-
-  const focusedWord = findFocusedWord(value, caret);
-  if (!focusedWord.startsWith(COMMAND_PREFIX)) {
-    return null;
-  }
-
-  return focusedWord;
+  // The command is the first word. Match it in full regardless of where the
+  // caret sits within it, but bail out once the caret moves past it into an
+  // argument.
+  const command = value.trim().split(/\s+/)[0];
+  return caret > command.length ? null : command;
 }
 
 function normalizeCommandInput(input) {
