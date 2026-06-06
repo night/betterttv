@@ -20,6 +20,7 @@
 
 .textContainer {
   width: 100%;
+  min-width: 0;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -31,6 +32,7 @@
 }
 
 .subtitle {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -49,6 +51,7 @@
 }
 
 .title {
+  flex-shrink: 0;
   font-weight: 600;
 }
 
