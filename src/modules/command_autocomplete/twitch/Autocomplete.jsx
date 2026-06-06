@@ -11,7 +11,7 @@ import {
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
 import shadowDom from '../../shadow_dom/index.js';
-import twitch from '../../../utils/twitch.js';
+import twitch, {CHAT_INPUT} from '../../../utils/twitch.js';
 import CommandRow from '../components/CommandRow.jsx';
 import useAuthStore from '../../../stores/auth.js';
 import {getAutocompleteSuggestions} from '../../../actions/autocomplete.js';
@@ -79,7 +79,11 @@ function getCurrentUserLevel() {
 }
 
 function getChatInputPartialCommand() {
-  const element = document.querySelector(CHAT_TEXT_AREA);
+  const element = document.querySelector(CHAT_INPUT);
+  if (element == null) {
+    return null;
+  }
+
   const value = twitch.getChatInputValue(element);
 
   if (value == null) {
