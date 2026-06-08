@@ -92,7 +92,6 @@ export default class Emote {
       content: (
         <EmoteTooltipContent
           imageSrc={createSrc(this.images, false, '4x')}
-          sourceImage={image}
           code={this.code}
           provider={this.category.displayName}
           channelName={channelName}
