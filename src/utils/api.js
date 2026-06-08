@@ -11,7 +11,7 @@ async function request(method, path, options = {}) {
 
   let url = null;
   if (version != null) {
-    url = new URL(`${API_VERSION}/${path}`, API_ENDPOINT);
+    url = new URL(`${version}/${path}`, API_ENDPOINT);
   } else {
     url = new URL(path, API_ENDPOINT);
   }
