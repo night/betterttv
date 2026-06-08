@@ -40,26 +40,32 @@
 }
 
 .imageWrapper {
-  display: inline-block;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   border-radius: var(--mantine-radius-sm);
   margin-inline: 8px;
+  /* fixed height + predicted aspect ratio reserve the box so the tooltip
+     doesn't resize while the preview loads */
+  height: 112px;
   max-width: calc(100% - 16px);
   line-height: 0;
 }
 
 .image {
   display: block;
-  height: auto;
-  width: auto;
-  max-height: 112px;
-  max-width: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
-/* SVG emotes (e.g. emojis) have no intrinsic width/height, only a viewBox ratio,
-   so they collapse to 0x0 with auto sizing inside the shrink-to-fit wrapper.
-   Give them a definite height so they render. */
-.image[src$='.svg'] {
-  height: 112px;
+.placeholder {
+  position: absolute;
+  inset: 0;
+}
+
+.imageLoading {
+  visibility: hidden;
 }
