@@ -53,23 +53,33 @@ export async function executeOAuth2AuthorizationFlow({signal} = {}) {
 
   let cleanUpAbortListener = null;
   if (signal != null) {
-    cleanUpAbortListener = signal.addEventListener('abort', () => closePopup());
+    const onAbort = () => closePopup();
+    signal.addEventListener('abort', onAbort);
+    cleanUpAbortListener = () => signal.removeEventListener('abort', onAbort);
   }
 
   return await new Promise((resolve, reject) => {
     let isHandlingMessage = false;
 
     function handleMessage(data) {
-      if (data?.code == null || data?.state == null) {
+      if (data?.state == null) {
         return;
       }
 
       if (data?.state !== state) {
+        isHandlingMessage = true;
+        closePopup();
         return reject(new Error('State mismatch'));
       }
 
       if (typeof data?.error === 'string') {
+        isHandlingMessage = true;
+        closePopup();
         return reject(new Error(data.error_description ?? data.error));
+      }
+
+      if (data?.code == null) {
+        return;
       }
 
       isHandlingMessage = true;
