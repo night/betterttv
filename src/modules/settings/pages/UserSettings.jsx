@@ -72,6 +72,7 @@ function CloudBackupSetting() {
 function SignInButton() {
   const user = useAuthStore(useShallow((state) => state.user));
   const [signingIn, setSigningIn] = useState(false);
+  const [, setCloudBackupSettings] = useCloudBackupSettings();
 
   function signIn() {
     setSigningIn(true);
@@ -83,6 +84,7 @@ function SignInButton() {
     const {accessToken} = getCredentials();
     await revokeAccessToken(accessToken);
     setCredentials(null);
+    setCloudBackupSettings({enabled: false});
   }
 
   function handleSignOut() {
