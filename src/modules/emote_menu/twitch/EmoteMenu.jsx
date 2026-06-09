@@ -9,6 +9,8 @@ import styles from './EmoteMenu.module.css';
 import EmoteMenu from '../components/EmoteMenu.jsx';
 import shadowDOM from '../../shadow_dom/index.js';
 import {isStandaloneWindow} from '../../../utils/window.js';
+import {bindTooltip} from '../../tooltip/index.js';
+import formatMessage from '../../../i18n/index.js';
 
 const CHAT_TEXT_AREA = '.chat-input__textarea, textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_INPUT = '.chat-input';
@@ -104,6 +106,7 @@ function loadLegacyButton() {
   button.classList.add(styles.button);
   buttonContainer.appendChild(button);
   button.addEventListener('click', () => handleOpen?.());
+  bindTooltip(button, {content: formatMessage({defaultMessage: 'Emote Menu'})});
 }
 
 function unloadButton(container, chatInput) {
