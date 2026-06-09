@@ -12,7 +12,7 @@ import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
 import shadowDom from '../../shadow_dom/index.js';
 import twitch, {CHAT_INPUT} from '../../../utils/twitch.js';
-import CommandRow from '../components/CommandRow.jsx';
+import CommandRow, {ArgumentDisplayTextByArgumentType} from '../components/CommandRow.jsx';
 import useAuthStore from '../../../stores/auth.js';
 import {getAutocompleteSuggestions} from '../../../actions/autocomplete.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
@@ -134,7 +134,22 @@ function getItemKey(item) {
 }
 
 function replaceChatInputPartialCommand(command) {
-  twitch.setChatInputValue(`${command.name} `);
+  const firstArgument = command.arguments?.[0];
+  const placeholder = firstArgument != null ? ArgumentDisplayTextByArgumentType[firstArgument.type] : null;
+
+  // No arguments to fill in: drop the caret after the command and a trailing space.
+  if (placeholder == null) {
+    twitch.setChatInputValue(`${command.name} `);
+    return;
+  }
+
+  // Insert the first argument placeholder (e.g. `!shoutout [user]`) and select it
+  // so the next keystroke replaces the placeholder.
+  const prefix = `${command.name} `;
+  twitch.setChatInputValue(`${prefix}${placeholder}`, true, {
+    start: prefix.length,
+    end: prefix.length + placeholder.length,
+  });
 }
 
 let currentCommands = [];
