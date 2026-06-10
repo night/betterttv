@@ -27,6 +27,8 @@ const DARK_MODE_CLASS = 'bttv-mantine-theme-dark';
 class ShadowDOM {
   constructor() {
     this.components = {};
+    this.baseStyleSheet = null;
+    this.variablesStyleSheet = null;
 
     this.host = document.createElement(APP_CONTAINER_ID);
 
@@ -85,25 +87,41 @@ class ShadowDOM {
     const baseCssVariables = variablesToCSS(`.${SCOPE_CLASS}`, {...variables, ...light});
     const darkCssVariables = variablesToCSS(`.${DARK_MODE_CLASS}`, dark);
 
-    this.setAdoptedStyleSheet([baseCssVariables, darkCssVariables]);
-  }
-
-  setAdoptedStyleSheet(cssList) {
     const sheet = new CSSStyleSheet();
-    sheet.replaceSync(cssList.join('\n'));
-    this.shadowRoot.adoptedStyleSheets = [sheet];
+    sheet.replaceSync([baseCssVariables, darkCssVariables].join('\n'));
+    this.variablesStyleSheet = sheet;
+
+    this.syncAdoptedStyleSheets();
   }
 
-  addStyleSheet(url) {
+  // Adopted stylesheets stay applied to the shadow root no matter where the host is moved in
+  // the document. A <link> element, on the other hand, can drop its styles when the host is
+  // reparented in and out of the fullscreen element, leaving the UI unstyled (e.g. a giant,
+  // unsized emote menu after exiting fullscreen). So load the stylesheet as a constructed
+  // sheet, falling back to a <link> only if it can't be fetched.
+  async addStyleSheet(url) {
     if (url == null) {
       return;
     }
 
-    const css = document.createElement('link');
-    css.setAttribute('href', url);
-    css.setAttribute('type', 'text/css');
-    css.setAttribute('rel', 'stylesheet');
-    this.shadowRoot.appendChild(css);
+    try {
+      const response = await fetch(url);
+      const css = await response.text();
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(css);
+      this.baseStyleSheet = sheet;
+      this.syncAdoptedStyleSheets();
+    } catch (_) {
+      const css = document.createElement('link');
+      css.setAttribute('href', url);
+      css.setAttribute('type', 'text/css');
+      css.setAttribute('rel', 'stylesheet');
+      this.shadowRoot.appendChild(css);
+    }
+  }
+
+  syncAdoptedStyleSheets() {
+    this.shadowRoot.adoptedStyleSheets = [this.baseStyleSheet, this.variablesStyleSheet].filter(Boolean);
   }
 
   mount(id, component) {
