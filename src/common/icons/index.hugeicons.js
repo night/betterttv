@@ -7,6 +7,9 @@
 //
 // Exports keep the `fa*` names the codebase already used to minimize churn; each maps to
 // the closest Hugeicons solid equivalent.
+//
+// The Pro package is an optional dependency, so it may be unresolved at lint/build time (e.g.
+// CI without the registry token); webpack swaps this module for the Font Awesome fallback then.
 import {
   Airplane01Icon,
   ArrowDown01Icon,
@@ -37,6 +40,7 @@ import {
   UserSettings01Icon,
   WinkIcon,
   YoutubeIcon,
+  // eslint-disable-next-line import/no-unresolved
 } from '@hugeicons-pro/core-solid-rounded';
 
 export const faLock = LockIcon;
