@@ -1,17 +1,20 @@
 .header {
-  --vertical-padding: 10px;
-  --horizontal-padding: 12px;
+  --vertical-padding: 20px;
+  --horizontal-padding: 20px;
+  /* solid (non-faded) gap between the header content and the fade at the bottom */
+  --extra-bottom-padding: 0px;
+  position: sticky;
+  top: 0;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--vertical-padding) 12px var(--vertical-padding) 20px;
-  background-color: var(--mantine-color-body-secondary);
-  border-bottom: 1px solid var(--mantine-color-default-border);
+  /* reserve room on the right so content never slides under the modal's fixed close button */
+  padding: var(--vertical-padding) calc(var(--horizontal-padding) + 32px)
+    calc(var(--vertical-padding) + var(--extra-bottom-padding)) var(--horizontal-padding);
+  background: linear-gradient(to top, transparent, var(--mantine-color-body-secondary) var(--vertical-padding));
   z-index: 10;
-  gap: var(--horizontal-padding);
+  gap: 12px;
 }
 
-.closeButton,
 .sidenavToggleButton {
   min-width: 36px;
   min-height: 36px;
@@ -20,24 +23,28 @@
   justify-content: center;
 }
 
-.closeButton {
-  background-color: transparent;
-  color: var(--mantine-color-dimmed);
-  margin-left: -12px;
+.sidenavToggleButtonIcon {
+  width: 20px;
+  height: 20px;
 }
 
-.closeButton:hover {
+.backIcon {
+  background-color: transparent;
+  color: var(--mantine-color-dimmed);
+}
+
+.backIcon:hover {
   background-color: transparent;
   color: var(--mantine-color-text);
+}
+
+.backButtonIcon {
+  width: 16px;
+  height: 16px;
 }
 
 @media (min-width: 800px) {
   .sidenavToggleButton {
     display: none;
   }
-}
-
-.sidenavToggleButtonIcon {
-  width: 20px;
-  height: 20px;
 }

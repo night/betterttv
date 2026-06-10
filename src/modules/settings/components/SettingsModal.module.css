@@ -1,13 +1,14 @@
 .modal {
   flex: unset;
-  max-width: 800px;
+  max-width: 1000px;
   width: 100%;
-  height: 500px;
+  height: 650px;
   overflow: hidden;
   border: 1px solid var(--mantine-color-default-border);
 }
 
 .modalBody {
+  position: relative;
   display: flex;
   align-items: stretch;
   height: 100%;
@@ -39,37 +40,43 @@
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+}
+
+.pageScrollContent {
+  display: flex;
+  flex-direction: column;
   gap: 20px;
+  padding: 0 20px 24px;
 }
 
-.headerLeftContent {
-  flex: 1;
+.bottomFade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 24px;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--mantine-color-body-secondary));
+}
+
+.modalCloseButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+  min-width: 36px;
+  min-height: 36px;
   display: flex;
   align-items: center;
-  min-width: 0;
-}
-
-.backHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.backIcon {
+  justify-content: center;
   background-color: transparent;
   color: var(--mantine-color-dimmed);
 }
 
-.backIcon:hover {
+.modalCloseButton:hover {
   background-color: transparent;
   color: var(--mantine-color-text);
-}
-
-.backButtonIcon {
-  width: 16px;
-  height: 16px;
 }
 
 @media (max-width: 800px) {

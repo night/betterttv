@@ -16,28 +16,53 @@ import {
   ArrowLeft01Icon,
   ArrowTurnBackwardIcon,
   ArrowUp01Icon,
+  ArrowUpDownIcon,
   BasketballIcon,
+  BotIcon,
+  BubbleChatIcon,
   Cancel01Icon,
   CheckmarkCircle02Icon,
   Clock01Icon,
+  Compass01Icon,
+  CrownIcon,
   Delete02Icon,
+  DiamondIcon,
   FavouriteIcon,
   Flag02Icon,
+  GiftIcon,
   GraduationScrollIcon,
+  GridIcon,
   HeartbreakIcon,
+  HighlighterIcon,
   IceCream01Icon,
   Idea01Icon,
+  IncognitoIcon,
+  KeyboardIcon,
+  Layout01Icon,
   Leaf01Icon,
+  LiveStreaming01Icon,
   LockIcon,
+  Mail01Icon,
   Menu01Icon,
+  MessageCancel01Icon,
   Package01Icon,
+  PaintBoardIcon,
   PaintBrush01Icon,
+  PlayCircleIcon,
   Settings01Icon,
+  ShieldIcon,
+  SidebarLeftIcon,
+  SmileIcon,
+  SparklesIcon,
+  SplitIcon,
   SquareUnlock01Icon,
   StarIcon,
   TwitchIcon,
+  UnavailableIcon,
+  UserGroupIcon,
   UserIcon,
   UserSettings01Icon,
+  VideoIcon,
   WinkIcon,
   YoutubeIcon,
   // eslint-disable-next-line import/no-unresolved
@@ -72,3 +97,30 @@ export const faClock = Clock01Icon;
 export const faLightbulb = Idea01Icon;
 export const faTwitch = TwitchIcon;
 export const faYoutube = YoutubeIcon;
+
+// Per-setting icons used by the settings side navigation.
+export const faFaceSmile = SmileIcon;
+export const faPalette = PaintBoardIcon;
+export const faBorderAll = GridIcon;
+export const faWandMagicSparkles = SparklesIcon;
+export const faTowerBroadcast = LiveStreaming01Icon;
+export const faEnvelope = Mail01Icon;
+export const faKeyboard = KeyboardIcon;
+export const faTableColumns = SplitIcon;
+export const faComment = BubbleChatIcon;
+export const faList = SidebarLeftIcon;
+export const faGem = DiamondIcon;
+export const faUsers = UserGroupIcon;
+export const faCrown = CrownIcon;
+export const faCompass = Compass01Icon;
+export const faVideo = VideoIcon;
+export const faShieldHalved = ShieldIcon;
+export const faHighlighter = HighlighterIcon;
+export const faCommentSlash = MessageCancel01Icon;
+export const faTableCells = Layout01Icon;
+export const faBan = UnavailableIcon;
+export const faArrowsUpDown = ArrowUpDownIcon;
+export const faUserSecret = IncognitoIcon;
+export const faCirclePlay = PlayCircleIcon;
+export const faGift = GiftIcon;
+export const faRobot = BotIcon;

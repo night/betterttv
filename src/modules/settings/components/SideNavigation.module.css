@@ -3,11 +3,14 @@
   flex-direction: column;
   border-right: 1px solid var(--mantine-color-default-border);
   background-color: var(--mantine-color-body);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mantine-color-dimmed) transparent;
   z-index: 1;
 }
 
-.navigationIconButton,
 .logo {
   width: 56px;
   height: 56px;
@@ -16,70 +19,84 @@
   align-items: center;
 }
 
-.userSettingsButton {
-  height: 56px;
-  border: 1px solid var(--button-hover);
-  display: grid;
-  place-items: center;
-}
-
 .avatar {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 
 .avatarImage {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 
 .navigationIcon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 
-.navigationIconButton,
 .navigationButton {
+  font-weight: 500;
+  height: 48px;
+  padding-left: 16px;
+  padding-right: 16px;
+  --button-justify: left;
   transition-property: color, background-color;
   transition-duration: 100ms;
   transition-timing-function: ease-in-out;
 }
 
-.navigationIconButton[data-active='false']:not(:hover),
-.topNavigationButton[data-active='false']:not(:hover) {
+.navigationButton[data-active='false']:not(:hover) {
   background: transparent;
 }
 
-.navigationButton {
-  font-weight: 500;
-  height: 56px;
-  padding-left: 16px;
-  padding-right: 16px;
-  --button-justify: left;
-
-  .navigationIcon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .navigationSection {
-    margin-right: var(--mantine-spacing-lg);
-  }
+/* top-level nav items for each individual setting */
+.settingNavigationButton {
+  height: 40px;
+  font-weight: 400;
 }
 
-.avatarFallbackIcon {
-  width: 16px;
-  height: 16px;
+.navigationLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.userSettingsButton {
+.navigationButton[data-active='false'] .navigationLabel {
+  color: var(--mantine-color-dimmed);
+}
+
+.navigationSection {
+  margin-right: var(--mantine-spacing-md);
+}
+
+/* sticky so it stays pinned to the top while the nav list scrolls beneath it */
+.logoContainer {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  background-color: var(--mantine-color-body);
+}
+
+/* sticky wrapper so the button stays pinned to the bottom (with an opaque backdrop)
+   while keeping the button's own active/hover background intact */
+.userSettingsContainer {
+  --padding-top: 12px;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--padding-top);
+  background: linear-gradient(to bottom, transparent, var(--mantine-color-body) var(--padding-top));
 }
 
-.tooltip {
-  font-size: var(--mantine-font-size-md);
+.userSettingsNavigationButton {
+  border: 1px solid var(--mantine-color-default-border);
 }
 
 .overlay {
@@ -88,8 +105,25 @@
   transition: opacity 0.2s ease-in-out;
 }
 
-.logoContainer {
-  border-bottom: 1px solid var(--mantine-color-default-border);
+@media (min-width: 800px) {
+  .closeButton {
+    display: none;
+  }
+
+  .sidenavContainer {
+    width: 220px;
+    padding: 0 8px;
+    gap: 2px;
+  }
+
+  .logoContainer {
+    padding: 8px 8px 4px 4px;
+    margin-bottom: 2px;
+  }
+
+  .userSettingsContainer {
+    padding-bottom: 8px;
+  }
 }
 
 @media (max-width: 800px) {
@@ -101,7 +135,8 @@
     bottom: 0;
     max-width: min(300px, 100%);
     width: 100%;
-    padding: 16px;
+    padding: 0 16px;
+    gap: 2px;
     transform: translateX(-100%);
     transition: transform 0.2s ease-in-out;
   }
@@ -111,22 +146,15 @@
     pointer-events: auto;
   }
 
-  .navigationIconButton {
-    display: none;
-  }
-
   .open {
     transform: translateX(0);
   }
 
   .logoContainer {
-    display: flex;
     width: 100%;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    height: auto;
-    border-bottom: none;
+    padding: 8px 0 8px;
+    margin-bottom: 8px;
   }
 
   .closeButton,
@@ -143,22 +171,7 @@
     padding: 4px !important;
   }
 
-  .userSettingsButton {
-    height: 56px;
-    place-items: flex-start;
-  }
-
-  .topNavigationButton {
-    height: 48px;
-  }
-}
-
-@media (min-width: 800px) {
-  .closeButton {
-    display: none;
-  }
-
-  .navigationButton {
-    display: none;
+  .userSettingsContainer {
+    padding-bottom: 16px;
   }
 }
