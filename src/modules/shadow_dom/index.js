@@ -112,6 +112,8 @@ class ShadowDOM {
       this.baseStyleSheet = sheet;
       this.syncAdoptedStyleSheets();
     } catch (_) {
+      // Some sites (e.g. YouTube) have a Content-Security-Policy that blocks fetching the
+      // stylesheet, so fall back to a <link> element which isn't subject to connect-src.
       const css = document.createElement('link');
       css.setAttribute('href', url);
       css.setAttribute('type', 'text/css');
