@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import useAuthStore from '../../../stores/auth.js';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '../../../common/components/Icon.jsx';
-import {faBars} from '@fortawesome/free-solid-svg-icons';
+import {faBars} from '../../../common/icons/index.js';
 
 const PageHeader = React.forwardRef(({className, leftContent, onClose}, ref) => {
   const {setSidenavOpen} = useContext(PageContext);

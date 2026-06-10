@@ -22,8 +22,21 @@ import VirtualModulesPlugin from 'webpack-virtual-modules';
 
 dotenv.config();
 
-const git = createRequire(import.meta.url)('git-rev-sync');
+const require = createRequire(import.meta.url);
+const git = require('git-rev-sync');
 const {EnvironmentPlugin, optimize} = webpack;
+
+// Hugeicons Pro is an optional dependency. When it isn't installed (e.g. a contributor
+// without a Pro license, or CI without the registry token), fall back to Font Awesome by
+// swapping the icon source module at build time.
+function hugeiconsAvailable() {
+  try {
+    require.resolve('@hugeicons-pro/core-solid-rounded');
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function convertEmojiToolkitCodePointToChar(codePoint) {
   if (codePoint.includes('-')) {
@@ -84,6 +97,11 @@ export default async (env, argv) => {
   const OAUTH2_CLIENT_ID = process.env.OAUTH2_CLIENT_ID ?? '69df8fd87facce5d303ec889';
   const OAUTH2_REDIRECT_URI = process.env.OAUTH2_REDIRECT_URI ?? 'https://betterttv.com/extension/callback';
   const SOCKET_ENDPOINT = process.env.SOCKET_ENDPOINT ?? 'wss://sockets.betterttv.net/ws';
+
+  const HUGEICONS = hugeiconsAvailable();
+  if (!HUGEICONS) {
+    console.warn('[icons] @hugeicons-pro/core-solid-rounded not installed; falling back to Font Awesome icons.');
+  }
 
   const {version} = JSON.parse(await fs.readFile('./package.json'));
   const emotes = JSON.parse(await fs.readFile('./node_modules/emoji-toolkit/emoji.json'));
@@ -218,6 +236,14 @@ export default async (env, argv) => {
     },
     devtool: PROD ? 'hidden-source-map' : 'eval',
     plugins: [
+      ...(HUGEICONS
+        ? []
+        : [
+            new webpack.NormalModuleReplacementPlugin(
+              /icons[/\\]index\.hugeicons\.js$/,
+              path.resolve('./src/common/icons/index.fontawesome.js')
+            ),
+          ]),
       new webpack.BannerPlugin({
         banner: (await fs.readFile('LICENSE')).toString(),
         entryOnly: true,

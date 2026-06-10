@@ -5,7 +5,7 @@ import {EmoteTypeFlags, SettingIds} from '../../constants.js';
 import {hasFlag} from '../../utils/flags.js';
 import {createSrcSet, createSrc, DEFAULT_SIZES} from '../../utils/image.js';
 import styles from './Emote.module.css';
-import {faLock} from '@fortawesome/free-solid-svg-icons';
+import {faLock} from '../icons/index.js';
 import settings from '../../settings.js';
 
 export default function Emote({emote, className, locked, sizes = DEFAULT_SIZES, animating = false}) {

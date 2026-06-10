@@ -3,7 +3,7 @@ import {useShallow} from 'zustand/react/shallow';
 import styles from './SideNavigation.module.css';
 import AnimatedLogo from './AnimatedLogo.jsx';
 import {ActionIcon, Avatar, Button, Overlay, Tooltip, useMantineTheme} from '@mantine/core';
-import {faArrowLeft, faCog, faScroll, faUser, faUserGear} from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft, faCog, faScroll, faUser, faUserGear} from '../../../common/icons/index.js';
 import {PageTypes} from '../../../constants.js';
 import classNames from 'classnames';
 import formatMessage from '../../../i18n/index.js';

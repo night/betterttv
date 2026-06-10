@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import useDomObserver from '../hooks/DomObserver.jsx';
 import formatMessage from '../../i18n/index.js';
 import Icon from './Icon.jsx';
-import {faArrowDown, faArrowTurnDown, faArrowUp} from '@fortawesome/free-solid-svg-icons';
+import {faArrowDown, faArrowTurnDown, faArrowUp} from '../icons/index.js';
 import {Kbd, Text} from '@mantine/core';
 import Scrollbar from './Scrollbar.jsx';
 

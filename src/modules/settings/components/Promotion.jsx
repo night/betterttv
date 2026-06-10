@@ -6,7 +6,7 @@ import {ActionIcon, Button, Image, Title} from '@mantine/core';
 import {PageContext} from '../contexts/PageContext.jsx';
 import {SettingPanelIds} from '../stores/SettingStore.jsx';
 import Icon from '../../../common/components/Icon.jsx';
-import {faClose, faPaintBrush} from '@fortawesome/free-solid-svg-icons';
+import {faClose, faPaintBrush} from '../../../common/icons/index.js';
 import formatMessage from '../../../i18n/index.js';
 import storage from '../../../storage.js';
 import NightbotLogoIcon from '../../../common/components/NightbotLogoIcon.jsx';

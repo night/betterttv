@@ -15,7 +15,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
+import {faTrash} from '../../../common/icons/index.js';
 import styles from './SettingKeywords.module.css';
 import {KeywordTypes} from '../../../utils/keywords.js';
 import formatMessage from '../../../i18n/index.js';
