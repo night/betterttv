@@ -5,7 +5,7 @@ import styles from './SettingColorRadio.module.css';
 import SettingWrapper from './SettingWrapper.jsx';
 import usePortalRef from '../../../common/hooks/PortalRef.jsx';
 import Icon from '../../../common/components/Icon.jsx';
-import {faCheckCircle} from '@fortawesome/free-solid-svg-icons';
+import {faCheckCircle} from '../../../common/icons/index.js';
 
 function SettingColorRadio({
   value,

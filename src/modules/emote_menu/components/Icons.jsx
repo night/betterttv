@@ -12,9 +12,10 @@ import {
   faPlane,
   faSmileWink,
   faStar,
+  faTwitch,
   faUnlock,
-} from '@fortawesome/free-solid-svg-icons';
-import {faTwitch, faYoutube} from '@fortawesome/free-brands-svg-icons';
+  faYoutube,
+} from '../../../common/icons/index.js';
 import classNames from 'classnames';
 import React from 'react';
 import styles from './Icons.module.css';

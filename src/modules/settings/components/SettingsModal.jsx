@@ -15,7 +15,7 @@ import PageHeader from './PageHeader.jsx';
 import {PageContext} from '../contexts/PageContext.jsx';
 import BlacklistKeywords from '../pages/BlacklistKeywords.jsx';
 import {AnimatePresence, motion, usePresenceData} from 'framer-motion';
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft} from '../../../common/icons/index.js';
 import Icon from '../../../common/components/Icon.jsx';
 import formatMessage from '../../../i18n/index.js';
 
