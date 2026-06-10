@@ -112,6 +112,18 @@ export const SelectionTypes = {
   END: 3,
 };
 
+// Sets the chat input to `text` and selects its [start, end) character range.
+// The text is inserted through Slate rather than the controlled value setters
+// (which apply asynchronously) so the range lands on the real content instead of
+// stale/empty content, which would otherwise corrupt the next keystrokes. Slate's
+// onChange keeps Twitch's value in sync; the value is one text node (path [0, 0]).
+function setSlateEditorValueWithSelection(editor, text, start, end) {
+  editor.select({anchor: editor.start([]), focus: editor.end([])});
+  editor.insertText(text);
+  editor.select({anchor: {path: [0, 0], offset: start}, focus: {path: [0, 0], offset: end}});
+  editor.onChange?.();
+}
+
 export default {
   async getUserProfilePicture(userId = null) {
     const currentUser = getCurrentUser();
@@ -714,25 +726,24 @@ export default {
     return fullText != null ? fullText.length : null;
   },
 
-  setChatInputValue(text, shouldFocus = true) {
+  // `selection` optionally describes the caret/selection to leave behind, as
+  // {start, end} character offsets into `text`. Defaults to a collapsed caret at
+  // the end of the text.
+  setChatInputValue(text, shouldFocus = true, selection = null) {
     const element = document.querySelector(CHAT_INPUT);
 
+    const selectionStart = selection?.start ?? text.length;
+    const selectionEnd = selection?.end ?? text.length;
+    const isRangeSelection = selectionStart !== selectionEnd;
+
     // deprecated
-    const {value: currentValue, selectionStart} = element;
+    const {value: currentValue} = element;
     if (currentValue != null) {
       element.value = text;
       element.dispatchEvent(new Event('input', {bubbles: true}));
+      getReactInstance(element)?.memoizedProps?.onChange?.({target: element});
 
-      const instance = getReactInstance(element);
-      if (instance) {
-        const props = instance.memoizedProps;
-        if (props && props.onChange) {
-          props.onChange({target: element});
-        }
-      }
-
-      const selectionEnd = selectionStart + text.length;
-      element.setSelectionRange(selectionEnd, selectionEnd);
+      element.setSelectionRange(selectionStart, selectionEnd);
 
       if (shouldFocus) {
         element.focus();
@@ -745,24 +756,33 @@ export default {
       return;
     }
 
-    chatInput.memoizedProps.value = text;
-    chatInput.memoizedProps.setInputValue(text);
-    chatInput.memoizedProps.onValueUpdate(text);
+    const chatInputEditor = shouldFocus ? this.getChatInputEditor(element) : null;
 
-    if (shouldFocus) {
-      const chatInputEditor = this.getChatInputEditor(element);
+    // A range selection goes through Slate (which also syncs the value via
+    // onChange), so skip the controlled setters here — they apply asynchronously
+    // and the range would land on stale content.
+    const useSlateSelection = isRangeSelection && typeof chatInputEditor?.select === 'function';
 
-      // TODO: remove after legacy slate is gone
-      if (chatInputEditor != null && 'setSelectionRange' in chatInputEditor) {
-        chatInputEditor.focus();
-        chatInputEditor.setSelectionRange(text.length);
-        // setSelection seems missing now, so we can't set selection
-      } else if (chatInputEditor != null && 'setSelection' in chatInputEditor) {
-        element.focus();
-        chatInputEditor.setSelection(text.length);
-      } else {
-        element.focus();
-      }
+    if (!useSlateSelection) {
+      chatInput.memoizedProps.value = text;
+      chatInput.memoizedProps.setInputValue(text);
+      chatInput.memoizedProps.onValueUpdate(text);
+    }
+
+    if (!shouldFocus) {
+      return;
+    }
+
+    // TODO: remove setSelectionRange branch after legacy slate is gone
+    const isLegacySlate = chatInputEditor != null && 'setSelectionRange' in chatInputEditor;
+    (isLegacySlate ? chatInputEditor : element).focus();
+
+    if (useSlateSelection) {
+      setSlateEditorValueWithSelection(chatInputEditor, text, selectionStart, selectionEnd);
+    } else if (isLegacySlate) {
+      chatInputEditor.setSelectionRange(selectionEnd);
+    } else if (chatInputEditor != null && 'setSelection' in chatInputEditor) {
+      chatInputEditor.setSelection(selectionEnd);
     }
   },
 
