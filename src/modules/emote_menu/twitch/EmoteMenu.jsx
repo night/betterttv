@@ -17,8 +17,12 @@ const CHAT_INPUT = '.chat-input';
 
 // For legacy button
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-legacy-emote-picker-button-container';
-const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR =
-  '.chat-input div[data-test-selector="chat-input-buttons-container"] div:has(button[data-a-target="chat-settings"])';
+// Keyed on the test-selector (not `.chat-input`) so the dom observer fires when the button
+// row itself mounts. In moderator view it mounts after `load.chat`, so observing `.chat-input`
+// would miss it.
+const CHAT_INPUT_BUTTONS_CONTAINER_SELECTOR = 'div[data-test-selector="chat-input-buttons-container"]';
+const CHAT_SEND_BUTTON_SELECTOR = 'button[data-a-target="chat-send-button"]';
+const CHAT_SETTINGS_BUTTON_SELECTOR = 'button[data-a-target="chat-settings"]';
 
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-container';
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
@@ -79,28 +83,37 @@ function loadLegacyButton() {
     return;
   }
 
-  const chatSettingsContainer = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
-  if (chatSettingsContainer == null) {
+  const buttonsContainer = document.querySelector(CHAT_INPUT_BUTTONS_CONTAINER_SELECTOR);
+  if (buttonsContainer == null) {
     return;
   }
 
+  // The controls group (chat settings in regular chat, shield mode in moderator view) is the
+  // button group right before the send button.
+  const sendButtonContainer = buttonsContainer.querySelector(`div:has(${CHAT_SEND_BUTTON_SELECTOR})`);
+  const controlsContainer = sendButtonContainer?.previousElementSibling;
+  if (controlsContainer == null) {
+    return;
+  }
+
+  // Anchor after the last native button in the controls group.
+  const buttonContainers = [...controlsContainer.children].filter((child) => child.querySelector('button') != null);
+  const lastButtonContainer = buttonContainers[buttonContainers.length - 1];
+  if (lastButtonContainer == null) {
+    return;
+  }
+
+  // In regular chat the moderator shield mode button shares the row with the chat settings
+  // button, leaving no room for the emote menu button, so hide it. Moderator view has no
+  // chat settings button and enough room, so the shield mode button stays visible there.
   const chatInput = document.querySelector(CHAT_INPUT);
-  if (chatInput != null) {
+  if (chatInput != null && controlsContainer.querySelector(CHAT_SETTINGS_BUTTON_SELECTOR) != null) {
     chatInput.classList.add(styles.hideShieldModeButton);
   }
 
   const buttonContainer = document.createElement('div');
   buttonContainer.setAttribute('id', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
-
-  const chatSettingsButtonContainer = chatSettingsContainer.querySelector(
-    'div:has(button[data-a-target="chat-settings"])'
-  );
-
-  if (chatSettingsButtonContainer == null) {
-    return;
-  }
-
-  chatSettingsButtonContainer.after(buttonContainer);
+  lastButtonContainer.after(buttonContainer);
 
   const button = document.createElement('button');
   button.classList.add(styles.button);
@@ -199,7 +212,7 @@ function loadEmoteMenu(onMount, onError) {
 
 class EmoteMenuModule {
   constructor() {
-    domObserver.on(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR, (node, isConnected) => {
+    domObserver.on(CHAT_INPUT_BUTTONS_CONTAINER_SELECTOR, (node, isConnected) => {
       if (!isConnected) {
         return;
       }
