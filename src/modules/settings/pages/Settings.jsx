@@ -1,12 +1,12 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef} from 'react';
 import formatMessage from '../../../i18n/index.js';
 import extension from '../../../utils/extension.js';
-import {Text, Button, TextInput} from '@mantine/core';
+import {Text, Button} from '@mantine/core';
 import SettingStore from '../stores/SettingStore.jsx';
 import styles from './Settings.module.css';
 import Panel from '../components/Panel.jsx';
 import Promotion from '../components/Promotion.jsx';
-import PageScrollBody, {PageScrollContext} from '../components/PageScrollBody.jsx';
+import PageScrollBody from '../components/PageScrollBody.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import useSettingsNavigationStore from '../stores/settings-navigation.js';
 
@@ -41,41 +41,22 @@ function UnsupportedChromiumVersion() {
   );
 }
 
-function SettingsList({search, settings, handleSettingRefCallback}) {
+function SettingsList({settings, handleSettingRefCallback}) {
   if (IS_UNSUPPORTED_CHROME_INSTALL) {
     return <UnsupportedChromiumVersion />;
   }
 
-  const searchedSettings = settings
-    .filter(
-      (setting) =>
-        search.length === 0 ||
-        setting.keywords.join(' ').includes(search.toLowerCase()) ||
-        setting.name.toLowerCase().includes(search.toLowerCase())
-    )
-    .map((setting) =>
-      setting.render({
-        ref: (ref) => handleSettingRefCallback(setting.settingPanelId, ref),
-      })
-    );
-
-  if (searchedSettings.length === 0) {
-    return (
-      <Panel>
-        <Text size="lg" className={styles.noResultsText} c="dimmed">
-          {formatMessage({defaultMessage: 'No settings found.'})}
-        </Text>
-      </Panel>
-    );
-  }
-
-  return searchedSettings;
+  return settings.map((setting) =>
+    setting.render({
+      ref: (ref) => handleSettingRefCallback(setting.settingPanelId, ref),
+    })
+  );
 }
 
-function Settings({search, onSearchChange, inputRef, handleSettingRefCallback}) {
+function Settings({handleSettingRefCallback}) {
   const settings = useMemo(() => SettingStore.getSupportedSettings().sort((a, b) => a.name.localeCompare(b.name)), []);
-  const scrollRef = useContext(PageScrollContext);
   const settingElements = useRef({});
+  const frameRef = useRef(null);
   const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
 
   const handleSettingRef = useCallback(
@@ -91,16 +72,9 @@ function Settings({search, onSearchChange, inputRef, handleSettingRefCallback}) 
   );
 
   // Highlight the side-nav entry for whichever setting is currently scrolled into view.
-  useEffect(() => {
-    const scroller = scrollRef?.current;
-    if (scroller == null) {
-      return undefined;
-    }
-
-    let frame = null;
-    const computeActivePanel = () => {
-      frame = null;
-      const header = scroller.querySelector('[data-page-header]');
+  const updateActivePanel = useCallback(
+    (scroller) => {
+      const header = scroller.parentElement?.querySelector('[data-page-header]');
       const line = scroller.scrollTop + (header?.offsetHeight ?? 0) + 8;
 
       let activeId = null;
@@ -123,46 +97,31 @@ function Settings({search, onSearchChange, inputRef, handleSettingRefCallback}) 
       }
 
       setActivePanelId(activeId ?? firstId);
-    };
+    },
+    [setActivePanelId]
+  );
 
-    const handleScroll = () => {
-      if (frame == null) {
-        frame = requestAnimationFrame(computeActivePanel);
+  // rAF-throttle so the active panel is recomputed at most once per frame while scrolling.
+  const handleScroll = useCallback(
+    (event) => {
+      const scroller = event.currentTarget;
+      if (frameRef.current != null) {
+        return;
       }
-    };
-
-    scroller.addEventListener('scroll', handleScroll, {passive: true});
-    computeActivePanel();
-
-    return () => {
-      scroller.removeEventListener('scroll', handleScroll);
-      if (frame != null) {
-        cancelAnimationFrame(frame);
-      }
-    };
-  }, [scrollRef, setActivePanelId, search]);
-
-  useEffect(() => () => setActivePanelId(null), [setActivePanelId]);
+      frameRef.current = requestAnimationFrame(() => {
+        frameRef.current = null;
+        updateActivePanel(scroller);
+      });
+    },
+    [updateActivePanel]
+  );
 
   return (
     <PageScrollBody
-      header={
-        <PageHeader
-          leftContent={
-            <TextInput
-              size="lg"
-              ref={inputRef}
-              value={search}
-              placeholder={formatMessage({defaultMessage: 'Search Settings...'})}
-              onChange={onSearchChange}
-              classNames={{input: styles.searchInput, root: styles.searchInputRoot}}
-              radius="lg"
-            />
-          }
-        />
-      }>
-      {search.length === 0 ? <Promotion /> : null}
-      <SettingsList search={search} settings={settings} handleSettingRefCallback={handleSettingRef} />
+      header={<PageHeader leftContent={formatMessage({defaultMessage: 'Settings'})} />}
+      onScroll={handleScroll}>
+      <Promotion />
+      <SettingsList settings={settings} handleSettingRefCallback={handleSettingRef} />
     </PageScrollBody>
   );
 }

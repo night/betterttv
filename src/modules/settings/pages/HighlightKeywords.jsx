@@ -14,7 +14,14 @@ function HighlightKeywords() {
 
   return (
     <PageScrollBody
-      header={<PageHeader onBack={handleBack} leftContent={formatMessage({defaultMessage: 'Highlight Keywords'})} />}>
+      header={
+        <PageHeader
+          breadcrumbs={[
+            {label: formatMessage({defaultMessage: 'Settings'}), onClick: handleBack},
+            {label: formatMessage({defaultMessage: 'Highlight Keywords'})},
+          ]}
+        />
+      }>
       <SettingKeywords value={value} setValue={setValue} colorColumn={{defaultValue: DEFAULT_HIGHLIGHT_COLOR}} />
     </PageScrollBody>
   );

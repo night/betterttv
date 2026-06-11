@@ -1,16 +1,48 @@
 import React, {useContext} from 'react';
 import styles from './PageHeader.module.css';
-import {ActionIcon, Avatar, Title} from '@mantine/core';
+import {ActionIcon, Anchor, Avatar, Breadcrumbs, CloseButton, Title} from '@mantine/core';
 import {PageContext} from '../contexts/PageContext.jsx';
 import classNames from 'classnames';
 import useAuthStore from '../../../stores/auth.js';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '../../../common/components/Icon.jsx';
-import {faArrowLeft, faBars} from '../../../common/icons/index.js';
+import {faBars} from '../../../common/icons/index.js';
 import formatMessage from '../../../i18n/index.js';
 
-const PageHeader = React.forwardRef(({className, leftContent, onBack, style}, ref) => {
-  const {setSidenavOpen} = useContext(PageContext);
+// The current (last) crumb is the page title; earlier crumbs are dimmed, clickable links.
+function Breadcrumb({label, onClick, isCurrent}) {
+  if (isCurrent) {
+    return <Title order={1}>{label}</Title>;
+  }
+
+  return (
+    <Anchor component="button" type="button" inherit underline="never" c="dimmed" onClick={onClick}>
+      {label}
+    </Anchor>
+  );
+}
+
+// breadcrumbs: array of {label, onClick?}. Falls back to leftContent when not provided.
+function HeaderContent({breadcrumbs, leftContent}) {
+  if (breadcrumbs != null) {
+    return (
+      <Breadcrumbs separator="/" classNames={{root: styles.breadcrumbs, separator: styles.breadcrumbSeparator}}>
+        {breadcrumbs.map(({label, onClick}, index) => (
+          <Breadcrumb key={label} label={label} onClick={onClick} isCurrent={index === breadcrumbs.length - 1} />
+        ))}
+      </Breadcrumbs>
+    );
+  }
+
+  if (typeof leftContent === 'string') {
+    return <Title order={1}>{leftContent}</Title>;
+  }
+
+  return leftContent;
+}
+
+const PageHeader = React.forwardRef(({className, leftContent, breadcrumbs, style}, ref) => {
+  const {setSidenavOpen, closeModal} = useContext(PageContext);
   const currentUser = useAuthStore(useShallow((state) => state.user));
   return (
     <div ref={ref} data-page-header className={classNames(styles.header, className)} style={style}>
@@ -26,19 +58,15 @@ const PageHeader = React.forwardRef(({className, leftContent, onBack, style}, re
           <Icon className={styles.sidenavToggleButtonIcon} icon={faBars} />
         )}
       </ActionIcon>
-      {onBack != null ? (
-        <ActionIcon
-          radius="lg"
-          size="lg"
-          variant="subtle"
-          color="gray"
-          className={styles.backIcon}
-          onClick={onBack}
-          aria-label={formatMessage({defaultMessage: 'Back to Settings'})}>
-          <Icon className={styles.backButtonIcon} icon={faArrowLeft} />
-        </ActionIcon>
-      ) : null}
-      {typeof leftContent === 'string' ? <Title order={1}>{leftContent}</Title> : leftContent}
+      <HeaderContent breadcrumbs={breadcrumbs} leftContent={leftContent} />
+      <CloseButton
+        className={styles.closeButton}
+        radius="lg"
+        variant="subtle"
+        size="md"
+        onClick={closeModal}
+        aria-label={formatMessage({defaultMessage: 'Close'})}
+      />
     </div>
   );
 });

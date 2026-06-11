@@ -13,7 +13,7 @@
 import {
   Airplane01Icon,
   ArrowDown01Icon,
-  ArrowLeft01Icon,
+  ArrowLeft02Icon,
   ArrowTurnBackwardIcon,
   ArrowUp01Icon,
   ArrowUpDownIcon,
@@ -30,7 +30,6 @@ import {
   FavouriteIcon,
   Flag02Icon,
   GiftIcon,
-  GraduationScrollIcon,
   GridIcon,
   HeartbreakIcon,
   HighlighterIcon,
@@ -49,6 +48,7 @@ import {
   PaintBoardIcon,
   PaintBrush01Icon,
   PlayCircleIcon,
+  Scroll01Icon,
   Settings01Icon,
   ShieldIcon,
   SidebarLeftIcon,
@@ -73,10 +73,10 @@ export const faUnlock = SquareUnlock01Icon;
 export const faArrowUp = ArrowUp01Icon;
 export const faArrowDown = ArrowDown01Icon;
 export const faArrowTurnDown = ArrowTurnBackwardIcon;
-export const faArrowLeft = ArrowLeft01Icon;
+export const faArrowLeft = ArrowLeft02Icon;
 export const faTrash = Delete02Icon;
 export const faCog = Settings01Icon;
-export const faScroll = GraduationScrollIcon;
+export const faScroll = Scroll01Icon;
 export const faUser = UserIcon;
 export const faUserGear = UserSettings01Icon;
 export const faClose = Cancel01Icon;

@@ -8,13 +8,24 @@
 }
 
 .modalBody {
+  /* sidebar lighter / page darker by default (dark mode); swapped in light mode below.
+     Defined here so both the sidebar and page CSS can reference the same semantic colors. */
+  --sidebar-bg: var(--mantine-color-body);
+  --page-bg: var(--mantine-color-body-secondary);
+  /* page-header height (64px content + 1px border); shared with PageHeader min-height */
+  --header-height: 65px;
   position: relative;
   display: flex;
   align-items: stretch;
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: var(--mantine-color-body-secondary);
+  background-color: var(--page-bg);
+}
+
+[data-mantine-color-scheme='light'] .modalBody {
+  --sidebar-bg: var(--mantine-color-body-secondary);
+  --page-bg: var(--mantine-color-body);
 }
 
 .pageColumn {
@@ -22,7 +33,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: var(--mantine-color-body-secondary);
+  background-color: var(--page-bg);
   overflow: hidden;
 }
 
@@ -36,17 +47,27 @@
 .pageScrollBody {
   position: relative;
   flex: 1;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .pageScrollContent {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 0 20px 24px;
+  /* gap between the header and the first item */
+  padding: 20px 20px 24px;
+}
+
+/* breathing room when a panel is scrolled into view */
+.pageScrollContent > * {
+  scroll-margin-top: 20px;
 }
 
 .bottomFade {
@@ -57,26 +78,7 @@
   height: 24px;
   z-index: 5;
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--mantine-color-body-secondary));
-}
-
-.modalCloseButton {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 20;
-  min-width: 36px;
-  min-height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  color: var(--mantine-color-dimmed);
-}
-
-.modalCloseButton:hover {
-  background-color: transparent;
-  color: var(--mantine-color-text);
+  background: linear-gradient(to bottom, transparent, var(--page-bg));
 }
 
 @media (max-width: 800px) {

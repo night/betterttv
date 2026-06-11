@@ -7,7 +7,7 @@
   width: 100%;
   padding: 24px;
   border-top: 1px solid var(--mantine-color-default-border);
-  background-color: var(--mantine-color-body-secondary);
+  background-color: transparent;
 }
 
 .column {
@@ -31,5 +31,5 @@
   justify-content: space-between;
   padding: 24px;
   border-top: 1px solid var(--mantine-color-default-border);
-  background-color: var(--mantine-color-body-secondary);
+  background-color: transparent;
 }

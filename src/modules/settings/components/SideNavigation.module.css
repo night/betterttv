@@ -2,20 +2,38 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--mantine-color-default-border);
-  background-color: var(--mantine-color-body);
+  background-color: var(--sidebar-bg);
+  overflow: hidden;
+  z-index: 1;
+  /* subtle inset shadow on the right edge, as if the page is casting onto the sidebar.
+     Mirrors --mantine-shadow-xs (same blur radii + opacities) reoriented as a right-edge inset,
+     since the xs token itself is a downward drop shadow and can't be used inset directly. */
+  box-shadow:
+    inset -3px 0 3px -3px rgba(0, 0, 0, 0.05),
+    inset -2px 0 2px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* only the settings list scrolls; the logo and user-settings sections stay fixed */
+.settingsScrollArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* equal padding on all sides of the scrollable list */
+  padding: var(--sidenav-h-padding);
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: none;
-  scrollbar-width: thin;
-  scrollbar-color: var(--mantine-color-dimmed) transparent;
-  z-index: 1;
+  scrollbar-width: none;
+}
+
+.settingsScrollArea::-webkit-scrollbar {
+  display: none;
 }
 
 .logo {
-  width: 56px;
-  height: 56px;
+  padding: 0px !important;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -42,8 +60,10 @@
   padding-left: 16px;
   padding-right: 16px;
   --button-justify: left;
-  transition-property: color, background-color;
-  transition-duration: 100ms;
+  position: relative;
+  border: 1px solid transparent;
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: 150ms;
   transition-timing-function: ease-in-out;
 }
 
@@ -51,16 +71,47 @@
   background: transparent;
 }
 
+/* disable Mantine's press-down (translateY) when the button is clicked */
+.navigationButton:active {
+  transform: none;
+}
+
+/* press feedback: veil an inactive button slightly darker while it's held. A translucent black
+   overlay darkens the whole button (background + text) regardless of theme or base color.
+   inset: -1px covers the 1px border too, so no un-darkened ring shows around the edge. */
+.navigationButton[data-active='false']:active::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background-color: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.navigationButton[data-active='true'] {
+  border-color: color-mix(in srgb, currentColor 30%, transparent);
+  box-shadow: var(--mantine-shadow-xs);
+}
+
+/* the brighter active text reads stronger on a dark surface, so soften the border further */
+[data-mantine-color-scheme='dark'] .navigationButton[data-active='true'] {
+  border-color: color-mix(in srgb, currentColor 15%, transparent);
+}
+
 /* top-level nav items for each individual setting */
 .settingNavigationButton {
   height: 40px;
   font-weight: 400;
+  /* match the list's top/bottom padding when scrolled into view */
+  scroll-margin-top: var(--sidenav-h-padding);
+  scroll-margin-bottom: var(--sidenav-h-padding);
 }
 
 .navigationLabel {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: color 150ms ease-in-out;
 }
 
 .navigationButton[data-active='false'] .navigationLabel {
@@ -71,32 +122,36 @@
   margin-right: var(--mantine-spacing-md);
 }
 
-/* sticky so it stays pinned to the top while the nav list scrolls beneath it */
+/* fixed above the scrollable settings list; spans the full sidebar width (the container has no
+   horizontal padding of its own) so its bottom-border divider reaches edge to edge */
 .logoContainer {
-  position: sticky;
-  top: 0;
-  z-index: 2;
   display: flex;
   align-items: center;
-  background-color: var(--mantine-color-body);
+  padding: 16px;
+  border-bottom: 1px solid var(--mantine-color-default-border);
 }
 
-/* sticky wrapper so the button stays pinned to the bottom (with an opaque backdrop)
-   while keeping the button's own active/hover background intact */
+/* fixed below the scrollable settings list; spans the full sidebar width so its top-border
+   divider reaches edge to edge, with horizontal padding matching the list above */
 .userSettingsContainer {
-  --padding-top: 12px;
-  position: sticky;
-  bottom: 0;
-  z-index: 2;
-  margin-top: auto;
   display: flex;
   flex-direction: column;
-  padding-top: var(--padding-top);
-  background: linear-gradient(to bottom, transparent, var(--mantine-color-body) var(--padding-top));
+  gap: 8px;
+  padding-top: 8px;
+  padding-left: var(--sidenav-h-padding);
+  padding-right: var(--sidenav-h-padding);
+  border-top: 1px solid var(--mantine-color-default-border);
 }
 
 .userSettingsNavigationButton {
   border: 1px solid var(--mantine-color-default-border);
+  /* always raised, regardless of active state */
+  box-shadow: var(--mantine-shadow-xs);
+}
+
+/* resting state matches the page background so it reads as a card on the sidebar */
+.userSettingsNavigationButton[data-active='false']:not(:hover) {
+  background-color: var(--page-bg);
 }
 
 .overlay {
@@ -111,14 +166,8 @@
   }
 
   .sidenavContainer {
+    --sidenav-h-padding: 8px;
     width: 220px;
-    padding: 0 8px;
-    gap: 2px;
-  }
-
-  .logoContainer {
-    padding: 8px 8px 4px 4px;
-    margin-bottom: 2px;
   }
 
   .userSettingsContainer {
@@ -133,10 +182,9 @@
     top: 0;
     left: 0;
     bottom: 0;
+    --sidenav-h-padding: 16px;
     max-width: min(300px, 100%);
     width: 100%;
-    padding: 0 16px;
-    gap: 2px;
     transform: translateX(-100%);
     transition: transform 0.2s ease-in-out;
   }
@@ -148,13 +196,6 @@
 
   .open {
     transform: translateX(0);
-  }
-
-  .logoContainer {
-    width: 100%;
-    justify-content: space-between;
-    padding: 8px 0 8px;
-    margin-bottom: 8px;
   }
 
   .closeButton,

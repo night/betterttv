@@ -14,7 +14,14 @@ function BlacklistKeywords() {
 
   return (
     <PageScrollBody
-      header={<PageHeader onBack={handleBack} leftContent={formatMessage({defaultMessage: 'Blacklist Keywords'})} />}>
+      header={
+        <PageHeader
+          breadcrumbs={[
+            {label: formatMessage({defaultMessage: 'Settings'}), onClick: handleBack},
+            {label: formatMessage({defaultMessage: 'Blacklist Keywords'})},
+          ]}
+        />
+      }>
       <SettingKeywords value={value} setValue={setValue} />
     </PageScrollBody>
   );

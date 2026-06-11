@@ -3,7 +3,7 @@ import {useShallow} from 'zustand/react/shallow';
 import styles from './SideNavigation.module.css';
 import AnimatedLogo from './AnimatedLogo.jsx';
 import {ActionIcon, Avatar, Button, Overlay, useMantineTheme} from '@mantine/core';
-import {faArrowLeft, faUserGear} from '../../../common/icons/index.js';
+import {faArrowLeft, faScroll, faUserGear} from '../../../common/icons/index.js';
 import {PageTypes} from '../../../constants.js';
 import classNames from 'classnames';
 import formatMessage from '../../../i18n/index.js';
@@ -43,7 +43,9 @@ function NavigationButton({children, onClick, active, label, className, buttonPr
   );
 }
 
-function SettingNavigationButton({setting, active, onClick}) {
+// Memoized so a scroll-spy active-panel change only re-renders the buttons whose active
+// state actually flips, not the entire settings list. setting/onClick are stable references.
+const SettingNavigationButton = React.memo(function SettingNavigationButton({setting, active, onClick}) {
   const handleClick = useCallback(() => onClick(setting.settingPanelId), [onClick, setting.settingPanelId]);
   const icon = SETTING_ICONS[setting.settingPanelId];
 
@@ -57,7 +59,7 @@ function SettingNavigationButton({setting, active, onClick}) {
       {icon != null ? <Icon icon={icon} className={styles.navigationIcon} /> : null}
     </NavigationButton>
   );
-}
+});
 
 function UserSettingsNavigationButton({active, onClick}) {
   const currentUser = useAuthStore(useShallow((state) => state.user));
@@ -89,37 +91,20 @@ function SideNavigation({open, setOpen}) {
   const activePanelId = useSettingsNavigationStore((state) => state.activePanelId);
   const close = useCallback(() => setOpen(false), [setOpen]);
   const containerRef = useRef(null);
-  const logoRef = useRef(null);
-  const userSettingsRef = useRef(null);
   const settings = useMemo(() => SettingStore.getSupportedSettings().sort((a, b) => a.name.localeCompare(b.name)), []);
 
   const isSettingsPage =
     page === PageTypes.SETTINGS || page === PageTypes.HIGHLIGHT_KEYWORDS || page === PageTypes.BLACKLIST_KEYWORDS;
 
-  // Keep the active item scrolled into view within the nav, between the sticky logo and user settings.
+  // Keep the active item scrolled into view within the scrollable settings list.
+  // scroll-margin on the buttons (see CSS) keeps a gap from the list edges.
   useEffect(() => {
     if (!isSettingsPage || activePanelId == null) {
       return;
     }
 
-    const container = containerRef.current;
-    const button = container?.querySelector(`[data-panel-id="${activePanelId}"]`);
-    if (container == null || button == null) {
-      return;
-    }
-
-    const topInset = logoRef.current?.offsetHeight ?? 0;
-    const bottomInset = userSettingsRef.current?.offsetHeight ?? 0;
-    const containerRect = container.getBoundingClientRect();
-    const buttonRect = button.getBoundingClientRect();
-    const visibleTop = containerRect.top + topInset;
-    const visibleBottom = containerRect.bottom - bottomInset;
-
-    if (buttonRect.top < visibleTop) {
-      container.scrollTop -= visibleTop - buttonRect.top;
-    } else if (buttonRect.bottom > visibleBottom) {
-      container.scrollTop += buttonRect.bottom - visibleBottom;
-    }
+    const button = containerRef.current?.querySelector(`[data-panel-id="${activePanelId}"]`);
+    button?.scrollIntoView({block: 'nearest'});
   }, [activePanelId, isSettingsPage]);
 
   const handleNavigate = useCallback(
@@ -140,20 +125,29 @@ function SideNavigation({open, setOpen}) {
 
   return (
     <React.Fragment>
-      <div className={classNames(styles.sidenavContainer, {[styles.open]: open})} ref={containerRef}>
-        <div className={styles.logoContainer} ref={logoRef}>
+      <div className={classNames(styles.sidenavContainer, {[styles.open]: open})}>
+        <div className={styles.logoContainer}>
           <AnimatedLogo className={styles.logo} />
           <CloseMenuButton onClick={close} className={styles.closeButton} />
         </div>
-        {settings.map((setting) => (
-          <SettingNavigationButton
-            key={setting.settingPanelId}
-            setting={setting}
-            active={isSettingsPage && activePanelId === setting.settingPanelId}
-            onClick={handleGotoSetting}
-          />
-        ))}
-        <div className={styles.userSettingsContainer} ref={userSettingsRef}>
+        <div className={styles.settingsScrollArea} ref={containerRef}>
+          {settings.map((setting) => (
+            <SettingNavigationButton
+              key={setting.settingPanelId}
+              setting={setting}
+              active={isSettingsPage && activePanelId === setting.settingPanelId}
+              onClick={handleGotoSetting}
+            />
+          ))}
+        </div>
+        <div className={styles.userSettingsContainer}>
+          <NavigationButton
+            className={styles.settingNavigationButton}
+            active={page === PageTypes.CHANGELOG}
+            onClick={() => handleNavigate(PageTypes.CHANGELOG)}
+            label={formatMessage({defaultMessage: 'Changelog'})}>
+            <Icon icon={faScroll} className={styles.navigationIcon} />
+          </NavigationButton>
           <UserSettingsNavigationButton
             active={page === PageTypes.USER_SETTINGS}
             onClick={() => handleNavigate(PageTypes.USER_SETTINGS)}
