@@ -12,6 +12,7 @@ import HighlightKeywords from '../pages/HighlightKeywords.jsx';
 import SideNavigation from './SideNavigation.jsx';
 import {PageContext} from '../contexts/PageContext.jsx';
 import BlacklistKeywords from '../pages/BlacklistKeywords.jsx';
+import useSettingsNavigationStore from '../stores/settings-navigation.js';
 
 function Page({page, handleSettingRefCallback}) {
   switch (page) {
@@ -52,10 +53,16 @@ function SettingsModal({setHandleOpen}) {
   const pageColumnRef = useRef(null);
   const lastParentData = useRef({scrollTop: 0, page: null});
 
+  const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
+
   // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView.
-  const scrollToPanel = useCallback((settingPanelId) => {
-    settingRefs.current[settingPanelId]?.scrollIntoView({block: 'start'});
-  }, []);
+  const scrollToPanel = useCallback(
+    (settingPanelId) => {
+      settingRefs.current[settingPanelId]?.scrollIntoView({block: 'start'});
+      setActivePanelId(settingPanelId);
+    },
+    [setActivePanelId]
+  );
 
   function handlePageChange(newPage) {
     if (lastParentData.current.page !== newPage) {

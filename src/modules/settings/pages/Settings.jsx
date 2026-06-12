@@ -75,7 +75,9 @@ function Settings({handleSettingRefCallback}) {
   const updateActivePanel = useCallback(
     (scroller) => {
       const header = scroller.parentElement?.querySelector('[data-page-header]');
-      const line = scroller.scrollTop + (header?.offsetHeight ?? 0) + 8;
+      const scrollMarginTop =
+        parseFloat(getComputedStyle(scroller).getPropertyValue('--page-scroll-margin-top')) || 0;
+      const line = scroller.scrollTop + (header?.offsetHeight ?? 0) + scrollMarginTop + 8;
 
       let activeId = null;
       let activeTop = -Infinity;

@@ -4,13 +4,13 @@ import styles from './SideNavigation.module.css';
 import AnimatedLogo from './AnimatedLogo.jsx';
 import {ActionIcon, Avatar, Button, Overlay, useMantineTheme} from '@mantine/core';
 import {faArrowLeft, faScroll, faUserGear} from '../../../common/icons/index.js';
-import {PageTypes} from '../../../constants.js';
+import {PageDecendants, PageTypes} from '../../../constants.js';
 import classNames from 'classnames';
 import formatMessage from '../../../i18n/index.js';
 import {PageContext} from '../contexts/PageContext.jsx';
 import useAuthStore from '../../../stores/auth.js';
 import Icon from '../../../common/components/Icon.jsx';
-import SettingStore from '../stores/SettingStore.jsx';
+import SettingStore, {SettingPanelIds} from '../stores/SettingStore.jsx';
 import useSettingsNavigationStore from '../stores/settings-navigation.js';
 import SETTING_ICONS from '../setting-icons.js';
 
@@ -92,20 +92,28 @@ function SideNavigation({open, setOpen}) {
   const close = useCallback(() => setOpen(false), [setOpen]);
   const containerRef = useRef(null);
   const settings = useMemo(() => SettingStore.getSupportedSettings().sort((a, b) => a.name.localeCompare(b.name)), []);
+  const isSettingsPage = page === PageTypes.SETTINGS || PageDecendants[PageTypes.SETTINGS]?.includes(page);
 
-  const isSettingsPage =
-    page === PageTypes.SETTINGS || page === PageTypes.HIGHLIGHT_KEYWORDS || page === PageTypes.BLACKLIST_KEYWORDS;
+  const resolvedActivePanelId = useMemo(() => {
+    if (page === PageTypes.HIGHLIGHT_KEYWORDS) {
+      return SettingPanelIds.HIGHLIGHTS;
+    }
+    if (page === PageTypes.BLACKLIST_KEYWORDS) {
+      return SettingPanelIds.BLACKLIST_KEYWORDS;
+    }
+    return activePanelId;
+  }, [page, activePanelId]);
 
   // Keep the active item scrolled into view within the scrollable settings list.
   // scroll-margin on the buttons (see CSS) keeps a gap from the list edges.
   useEffect(() => {
-    if (!isSettingsPage || activePanelId == null) {
+    if (!isSettingsPage || resolvedActivePanelId == null) {
       return;
     }
 
-    const button = containerRef.current?.querySelector(`[data-panel-id="${activePanelId}"]`);
-    button?.scrollIntoView({block: 'nearest'});
-  }, [activePanelId, isSettingsPage]);
+    const button = containerRef.current?.querySelector(`[data-panel-id="${resolvedActivePanelId}"]`);
+    button?.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+  }, [resolvedActivePanelId, isSettingsPage]);
 
   const handleNavigate = useCallback(
     (nextPage) => {
@@ -135,7 +143,7 @@ function SideNavigation({open, setOpen}) {
             <SettingNavigationButton
               key={setting.settingPanelId}
               setting={setting}
-              active={isSettingsPage && activePanelId === setting.settingPanelId}
+              active={isSettingsPage && resolvedActivePanelId === setting.settingPanelId}
               onClick={handleGotoSetting}
             />
           ))}
