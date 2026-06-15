@@ -10,6 +10,7 @@ import PageLoader from '../components/PageLoader.jsx';
 import {Anchor, Text, Title} from '@mantine/core';
 import styles from './Changelog.module.css';
 import PageScrollBody from '../components/PageScrollBody.jsx';
+import PageHeader from '../components/PageHeader.jsx';
 
 function IssueLink({issueNumber}) {
   return (
@@ -91,7 +92,7 @@ function Changelog() {
   }, []);
 
   return (
-    <PageScrollBody>
+    <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'Changelog'})} />}>
       {loading ? <PageLoader /> : null}
       {!loading && changelogEntries == null ? (
         <Text>{formatMessage({defaultMessage: 'Failed to load Changelog.'})}</Text>

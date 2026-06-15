@@ -13,31 +13,57 @@
 import {
   Airplane01Icon,
   ArrowDown01Icon,
-  ArrowLeft01Icon,
+  ArrowLeft02Icon,
   ArrowTurnBackwardIcon,
   ArrowUp01Icon,
+  ArrowUpDownIcon,
   BasketballIcon,
+  BotIcon,
+  BubbleChatIcon,
   Cancel01Icon,
   CheckmarkCircle02Icon,
   Clock01Icon,
+  Compass01Icon,
+  CrownIcon,
   Delete02Icon,
+  DiamondIcon,
   FavouriteIcon,
   Flag02Icon,
-  GraduationScrollIcon,
+  GiftIcon,
+  GridIcon,
   HeartbreakIcon,
+  HighlighterIcon,
   IceCream01Icon,
   Idea01Icon,
+  IncognitoIcon,
+  KeyboardIcon,
+  Layout01Icon,
   Leaf01Icon,
+  LiveStreaming01Icon,
   LockIcon,
+  Mail01Icon,
   Menu01Icon,
+  MessageCancel01Icon,
   Package01Icon,
+  PaintBoardIcon,
   PaintBrush01Icon,
+  PanelRightCloseIcon,
+  PlayCircleIcon,
+  Scroll01Icon,
   Settings01Icon,
+  ShieldIcon,
+  SidebarLeftIcon,
+  SmileIcon,
+  SparklesIcon,
+  SplitIcon,
   SquareUnlock01Icon,
   StarIcon,
   TwitchIcon,
+  UnavailableIcon,
+  UserGroupIcon,
   UserIcon,
   UserSettings01Icon,
+  VideoIcon,
   WinkIcon,
   YoutubeIcon,
   // eslint-disable-next-line import/no-unresolved
@@ -48,13 +74,16 @@ export const faUnlock = SquareUnlock01Icon;
 export const faArrowUp = ArrowUp01Icon;
 export const faArrowDown = ArrowDown01Icon;
 export const faArrowTurnDown = ArrowTurnBackwardIcon;
-export const faArrowLeft = ArrowLeft01Icon;
+export const faArrowLeft = ArrowLeft02Icon;
 export const faTrash = Delete02Icon;
 export const faCog = Settings01Icon;
-export const faScroll = GraduationScrollIcon;
+export const faScroll = Scroll01Icon;
 export const faUser = UserIcon;
 export const faUserGear = UserSettings01Icon;
 export const faClose = Cancel01Icon;
+// No Font Awesome panel-close equivalent; the FA fallback uses an arrow. Both this and the
+// fallback point right and are rotated 180deg in CSS where used (the drawer closes leftward).
+export const faPanelLeftClose = PanelRightCloseIcon;
 export const faPaintBrush = PaintBrush01Icon;
 export const faCheckCircle = CheckmarkCircle02Icon;
 export const faBars = Menu01Icon;
@@ -72,3 +101,30 @@ export const faClock = Clock01Icon;
 export const faLightbulb = Idea01Icon;
 export const faTwitch = TwitchIcon;
 export const faYoutube = YoutubeIcon;
+
+// Per-setting icons used by the settings side navigation.
+export const faFaceSmile = SmileIcon;
+export const faPalette = PaintBoardIcon;
+export const faBorderAll = GridIcon;
+export const faWandMagicSparkles = SparklesIcon;
+export const faTowerBroadcast = LiveStreaming01Icon;
+export const faEnvelope = Mail01Icon;
+export const faKeyboard = KeyboardIcon;
+export const faTableColumns = SplitIcon;
+export const faComment = BubbleChatIcon;
+export const faList = SidebarLeftIcon;
+export const faGem = DiamondIcon;
+export const faUsers = UserGroupIcon;
+export const faCrown = CrownIcon;
+export const faCompass = Compass01Icon;
+export const faVideo = VideoIcon;
+export const faShieldHalved = ShieldIcon;
+export const faHighlighter = HighlighterIcon;
+export const faCommentSlash = MessageCancel01Icon;
+export const faTableCells = Layout01Icon;
+export const faBan = UnavailableIcon;
+export const faArrowsUpDown = ArrowUpDownIcon;
+export const faUserSecret = IncognitoIcon;
+export const faCirclePlay = PlayCircleIcon;
+export const faGift = GiftIcon;
+export const faRobot = BotIcon;

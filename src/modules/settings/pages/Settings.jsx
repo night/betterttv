@@ -1,4 +1,5 @@
-import React, {useMemo} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo, useRef} from 'react';
+import throttle from 'lodash.throttle';
 import formatMessage from '../../../i18n/index.js';
 import extension from '../../../utils/extension.js';
 import {Text, Button} from '@mantine/core';
@@ -6,7 +7,11 @@ import SettingStore from '../stores/SettingStore.jsx';
 import styles from './Settings.module.css';
 import Panel from '../components/Panel.jsx';
 import Promotion from '../components/Promotion.jsx';
-import PageScrollBody from '../components/PageScrollBody.jsx';
+import PageScrollBody, {PageScrollContext} from '../components/PageScrollBody.jsx';
+import PageHeader from '../components/PageHeader.jsx';
+import useSettingsNavigationStore from '../stores/settings-navigation.js';
+
+const SCROLL_SPY_THROTTLE_MS = 100;
 
 const CHROME_VERSION = navigator.userAgentData?.brands?.find(({brand}) => brand === 'Chromium')?.version;
 const IS_UNSUPPORTED_CHROME_INSTALL =
@@ -39,44 +44,83 @@ function UnsupportedChromiumVersion() {
   );
 }
 
-function SettingsList({search, settings, handleSettingRefCallback}) {
+function SettingsList({settings, handleSettingRefCallback}) {
   if (IS_UNSUPPORTED_CHROME_INSTALL) {
     return <UnsupportedChromiumVersion />;
   }
 
-  const searchedSettings = settings
-    .filter(
-      (setting) =>
-        search.length === 0 ||
-        setting.keywords.join(' ').includes(search.toLowerCase()) ||
-        setting.name.toLowerCase().includes(search.toLowerCase())
-    )
-    .map((setting) =>
-      setting.render({
-        ref: (ref) => handleSettingRefCallback(setting.settingPanelId, ref),
-      })
-    );
-
-  if (searchedSettings.length === 0) {
-    return (
-      <Panel>
-        <Text size="lg" className={styles.noResultsText} c="dimmed">
-          {formatMessage({defaultMessage: 'No settings found.'})}
-        </Text>
-      </Panel>
-    );
-  }
-
-  return searchedSettings;
+  return settings.map((setting) =>
+    setting.render({ref: (ref) => handleSettingRefCallback(setting.settingPanelId, ref)})
+  );
 }
 
-function Settings({search, handleSettingRefCallback}) {
+function Settings({handleSettingRefCallback}) {
   const settings = useMemo(() => SettingStore.getSupportedSettings().sort((a, b) => a.name.localeCompare(b.name)), []);
+  const scrollRef = useContext(PageScrollContext);
+  const settingElements = useRef({});
+  const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
+
+  const handleSettingRef = useCallback(
+    (settingPanelId, element) => {
+      if (element == null) {
+        delete settingElements.current[settingPanelId];
+      } else {
+        settingElements.current[settingPanelId] = element;
+      }
+      handleSettingRefCallback(settingPanelId, element);
+    },
+    [handleSettingRefCallback]
+  );
+
+  // Highlight the side-nav entry for whichever setting is at the top of the scroll viewport.
+  // Panels' offsetTop is relative to the page container (which includes the fixed header), so the
+  // detection line is offset by the header height plus the panels' scroll-margin.
+  const updateActivePanel = useCallback(() => {
+    const scroller = scrollRef?.current;
+    if (scroller == null) {
+      return;
+    }
+
+    const header = scroller.parentElement?.querySelector('[data-page-header]');
+    const scrollMargin = parseFloat(getComputedStyle(scroller).getPropertyValue('--page-scroll-margin-top')) || 0;
+    const line = scroller.scrollTop + (header?.offsetHeight ?? 0) + scrollMargin;
+
+    let activeId = null;
+    let activeTop = -Infinity;
+    let firstId = null;
+    let firstTop = Infinity;
+    for (const [id, element] of Object.entries(settingElements.current)) {
+      if (element == null) {
+        continue;
+      }
+      const {offsetTop} = element;
+      if (offsetTop < firstTop) {
+        firstTop = offsetTop;
+        firstId = id;
+      }
+      if (offsetTop <= line && offsetTop > activeTop) {
+        activeTop = offsetTop;
+        activeId = id;
+      }
+    }
+
+    setActivePanelId(activeId ?? firstId);
+  }, [scrollRef, setActivePanelId]);
+
+  // Throttle so scrolling doesn't read layout on every event (the project uses lodash throttling).
+  const handleScroll = useMemo(() => throttle(updateActivePanel, SCROLL_SPY_THROTTLE_MS), [updateActivePanel]);
+
+  // Set the initial highlight on mount.
+  useEffect(() => {
+    updateActivePanel();
+  }, [updateActivePanel]);
 
   return (
-    <PageScrollBody>
-      {search.length === 0 ? <Promotion /> : null}
-      <SettingsList search={search} settings={settings} handleSettingRefCallback={handleSettingRefCallback} />
+    <PageScrollBody
+      header={<PageHeader leftContent={formatMessage({defaultMessage: 'Settings'})} />}
+      onScroll={handleScroll}>
+      <Promotion />
+      <SettingsList settings={settings} handleSettingRefCallback={handleSettingRef} />
     </PageScrollBody>
   );
 }

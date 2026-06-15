@@ -164,6 +164,10 @@ const resolver = (theme) => ({
     '--mantine-color-body-secondary': 'var(--mantine-color-dark-9)',
     '--mantine-color-body': 'var(--mantine-color-dark-8)',
     '--mantine-color-body-inverse': 'var(--mantine-color-dark-0)',
+    // raised surface (e.g. the user-settings card): a step lighter than the body, with a border
+    // lighter still so it reads as elevated against the sidebar.
+    '--mantine-color-body-raised': 'var(--mantine-color-dark-6)',
+    '--mantine-color-body-raised-border': 'var(--mantine-color-dark-4)',
   },
   light: {
     '--mantine-color-text': 'var(--mantine-color-gray-9)',
@@ -172,6 +176,8 @@ const resolver = (theme) => ({
     '--mantine-color-default-border': 'var(--mantine-color-gray-3)',
     '--mantine-color-body-secondary': 'var(--mantine-color-gray-0)',
     '--mantine-color-body-inverse': 'var(--mantine-color-gray-9)',
+    '--mantine-color-body-raised': 'var(--mantine-color-white)',
+    '--mantine-color-body-raised-border': 'var(--mantine-color-gray-3)',
   },
 });
 

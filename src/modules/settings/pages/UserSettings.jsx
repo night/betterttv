@@ -5,6 +5,7 @@ import formatMessage from '../../../i18n/index.js';
 import storage from '../../../storage.js';
 import Footer from '../components/Footer.jsx';
 import PageScrollBody from '../components/PageScrollBody.jsx';
+import PageHeader from '../components/PageHeader.jsx';
 import SettingGroup from '../components/SettingGroup.jsx';
 import SettingWrapper from '../components/SettingWrapper.jsx';
 import ImportSetting from '../components/ImportSetting.jsx';
@@ -130,7 +131,7 @@ function UserSettings() {
   const [resetting, setResetting] = useState(false);
 
   return (
-    <PageScrollBody>
+    <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'User Settings'})} />}>
       <Promotion />
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />

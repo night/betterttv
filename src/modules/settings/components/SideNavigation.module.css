@@ -2,84 +2,177 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--mantine-color-default-border);
-  background-color: var(--mantine-color-body);
+  background-color: var(--sidebar-bg);
   overflow: hidden;
   z-index: 1;
+  /* subtle inset shadow on the right edge, as if the page is casting onto the sidebar.
+     Mirrors --mantine-shadow-xs (same blur radii + opacities) reoriented as a right-edge inset,
+     since the xs token itself is a downward drop shadow and can't be used inset directly. */
+  box-shadow:
+    inset -3px 0 3px -3px rgba(0, 0, 0, 0.05),
+    inset -2px 0 2px -2px rgba(0, 0, 0, 0.1);
 }
 
-.navigationIconButton,
-.logo {
-  width: 56px;
-  height: 56px;
+/* only the settings list scrolls; the logo and user-settings sections stay fixed */
+.settingsScrollArea {
+  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  /* equal padding on all sides of the scrollable list */
+  padding: var(--sidenav-h-padding);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  scrollbar-width: none;
 }
 
-.userSettingsButton {
-  height: 56px;
-  border: 1px solid var(--button-hover);
-  display: grid;
-  place-items: center;
+.settingsScrollArea::-webkit-scrollbar {
+  display: none;
+}
+
+.logo {
+  padding: 0px !important;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .avatar {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 
 .avatarImage {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 
 .navigationIcon {
-  width: 20px;
-  height: 20px;
-}
-
-.navigationIconButton,
-.navigationButton {
-  transition-property: color, background-color;
-  transition-duration: 100ms;
-  transition-timing-function: ease-in-out;
-}
-
-.navigationIconButton[data-active='false']:not(:hover),
-.topNavigationButton[data-active='false']:not(:hover) {
-  background: transparent;
-}
-
-.navigationButton {
-  font-weight: 500;
-  height: 56px;
-  padding-left: 16px;
-  padding-right: 16px;
-  --button-justify: left;
-
-  .navigationIcon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .navigationSection {
-    margin-right: var(--mantine-spacing-lg);
-  }
-}
-
-.avatarFallbackIcon {
   width: 16px;
   height: 16px;
 }
 
-.userSettingsButton {
-  margin-top: auto;
+.navigationButton {
+  font-weight: 500;
+  height: 48px;
+  padding-left: 16px;
+  padding-right: 16px;
+  --button-justify: left;
+  position: relative;
+  border: 1px solid transparent;
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: ease-in-out;
 }
 
-.tooltip {
-  font-size: var(--mantine-font-size-md);
+.navigationButton[data-active='false']:not(:hover) {
+  background: transparent;
+}
+
+/* disable Mantine's press-down (translateY) when the button is clicked */
+.navigationButton:active {
+  transform: none;
+}
+
+/* press feedback: veil an inactive button slightly darker while it's held. A translucent black
+   overlay darkens the whole button (background + text) regardless of theme or base color.
+   inset: -1px covers the 1px border too, so no un-darkened ring shows around the edge. */
+.navigationButton[data-active='false']:active::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background-color: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.navigationButton[data-active='true'] {
+  border-color: color-mix(in srgb, currentColor 30%, transparent);
+  box-shadow: var(--mantine-shadow-xs);
+}
+
+/* the brighter active text reads stronger on a dark surface, so soften the border further */
+[data-mantine-color-scheme='dark'] .navigationButton[data-active='true'] {
+  border-color: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+/* top-level nav items for each individual setting */
+.settingNavigationButton {
+  height: 40px;
+  font-weight: 400;
+  /* match the list's top/bottom padding when scrolled into view */
+  scroll-margin-top: var(--sidenav-h-padding);
+  scroll-margin-bottom: var(--sidenav-h-padding);
+}
+
+.navigationLabel {
+  /* Mantine's label is display:flex, where text-overflow:ellipsis has no effect; make it a block
+     (content height, vertically centered by the button's inner) so a long label truncates. */
+  display: block;
+  height: auto;
+  /* Mantine trims the text box to the baseline; with overflow:hidden that clips descenders (the
+     tail of "g"/"p"), so disable the trim and use normal line-height to give them room. */
+  line-height: normal;
+  text-box-trim: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* allow the label to shrink below its content width so it can ellipsis instead of overflowing
+     (e.g. a long username running into the Pro badge) */
+  min-width: 0;
+  transition: color 150ms ease-in-out;
+}
+
+.navigationButton[data-active='false'] .navigationLabel {
+  color: var(--mantine-color-dimmed);
+}
+
+.navigationSection {
+  margin-right: var(--mantine-spacing-md);
+  /* keep the avatar/badge at full size; only the label shrinks to truncate */
+  flex-shrink: 0;
+}
+
+/* push a right-side section (e.g. the Pro badge) to the button's far edge, keeping a gap from
+   the label (so a truncated label's ellipsis doesn't touch it) */
+.navigationSection[data-position='right'] {
+  margin-left: auto;
+  margin-right: 0;
+  padding-left: var(--mantine-spacing-xs);
+}
+
+/* fixed above the scrollable settings list; spans the full sidebar width (the container has no
+   horizontal padding of its own) so its bottom-border divider reaches edge to edge */
+.logoContainer {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+/* fixed below the scrollable settings list; spans the full sidebar width so its top-border
+   divider reaches edge to edge, with horizontal padding matching the list above */
+.userSettingsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+  padding-left: var(--sidenav-h-padding);
+  padding-right: var(--sidenav-h-padding);
+  border-top: 1px solid var(--mantine-color-default-border);
+}
+
+.userSettingsNavigationButton {
+  border: 1px solid var(--mantine-color-body-raised-border);
+  /* always raised, regardless of active state */
+  box-shadow: var(--mantine-shadow-xs);
+}
+
+/* resting state sits a step lighter than the sidebar so it reads as a raised card */
+.userSettingsNavigationButton[data-active='false']:not(:hover) {
+  background-color: var(--mantine-color-body-raised);
 }
 
 .overlay {
@@ -88,8 +181,26 @@
   transition: opacity 0.2s ease-in-out;
 }
 
-.logoContainer {
-  border-bottom: 1px solid var(--mantine-color-default-border);
+.closeButtonIcon {
+  width: 24px;
+  height: 24px;
+  transform: rotate(180deg);
+  color: var(--mantine-color-dimmed);
+}
+
+@media (min-width: 800px) {
+  .closeButton {
+    display: none;
+  }
+
+  .sidenavContainer {
+    --sidenav-h-padding: 8px;
+    width: 220px;
+  }
+
+  .userSettingsContainer {
+    padding-bottom: 8px;
+  }
 }
 
 @media (max-width: 800px) {
@@ -99,9 +210,9 @@
     top: 0;
     left: 0;
     bottom: 0;
+    --sidenav-h-padding: 16px;
     max-width: min(300px, 100%);
     width: 100%;
-    padding: 16px;
     transform: translateX(-100%);
     transition: transform 0.2s ease-in-out;
   }
@@ -111,22 +222,8 @@
     pointer-events: auto;
   }
 
-  .navigationIconButton {
-    display: none;
-  }
-
   .open {
     transform: translateX(0);
-  }
-
-  .logoContainer {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    height: auto;
-    border-bottom: none;
   }
 
   .closeButton,
@@ -136,6 +233,8 @@
   }
 
   .closeButton {
+    /* pin the close arrow to the right edge of the logo container */
+    margin-left: auto;
     padding: 8px;
   }
 
@@ -143,22 +242,7 @@
     padding: 4px !important;
   }
 
-  .userSettingsButton {
-    height: 56px;
-    place-items: flex-start;
-  }
-
-  .topNavigationButton {
-    height: 48px;
-  }
-}
-
-@media (min-width: 800px) {
-  .closeButton {
-    display: none;
-  }
-
-  .navigationButton {
-    display: none;
+  .userSettingsContainer {
+    padding-bottom: 16px;
   }
 }

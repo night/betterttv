@@ -5,12 +5,15 @@ import Scrollbar from '../../../common/components/Scrollbar.jsx';
 
 export const PageScrollContext = React.createContext(null);
 
-export function PageScrollBody({children, className, ...props}) {
+export function PageScrollBody({header, children, className, ...props}) {
   const ref = useContext(PageScrollContext);
   return (
-    <Scrollbar ref={ref} mirrorPadding className={classNames(styles.pageScrollBody, className)} {...props}>
-      {children}
-    </Scrollbar>
+    <div className={classNames(styles.pageScrollBody, className)}>
+      {header}
+      <Scrollbar ref={ref} className={styles.pageScrollContent} {...props}>
+        {children}
+      </Scrollbar>
+    </div>
   );
 }
 
