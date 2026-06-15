@@ -38,28 +38,16 @@ export function getYoutubeChatInputPartialCommand(commandPrefix = '!') {
     return null;
   }
 
-  const caret = getCaretOffsetInContentEditable(element);
-  if (caret == null) {
-    return null;
-  }
-
   const value = element.innerText;
   if (value == null) {
     return null;
   }
 
-  const {value: focusedWord} = findFocusedWord(value, caret);
-  const firstWord = value.trim().split(/\s+/)[0];
-
-  if (caret > firstWord.length) {
+  if (!value.startsWith(commandPrefix)) {
     return null;
   }
 
-  if (!focusedWord.startsWith(commandPrefix)) {
-    return null;
-  }
-
-  return focusedWord;
+  return value;
 }
 
 export function setYoutubeChatInputValue(text, shouldFocus = true) {

@@ -46,12 +46,12 @@ const AutocompleteListRow = React.memo(function AutocompleteListRow({
   renderRow,
   isSelected,
   isActive,
-  onCompleteItem,
+  handleCompleteResultItem,
   onHoverIndex,
 }) {
   return renderRow({
     item,
-    onClick: () => onCompleteItem(item),
+    onClick: () => handleCompleteResultItem(item),
     selected: isSelected,
     active: isActive,
     onMouseOver: () => onHoverIndex(index),
@@ -60,7 +60,7 @@ const AutocompleteListRow = React.memo(function AutocompleteListRow({
 
 function Autocomplete({
   chatInputQuerySelector,
-  onComplete,
+  handleCompleteResult,
   getChatInputPartialInput,
   renderRow,
   computeItems,
@@ -123,34 +123,37 @@ function Autocomplete({
     navigationMode.current = NavigationModeTypes.ARROW_KEYS;
   }, [open]);
 
-  const updateAutocompleteSuggestions = useCallback(async () => {
-    const value = getChatInputPartialInput();
+  const updateAutocompleteSuggestions = useCallback(
+    async (newValue = null) => {
+      const value = newValue ?? getChatInputPartialInput();
 
-    if (value === lastValueRef.current) {
-      return;
-    }
+      if (value === lastValueRef.current) {
+        return;
+      }
 
-    lastValueRef.current = value;
+      lastValueRef.current = value;
 
-    const requestId = ++updateAutocompleteSuggestionsRequestId.current;
+      const requestId = ++updateAutocompleteSuggestionsRequestId.current;
 
-    if (value == null) {
-      itemsRef.current = [];
-      setPartialInput('');
-    } else {
-      setPartialInput(value);
-      itemsRef.current = (await computeItems(value)).slice(0, MAX_ITEMS_SHOWN);
-    }
+      if (value == null) {
+        itemsRef.current = [];
+        setPartialInput('');
+      } else {
+        setPartialInput(value);
+        itemsRef.current = (await computeItems(value)).slice(0, MAX_ITEMS_SHOWN);
+      }
 
-    if (requestId !== updateAutocompleteSuggestionsRequestId.current) {
-      return;
-    }
+      if (requestId !== updateAutocompleteSuggestionsRequestId.current) {
+        return;
+      }
 
-    setItems(itemsRef.current);
-    handleSelectedChange(0, true);
+      setItems(itemsRef.current);
+      handleSelectedChange(0, true);
 
-    itemsRef.current.length > 0 ? handleOpen() : handleClose();
-  }, [getChatInputPartialInput, computeItems, handleOpen, close, handleSelectedChange]);
+      itemsRef.current.length > 0 ? handleOpen() : handleClose();
+    },
+    [getChatInputPartialInput, computeItems, handleOpen, close, handleSelectedChange]
+  );
 
   useEffect(() => {
     updateAutocompleteSuggestionsRef.current = updateAutocompleteSuggestions;
@@ -186,11 +189,16 @@ function Autocomplete({
 
   const handleComplete = useCallback(
     (item) => {
-      onComplete(item);
-      lastValueRef.current = null;
-      handleClose();
+      const completeResult = handleCompleteResult(item) ?? true;
+
+      if (completeResult.shouldClose === true) {
+        lastValueRef.current = null;
+        handleClose();
+      } else if (completeResult.newValue != null) {
+        updateAutocompleteSuggestionsRef.current(completeResult.newValue);
+      }
     },
-    [onComplete, handleClose]
+    [handleCompleteResult, handleClose]
   );
 
   const onHoverIndex = useCallback(
@@ -299,7 +307,7 @@ function Autocomplete({
             renderRow={renderRow}
             isSelected={selected === index}
             isActive={pendingCompleteIndex === index}
-            onCompleteItem={handleComplete}
+            handleCompleteResultItem={handleComplete}
             onHoverIndex={onHoverIndex}
           />
         ))}

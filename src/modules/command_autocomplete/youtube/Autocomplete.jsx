@@ -1,6 +1,12 @@
 import React from 'react';
 import Autocomplete from '../../../common/components/Autocomplete.jsx';
-import {SettingIds, ShadowDOMComponentIds, UserLevels, COMMAND_PREFIX} from '../../../constants.js';
+import {
+  SettingIds,
+  ShadowDOMComponentIds,
+  UserLevels,
+  COMMAND_PREFIX,
+  CommandAutocompleteArgumentTypes,
+} from '../../../constants.js';
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
 import shadowDom from '../../shadow_dom/index.js';
@@ -20,7 +26,7 @@ function getChatInputPartialCommand() {
 }
 
 function normalizeCommandInput(input) {
-  const normalizedInput = input.trim().toLowerCase();
+  const normalizedInput = input.toLowerCase();
 
   const searchTerm = normalizedInput.startsWith(COMMAND_PREFIX)
     ? normalizedInput.slice(COMMAND_PREFIX.length)
@@ -35,11 +41,31 @@ function getMatchingCommands(commands, partialInput) {
     return commands;
   }
 
-  if (searchTerm.length >= 3) {
-    return commands.filter((command) => command.name.toLowerCase().slice(COMMAND_PREFIX.length).includes(searchTerm));
-  }
+  return commands.filter((command) => {
+    const normalizedInputTrimmed = normalizedInput.toLowerCase();
+    const normalizedSearchTerm = searchTerm.toLowerCase();
+    const normalizedCommandName = command.name.toLowerCase();
 
-  return commands.filter((command) => command.name.toLowerCase().startsWith(normalizedInput));
+    if (normalizedCommandName.startsWith(normalizedInputTrimmed)) {
+      return true;
+    }
+
+    if (normalizedInputTrimmed.startsWith(normalizedCommandName)) {
+      if (command.arguments.some((argument) => argument.type === CommandAutocompleteArgumentTypes.PHRASE)) {
+        return true;
+      }
+
+      const textAfterCommand = normalizedInputTrimmed.slice(normalizedCommandName.length);
+      const textArgumentCount = textAfterCommand.trimStart().split(/\s+/).length;
+      const commandArgumentCount = command.arguments?.length ?? 0;
+
+      if (textArgumentCount <= commandArgumentCount) {
+        return true;
+      }
+    }
+
+    return normalizedCommandName.includes(normalizedSearchTerm);
+  });
 }
 
 function getItemKey(item) {
@@ -47,7 +73,9 @@ function getItemKey(item) {
 }
 
 function replaceChatInputPartialCommand(command) {
-  setYoutubeChatInputValue(`${command.name} `);
+  const newValue = `${command.name} `;
+  setYoutubeChatInputValue(newValue);
+  return {newValue, shouldClose: command.arguments?.length === 0};
 }
 
 let currentCommands = [];
@@ -192,7 +220,7 @@ class CommandAutocomplete {
         getChatInputPartialInput={getChatInputPartialCommand}
         computeItems={this.computeItems.bind(this)}
         getItemKey={getItemKey}
-        onComplete={replaceChatInputPartialCommand}
+        handleCompleteResult={replaceChatInputPartialCommand}
         renderRow={(props) => <CommandRow {...props} />}
       />
     );
