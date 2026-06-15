@@ -19,6 +19,6 @@
 }
 
 .arguments {
-  color: var(--bttv-dimmed-active-color, var(--mantine-primary-color-light));
+  color: var(--bttv-dimmed-active-color, var(--mantine-color-dimmed));
   font-weight: 400;
 }
