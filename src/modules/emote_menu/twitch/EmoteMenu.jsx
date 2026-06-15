@@ -17,8 +17,10 @@ const CHAT_INPUT = '.chat-input';
 
 // For legacy button
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-legacy-emote-picker-button-container';
-const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR =
-  '.chat-input div[data-test-selector="chat-input-buttons-container"] div:has(button[data-a-target="chat-settings"])';
+const CHAT_INPUT_BUTTONS_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
+const CHAT_SETTINGS_BUTTON_SELECTOR = 'button[data-a-target="chat-settings"]';
+const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = `div:has(${CHAT_SETTINGS_BUTTON_SELECTOR})`;
+const CHAT_SEND_BUTTON_SELECTOR = 'button[data-a-target="chat-send-button"]';
 
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-container';
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
@@ -79,28 +81,37 @@ function loadLegacyButton() {
     return;
   }
 
-  const chatSettingsContainer = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
-  if (chatSettingsContainer == null) {
+  const buttonsContainer = document.querySelector(CHAT_INPUT_BUTTONS_CONTAINER_SELECTOR);
+  if (buttonsContainer == null) {
     return;
-  }
-
-  const chatInput = document.querySelector(CHAT_INPUT);
-  if (chatInput != null) {
-    chatInput.classList.add(styles.hideShieldModeButton);
   }
 
   const buttonContainer = document.createElement('div');
   buttonContainer.setAttribute('id', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
 
-  const chatSettingsButtonContainer = chatSettingsContainer.querySelector(
-    'div:has(button[data-a-target="chat-settings"])'
-  );
+  const chatSettingsButtonContainer = buttonsContainer.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
 
-  if (chatSettingsButtonContainer == null) {
-    return;
+  if (chatSettingsButtonContainer != null) {
+    // Regular chat: place the button alongside the chat settings button.
+    chatSettingsButtonContainer.after(buttonContainer);
+  } else {
+    // Moderator view doesn't expose a chat settings button, so place the button next to the
+    // send button instead.
+    const chatSendButton = buttonsContainer.querySelector(CHAT_SEND_BUTTON_SELECTOR);
+    const chatSendButtonContainer = [...buttonsContainer.children].find((child) => child.contains(chatSendButton));
+    if (chatSendButtonContainer == null) {
+      return;
+    }
+    buttonsContainer.insertBefore(buttonContainer, chatSendButtonContainer);
   }
 
-  chatSettingsButtonContainer.after(buttonContainer);
+  // In regular chat the moderator shield mode button shares the row with the chat settings
+  // button, leaving no room for the emote menu button, so hide it. Moderator view has no chat
+  // settings button and enough room, so the shield mode button stays visible there.
+  const chatInput = document.querySelector(CHAT_INPUT);
+  if (chatInput != null && chatSettingsButtonContainer != null) {
+    chatInput.classList.add(styles.hideShieldModeButton);
+  }
 
   const button = document.createElement('button');
   button.classList.add(styles.button);
@@ -199,7 +210,7 @@ function loadEmoteMenu(onMount, onError) {
 
 class EmoteMenuModule {
   constructor() {
-    domObserver.on(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR, (node, isConnected) => {
+    domObserver.on(CHAT_INPUT_BUTTONS_CONTAINER_SELECTOR, (node, isConnected) => {
       if (!isConnected) {
         return;
       }
