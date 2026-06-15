@@ -29,6 +29,7 @@
 .selected {
   color: var(--mantine-primary-color-filled);
   background-color: var(--mantine-primary-color-light-hover);
+  --bttv-dimmed-active-color: var(--mantine-primary-color-light-color);
 }
 
 .subtitle {
