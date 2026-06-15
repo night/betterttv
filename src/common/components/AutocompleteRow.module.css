@@ -29,10 +29,12 @@
 .selected {
   color: var(--mantine-primary-color-filled);
   background-color: var(--mantine-primary-color-light-hover);
+  --bttv-dimmed-active-color: var(--mantine-primary-color-filled-hover);
 }
 
 .subtitle {
   min-width: 0;
+  margin-left: auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -51,7 +53,8 @@
 }
 
 .title {
-  flex-shrink: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-weight: 600;
 }
 

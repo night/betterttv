@@ -17,3 +17,8 @@
   border-radius: var(--mantine-radius-md);
   object-fit: cover;
 }
+
+.arguments {
+  color: var(--bttv-dimmed-active-color, var(--mantine-color-dimmed));
+  font-weight: 400;
+}
