@@ -32,9 +32,9 @@ function CommandRow({item, active, selected, onMouseOver, onClick}) {
 
     const argumentText = item.arguments.map((argument) => `[${argument.name.toLowerCase()}]`).join(' ');
     return (
-      <>
+      <React.Fragment>
         {item.name} <span className={styles.arguments}>{argumentText}</span>
-      </>
+      </React.Fragment>
     );
   }, [item.name, item.arguments]);
 
