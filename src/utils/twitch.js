@@ -681,39 +681,6 @@ export default {
     return element.textContent.replace(/\uFEFF/g, '');
   },
 
-  getChatInputCaretOffset(fullText = null, element = null) {
-    element = element ?? document.querySelector(CHAT_INPUT);
-    if (element == null) {
-      return null;
-    }
-
-    // Legacy textarea
-    const {value: currentValue, selectionStart} = element;
-    if (currentValue != null && typeof selectionStart === 'number') {
-      return selectionStart;
-    }
-
-    // The chat input is a contenteditable. Measure the caret offset in the same
-    // (textContent) space as getChatInputValue by walking a DOM range from the
-    // start of the input to the caret, so emotes/void nodes count consistently.
-    // Slate keeps the FEFF markers out of its model, but they appear in the DOM,
-    // so strip them just like getChatInputValue does.
-    const selection = element.ownerDocument.getSelection();
-    if (selection != null && selection.rangeCount > 0 && element.contains(selection.focusNode)) {
-      const range = element.ownerDocument.createRange();
-      range.selectNodeContents(element);
-      range.setEnd(selection.focusNode, selection.focusOffset);
-      return range.toString().replace(/\uFEFF/g, '').length;
-    }
-
-    // No live selection (e.g. the input isn't focused); fall back to the end.
-    if (fullText == null) {
-      fullText = this.getChatInputValue(element);
-    }
-
-    return fullText != null ? fullText.length : null;
-  },
-
   setChatInputValue(text, shouldFocus = true) {
     const element = document.querySelector(CHAT_INPUT);
 
