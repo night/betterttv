@@ -1,4 +1,5 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef} from 'react';
+import throttle from 'lodash.throttle';
 import formatMessage from '../../../i18n/index.js';
 import extension from '../../../utils/extension.js';
 import {Text, Button} from '@mantine/core';
@@ -6,9 +7,11 @@ import SettingStore from '../stores/SettingStore.jsx';
 import styles from './Settings.module.css';
 import Panel from '../components/Panel.jsx';
 import Promotion from '../components/Promotion.jsx';
-import PageScrollBody from '../components/PageScrollBody.jsx';
+import PageScrollBody, {PageScrollContext} from '../components/PageScrollBody.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import useSettingsNavigationStore from '../stores/settings-navigation.js';
+
+const SCROLL_SPY_THROTTLE_MS = 100;
 
 const CHROME_VERSION = navigator.userAgentData?.brands?.find(({brand}) => brand === 'Chromium')?.version;
 const IS_UNSUPPORTED_CHROME_INSTALL =
@@ -47,16 +50,14 @@ function SettingsList({settings, handleSettingRefCallback}) {
   }
 
   return settings.map((setting) =>
-    setting.render({
-      ref: (ref) => handleSettingRefCallback(setting.settingPanelId, ref),
-    })
+    setting.render({ref: (ref) => handleSettingRefCallback(setting.settingPanelId, ref)})
   );
 }
 
 function Settings({handleSettingRefCallback}) {
   const settings = useMemo(() => SettingStore.getSupportedSettings().sort((a, b) => a.name.localeCompare(b.name)), []);
+  const scrollRef = useContext(PageScrollContext);
   const settingElements = useRef({});
-  const frameRef = useRef(null);
   const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
 
   const handleSettingRef = useCallback(
@@ -71,52 +72,52 @@ function Settings({handleSettingRefCallback}) {
     [handleSettingRefCallback]
   );
 
-  // Highlight the side-nav entry for whichever setting is currently scrolled into view.
-  const updateActivePanel = useCallback(
-    (scroller) => {
-      const header = scroller.parentElement?.querySelector('[data-page-header]');
-      const scrollMarginTop =
-        parseFloat(getComputedStyle(scroller).getPropertyValue('--page-scroll-margin-top')) || 0;
-      const line = scroller.scrollTop + (header?.offsetHeight ?? 0) + scrollMarginTop + 8;
+  // Highlight the side-nav entry for whichever setting is at the top of the scroll viewport.
+  // Panels' offsetTop is relative to the page container (which includes the fixed header), so the
+  // detection line is offset by the header height plus the panels' scroll-margin.
+  const updateActivePanel = useCallback(() => {
+    const scroller = scrollRef?.current;
+    if (scroller == null) {
+      return;
+    }
 
-      let activeId = null;
-      let activeTop = -Infinity;
-      let firstId = null;
-      let firstTop = Infinity;
-      for (const [id, element] of Object.entries(settingElements.current)) {
-        if (element == null) {
-          continue;
-        }
-        const {offsetTop} = element;
-        if (offsetTop < firstTop) {
-          firstTop = offsetTop;
-          firstId = id;
-        }
-        if (offsetTop <= line && offsetTop > activeTop) {
-          activeTop = offsetTop;
-          activeId = id;
-        }
+    const header = scroller.parentElement?.querySelector('[data-page-header]');
+    const scrollMargin = parseFloat(getComputedStyle(scroller).getPropertyValue('--page-scroll-margin-top')) || 0;
+    const line = scroller.scrollTop + (header?.offsetHeight ?? 0) + scrollMargin;
+
+    let activeId = null;
+    let activeTop = -Infinity;
+    let firstId = null;
+    let firstTop = Infinity;
+    for (const [id, element] of Object.entries(settingElements.current)) {
+      if (element == null) {
+        continue;
       }
-
-      setActivePanelId(activeId ?? firstId);
-    },
-    [setActivePanelId]
-  );
-
-  // rAF-throttle so the active panel is recomputed at most once per frame while scrolling.
-  const handleScroll = useCallback(
-    (event) => {
-      const scroller = event.currentTarget;
-      if (frameRef.current != null) {
-        return;
+      const {offsetTop} = element;
+      if (offsetTop < firstTop) {
+        firstTop = offsetTop;
+        firstId = id;
       }
-      frameRef.current = requestAnimationFrame(() => {
-        frameRef.current = null;
-        updateActivePanel(scroller);
-      });
-    },
-    [updateActivePanel]
-  );
+      if (offsetTop <= line && offsetTop > activeTop) {
+        activeTop = offsetTop;
+        activeId = id;
+      }
+    }
+
+    setActivePanelId(activeId ?? firstId);
+  }, [scrollRef, setActivePanelId]);
+
+  // Throttle so scrolling doesn't read layout on every event (the project uses lodash throttling).
+  const handleScroll = useMemo(() => throttle(updateActivePanel, SCROLL_SPY_THROTTLE_MS), [updateActivePanel]);
+
+  // Set the initial highlight on mount; clear it and cancel pending work when leaving the page.
+  useEffect(() => {
+    updateActivePanel();
+    return () => {
+      handleScroll.cancel();
+      setActivePanelId(null);
+    };
+  }, [updateActivePanel, handleScroll, setActivePanelId]);
 
   return (
     <PageScrollBody

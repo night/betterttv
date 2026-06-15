@@ -108,9 +108,20 @@
 }
 
 .navigationLabel {
+  /* Mantine's label is display:flex, where text-overflow:ellipsis has no effect; make it a block
+     (content height, vertically centered by the button's inner) so a long label truncates. */
+  display: block;
+  height: auto;
+  /* Mantine trims the text box to the baseline; with overflow:hidden that clips descenders (the
+     tail of "g"/"p"), so disable the trim and use normal line-height to give them room. */
+  line-height: normal;
+  text-box-trim: none;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  /* allow the label to shrink below its content width so it can ellipsis instead of overflowing
+     (e.g. a long username running into the Pro badge) */
+  min-width: 0;
   transition: color 150ms ease-in-out;
 }
 
@@ -120,6 +131,16 @@
 
 .navigationSection {
   margin-right: var(--mantine-spacing-md);
+  /* keep the avatar/badge at full size; only the label shrinks to truncate */
+  flex-shrink: 0;
+}
+
+/* push a right-side section (e.g. the Pro badge) to the button's far edge, keeping a gap from
+   the label (so a truncated label's ellipsis doesn't touch it) */
+.navigationSection[data-position='right'] {
+  margin-left: auto;
+  margin-right: 0;
+  padding-left: var(--mantine-spacing-xs);
 }
 
 /* fixed above the scrollable settings list; spans the full sidebar width (the container has no
@@ -144,14 +165,14 @@
 }
 
 .userSettingsNavigationButton {
-  border: 1px solid var(--mantine-color-default-border);
+  border: 1px solid var(--mantine-color-body-raised-border);
   /* always raised, regardless of active state */
   box-shadow: var(--mantine-shadow-xs);
 }
 
-/* resting state matches the page background so it reads as a card on the sidebar */
+/* resting state sits a step lighter than the sidebar so it reads as a raised card */
 .userSettingsNavigationButton[data-active='false']:not(:hover) {
-  background-color: var(--page-bg);
+  background-color: var(--mantine-color-body-raised);
 }
 
 .overlay {
@@ -205,6 +226,8 @@
   }
 
   .closeButton {
+    /* pin the close arrow to the right edge of the logo container */
+    margin-left: auto;
     padding: 8px;
   }
 

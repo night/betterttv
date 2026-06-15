@@ -2,13 +2,14 @@ import React, {useCallback, useContext, useEffect, useMemo, useRef} from 'react'
 import {useShallow} from 'zustand/react/shallow';
 import styles from './SideNavigation.module.css';
 import AnimatedLogo from './AnimatedLogo.jsx';
-import {ActionIcon, Avatar, Button, Overlay, useMantineTheme} from '@mantine/core';
-import {faArrowLeft, faScroll, faUserGear} from '../../../common/icons/index.js';
+import {ActionIcon, Avatar, Badge, Button, Overlay, useMantineTheme} from '@mantine/core';
+import {faClose, faScroll, faUserGear} from '../../../common/icons/index.js';
 import {PageDecendants, PageTypes} from '../../../constants.js';
 import classNames from 'classnames';
 import formatMessage from '../../../i18n/index.js';
 import {PageContext} from '../contexts/PageContext.jsx';
 import useAuthStore from '../../../stores/auth.js';
+import {isUserPro} from '../../../utils/pro.js';
 import Icon from '../../../common/components/Icon.jsx';
 import SettingStore, {SettingPanelIds} from '../stores/SettingStore.jsx';
 import useSettingsNavigationStore from '../stores/settings-navigation.js';
@@ -16,13 +17,19 @@ import SETTING_ICONS from '../setting-icons.js';
 
 function CloseMenuButton({onClick, className}) {
   return (
-    <ActionIcon radius="lg" variant="subtle" size="xl" onClick={onClick} aria-label="Back" className={className}>
-      <Icon icon={faArrowLeft} />
+    <ActionIcon
+      radius="lg"
+      variant="subtle"
+      size="xl"
+      onClick={onClick}
+      aria-label={formatMessage({defaultMessage: 'Close'})}
+      className={className}>
+      <Icon icon={faClose} />
     </ActionIcon>
   );
 }
 
-function NavigationButton({children, onClick, active, label, className, buttonProps}) {
+function NavigationButton({children, onClick, active, label, className, rightSection, buttonProps}) {
   const {primaryColor} = useMantineTheme();
   const activeColor = active ? primaryColor : undefined;
 
@@ -36,6 +43,7 @@ function NavigationButton({children, onClick, active, label, className, buttonPr
       className={classNames(styles.navigationButton, className)}
       classNames={{section: styles.navigationSection, label: styles.navigationLabel}}
       leftSection={children}
+      rightSection={rightSection}
       data-active={active}
       {...buttonProps}>
       {label}
@@ -70,7 +78,14 @@ function UserSettingsNavigationButton({active, onClick}) {
       active={active}
       onClick={onClick}
       className={styles.userSettingsNavigationButton}
-      label={currentUser?.displayName ?? formatMessage({defaultMessage: 'User Settings'})}>
+      label={currentUser?.displayName ?? formatMessage({defaultMessage: 'User Settings'})}
+      rightSection={
+        isUserPro(currentUser) ? (
+          <Badge color="indigo" variant="elevated" size="lg">
+            {formatMessage({defaultMessage: 'Pro'})}
+          </Badge>
+        ) : null
+      }>
       {currentUser != null ? (
         <Avatar
           color={activeColor}
