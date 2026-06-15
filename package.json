@@ -86,7 +86,7 @@
     "reconnecting-eventsource": "1.6.5",
     "remove-files-webpack-plugin": "1.5.0",
     "safe-regex2": "5.1.1",
-    "semver": "7.8.2",
+    "semver": "7.8.4",
     "terser-webpack-plugin": "5.6.1",
     "twemoji": "14.0.2",
     "virtual-module-webpack-plugin": "0.4.1",
