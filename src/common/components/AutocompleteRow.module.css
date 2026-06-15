@@ -33,6 +33,7 @@
 
 .subtitle {
   min-width: 0;
+  margin-left: auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

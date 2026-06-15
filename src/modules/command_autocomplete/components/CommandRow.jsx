@@ -25,19 +25,23 @@ function CommandRow({item, active, selected, onMouseOver, onClick}) {
     return null;
   }, [item.provider]);
 
-  const subtitle = useMemo(() => {
-    if (item.arguments.length > 0) {
-      return item.arguments.map((argument) => `[${argument.name.toLowerCase()}]`).join(' ');
+  const title = useMemo(() => {
+    if (item.arguments.length === 0) {
+      return item.name;
     }
 
-    return null;
-  }, [item.arguments]);
+    const argumentText = item.arguments.map((argument) => `[${argument.name.toLowerCase()}]`).join(' ');
+    return (
+      <>
+        {item.name} <span className={styles.arguments}>{argumentText}</span>
+      </>
+    );
+  }, [item.name, item.arguments]);
 
   return (
     <AutocompleteRow
       leading={leadingElement}
-      title={item.name}
-      subtitle={subtitle}
+      title={title}
       active={active}
       selected={selected}
       onMouseOver={onMouseOver}
