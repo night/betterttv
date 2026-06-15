@@ -52,7 +52,8 @@
 }
 
 .title {
-  flex-shrink: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-weight: 600;
 }
 
