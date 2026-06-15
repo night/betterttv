@@ -19,7 +19,6 @@ import {
   Switch,
   mergeMantineTheme,
   getThemeColor,
-  alpha,
   darken,
   Loader,
 } from '@mantine/core';
@@ -155,7 +154,6 @@ const resolver = (theme) => ({
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
     '--mantine-color-default-border': 'var(--mantine-color-gray-0)',
     '--mantine-color-default-border': 'var(--mantine-color-dark-9)',
-    '--mantine-primary-color-light-active': alpha(getThemeColor(theme.primaryColor, theme), 0.3),
   },
   dark: {
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
@@ -165,7 +163,6 @@ const resolver = (theme) => ({
     '--mantine-color-body-secondary': 'var(--mantine-color-dark-9)',
     '--mantine-color-body': 'var(--mantine-color-dark-8)',
     '--mantine-color-body-inverse': 'var(--mantine-color-dark-0)',
-    '--mantine-primary-color-dimmed': darken(getThemeColor(theme.primaryColor, theme), 0.1),
   },
   light: {
     '--mantine-color-text': 'var(--mantine-color-gray-9)',
