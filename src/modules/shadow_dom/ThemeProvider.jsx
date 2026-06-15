@@ -18,8 +18,6 @@ import {
   Radio,
   Switch,
   mergeMantineTheme,
-  getThemeColor,
-  darken,
   Loader,
 } from '@mantine/core';
 import badgeStyles from './styles/badge.module.css';
@@ -171,7 +169,6 @@ const resolver = (theme) => ({
     '--mantine-color-default-border': 'var(--mantine-color-gray-3)',
     '--mantine-color-body-secondary': 'var(--mantine-color-gray-0)',
     '--mantine-color-body-inverse': 'var(--mantine-color-gray-9)',
-    '--mantine-primary-color-dimmed': darken(getThemeColor(theme.primaryColor, theme), 0.1),
   },
 });
 
