@@ -181,6 +181,13 @@
   transition: opacity 0.2s ease-in-out;
 }
 
+.closeButtonIcon {
+  width: 24px;
+  height: 24px;
+  transform: rotate(180deg);
+  color: var(--mantine-color-dimmed);
+}
+
 @media (min-width: 800px) {
   .closeButton {
     display: none;

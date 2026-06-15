@@ -3,7 +3,7 @@ import {useShallow} from 'zustand/react/shallow';
 import styles from './SideNavigation.module.css';
 import AnimatedLogo from './AnimatedLogo.jsx';
 import {ActionIcon, Avatar, Badge, Button, Overlay, useMantineTheme} from '@mantine/core';
-import {faClose, faScroll, faUserGear} from '../../../common/icons/index.js';
+import {faPanelLeftClose, faScroll, faUserGear} from '../../../common/icons/index.js';
 import {PageDecendants, PageTypes} from '../../../constants.js';
 import classNames from 'classnames';
 import formatMessage from '../../../i18n/index.js';
@@ -24,7 +24,7 @@ function CloseMenuButton({onClick, className}) {
       onClick={onClick}
       aria-label={formatMessage({defaultMessage: 'Close'})}
       className={className}>
-      <Icon icon={faClose} />
+      <Icon icon={faPanelLeftClose} className={styles.closeButtonIcon} />
     </ActionIcon>
   );
 }

@@ -110,14 +110,10 @@ function Settings({handleSettingRefCallback}) {
   // Throttle so scrolling doesn't read layout on every event (the project uses lodash throttling).
   const handleScroll = useMemo(() => throttle(updateActivePanel, SCROLL_SPY_THROTTLE_MS), [updateActivePanel]);
 
-  // Set the initial highlight on mount; clear it and cancel pending work when leaving the page.
+  // Set the initial highlight on mount.
   useEffect(() => {
     updateActivePanel();
-    return () => {
-      handleScroll.cancel();
-      setActivePanelId(null);
-    };
-  }, [updateActivePanel, handleScroll, setActivePanelId]);
+  }, [updateActivePanel]);
 
   return (
     <PageScrollBody

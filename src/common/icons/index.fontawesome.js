@@ -57,4 +57,6 @@ export {
   faVideo,
   faWandMagicSparkles,
 } from '@fortawesome/free-solid-svg-icons';
+// No Font Awesome panel-close equivalent; fall back to an arrow (rotated 180deg in CSS where used).
+export {faArrowRight as faPanelLeftClose} from '@fortawesome/free-solid-svg-icons';
 export {faTwitch, faYoutube} from '@fortawesome/free-brands-svg-icons';

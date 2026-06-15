@@ -47,6 +47,7 @@ import {
   Package01Icon,
   PaintBoardIcon,
   PaintBrush01Icon,
+  PanelRightCloseIcon,
   PlayCircleIcon,
   Scroll01Icon,
   Settings01Icon,
@@ -80,6 +81,9 @@ export const faScroll = Scroll01Icon;
 export const faUser = UserIcon;
 export const faUserGear = UserSettings01Icon;
 export const faClose = Cancel01Icon;
+// No Font Awesome panel-close equivalent; the FA fallback uses an arrow. Both this and the
+// fallback point right and are rotated 180deg in CSS where used (the drawer closes leftward).
+export const faPanelLeftClose = PanelRightCloseIcon;
 export const faPaintBrush = PaintBrush01Icon;
 export const faCheckCircle = CheckmarkCircle02Icon;
 export const faBars = Menu01Icon;
