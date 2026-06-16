@@ -19,8 +19,8 @@ const git = require('git-rev-sync');
 const execAsync = promisify(exec);
 
 const PORT = 2888;
-const PROD_ENDPOINT = 'https://cdn.betterttv.net/';
-const DEV_ENDPOINT = `http://127.0.0.1:${PORT}/`;
+const PROD_ENDPOINT = 'https://cdn.betterttv.net';
+const DEV_ENDPOINT = `http://127.0.0.1:${PORT}`;
 
 function gitRev() {
   try {
@@ -137,13 +137,12 @@ const RELOAD_PATH = '/__bttv_dev_reload';
 // Snippet appended to the dev bundle: subscribes to the reload stream and refreshes the page after
 // each rebuild.
 const RELOAD_CLIENT = `;(function(){try{var s=new EventSource(${JSON.stringify(
-  DEV_ENDPOINT.replace(/\/$/, '') + RELOAD_PATH
+  DEV_ENDPOINT + RELOAD_PATH
 )});s.onmessage=function(){location.reload()};}catch(e){}})();`;
 
 // In `vite build --watch` (npm start), serves the freshly built single-file bundle at
 // http://127.0.0.1:2888/betterttv.js, falls back to the production CDN for anything not built
-// locally, and pushes a reload after each rebuild. The userscript loads betterttv.js as a classic
-// script (which Twitch/YouTube CSP allows) exactly like prod.
+// locally, and pushes a reload after each rebuild.
 function devWatchServerPlugin() {
   let isWatch = false;
   let started = false;
@@ -202,7 +201,7 @@ function devWatchServerPlugin() {
           })
           .catch(() => {
             got
-              .stream(`${PROD_ENDPOINT}${relative}`)
+              .stream(`${PROD_ENDPOINT}/${relative}`)
               .on('error', () => {
                 res.statusCode = 404;
                 res.end();
@@ -212,7 +211,7 @@ function devWatchServerPlugin() {
       });
 
       server.listen(PORT, () => {
-        console.log(`\n  BetterTTV dev server: ${DEV_ENDPOINT}betterttv.js (watching for changes)\n`);
+        console.log(`\n  BetterTTV dev server: ${DEV_ENDPOINT}/betterttv.js (watching for changes)\n`);
       });
     },
     // fired after each (re)build writes the bundle to disk
@@ -272,7 +271,8 @@ export default defineConfig(async ({mode}) => {
       postcss: {
         plugins: [
           postcssUrl({
-            url: (asset) => (asset.url.startsWith(CDN_ENDPOINT) ? asset.url : `${CDN_ENDPOINT}${asset.url}`),
+            url: (asset) =>
+              asset.url.startsWith(CDN_ENDPOINT) ? asset.url : `${CDN_ENDPOINT}/${asset.url.replace(/^\/+/, '')}`,
           }),
           postcssPrefixwrap(':where(.bttv-mantine-scope)', {
             prefixRootTags: false,

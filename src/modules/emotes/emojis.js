@@ -63,7 +63,7 @@ class Emojis extends AbstractEmotes {
                 break;
             }
 
-            url = ''.concat(options.base, options.size, '/', icon, options.ext);
+            url = ''.concat(options.base, '/', options.size, '/', icon, options.ext);
 
             return false;
           },
