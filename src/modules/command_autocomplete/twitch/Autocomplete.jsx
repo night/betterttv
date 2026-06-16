@@ -98,6 +98,15 @@ function getChatInputPartialCommand() {
   return value;
 }
 
+function getChatInputCaretPosition() {
+  const element = document.querySelector(CHAT_INPUT);
+  if (element == null) {
+    return null;
+  }
+
+  return twitch.getChatInputCaretOffset(null, element);
+}
+
 function normalizeCommandInput(input) {
   const normalizedInput = input.toLowerCase();
 
@@ -311,6 +320,7 @@ class CommandAutocomplete {
         fullWidthOnSmallScreens={false}
         chatInputQuerySelector={CHAT_TEXT_AREA}
         getChatInputPartialInput={getChatInputPartialCommand}
+        getChatInputCaretPosition={getChatInputCaretPosition}
         computeItems={this.computeItems.bind(this)}
         getItemKey={getItemKey}
         handleCompleteResult={replaceChatInputPartialCommand}

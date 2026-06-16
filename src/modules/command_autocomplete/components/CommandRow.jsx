@@ -1,8 +1,9 @@
 import React, {useMemo} from 'react';
+import classNames from 'classnames';
 import AutocompleteRow from '../../../common/components/AutocompleteRow.jsx';
 import NightbotLogoIcon from '../../../common/components/NightbotLogoIcon.jsx';
 import styles from './CommandRow.module.css';
-import {CommandProviders} from '../../../constants.js';
+import {CommandProviders, CommandAutocompleteArgumentTypes} from '../../../constants.js';
 import cdn from '../../../utils/cdn.js';
 
 const LogoByCommandProvider = {
@@ -11,7 +12,7 @@ const LogoByCommandProvider = {
   [CommandProviders.STREAMELEMENTS]: cdn.url('/assets/logos/streamelements_logo.png'),
 };
 
-function CommandRow({item, active, selected, onMouseOver, onClick}) {
+function CommandRow({item, active, selected, focusedWordIndex, onMouseOver, onClick}) {
   const leadingElement = useMemo(() => {
     if (item.provider === CommandProviders.NIGHTBOT) {
       return <NightbotLogoIcon className={styles.nightbotLogo} />;
@@ -25,18 +26,43 @@ function CommandRow({item, active, selected, onMouseOver, onClick}) {
     return null;
   }, [item.provider]);
 
-  const title = useMemo(() => {
-    if (item.arguments.length === 0) {
-      return item.name;
+  // Combine the command name and its argument placeholders into a single string,
+  // then split on whitespace so the word positions line up with the caret's
+  // focusedWordIndex (which is measured against the chat input the same way).
+  // This handles multi-word command names like "!commands add" — each word is
+  // highlighted only while the caret sits on it.
+  const titleWords = useMemo(() => {
+    const argumentText = item.arguments.map((argument) => `[${argument.name.toLowerCase()}]`).join(' ');
+    const fullText = argumentText.length > 0 ? `${item.name} ${argumentText}` : item.name;
+    return fullText.split(/\s+/);
+  }, [item.name, item.arguments]);
+
+  // A phrase argument soaks up the rest of the message, so it's always the last
+  // argument (and therefore the last word). Once the caret reaches or passes it,
+  // pin the highlight to it instead of letting the focus fall off the end as the
+  // user keeps typing words into the phrase.
+  const highlightedWordIndex = useMemo(() => {
+    const lastArgument = item.arguments[item.arguments.length - 1];
+    if (lastArgument?.type !== CommandAutocompleteArgumentTypes.PHRASE) {
+      return focusedWordIndex;
     }
 
-    const argumentText = item.arguments.map((argument) => `[${argument.name.toLowerCase()}]`).join(' ');
-    return (
-      <React.Fragment>
-        {item.name} <span className={styles.arguments}>{argumentText}</span>
-      </React.Fragment>
-    );
-  }, [item.name, item.arguments]);
+    const phraseWordIndex = titleWords.length - 1;
+    return Math.min(focusedWordIndex, phraseWordIndex);
+  }, [item.arguments, titleWords, focusedWordIndex]);
+
+  const title = useMemo(
+    () =>
+      titleWords.map((word, index) => (
+        <React.Fragment key={index}>
+          {index > 0 ? ' ' : null}
+          <span className={classNames(styles.word, {[styles.focusedWord]: index === highlightedWordIndex})}>
+            {word}
+          </span>
+        </React.Fragment>
+      )),
+    [titleWords, highlightedWordIndex]
+  );
 
   return (
     <AutocompleteRow
@@ -51,5 +77,10 @@ function CommandRow({item, active, selected, onMouseOver, onClick}) {
 }
 
 export default React.memo(CommandRow, (prev, next) => {
-  return prev.item === next.item && prev.selected === next.selected && prev.active === next.active;
+  return (
+    prev.item === next.item &&
+    prev.selected === next.selected &&
+    prev.active === next.active &&
+    prev.focusedWordIndex === next.focusedWordIndex
+  );
 });

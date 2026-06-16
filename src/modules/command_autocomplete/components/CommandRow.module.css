@@ -18,7 +18,13 @@
   object-fit: cover;
 }
 
-.arguments {
+/* Every word is dimmed except the one the caret is currently on. */
+.word {
   color: var(--bttv-dimmed-active-color, var(--mantine-color-dimmed));
   font-weight: 400;
+}
+
+.focusedWord {
+  color: inherit;
+  font-weight: 600;
 }

@@ -40,12 +40,25 @@ function travelDown(currentSelection, rowCount) {
   return newSelection;
 }
 
+// Returns the index of the whitespace-delimited word the caret sits in, where
+// word 0 is the input itself (e.g. the command name). Callers that render
+// arguments map argument N to word index N + 1.
+function getFocusedWordIndex(value, caretPosition) {
+  if (value == null || caretPosition == null) {
+    return 0;
+  }
+
+  const beforeCaret = value.slice(0, caretPosition);
+  return Math.max(0, beforeCaret.split(/\s+/).length - 1);
+}
+
 const AutocompleteListRow = React.memo(function AutocompleteListRow({
   item,
   index,
   renderRow,
   isSelected,
   isActive,
+  focusedWordIndex,
   handleCompleteResultItem,
   onHoverIndex,
 }) {
@@ -54,6 +67,7 @@ const AutocompleteListRow = React.memo(function AutocompleteListRow({
     onClick: () => handleCompleteResultItem(item),
     selected: isSelected,
     active: isActive,
+    focusedWordIndex,
     onMouseOver: () => onHoverIndex(index),
   });
 });
@@ -61,7 +75,9 @@ const AutocompleteListRow = React.memo(function AutocompleteListRow({
 function Autocomplete({
   chatInputQuerySelector,
   handleCompleteResult,
+  onComplete,
   getChatInputPartialInput,
+  getChatInputCaretPosition,
   renderRow,
   computeItems,
   getItemKey,
@@ -84,6 +100,7 @@ function Autocomplete({
   const updateAutocompleteSuggestionsRef = useRef(null);
   const updateAutocompleteSuggestionsRequestId = useRef(0);
   const [pendingCompleteIndex, setPendingCompleteIndex] = useState(null);
+  const [focusedWordIndex, setFocusedWordIndex] = useState(0);
 
   const handleMouseMove = useCallback(() => {
     navigationMode.current = NavigationModeTypes.MOUSE;
@@ -124,8 +141,15 @@ function Autocomplete({
   }, [open]);
 
   const updateAutocompleteSuggestions = useCallback(
-    async (newValue = null) => {
+    async (newValue = null, newCaretPosition = null) => {
       const value = newValue ?? getChatInputPartialInput();
+      const caretPosition = newCaretPosition ?? getChatInputCaretPosition?.();
+
+      // Track which argument the caret sits in even when the text itself hasn't
+      // changed (e.g. the user moved the caret between arguments), so the row can
+      // highlight the focused argument. The expensive item recompute below is
+      // still skipped when only the caret moved.
+      setFocusedWordIndex(getFocusedWordIndex(value, caretPosition));
 
       if (value === lastValueRef.current) {
         return;
@@ -152,7 +176,7 @@ function Autocomplete({
 
       itemsRef.current.length > 0 ? handleOpen() : handleClose();
     },
-    [getChatInputPartialInput, computeItems, handleOpen, close, handleSelectedChange]
+    [getChatInputPartialInput, getChatInputCaretPosition, computeItems, handleOpen, close, handleSelectedChange]
   );
 
   useEffect(() => {
@@ -189,16 +213,21 @@ function Autocomplete({
 
   const handleComplete = useCallback(
     (item) => {
-      const completeResult = handleCompleteResult(item) ?? true;
+      const completeResult = (handleCompleteResult ?? onComplete)?.(item);
 
-      if (completeResult.shouldClose === true) {
-        lastValueRef.current = null;
-        handleClose();
-      } else if (completeResult.newValue != null) {
-        updateAutocompleteSuggestionsRef.current(completeResult.newValue);
+      // Completers may return {newValue, shouldClose}. When the completion still
+      // leaves arguments to fill (shouldClose === false), recompute against the
+      // new value so the menu stays open. A void return (legacy onComplete) or
+      // shouldClose closes the menu, as before.
+      if (completeResult?.shouldClose === false && completeResult.newValue != null) {
+        updateAutocompleteSuggestionsRef.current(completeResult.newValue, completeResult.newValue.length);
+        return;
       }
+
+      lastValueRef.current = null;
+      handleClose();
     },
-    [handleCompleteResult, handleClose]
+    [handleCompleteResult, onComplete, handleClose]
   );
 
   const onHoverIndex = useCallback(
@@ -307,6 +336,7 @@ function Autocomplete({
             renderRow={renderRow}
             isSelected={selected === index}
             isActive={pendingCompleteIndex === index}
+            focusedWordIndex={focusedWordIndex}
             handleCompleteResultItem={handleComplete}
             onHoverIndex={onHoverIndex}
           />

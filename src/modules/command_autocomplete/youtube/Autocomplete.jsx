@@ -16,13 +16,27 @@ import {getAutocompleteSuggestions} from '../../../actions/autocomplete.js';
 import {getCurrentChannel} from '../../../utils/channel.js';
 import watcher from '../../../watcher.js';
 import {getProSettingValue} from '../../../utils/pro.js';
-import {getYoutubeChatInputPartialCommand, setYoutubeChatInputValue} from '../../../utils/youtube.js';
+import {
+  getCaretOffsetInContentEditable,
+  getYoutubeChatInputPartialCommand,
+  setYoutubeChatInputValue,
+  YOUTUBE_CHAT_CONTENTEDITABLE_SELECTOR,
+} from '../../../utils/youtube.js';
 import HTTPError from '../../../utils/http-error.js';
 
 const CHAT_TEXT_AREA = '#input-container';
 
 function getChatInputPartialCommand() {
   return getYoutubeChatInputPartialCommand(COMMAND_PREFIX);
+}
+
+function getChatInputCaretPosition() {
+  const element = document.querySelector(YOUTUBE_CHAT_CONTENTEDITABLE_SELECTOR);
+  if (element == null) {
+    return null;
+  }
+
+  return getCaretOffsetInContentEditable(element);
 }
 
 function normalizeCommandInput(input) {
@@ -218,6 +232,7 @@ class CommandAutocomplete {
       <Autocomplete
         chatInputQuerySelector={CHAT_TEXT_AREA}
         getChatInputPartialInput={getChatInputPartialCommand}
+        getChatInputCaretPosition={getChatInputCaretPosition}
         computeItems={this.computeItems.bind(this)}
         getItemKey={getItemKey}
         handleCompleteResult={replaceChatInputPartialCommand}
