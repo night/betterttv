@@ -1,4 +1,4 @@
-import {EXT_VER, CDN_ENDPOINT} from '../constants.js';
+import {EXT_VER, CDN_ENDPOINT} from '@/constants';
 
 export default {
   url(path, breakCache = false) {

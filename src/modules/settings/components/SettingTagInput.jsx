@@ -1,9 +1,9 @@
 import React, {useCallback} from 'react';
 import {Avatar, TagsInput, Text} from '@mantine/core';
 import styles from './SettingTagInput.module.css';
-import SettingWrapper from './SettingWrapper.jsx';
-import usePortalRef from '../../../common/hooks/PortalRef.jsx';
-import useCurrentChannel from '../../../common/hooks/CurrentChannel.jsx';
+import SettingWrapper from './SettingWrapper';
+import usePortalRef from '@/common/hooks/PortalRef';
+import useCurrentChannel from '@/common/hooks/CurrentChannel';
 
 function SettingTagInput({name, description, value, onChange, placeholder, withCurrentChannel, ...props}) {
   const portalRef = usePortalRef();

@@ -1,24 +1,24 @@
 import {saveAs} from 'file-saver';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import formatMessage from '../../../i18n/index.js';
-import storage from '../../../storage.js';
-import Footer from '../components/Footer.jsx';
-import PageScrollBody from '../components/PageScrollBody.jsx';
-import SettingGroup from '../components/SettingGroup.jsx';
-import SettingWrapper from '../components/SettingWrapper.jsx';
-import ImportSetting from '../components/ImportSetting.jsx';
-import ResetSetting from '../components/ResetSetting.jsx';
+import formatMessage from '@/i18n/index';
+import storage from '@/storage';
+import Footer from '@/modules/settings/components/Footer';
+import PageScrollBody from '@/modules/settings/components/PageScrollBody';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import ImportSetting from '@/modules/settings/components/ImportSetting';
+import ResetSetting from '@/modules/settings/components/ResetSetting';
 import {Button} from '@mantine/core';
-import useAuthStore, {getCredentials, setCredentials} from '../../../stores/auth.js';
-import {revokeAccessToken} from '../../../utils/oauth.js';
-import {executeOAuth2SignInAndSetCredentials} from '../../../utils/auth.js';
-import {openConfirmModal} from '../../../common/utils/modal.js';
-import useCloudBackupSettings from '../../../common/hooks/CloudBackup.jsx';
-import SettingSwitch from '../components/SettingSwitch.jsx';
-import useProRequiredState from '../../../common/hooks/ProRequiredState.jsx';
-import Promotion from '../components/Promotion.jsx';
-import {EXT_VER} from '../../../constants.js';
+import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
+import {revokeAccessToken} from '@/utils/oauth';
+import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
+import {openConfirmModal} from '@/common/utils/modal';
+import useCloudBackupSettings from '@/common/hooks/CloudBackup';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import useProRequiredState from '@/common/hooks/ProRequiredState';
+import Promotion from '@/modules/settings/components/Promotion';
+import {EXT_VER} from '@/constants';
 
 function BackupSetting({description, disabled}) {
   function backupFile() {

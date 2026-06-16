@@ -1,10 +1,10 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, SidebarFlags} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingCheckbox from '../../components/SettingCheckbox.jsx';
-import SettingCheckboxGroup from '../../components/SettingCheckboxGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds, SidebarFlags} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
+import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Sidebar'});
 

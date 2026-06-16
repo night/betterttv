@@ -1,5 +1,5 @@
 import React from 'react';
-import formatMessage from '../../../i18n/index.js';
+import formatMessage from '@/i18n/index';
 import styles from './Settings.module.css';
 
 export default function DropdownButton(props) {

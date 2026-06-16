@@ -1,23 +1,23 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {PageDecendants, PageTypes} from '../../../constants.js';
-import UserSettings from '../pages/UserSettings.jsx';
-import Changelog from '../pages/Changelog.jsx';
-import Settings from '../pages/Settings.jsx';
-import settingsStyles from '../pages/Settings.module.css';
+import {PageDecendants, PageTypes} from '@/constants';
+import UserSettings from '@/modules/settings/pages/UserSettings';
+import Changelog from '@/modules/settings/pages/Changelog';
+import Settings from '@/modules/settings/pages/Settings';
+import settingsStyles from '@/modules/settings/pages/Settings.module.css';
 import styles from './SettingsModal.module.css';
 import {ActionIcon, Modal, TextInput, Title} from '@mantine/core';
 import {useDisclosure, useFocusTrap, useViewportSize} from '@mantine/hooks';
-import {PageScrollContext} from './PageScrollBody.jsx';
-import {ScrollbarSizeTargetContext} from '../../../common/components/Scrollbar.jsx';
-import HighlightKeywords from '../pages/HighlightKeywords.jsx';
-import SideNavigation from './SideNavigation.jsx';
-import PageHeader from './PageHeader.jsx';
-import {PageContext} from '../contexts/PageContext.jsx';
-import BlacklistKeywords from '../pages/BlacklistKeywords.jsx';
+import {PageScrollContext} from './PageScrollBody';
+import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
+import HighlightKeywords from '@/modules/settings/pages/HighlightKeywords';
+import SideNavigation from './SideNavigation';
+import PageHeader from './PageHeader';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import BlacklistKeywords from '@/modules/settings/pages/BlacklistKeywords';
 import {AnimatePresence, motion, usePresenceData} from 'framer-motion';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import Icon from '../../../common/components/Icon.jsx';
-import formatMessage from '../../../i18n/index.js';
+import Icon from '@/common/components/Icon';
+import formatMessage from '@/i18n/index';
 
 function Page({page, search, handleSettingRefCallback}) {
   switch (page) {

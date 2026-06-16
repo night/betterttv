@@ -1,7 +1,7 @@
-import {PlatformTypes} from '../../constants.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import TwitchSettingsModule from './twitch/Settings.jsx';
-import YoutubeSettingModule from './youtube/Settings.jsx';
+import {PlatformTypes} from '@/constants';
+import TwitchSettingsModule from '@/modules/settings/twitch/Settings';
+import YoutubeSettingModule from '@/modules/settings/youtube/Settings';
+import {loadModuleForPlatforms} from '@/utils/modules';
 
 const settings = {
   openSettings: () => {},

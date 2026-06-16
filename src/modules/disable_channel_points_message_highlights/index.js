@@ -1,8 +1,8 @@
-import {ChannelPointsFlags, PlatformTypes, SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
-import {hasFlag} from '../../utils/flags.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import watcher from '../../watcher.js';
+import {ChannelPointsFlags, PlatformTypes, SettingIds} from '@/constants';
+import settings from '@/settings';
+import {hasFlag} from '@/utils/flags';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import watcher from '@/watcher';
 
 class DisableChannelPointsMessageHighlightsModule {
   constructor() {

@@ -1,5 +1,5 @@
-import {SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
+import {SettingIds} from '@/constants';
+import settings from '@/settings';
 
 const node = document.querySelector('html');
 

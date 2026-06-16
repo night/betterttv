@@ -1,5 +1,5 @@
 import React, {useMemo, useRef} from 'react';
-import {DEFAULT_PRIMARY_COLOR, SettingIds} from '../../constants.js';
+import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
 import {
   ActionIcon,
   Avatar,
@@ -20,19 +20,19 @@ import {
   mergeMantineTheme,
   Loader,
 } from '@mantine/core';
-import badgeStyles from './styles/badge.module.css';
-import buttonStyles from './styles/button.module.css';
-import pillStyles from './styles/pill.module.css';
-import inputStyles from './styles/input.module.css';
-import kbdStyles from './styles/kbd.module.css';
-import switchStyles from './styles/switch.module.css';
-import checkboxStyles from './styles/checkbox.module.css';
-import radioStyles from './styles/radio.module.css';
-import useStorageState from '../../common/hooks/StorageState.jsx';
+import badgeStyles from '@/modules/shadow_dom/styles/badge.module.css';
+import buttonStyles from '@/modules/shadow_dom/styles/button.module.css';
+import pillStyles from '@/modules/shadow_dom/styles/pill.module.css';
+import inputStyles from '@/modules/shadow_dom/styles/input.module.css';
+import kbdStyles from '@/modules/shadow_dom/styles/kbd.module.css';
+import switchStyles from '@/modules/shadow_dom/styles/switch.module.css';
+import checkboxStyles from '@/modules/shadow_dom/styles/checkbox.module.css';
+import radioStyles from '@/modules/shadow_dom/styles/radio.module.css';
+import useStorageState from '@/common/hooks/StorageState';
 import {ModalsProvider} from '@mantine/modals';
-import useProRequiredState from '../../common/hooks/ProRequiredState.jsx';
-import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '../../common/components/LoaderIcon.jsx';
-import {PortalContext} from '../../common/contexts/PortalContext.jsx';
+import useProRequiredState from '@/common/hooks/ProRequiredState';
+import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '@/common/components/LoaderIcon';
+import {PortalContext} from '@/common/contexts/PortalContext';
 import {useMounted} from '@mantine/hooks';
 
 const mantineTheme = createTheme({

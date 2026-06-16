@@ -1,12 +1,12 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, EmoteMenuTypes, SettingDefaultValues} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingSwitch from '../../components/SettingSwitch.jsx';
-import SettingGroup from '../../components/SettingGroup.jsx';
-import SettingNumberInput from '../../components/SettingNumberInput.jsx';
-import {EMOTE_MENU_MIN_WIDTH} from '../../../../common/stores/emote-menu-view-store.js';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds, EmoteMenuTypes, SettingDefaultValues} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingNumberInput from '@/modules/settings/components/SettingNumberInput';
+import {EMOTE_MENU_MIN_WIDTH} from '@/common/stores/emote-menu-view-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Menu'});
 

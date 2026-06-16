@@ -1,5 +1,5 @@
-import {PlatformTypes} from '../constants.js';
-import {loadModuleForPlatforms} from './modules.js';
+import {PlatformTypes} from '@/constants';
+import {loadModuleForPlatforms} from './modules';
 
 export default loadModuleForPlatforms(
   [
@@ -8,7 +8,7 @@ export default loadModuleForPlatforms(
       let twitch;
       return async (message) => {
         if (twitch == null) {
-          const module = await import('./twitch.js');
+          const module = await import('./twitch');
           twitch = module.default;
         }
         twitch.sendChatAdminMessage(message, true);
@@ -21,7 +21,7 @@ export default loadModuleForPlatforms(
       let sendEphemeralMessage;
       return async (message) => {
         if (sendEphemeralMessage == null) {
-          const module = await import('./youtube-ephemeral-messages.js');
+          const module = await import('./youtube-ephemeral-messages');
           sendEphemeralMessage = module.sendEphemeralMessage;
         }
         return sendEphemeralMessage(message);

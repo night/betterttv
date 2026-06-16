@@ -1,11 +1,11 @@
 import React, {useContext} from 'react';
 import styles from './PageHeader.module.css';
 import {ActionIcon, Avatar, CloseButton, Title} from '@mantine/core';
-import {PageContext} from '../contexts/PageContext.jsx';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
 import classNames from 'classnames';
-import useAuthStore from '../../../stores/auth.js';
+import useAuthStore from '@/stores/auth';
 import {useShallow} from 'zustand/react/shallow';
-import Icon from '../../../common/components/Icon.jsx';
+import Icon from '@/common/components/Icon';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 
 const PageHeader = React.forwardRef(({className, leftContent, onClose}, ref) => {

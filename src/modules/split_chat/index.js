@@ -1,6 +1,6 @@
-import {PlatformTypes, SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
+import {PlatformTypes, SettingIds} from '@/constants';
+import settings from '@/settings';
+import {loadModuleForPlatforms} from '@/utils/modules';
 
 let alternateBackground = false;
 const DEFAULT_LIGHT_THEME_COLOR = '#dcdcdc';

@@ -1,6 +1,5 @@
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import babelParser from '@babel/eslint-parser';
 import {fixupConfigRules} from '@eslint/compat';
 import {FlatCompat} from '@eslint/eslintrc';
 import js from '@eslint/js';
@@ -30,16 +29,12 @@ export default [
         ...globals.node,
       },
 
-      parser: babelParser,
-      ecmaVersion: 6,
+      ecmaVersion: 'latest',
       sourceType: 'module',
 
       parserOptions: {
-        requireConfigFile: false,
-        allowImportExportEverywhere: true,
-
-        babelOptions: {
-          presets: ['@babel/preset-react'],
+        ecmaFeatures: {
+          jsx: true,
         },
       },
     },
@@ -48,11 +43,20 @@ export default [
       react: {
         version: 'detect',
       },
+
+      // the default node resolver ignores package "exports" maps, so it can't find ESM-only
+      // packages like vite/got; this resolver honors them and reads the @/* paths from jsconfig
+      'import/resolver': {
+        typescript: {
+          project: './jsconfig.json',
+        },
+        node: true,
+      },
     },
 
     rules: {
       'prettier/prettier': ['error'],
-      'import/extensions': ['error', 'ignorePackages'],
+      'import/extensions': ['error', 'never', {json: 'always', css: 'always'}],
       'react/prop-types': 'off',
       'react/jsx-props-no-spreading': 'off',
       'no-param-reassign': 'off',
@@ -69,7 +73,9 @@ export default [
       'import/order': [
         'error',
         {
-          groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          pathGroups: [{pattern: '@/**', group: 'internal'}],
+          pathGroupsExcludedImportTypes: ['builtin'],
 
           alphabetize: {
             order: 'asc',

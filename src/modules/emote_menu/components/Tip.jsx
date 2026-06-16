@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
-import useStorageState from '../../../common/hooks/StorageState.jsx';
-import {EmoteMenuTips, EmoteMenuTypes, PlatformTypes, SettingIds} from '../../../constants.js';
-import {SettingPanelIds} from '../../settings/stores/SettingStore.jsx';
-import formatMessage from '../../../i18n/index.js';
-import storage from '../../../storage.js';
-import {getPlatform, isMac} from '../../../utils/window.js';
-import emoteMenuStore from '../stores/emote-menu-store.js';
-import Icons from './Icons.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {EmoteMenuTips, EmoteMenuTypes, PlatformTypes, SettingIds} from '@/constants';
+import {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import formatMessage from '@/i18n/index';
+import storage from '@/storage';
+import {getPlatform, isMac} from '@/utils/window';
+import emoteMenuStore from '@/modules/emote_menu/stores/emote-menu-store';
+import Icons from './Icons';
 import styles from './Tip.module.css';
 import {Anchor, CloseButton, Kbd} from '@mantine/core';
 import classNames from 'classnames';
-import settings from '../../settings/index.js';
+import settings from '@/modules/settings/index';
 
 const tips = {};
 for (const tipStorageKey of Object.values(EmoteMenuTips)) {

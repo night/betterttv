@@ -1,4 +1,4 @@
-import {wasSeventvInstalled} from './utils/seventv.js';
+import {wasSeventvInstalled} from '@/utils/seventv';
 
 export const NODE_ENV = process.env.NODE_ENV;
 export const EXT_VER = process.env.EXT_VER;

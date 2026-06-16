@@ -5,11 +5,11 @@ import {DndContext, PointerSensor, closestCenter, useSensor, useSensors} from '@
 import {restrictToVerticalAxis} from '@dnd-kit/modifiers';
 import {SortableContext, arrayMove, verticalListSortingStrategy, useSortable} from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
-import Emote from '../../../common/components/Emote.jsx';
-import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
-import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '../../../constants.js';
-import emojis from '../../emotes/emojis.js';
-import useAutoSidebarScroll from '../hooks/AutoSidebarScroll.jsx';
+import Emote from '@/common/components/Emote';
+import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
+import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '@/constants';
+import emojis from '@/modules/emotes/emojis';
+import useAutoSidebarScroll from '@/modules/emote_menu/hooks/AutoSidebarScroll';
 import styles from './Sidebar.module.css';
 import {useElementSize} from '@mantine/hooks';
 

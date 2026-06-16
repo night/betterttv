@@ -1,4 +1,4 @@
-import {createSrc, createSrcSet} from './image.js';
+import {createSrc, createSrcSet} from './image';
 
 export function findFocusedWord(value, selectionStart = 0) {
   const subString = value.substring(0, selectionStart);

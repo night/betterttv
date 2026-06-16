@@ -1,4 +1,4 @@
-import domObserver from '../../observers/dom.js';
+import domObserver from '@/observers/dom';
 
 const BTTV_GLOBAL_MIXIN = '__BTTV_GLOBAL_MIXIN__';
 const SEVEN_TV_ROOT_ID = 'seventv-root';

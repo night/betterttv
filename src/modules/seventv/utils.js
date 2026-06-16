@@ -1,5 +1,5 @@
-import {hasFlag} from '../../utils/flags.js';
-import Emote from '../emotes/emote.js';
+import Emote from '@/modules/emotes/emote';
+import {hasFlag} from '@/utils/flags';
 
 function emoteUrl(url, version, static_ = false) {
   return `${url}/${version}${static_ ? '_static' : ''}.webp`;

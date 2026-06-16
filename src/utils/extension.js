@@ -1,5 +1,5 @@
-import {EXT_VER} from '../constants.js';
-import debug from './debug.js';
+import {EXT_VER} from '@/constants';
+import debug from './debug';
 
 const browser = window.chrome || window.browser;
 

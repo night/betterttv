@@ -11,14 +11,14 @@
 
 ## Development
 
-We use webpack to concatenate all of the files and templates into one.
-Just run the following command from the BetterTTV directory to start a dev server.
+We use [Vite](https://vite.dev/) to bundle all of the files and templates into one.
+Just run the following command from the BetterTTV directory to start the dev server.
 
 ```
 npm start
 ```
 
-A webserver will start and you are able to use the development version of BetterTTV on Twitch using this userscript in a script manager like TamperMonkey:
+This builds `betterttv.js` and serves it on port 2888, rebuilding on every change and reloading the page once the rebuild finishes. Use the development version of BetterTTV on Twitch with this userscript in a script manager like TamperMonkey:
 
 ```
 // ==UserScript==

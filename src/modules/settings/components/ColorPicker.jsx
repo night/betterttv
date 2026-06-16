@@ -2,9 +2,9 @@ import React from 'react';
 import {ActionIcon, ColorInput, ColorPicker as MantineColorPicker, Popover} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import styles from './ColorPicker.module.css';
-import formatMessage from '../../../i18n';
+import formatMessage from '@/i18n';
 import classNames from 'classnames';
-import usePortalRef from '../../../common/hooks/PortalRef.jsx';
+import usePortalRef from '@/common/hooks/PortalRef';
 import {useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 
 function ColorPicker({value, defaultValue, placeholder, onChange, className, ...props}) {

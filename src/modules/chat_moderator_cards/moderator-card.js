@@ -1,12 +1,12 @@
 import gql from 'graphql-tag';
 import {DateTime} from 'luxon';
-import formatMessage from '../../i18n/index.js';
-import {getCurrentChannel} from '../../utils/channel.js';
-import keyCodes from '../../utils/keycodes.js';
-import twitch from '../../utils/twitch.js';
-import {getCurrentUser} from '../../utils/user.js';
-import nicknames from '../chat_nicknames/index.js';
-import {bindTooltip} from '../tooltip/index.js';
+import formatMessage from '@/i18n/index';
+import nicknames from '@/modules/chat_nicknames/index';
+import {bindTooltip} from '@/modules/tooltip/index';
+import {getCurrentChannel} from '@/utils/channel';
+import keyCodes from '@/utils/keycodes';
+import twitch from '@/utils/twitch';
+import {getCurrentUser} from '@/utils/user';
 
 const Commands = {
   BAN: '/ban',

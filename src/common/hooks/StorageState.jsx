@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import settings from '../../settings.js';
+import settings from '@/settings';
 
 export default function useStorageState(settingId) {
   const [value, setValue] = useState(settings.get(settingId));

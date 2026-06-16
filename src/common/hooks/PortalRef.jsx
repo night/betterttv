@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from 'react';
-import {PortalContext} from '../contexts/PortalContext.jsx';
+import {PortalContext} from '@/common/contexts/PortalContext';
 
 function usePortalRef() {
   const portalRef = useContext(PortalContext);

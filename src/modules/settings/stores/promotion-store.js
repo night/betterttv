@@ -1,9 +1,9 @@
-import {SettingIds, SettingsPromotions} from '../../../constants.js';
-import settings from '../../../settings.js';
-import storage from '../../../storage.js';
-import AuthStore from '../../../stores/auth.js';
-import {getProSettingValue} from '../../../utils/pro.js';
-import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
+import {SettingIds, SettingsPromotions} from '@/constants';
+import settings from '@/settings';
+import storage from '@/storage';
+import AuthStore from '@/stores/auth';
+import {getProSettingValue} from '@/utils/pro';
+import SafeEventEmitter from '@/utils/safe-event-emitter';
 
 const PROMOTION_COOLDOWN_MS = 2 * 24 * 60 * 60 * 1000; // 2 days
 const LAST_DISMISSED_ANY_AT_KEY = 'settingsPromotionLastDismissedAnyAt';

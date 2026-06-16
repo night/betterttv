@@ -1,11 +1,11 @@
 import React, {useContext} from 'react';
-import {PageTypes, SettingIds} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import {PageContext} from '../../contexts/PageContext.jsx';
-import SettingWrapper from '../../components/SettingWrapper.jsx';
+import {PageTypes, SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {Button} from '@mantine/core';
-import SettingGroup from '../../components/SettingGroup.jsx';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Blacklist Keywords'});
 

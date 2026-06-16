@@ -1,6 +1,6 @@
-import formatMessage from '../../../i18n/index.js';
-import anonChat from '../../anon_chat/index.js';
-import commandStore, {PermissionLevels} from '../store.js';
+import formatMessage from '@/i18n/index';
+import anonChat from '@/modules/anon_chat/index';
+import commandStore, {PermissionLevels} from '@/modules/chat_commands/store';
 
 commandStore.registerCommand({
   name: 'join',

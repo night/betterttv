@@ -1,11 +1,11 @@
-import {getGlobalEmotes} from '../../actions/emotes.js';
-import {EmoteCategories, EmoteProviders} from '../../constants.js';
-import formatMessage from '../../i18n/index.js';
-import cdn from '../../utils/cdn.js';
-import watcher from '../../watcher.js';
-import subscribers from '../subscribers/index.js';
-import AbstractEmotes from './abstract-emotes.js';
-import Emote from './emote.js';
+import {getGlobalEmotes} from '@/actions/emotes';
+import {EmoteCategories, EmoteProviders} from '@/constants';
+import formatMessage from '@/i18n/index';
+import subscribers from '@/modules/subscribers/index';
+import cdn from '@/utils/cdn';
+import watcher from '@/watcher';
+import AbstractEmotes from './abstract-emotes';
+import Emote from './emote';
 
 const category = {
   id: EmoteCategories.BETTERTTV_GLOBAL,

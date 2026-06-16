@@ -1,15 +1,15 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, EmoteTypeFlags} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import {hasFlag} from '../../../../utils/flags.js';
-import globalEmotes from '../../../emotes/global-emotes.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingCheckbox from '../../components/SettingCheckbox.jsx';
-import SettingCheckboxGroup from '../../components/SettingCheckboxGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds, EmoteTypeFlags} from '@/constants';
+import formatMessage from '@/i18n/index';
+import {hasFlag} from '@/utils/flags';
+import globalEmotes from '@/modules/emotes/global-emotes';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
+import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
 import styles from './Emotes.module.css';
 import {Anchor, Kbd, Text} from '@mantine/core';
-import {openConfirmModal, openModal} from '../../../../common/utils/modal.js';
+import {openConfirmModal, openModal} from '@/common/utils/modal';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emotes'});
 

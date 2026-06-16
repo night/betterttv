@@ -1,7 +1,7 @@
-import {DEFAULT_FREQUENT_EMOTES, EmoteProviders, PlatformTypes} from '../../../constants.js';
-import storage from '../../../storage.js';
-import {getCanonicalEmoteId} from '../../../utils/emote.js';
-import {getPlatform} from '../../../utils/window.js';
+import {DEFAULT_FREQUENT_EMOTES, EmoteProviders, PlatformTypes} from '@/constants';
+import storage from '@/storage';
+import {getCanonicalEmoteId} from '@/utils/emote';
+import {getPlatform} from '@/utils/window';
 
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;

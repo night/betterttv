@@ -1,5 +1,5 @@
 import React from 'react';
-import {isStandaloneWindow} from '../../../utils/window';
+import {isStandaloneWindow} from '@/utils/window';
 
 export const SettingPanelIds = {
   EMOTES: 'emotes',

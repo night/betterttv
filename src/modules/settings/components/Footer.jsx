@@ -1,7 +1,7 @@
 import React from 'react';
 import {Anchor, Text} from '@mantine/core';
-import {EXT_VER, ExternalLinks} from '../../../constants.js';
-import formatMessage from '../../../i18n/index.js';
+import {EXT_VER, ExternalLinks} from '@/constants';
+import formatMessage from '@/i18n/index';
 import styles from './Footer.module.css';
 
 const FOOTER_EXPLORE_LINKS = [

@@ -1,12 +1,12 @@
 import {off, on} from 'delegated-events';
 import gql from 'graphql-tag';
-import {PlatformTypes} from '../../constants.js';
-import formatMessage from '../../i18n/index.js';
-import {getCurrentChannel} from '../../utils/channel.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import mouseButtons from '../../utils/mousebuttons.js';
-import twitch from '../../utils/twitch.js';
-import watcher from '../../watcher.js';
+import {PlatformTypes} from '@/constants';
+import formatMessage from '@/i18n/index';
+import {getCurrentChannel} from '@/utils/channel';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import mouseButtons from '@/utils/mousebuttons';
+import twitch from '@/utils/twitch';
+import watcher from '@/watcher';
 
 const CHAT_ROOM_SELECTOR = 'section[data-test-selector="chat-room-component-layout"]';
 const CHAT_LINE_SELECTOR = '.chat-line__message';

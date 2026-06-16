@@ -1,12 +1,12 @@
 import React, {useMemo} from 'react';
-import formatMessage from '../../../i18n/index.js';
-import extension from '../../../utils/extension.js';
+import formatMessage from '@/i18n/index';
+import extension from '@/utils/extension';
 import {Text, Button} from '@mantine/core';
-import SettingStore from '../stores/SettingStore.jsx';
+import SettingStore from '@/modules/settings/stores/SettingStore';
 import styles from './Settings.module.css';
-import Panel from '../components/Panel.jsx';
-import Promotion from '../components/Promotion.jsx';
-import PageScrollBody from '../components/PageScrollBody.jsx';
+import Panel from '@/modules/settings/components/Panel';
+import Promotion from '@/modules/settings/components/Promotion';
+import PageScrollBody from '@/modules/settings/components/PageScrollBody';
 
 const CHROME_VERSION = navigator.userAgentData?.brands?.find(({brand}) => brand === 'Chromium')?.version;
 const IS_UNSUPPORTED_CHROME_INSTALL =

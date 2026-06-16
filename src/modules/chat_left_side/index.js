@@ -1,6 +1,6 @@
-import {ChatLayoutTypes, PlatformTypes, SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
+import {ChatLayoutTypes, PlatformTypes, SettingIds} from '@/constants';
+import settings from '@/settings';
+import {loadModuleForPlatforms} from '@/utils/modules';
 
 class ChatLeftSide {
   constructor() {

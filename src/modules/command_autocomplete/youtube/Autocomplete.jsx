@@ -1,28 +1,28 @@
 import React from 'react';
-import Autocomplete from '../../../common/components/Autocomplete.jsx';
+import Autocomplete from '@/common/components/Autocomplete';
 import {
   SettingIds,
   ShadowDOMComponentIds,
   UserLevels,
   COMMAND_PREFIX,
   CommandAutocompleteArgumentTypes,
-} from '../../../constants.js';
-import domObserver from '../../../observers/dom.js';
-import settings from '../../../settings.js';
-import shadowDom from '../../shadow_dom/index.js';
-import CommandRow from '../components/CommandRow.jsx';
-import useAuthStore from '../../../stores/auth.js';
-import {getAutocompleteSuggestions} from '../../../actions/autocomplete.js';
-import {getCurrentChannel} from '../../../utils/channel.js';
-import watcher from '../../../watcher.js';
-import {getProSettingValue} from '../../../utils/pro.js';
+} from '@/constants';
+import domObserver from '@/observers/dom';
+import settings from '@/settings';
+import shadowDom from '@/modules/shadow_dom/index';
+import CommandRow from '@/modules/command_autocomplete/components/CommandRow';
+import useAuthStore from '@/stores/auth';
+import {getAutocompleteSuggestions} from '@/actions/autocomplete';
+import {getCurrentChannel} from '@/utils/channel';
+import watcher from '@/watcher';
+import {getProSettingValue} from '@/utils/pro';
 import {
   getCaretOffsetInContentEditable,
   getYoutubeChatInputPartialCommand,
   setYoutubeChatInputValue,
   YOUTUBE_CHAT_CONTENTEDITABLE_SELECTOR,
-} from '../../../utils/youtube.js';
-import HTTPError from '../../../utils/http-error.js';
+} from '@/utils/youtube';
+import HTTPError from '@/utils/http-error';
 
 const CHAT_TEXT_AREA = '#input-container';
 

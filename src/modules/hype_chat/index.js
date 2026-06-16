@@ -1,9 +1,9 @@
-import {PlatformTypes, SettingIds} from '../../constants.js';
-import dom from '../../observers/dom.js';
-import settings from '../../settings.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import twitch from '../../utils/twitch.js';
-import chat from '../chat/index.js';
+import {PlatformTypes, SettingIds} from '@/constants';
+import chat from '@/modules/chat/index';
+import dom from '@/observers/dom';
+import settings from '@/settings';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import twitch from '@/utils/twitch';
 import styles from './styles.module.css';
 
 const HYPE_CHAT_WRAPPER_SELECTOR = '.paid-pinned-chat-message-content-wrapper';

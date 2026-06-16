@@ -1,11 +1,11 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, AutoClaimFlags, ChannelPointsFlags} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import {hasFlag, setFlag} from '../../../../utils/flags.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingCheckbox from '../../components/SettingCheckbox.jsx';
-import SettingGroup from '../../components/SettingGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds, AutoClaimFlags, ChannelPointsFlags} from '@/constants';
+import formatMessage from '@/i18n/index';
+import {hasFlag, setFlag} from '@/utils/flags';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Claim'});
 

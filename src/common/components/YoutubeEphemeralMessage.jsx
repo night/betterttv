@@ -1,6 +1,6 @@
 import React from 'react';
-import chat from '../../modules/chat/index.js';
-import cdn from '../../utils/cdn.js';
+import chat from '@/modules/chat/index';
+import cdn from '@/utils/cdn';
 import styles from './YoutubeEphemeralMessage.module.css';
 
 export default function YoutubeEphemeralMessage({message}) {

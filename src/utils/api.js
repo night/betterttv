@@ -1,7 +1,7 @@
-import {API_ENDPOINT as API_ENDPOINT_CONSTANT, API_VERSION as API_VERSION_CONSTANT} from '../constants.js';
-import {getCredentials, setCredentials} from '../stores/auth.js';
-import {refreshAndSetCredentials} from './auth.js';
-import HTTPError from './http-error.js';
+import {API_ENDPOINT as API_ENDPOINT_CONSTANT, API_VERSION as API_VERSION_CONSTANT} from '@/constants';
+import {getCredentials, setCredentials} from '@/stores/auth';
+import {refreshAndSetCredentials} from './auth';
+import HTTPError from './http-error';
 
 const API_ENDPOINT = API_ENDPOINT_CONSTANT ?? 'https://api.betterttv.net/';
 const API_VERSION = API_VERSION_CONSTANT ?? '3';

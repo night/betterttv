@@ -1,8 +1,8 @@
-import {PlatformTypes} from '../../constants.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import twitch from '../../utils/twitch.js';
-import watcher from '../../watcher.js';
-import ModeratorCard from './moderator-card.js';
+import {PlatformTypes} from '@/constants';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import twitch from '@/utils/twitch';
+import watcher from '@/watcher';
+import ModeratorCard from './moderator-card';
 
 let openModeratorCard;
 

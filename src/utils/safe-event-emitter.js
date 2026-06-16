@@ -1,5 +1,5 @@
 import {EventEmitter} from 'events';
-import debug from './debug.js';
+import debug from './debug';
 
 function newListener(listener, ...args) {
   try {

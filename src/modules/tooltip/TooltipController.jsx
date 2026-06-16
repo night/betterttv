@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect, useRef} from 'react';
-import Tooltip from './Tooltip.jsx';
+import Tooltip from './Tooltip';
 
 export const TOOLTIP_MARKER_ATTRIBUTE = 'data-bttv-tooltip';
 

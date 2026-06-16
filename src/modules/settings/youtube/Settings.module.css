@@ -53,9 +53,7 @@ html[dark] .buttonIcon {
   margin-right: 16px;
 }
 
-:global {
-  /* fixes youtube's chat menu dropdown font size */
-  tp-yt-paper-item.ytls-menu-service-item-renderer {
-    font-size: 1.4rem;
-  }
+/* fixes youtube's chat menu dropdown font size */
+tp-yt-paper-item:global(.ytls-menu-service-item-renderer) {
+  font-size: 1.4rem;
 }

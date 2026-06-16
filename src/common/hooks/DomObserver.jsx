@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import domObserver from '../../observers/dom.js';
+import domObserver from '@/observers/dom';
 
 function useDomObserver(selector, options = {}) {
   const [node, setNode] = useState(null);

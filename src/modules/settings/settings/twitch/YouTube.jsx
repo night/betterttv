@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
-import SettingGroup from '../../components/SettingGroup.jsx';
-import formatMessage from '../../../../i18n/index.js';
-import extension from '../../../../utils/extension.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingSwitch from '../../components/SettingSwitch.jsx';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import formatMessage from '@/i18n/index';
+import extension from '@/utils/extension';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'YouTube (beta)'});
 const browser = window.chrome || window.browser;

@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
-import watcher from '../../watcher.js';
-import {getCurrentChannel} from '../../utils/channel.js';
+import watcher from '@/watcher';
+import {getCurrentChannel} from '@/utils/channel';
 
 function useCurrentChannel() {
   const [channel, setChannel] = useState(() => getCurrentChannel());

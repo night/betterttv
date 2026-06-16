@@ -1,7 +1,7 @@
 import React, {forwardRef, useContext, useEffect, useRef} from 'react';
 import classNames from 'classnames';
 import {useMergedRef} from '@mantine/hooks';
-import styles from '../styles/Scrollbar.module.css';
+import styles from '@/common/styles/Scrollbar.module.css';
 
 export const ScrollbarSizeTargetContext = React.createContext(null);
 

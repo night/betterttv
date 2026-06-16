@@ -1,11 +1,11 @@
 import {useCallback, useMemo} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import {openConfirmModal} from '../utils/modal.js';
-import {executeOAuth2SignInAndSetCredentials} from '../../utils/auth.js';
-import formatMessage from '../../i18n/index.js';
-import useAuthStore from '../../stores/auth.js';
-import {ExternalLinks} from '../../constants.js';
-import {isUserPro} from '../../utils/pro.js';
+import {openConfirmModal} from '@/common/utils/modal';
+import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
+import formatMessage from '@/i18n/index';
+import useAuthStore from '@/stores/auth';
+import {ExternalLinks} from '@/constants';
+import {isUserPro} from '@/utils/pro';
 
 function openSubscriptionSignInModal(callback = () => {}) {
   const controller = new AbortController();

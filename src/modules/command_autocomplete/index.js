@@ -1,7 +1,7 @@
-import {PlatformTypes} from '../../constants.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import TwitchCommandAutocomplete from './twitch/Autocomplete.jsx';
-import YoutubeCommandAutocomplete from './youtube/Autocomplete.jsx';
+import {PlatformTypes} from '@/constants';
+import TwitchCommandAutocomplete from '@/modules/command_autocomplete/twitch/Autocomplete';
+import YoutubeCommandAutocomplete from '@/modules/command_autocomplete/youtube/Autocomplete';
+import {loadModuleForPlatforms} from '@/utils/modules';
 
 export default loadModuleForPlatforms(
   [PlatformTypes.TWITCH, () => new TwitchCommandAutocomplete()],

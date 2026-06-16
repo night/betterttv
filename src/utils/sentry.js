@@ -1,5 +1,5 @@
 import {BrowserClient, getDefaultIntegrations, defaultStackParser, makeFetchTransport, Scope} from '@sentry/browser';
-import {GIT_REV, NODE_ENV, SENTRY_URL} from '../constants.js';
+import {GIT_REV, NODE_ENV, SENTRY_URL} from '@/constants';
 
 const client = new BrowserClient({
   release: GIT_REV,

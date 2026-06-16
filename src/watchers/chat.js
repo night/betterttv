@@ -1,6 +1,6 @@
-import seventv from '../modules/seventv/index.js';
-import domObserver from '../observers/dom.js';
-import twitch from '../utils/twitch.js';
+import seventv from '@/modules/seventv/index';
+import domObserver from '@/observers/dom';
+import twitch from '@/utils/twitch';
 
 const PATCHED_SENTINEL = Symbol('patched symbol');
 

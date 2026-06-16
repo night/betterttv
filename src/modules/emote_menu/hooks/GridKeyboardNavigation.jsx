@@ -1,5 +1,5 @@
 import {useCallback} from 'react';
-import keyCodes from '../../../utils/keycodes.js';
+import keyCodes from '@/utils/keycodes';
 
 function travelUp(rowColumnCounts, {x, y}, maxColumnCount, numBlocks = 1) {
   let newY = Math.max(0, y - numBlocks);
