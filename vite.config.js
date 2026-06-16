@@ -111,14 +111,15 @@ function copyAssetsPlugin() {
   };
 }
 
-// Produces build/betterttv.tar.gz on tagged release builds.
+// Produces build/betterttv.tar.gz on tagged release builds, with entries at the archive root
+// (assets/, betterttv.js, ...) to match the published artifact's layout.
 function releaseArchivePlugin() {
   return {
     name: 'bttv-release-archive',
     apply: 'build',
     async closeBundle() {
       if (!process.env.GITHUB_TAG) return;
-      await execAsync('tar -czf betterttv.tar.gz --exclude=betterttv.tar.gz .', {cwd: 'build'});
+      await execAsync('tar -czf betterttv.tar.gz --exclude=betterttv.tar.gz *', {cwd: 'build'});
     },
   };
 }
@@ -185,7 +186,14 @@ function devWatchServerPlugin() {
         }
 
         const relative = url === '/' ? 'betterttv.js' : url.replace(/^\//, '');
-        const filePath = path.resolve('build', relative);
+        const buildDir = path.resolve('build');
+        const filePath = path.resolve(buildDir, relative);
+        // guard against path traversal escaping the build directory
+        if (filePath !== buildDir && !filePath.startsWith(buildDir + path.sep)) {
+          res.statusCode = 403;
+          res.end();
+          return;
+        }
         // serve the locally built file if present, otherwise proxy to the production CDN
         fs.readFile(filePath)
           .then((data) => {
@@ -231,7 +239,7 @@ export default defineConfig(async ({mode}) => {
 
   const env = {
     NODE_ENV: prod ? 'production' : 'development',
-    DEV_CDN_PORT: String(PORT),
+    DEV_CDN_PORT: PORT,
     DEV_CDN_ENDPOINT: DEV_ENDPOINT,
     PROD_CDN_ENDPOINT: PROD_ENDPOINT,
     API_ENDPOINT,

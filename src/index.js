@@ -44,11 +44,7 @@ import '@mantine/core/styles.css';
     await loadI18n();
 
     const {default: extension} = await import('@/utils/extension');
-    // In dev the entry may run as an ES module (Vite HMR), where `document.currentScript` is null;
-    // seed the asset base from the dev server origin so cdn.url() resolves.
-    await extension.setCurrentScript(
-      import.meta.env.DEV ? {src: `${process.env.DEV_CDN_ENDPOINT}betterttv.js`} : currentScript
-    );
+    await extension.setCurrentScript(currentScript);
 
     const {default: globalCSS} = await import('@/modules/global_css/index');
     const globalCSSLoadPromise = globalCSS.loadGlobalCSS();
@@ -61,7 +57,7 @@ import '@mantine/core/styles.css';
     await globalCSSLoadPromise;
 
     const {importAll} = await import('@/utils/modules');
-    await importAll(import.meta.glob('./modules/**/index.js'));
+    await importAll(import.meta.glob('./modules/**/index.{js,jsx}'));
 
     watcher.setup();
 
