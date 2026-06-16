@@ -23,9 +23,6 @@ export default class SettingsModule {
     domObserver.on('a[data-test-selector="user-menu-dropdown__settings-link"],.tw-drop-down-menu-item-figure', () => {
       this.renderSettingsMenuOption();
     });
-    // `.top-nav__menu` has a class, so domObserver reliably reports it (initial scan
-    // when BetterTTV loads late, mutations when it loads early). The avatar we anchor
-    // to may mount afterwards, which renderTopNavButton waits for.
     domObserver.on(TOP_NAV_MENU_SELECTOR, () => {
       this.renderTopNavButton();
     });
@@ -103,25 +100,24 @@ export default class SettingsModule {
 
   renderTopNavButton() {
     const topNavMenu = document.querySelector(TOP_NAV_MENU_SELECTOR);
-    if (topNavMenu == null) {
-      return;
-    }
-
-    if (topNavMenu.querySelector(`#${TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID}`) != null) {
-      return;
-    }
-
-    const userMenuToggle = topNavMenu.querySelector(TOP_NAV_USER_MENU_SELECTOR);
+    const userMenuToggle = topNavMenu?.querySelector(TOP_NAV_USER_MENU_SELECTOR);
     if (userMenuToggle == null) {
       return;
     }
 
-    let avatarWrapper = userMenuToggle;
-    while (avatarWrapper.parentElement != null && avatarWrapper.parentElement.parentElement !== topNavMenu) {
-      avatarWrapper = avatarWrapper.parentElement;
+    // The avatar sits in a flex row of icon "clusters". Find the cluster and the child that
+    // wraps the avatar so we can drop our button in alongside the native icons.
+    const cluster = [...topNavMenu.children].find((child) => child.contains(userMenuToggle));
+    const avatarWrapper = cluster && [...cluster.children].find((child) => child.contains(userMenuToggle));
+    if (avatarWrapper == null) {
+      return;
     }
-    const cluster = avatarWrapper.parentElement;
-    if (cluster == null || cluster === topNavMenu) {
+
+    // Twitch loads promotional buttons (Bits, ad-free) after we mount and inserts them right
+    // before the avatar, so pin our button's position with flex order rather than DOM order.
+    avatarWrapper.classList.add(topNavStyles.avatar);
+
+    if (document.getElementById(TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID) != null) {
       return;
     }
 
