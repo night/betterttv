@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {PageDecendants, PageTypes} from '@/constants';
+import {PageDecendants, PageTypes, SettingsPrompts} from '@/constants';
 import UserSettings from '@/modules/settings/pages/UserSettings';
 import Changelog from '@/modules/settings/pages/Changelog';
 import Settings from '@/modules/settings/pages/Settings';
@@ -18,6 +18,28 @@ import {AnimatePresence, motion, usePresenceData} from 'framer-motion';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import Icon from '@/common/components/Icon';
 import formatMessage from '@/i18n/index';
+import {openSignInModal} from '@/common/utils/modal';
+import {getCredentials} from '@/stores/auth';
+import storage from '@/storage';
+
+// The first time a signed-out user opens settings we nudge them to sign in, but only once ever.
+function maybePromptSignIn() {
+  // Gate on the persisted access token rather than the async-populated user so we don't burn the
+  // one-time flag on a signed-in user whose profile hasn't finished syncing yet.
+  if (getCredentials().accessToken != null) {
+    return;
+  }
+
+  if (storage.get(SettingsPrompts.SIGN_IN) === true) {
+    return;
+  }
+
+  storage.set(SettingsPrompts.SIGN_IN, true);
+
+  openSignInModal(undefined, {
+    description: formatMessage({defaultMessage: 'Sign in to use BetterTTV to its fullest.'}),
+  });
+}
 
 function Page({page, search, handleSettingRefCallback}) {
   switch (page) {
@@ -183,6 +205,8 @@ function SettingsModal({setHandleOpen}) {
 
   const handleInteractive = useCallback(() => {
     setIsInteractive(true);
+    // Wait until the settings modal has finished animating in before stacking the sign-in prompt.
+    maybePromptSignIn();
   }, [setIsInteractive]);
 
   const handleNonInteractive = useCallback(() => {

@@ -221,6 +221,10 @@ export const SettingsPromotions = {
   CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
 };
 
+export const SettingsPrompts = {
+  SIGN_IN: 'settingsSignInPromptSeen',
+};
+
 /** Default Mantine `theme.primaryColor` key when unset or invalid. */
 export const DEFAULT_PRIMARY_COLOR = 'red';
 
