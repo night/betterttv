@@ -2,17 +2,14 @@
   display: flex;
   align-items: center;
   order: 1;
-  /* Match the horizontal spacing Twitch gives its native top nav icons. */
   margin-left: 4px;
   margin-right: 4px;
 }
 
 /* Applied to Twitch's avatar wrapper so it always renders after our button, even when
-   promotional buttons (Bits, ad-free) load in after us. The avatar has no left margin of
-   its own, so add one to keep the gap to our button even with the native icon spacing. */
+   promotional buttons (Bits, ad-free) load in after us. */
 .avatar {
   order: 2;
-  margin-left: 4px;
 }
 
 /* Notification dot shown on the button while a settings promotion is available. The border
