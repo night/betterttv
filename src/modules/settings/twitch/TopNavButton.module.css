@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  align-items: center;
+  order: 1;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+/* Applied to Twitch's avatar wrapper so it always renders after our button, even when
+   promotional buttons (Bits, ad-free) load in after us. */
+.avatar {
+  order: 2;
+}
+
+/* Notification dot shown on the button while a settings promotion is available. The border
+   matches the top nav background so the dot reads as separate from the icon beneath it. */
+.indicator::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--bttv-brand-color);
+  border: 2px solid var(--color-background-base);
+}

@@ -4,6 +4,14 @@ import domObserver from '../../../observers/dom.js';
 import Modal from '../components/SettingsModal.jsx';
 import shadowDOM from '../../shadow_dom';
 import {ShadowDOMComponentIds} from '../../../constants.js';
+import {bindTooltip} from '../../tooltip/index.js';
+import iconButtonStyles from '../../../common/styles/IconButton.module.css';
+import topNavStyles from './TopNavButton.module.css';
+import promotionStore from '../stores/promotion-store.js';
+
+const TOP_NAV_MENU_SELECTOR = '.top-nav__menu';
+const TOP_NAV_USER_MENU_SELECTOR = '[data-a-target="user-menu-toggle"]';
+const TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID = 'bttv-top-nav-settings-button-container';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {
@@ -16,6 +24,10 @@ export default class SettingsModule {
     domObserver.on('a[data-test-selector="user-menu-dropdown__settings-link"],.tw-drop-down-menu-item-figure', () => {
       this.renderSettingsMenuOption();
     });
+    domObserver.on(TOP_NAV_MENU_SELECTOR, () => {
+      this.renderTopNavButton();
+    });
+    promotionStore.on('changed', () => this.updateTopNavPromotionIndicator());
   }
 
   async load() {
@@ -86,6 +98,49 @@ export default class SettingsModule {
     const bttvSettingsIconDropDown = document.createElement('figure');
     bttvSettingsIconDropDown.classList.add('bttvSettingsIconDropDown');
     dropdownIconAspect.appendChild(bttvSettingsIconDropDown);
+  }
+
+  renderTopNavButton() {
+    const userMenuToggle = document.querySelector(TOP_NAV_USER_MENU_SELECTOR);
+    // The avatar is wrapped two levels under the top nav menu, alongside the native icons.
+    // Grab that wrapper so we can drop our button in right before it.
+    const avatarWrapper = userMenuToggle?.closest(`${TOP_NAV_MENU_SELECTOR} > * > *`);
+    if (avatarWrapper == null) {
+      return;
+    }
+
+    // Twitch loads promotional buttons (Bits, ad-free) after we mount and inserts them right
+    // before the avatar, so pin our button's position with flex order rather than DOM order.
+    avatarWrapper.classList.add(topNavStyles.avatar);
+
+    if (document.getElementById(TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID) != null) {
+      return;
+    }
+
+    const container = document.createElement('div');
+    container.setAttribute('id', TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID);
+    container.classList.add(topNavStyles.container);
+
+    const button = document.createElement('button');
+    button.classList.add(iconButtonStyles.button);
+    button.setAttribute('data-a-target', 'betterttv-settings-button');
+    button.addEventListener('click', () => handleOpen?.(true));
+    bindTooltip(button, {content: formatMessage({defaultMessage: 'BetterTTV Settings'})});
+
+    container.appendChild(button);
+    avatarWrapper.before(container);
+
+    this.updateTopNavPromotionIndicator();
+  }
+
+  updateTopNavPromotionIndicator() {
+    const container = document.getElementById(TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID);
+    const button = container?.querySelector('button');
+    if (button == null) {
+      return;
+    }
+
+    button.classList.toggle(topNavStyles.indicator, promotionStore.hasAvailablePromotion());
   }
 
   openSettings({scrollToSettingPanelId} = {scrollToSettingPanelId: null}) {

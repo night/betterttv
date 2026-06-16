@@ -6,6 +6,7 @@ import twitch from '../../../utils/twitch.js';
 import {getCurrentUser} from '../../../utils/user.js';
 import watcher from '../../../watcher.js';
 import styles from './EmoteMenu.module.css';
+import iconButtonStyles from '../../../common/styles/IconButton.module.css';
 import EmoteMenu from '../components/EmoteMenu.jsx';
 import shadowDOM from '../../shadow_dom/index.js';
 import {isStandaloneWindow} from '../../../utils/window.js';
@@ -114,7 +115,7 @@ function loadLegacyButton() {
   }
 
   const button = document.createElement('button');
-  button.classList.add(styles.button);
+  button.classList.add(iconButtonStyles.button);
   buttonContainer.appendChild(button);
   button.addEventListener('click', () => handleOpen?.());
   bindTooltip(button, {content: formatMessage({defaultMessage: 'Emote Menu'})});
@@ -172,7 +173,7 @@ function loadButton() {
   chatInputIcons.appendChild(buttonContainer);
 
   const button = document.createElement('button');
-  button.classList.add(styles.button);
+  button.classList.add(iconButtonStyles.button);
   buttonContainer.appendChild(button);
   button.addEventListener('click', () => handleOpen?.());
 }
