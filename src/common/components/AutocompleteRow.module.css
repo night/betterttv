@@ -28,7 +28,7 @@
 
 .selected {
   color: var(--mantine-primary-color-filled);
-  background-color: var(--mantine-primary-color-light-hover);
+  background-color: var(--mantine-primary-color-light);
   --bttv-dimmed-active-color: var(--mantine-primary-color-filled-hover);
 }
 
@@ -41,12 +41,12 @@
 }
 
 .selected .subtitle {
-  color: var(--mantine-primary-color-filled) !important;
+  color: var(--mantine-primary-color-light) !important;
 }
 
 .active,
 .row:active {
-  background-color: var(--mantine-primary-color-light-active);
+  background-color: var(--mantine-primary-color-light-hover);
   transition-property: background-color, color;
   transition-duration: 0.1s;
   transition-timing-function: ease-in-out;
