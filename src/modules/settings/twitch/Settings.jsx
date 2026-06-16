@@ -101,16 +101,10 @@ export default class SettingsModule {
   }
 
   renderTopNavButton() {
-    const topNavMenu = document.querySelector(TOP_NAV_MENU_SELECTOR);
-    const userMenuToggle = topNavMenu?.querySelector(TOP_NAV_USER_MENU_SELECTOR);
-    if (userMenuToggle == null) {
-      return;
-    }
-
-    // The avatar sits in a flex row of icon "clusters". Find the cluster and the child that
-    // wraps the avatar so we can drop our button in alongside the native icons.
-    const cluster = [...topNavMenu.children].find((child) => child.contains(userMenuToggle));
-    const avatarWrapper = cluster && [...cluster.children].find((child) => child.contains(userMenuToggle));
+    const userMenuToggle = document.querySelector(TOP_NAV_USER_MENU_SELECTOR);
+    // The avatar is wrapped two levels under the top nav menu, alongside the native icons.
+    // Grab that wrapper so we can drop our button in right before it.
+    const avatarWrapper = userMenuToggle?.closest(`${TOP_NAV_MENU_SELECTOR} > * > *`);
     if (avatarWrapper == null) {
       return;
     }
@@ -134,7 +128,7 @@ export default class SettingsModule {
     bindTooltip(button, {content: formatMessage({defaultMessage: 'BetterTTV Settings'})});
 
     container.appendChild(button);
-    cluster.insertBefore(container, avatarWrapper);
+    avatarWrapper.before(container);
 
     this.updateTopNavPromotionIndicator();
   }

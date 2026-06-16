@@ -1,19 +1,24 @@
 import {SettingIds, SettingsPromotions} from '../../../constants.js';
+import settings from '../../../settings.js';
 import storage from '../../../storage.js';
+import AuthStore from '../../../stores/auth.js';
 import {getProSettingValue} from '../../../utils/pro.js';
 import SafeEventEmitter from '../../../utils/safe-event-emitter.js';
 
 const PROMOTION_COOLDOWN_MS = 2 * 24 * 60 * 60 * 1000; // 2 days
 const LAST_DISMISSED_ANY_AT_KEY = 'settingsPromotionLastDismissedAnyAt';
 
-// Ordered by priority; the first available promotion is the one shown.
+// Ordered by priority; the first available promotion is the one shown. `settingId` is the pro
+// setting whose value gates the promotion, watched so availability stays in sync.
 const PROMOTION_SLOTS = [
   {
     storageKey: SettingsPromotions.CHATBOT_COMMAND_AUTOCOMPLETE,
+    settingId: SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE,
     isAvailable: () => !getProSettingValue(SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE, false),
   },
   {
     storageKey: SettingsPromotions.THEME_CUSTOMIZE,
+    settingId: SettingIds.PRIMARY_COLOR,
     isAvailable: () => getProSettingValue(SettingIds.PRIMARY_COLOR, null) == null,
   },
 ];
@@ -33,6 +38,20 @@ function isPromotionSlotDismissed(storageKey) {
 }
 
 class PromotionStore extends SafeEventEmitter {
+  constructor() {
+    super();
+
+    // Availability depends on pro status and the pro settings each promotion gates on, so
+    // re-emit whenever those change (e.g. the user picks a primary color or pro is toggled).
+    for (const {settingId} of PROMOTION_SLOTS) {
+      settings.on(`changed.${settingId}`, () => this.emit('changed'));
+    }
+    AuthStore.subscribe(
+      (state) => state.user?.pro ?? false,
+      () => this.emit('changed')
+    );
+  }
+
   getAvailablePromotionKey() {
     if (isGlobalPromotionCooldown()) {
       return null;
