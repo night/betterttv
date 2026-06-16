@@ -1,4 +1,4 @@
-// Global (non-module) stylesheets, previously concatenated via the webpack `entry` array.
+// Global (non-module) stylesheets.
 import.meta.glob(['./modules/**/*.css', '!./modules/**/*.module.css'], {eager: true});
 import '@mantine/core/styles.css';
 

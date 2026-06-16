@@ -15,7 +15,7 @@ export function loadModuleForPlatforms(...platformConfigurations) {
 }
 
 // Imports every module matched by an `import.meta.glob` call, isolating failures so one
-// broken module cannot prevent the others from loading (replaces the webpack-import-glob loader).
+// broken module cannot prevent the others from loading.
 export async function importAll(modules) {
   for (const [modulePath, load] of Object.entries(modules)) {
     try {

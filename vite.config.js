@@ -77,7 +77,7 @@ function jsonTransform(emojis) {
   return result;
 }
 
-// Generates src/modules/emotes/emojis-by-slug.json on the fly (replaces VirtualModulesPlugin).
+// Generates src/modules/emotes/emojis-by-slug.json on the fly as a virtual module.
 function emojisVirtualModulePlugin() {
   const VIRTUAL_ID = '\0bttv-emojis-by-slug';
   let json;
@@ -100,7 +100,7 @@ function emojisVirtualModulePlugin() {
   };
 }
 
-// Copies src/assets -> build/assets (replaces CopyPlugin). Runs after the bundle is written.
+// Copies src/assets -> build/assets after the bundle is written.
 function copyAssetsPlugin() {
   return {
     name: 'bttv-copy-assets',
@@ -111,7 +111,7 @@ function copyAssetsPlugin() {
   };
 }
 
-// Produces build/betterttv.tar.gz on tagged release builds (replaces FileManagerPlugin).
+// Produces build/betterttv.tar.gz on tagged release builds.
 function releaseArchivePlugin() {
   return {
     name: 'bttv-release-archive',
@@ -134,7 +134,7 @@ const MIME_TYPES = {
 const RELOAD_PATH = '/__bttv_dev_reload';
 
 // Snippet appended to the dev bundle: subscribes to the reload stream and refreshes the page after
-// each rebuild. Mirrors webpack-dev-server's live reload for the single-file output.
+// each rebuild.
 const RELOAD_CLIENT = `;(function(){try{var s=new EventSource(${JSON.stringify(
   DEV_ENDPOINT.replace(/\/$/, '') + RELOAD_PATH
 )});s.onmessage=function(){location.reload()};}catch(e){}})();`;
@@ -261,10 +261,6 @@ export default defineConfig(async ({mode}) => {
       modules: {
         generateScopedName: 'bttv-[name]__[local]-[hash:base64:5]',
       },
-      // tolerate the few invalid/empty selectors the old cssnano pass silently dropped
-      lightningcss: {
-        errorRecovery: true,
-      },
       postcss: {
         plugins: [
           postcssUrl({
@@ -292,7 +288,7 @@ export default defineConfig(async ({mode}) => {
       cssMinify: prod,
       rollupOptions: {
         // IIFE output forces codeSplitting: false, so the whole graph lands in one self-executing
-        // file (replaces LimitChunkCountPlugin maxChunks:1).
+        // file.
         input: path.resolve('src/index.js'),
         output: {
           format: 'iife',
