@@ -81,6 +81,7 @@ export default React.memo(CommandRow, (prev, next) => {
     prev.item === next.item &&
     prev.selected === next.selected &&
     prev.active === next.active &&
+    prev.index === next.index &&
     prev.focusedWordIndex === next.focusedWordIndex
   );
 });
