@@ -18,7 +18,19 @@
   object-fit: cover;
 }
 
-.arguments {
+/* Every word is dimmed except the one the caret is currently on. The dimmed
+ * (normal-weight) words carry a touch of letter-spacing so they take up roughly
+ * the same width as their bold form; the focused word drops the spacing back to
+ * 0 when it goes bold, so toggling the weight doesn't shift the text. */
+.word {
+  display: inline-block;
   color: var(--bttv-dimmed-active-color, var(--mantine-color-dimmed));
   font-weight: 400;
+  letter-spacing: 0.4px;
+}
+
+.focusedWord {
+  color: inherit;
+  font-weight: 600;
+  letter-spacing: 0;
 }

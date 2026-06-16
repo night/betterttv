@@ -7,6 +7,7 @@ import {
   UserLevels,
   CommandProviders,
   COMMAND_PREFIX,
+  CommandAutocompleteArgumentTypes,
 } from '../../../constants.js';
 import domObserver from '../../../observers/dom.js';
 import settings from '../../../settings.js';
@@ -94,20 +95,20 @@ function getChatInputPartialCommand() {
     return null;
   }
 
-  const caret = twitch.getChatInputCaretOffset(value, element);
-  if (caret == null) {
+  return value;
+}
+
+function getChatInputCaretPosition() {
+  const element = document.querySelector(CHAT_INPUT);
+  if (element == null) {
     return null;
   }
 
-  // The command is the first word. Match it in full regardless of where the
-  // caret sits within it, but bail out once the caret moves past it into an
-  // argument.
-  const command = value.trim().split(/\s+/)[0];
-  return caret > command.length ? null : command;
+  return twitch.getChatInputCaretOffset(null, element);
 }
 
 function normalizeCommandInput(input) {
-  const normalizedInput = input.trim().toLowerCase();
+  const normalizedInput = input.toLowerCase();
 
   const searchTerm = normalizedInput.startsWith(COMMAND_PREFIX)
     ? normalizedInput.slice(COMMAND_PREFIX.length)
@@ -122,11 +123,31 @@ function getMatchingCommands(commands, partialInput) {
     return commands;
   }
 
-  if (searchTerm.length >= 3) {
-    return commands.filter((command) => command.name.toLowerCase().slice(COMMAND_PREFIX.length).includes(searchTerm));
-  }
+  return commands.filter((command) => {
+    const normalizedInputTrimmed = normalizedInput.toLowerCase();
+    const normalizedSearchTerm = searchTerm.toLowerCase();
+    const normalizedCommandName = command.name.toLowerCase();
 
-  return commands.filter((command) => command.name.toLowerCase().startsWith(normalizedInput));
+    if (normalizedCommandName.startsWith(normalizedInputTrimmed)) {
+      return true;
+    }
+
+    if (normalizedInputTrimmed.startsWith(normalizedCommandName)) {
+      if (command.arguments.some((argument) => argument.type === CommandAutocompleteArgumentTypes.PHRASE)) {
+        return true;
+      }
+
+      const textAfterCommand = normalizedInputTrimmed.slice(normalizedCommandName.length);
+      const textArgumentCount = textAfterCommand.trimStart().split(/\s+/).length;
+      const commandArgumentCount = command.arguments?.length ?? 0;
+
+      if (textArgumentCount <= commandArgumentCount) {
+        return true;
+      }
+    }
+
+    return normalizedCommandName.includes(normalizedSearchTerm);
+  });
 }
 
 function getItemKey(item) {
@@ -134,7 +155,9 @@ function getItemKey(item) {
 }
 
 function replaceChatInputPartialCommand(command) {
-  twitch.setChatInputValue(`${command.name} `);
+  const newValue = `${command.name} `;
+  twitch.setChatInputValue(newValue);
+  return {newValue, shouldClose: command.arguments?.length === 0};
 }
 
 let currentCommands = [];
@@ -297,9 +320,10 @@ class CommandAutocomplete {
         fullWidthOnSmallScreens={false}
         chatInputQuerySelector={CHAT_TEXT_AREA}
         getChatInputPartialInput={getChatInputPartialCommand}
+        getChatInputCaretPosition={getChatInputCaretPosition}
         computeItems={this.computeItems.bind(this)}
         getItemKey={getItemKey}
-        onComplete={replaceChatInputPartialCommand}
+        handleCompleteResult={replaceChatInputPartialCommand}
         renderRow={(props) => <CommandRow {...props} />}
       />
     );

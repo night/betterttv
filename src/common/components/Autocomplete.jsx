@@ -40,28 +40,44 @@ function travelDown(currentSelection, rowCount) {
   return newSelection;
 }
 
+// Returns the index of the whitespace-delimited word the caret sits in, where
+// word 0 is the input itself (e.g. the command name). Callers that render
+// arguments map argument N to word index N + 1.
+function getFocusedWordIndex(value, caretPosition) {
+  if (value == null || caretPosition == null) {
+    return 0;
+  }
+
+  const beforeCaret = value.slice(0, caretPosition);
+  return Math.max(0, beforeCaret.split(/\s+/).length - 1);
+}
+
 const AutocompleteListRow = React.memo(function AutocompleteListRow({
   item,
   index,
   renderRow,
   isSelected,
   isActive,
-  onCompleteItem,
+  focusedWordIndex,
+  handleCompleteResultItem,
   onHoverIndex,
 }) {
   return renderRow({
     item,
-    onClick: () => onCompleteItem(item),
+    onClick: () => handleCompleteResultItem(item),
     selected: isSelected,
     active: isActive,
+    focusedWordIndex,
     onMouseOver: () => onHoverIndex(index),
   });
 });
 
 function Autocomplete({
   chatInputQuerySelector,
+  handleCompleteResult,
   onComplete,
   getChatInputPartialInput,
+  getChatInputCaretPosition,
   renderRow,
   computeItems,
   getItemKey,
@@ -84,6 +100,7 @@ function Autocomplete({
   const updateAutocompleteSuggestionsRef = useRef(null);
   const updateAutocompleteSuggestionsRequestId = useRef(0);
   const [pendingCompleteIndex, setPendingCompleteIndex] = useState(null);
+  const [focusedWordIndex, setFocusedWordIndex] = useState(0);
 
   const handleMouseMove = useCallback(() => {
     navigationMode.current = NavigationModeTypes.MOUSE;
@@ -123,34 +140,44 @@ function Autocomplete({
     navigationMode.current = NavigationModeTypes.ARROW_KEYS;
   }, [open]);
 
-  const updateAutocompleteSuggestions = useCallback(async () => {
-    const value = getChatInputPartialInput();
+  const updateAutocompleteSuggestions = useCallback(
+    async (newValue = null, newCaretPosition = null) => {
+      const value = newValue ?? getChatInputPartialInput();
+      const caretPosition = newCaretPosition ?? getChatInputCaretPosition?.();
 
-    if (value === lastValueRef.current) {
-      return;
-    }
+      // Track which argument the caret sits in even when the text itself hasn't
+      // changed (e.g. the user moved the caret between arguments), so the row can
+      // highlight the focused argument. The expensive item recompute below is
+      // still skipped when only the caret moved.
+      setFocusedWordIndex(getFocusedWordIndex(value, caretPosition));
 
-    lastValueRef.current = value;
+      if (value === lastValueRef.current) {
+        return;
+      }
 
-    const requestId = ++updateAutocompleteSuggestionsRequestId.current;
+      lastValueRef.current = value;
 
-    if (value == null) {
-      itemsRef.current = [];
-      setPartialInput('');
-    } else {
-      setPartialInput(value);
-      itemsRef.current = (await computeItems(value)).slice(0, MAX_ITEMS_SHOWN);
-    }
+      const requestId = ++updateAutocompleteSuggestionsRequestId.current;
 
-    if (requestId !== updateAutocompleteSuggestionsRequestId.current) {
-      return;
-    }
+      if (value == null) {
+        itemsRef.current = [];
+        setPartialInput('');
+      } else {
+        setPartialInput(value);
+        itemsRef.current = (await computeItems(value)).slice(0, MAX_ITEMS_SHOWN);
+      }
 
-    setItems(itemsRef.current);
-    handleSelectedChange(0, true);
+      if (requestId !== updateAutocompleteSuggestionsRequestId.current) {
+        return;
+      }
 
-    itemsRef.current.length > 0 ? handleOpen() : handleClose();
-  }, [getChatInputPartialInput, computeItems, handleOpen, close, handleSelectedChange]);
+      setItems(itemsRef.current);
+      handleSelectedChange(0, true);
+
+      itemsRef.current.length > 0 ? handleOpen() : handleClose();
+    },
+    [getChatInputPartialInput, getChatInputCaretPosition, computeItems, handleOpen, close, handleSelectedChange]
+  );
 
   useEffect(() => {
     updateAutocompleteSuggestionsRef.current = updateAutocompleteSuggestions;
@@ -186,11 +213,21 @@ function Autocomplete({
 
   const handleComplete = useCallback(
     (item) => {
-      onComplete(item);
+      const completeResult = (handleCompleteResult ?? onComplete)?.(item);
+
+      // Completers may return {newValue, shouldClose}. When the completion still
+      // leaves arguments to fill (shouldClose === false), recompute against the
+      // new value so the menu stays open. A void return (legacy onComplete) or
+      // shouldClose closes the menu, as before.
+      if (completeResult?.shouldClose === false && completeResult.newValue != null) {
+        updateAutocompleteSuggestionsRef.current(completeResult.newValue, completeResult.newValue.length);
+        return;
+      }
+
       lastValueRef.current = null;
       handleClose();
     },
-    [onComplete, handleClose]
+    [handleCompleteResult, onComplete, handleClose]
   );
 
   const onHoverIndex = useCallback(
@@ -299,7 +336,8 @@ function Autocomplete({
             renderRow={renderRow}
             isSelected={selected === index}
             isActive={pendingCompleteIndex === index}
-            onCompleteItem={handleComplete}
+            focusedWordIndex={focusedWordIndex}
+            handleCompleteResultItem={handleComplete}
             onHoverIndex={onHoverIndex}
           />
         ))}
