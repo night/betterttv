@@ -14,3 +14,17 @@
   order: 2;
   margin-left: 4px;
 }
+
+/* Notification dot shown on the button while a settings promotion is available. The border
+   matches the top nav background so the dot reads as separate from the icon beneath it. */
+.indicator::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--bttv-brand-color);
+  border: 2px solid var(--color-background-base);
+}

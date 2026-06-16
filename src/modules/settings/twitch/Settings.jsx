@@ -7,6 +7,7 @@ import {ShadowDOMComponentIds} from '../../../constants.js';
 import {bindTooltip} from '../../tooltip/index.js';
 import iconButtonStyles from '../../../common/styles/IconButton.module.css';
 import topNavStyles from './TopNavButton.module.css';
+import promotionStore from '../stores/promotion-store.js';
 
 const TOP_NAV_MENU_SELECTOR = '.top-nav__menu';
 const TOP_NAV_USER_MENU_SELECTOR = '[data-a-target="user-menu-toggle"]';
@@ -26,6 +27,7 @@ export default class SettingsModule {
     domObserver.on(TOP_NAV_MENU_SELECTOR, () => {
       this.renderTopNavButton();
     });
+    promotionStore.on('changed', () => this.updateTopNavPromotionIndicator());
   }
 
   async load() {
@@ -133,6 +135,18 @@ export default class SettingsModule {
 
     container.appendChild(button);
     cluster.insertBefore(container, avatarWrapper);
+
+    this.updateTopNavPromotionIndicator();
+  }
+
+  updateTopNavPromotionIndicator() {
+    const container = document.getElementById(TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID);
+    const button = container?.querySelector('button');
+    if (button == null) {
+      return;
+    }
+
+    button.classList.toggle(topNavStyles.indicator, promotionStore.hasAvailablePromotion());
   }
 
   openSettings({scrollToSettingPanelId} = {scrollToSettingPanelId: null}) {
