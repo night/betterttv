@@ -185,7 +185,9 @@ function devWatchServerPlugin() {
           return;
         }
 
-        const relative = url === '/' ? 'betterttv.js' : url.replace(/^\//, '');
+        // strip all leading slashes so cdn.url()'s `//assets/...` (trailing-slash endpoint + leading-slash
+        // path) resolves inside build/ instead of being treated as an absolute path
+        const relative = url === '/' ? 'betterttv.js' : url.replace(/^\/+/, '');
         const buildDir = path.resolve('build');
         const filePath = path.resolve(buildDir, relative);
         // guard against path traversal escaping the build directory
