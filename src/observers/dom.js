@@ -1,4 +1,4 @@
-import SafeEventEmitter from '../utils/safe-event-emitter.js';
+import SafeEventEmitter from '@/utils/safe-event-emitter';
 
 const IGNORED_HTML_TAGS = new Set(['BR', 'HEAD', 'LINK', 'META', 'SCRIPT', 'STYLE']);
 

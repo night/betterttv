@@ -1,5 +1,5 @@
-import {CommandProviders} from '../constants.js';
-import api from '../utils/api.js';
+import {CommandProviders} from '@/constants';
+import api from '@/utils/api';
 
 const COMMAND_PROVIDER_ORDER = Object.values(CommandProviders);
 

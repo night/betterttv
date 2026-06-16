@@ -1,16 +1,16 @@
 import React, {useRef} from 'react';
 import {Button} from '@mantine/core';
-import formatMessage from '../../../i18n/index.js';
-import {SETTINGS_STORAGE_KEY} from '../../../settings.js';
-import storage from '../../../storage.js';
-import {loadLegacySettings} from '../../../utils/legacy-settings.js';
-import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY} from '../../../constants.js';
-import SettingWrapper from './SettingWrapper.jsx';
-import useCloudBackupSettings from '../../../common/hooks/CloudBackup.jsx';
-import {openConfirmModal} from '../../../common/utils/modal.js';
-import cloudBackup from '../../cloud_backup/index.js';
-import {isUserPro} from '../../../utils/pro.js';
-import useAuthStore from '../../../stores/auth.js';
+import formatMessage from '@/i18n/index';
+import {SETTINGS_STORAGE_KEY} from '@/settings';
+import storage from '@/storage';
+import {loadLegacySettings} from '@/utils/legacy-settings';
+import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY} from '@/constants';
+import SettingWrapper from './SettingWrapper';
+import useCloudBackupSettings from '@/common/hooks/CloudBackup';
+import {openConfirmModal} from '@/common/utils/modal';
+import cloudBackup from '@/modules/cloud_backup/index';
+import {isUserPro} from '@/utils/pro';
+import useAuthStore from '@/stores/auth';
 import {useShallow} from 'zustand/react/shallow';
 
 function loadJSON(string) {

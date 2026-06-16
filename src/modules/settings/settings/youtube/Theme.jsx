@@ -1,11 +1,11 @@
 import React from 'react';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingGroup from '../../components/SettingGroup.jsx';
-import SettingPrimaryColorRadio from '../../components/SettingPrimaryColorRadio.jsx';
-import formatMessage from '../../../../i18n/index.js';
-import {SettingDefaultValues, SettingIds} from '../../../../constants.js';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import useProRequiredState from '../../../../common/hooks/ProRequiredState.jsx';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingPrimaryColorRadio from '@/modules/settings/components/SettingPrimaryColorRadio';
+import formatMessage from '@/i18n/index';
+import {SettingDefaultValues, SettingIds} from '@/constants';
+import useStorageState from '@/common/hooks/StorageState';
+import useProRequiredState from '@/common/hooks/ProRequiredState';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Theme'});
 

@@ -1,4 +1,4 @@
-import SafeEventEmitter from './safe-event-emitter.js';
+import SafeEventEmitter from './safe-event-emitter';
 
 const CLOSE_INTERVAL = 1000;
 

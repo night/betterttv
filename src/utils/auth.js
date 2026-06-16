@@ -1,6 +1,6 @@
-import {getCredentials, setCredentials} from '../stores/auth.js';
-import HTTPError from './http-error.js';
-import {exchangeCodeForCredentials, executeOAuth2AuthorizationFlow, refreshAccessToken} from './oauth.js';
+import {getCredentials, setCredentials} from '@/stores/auth';
+import HTTPError from './http-error';
+import {exchangeCodeForCredentials, executeOAuth2AuthorizationFlow, refreshAccessToken} from './oauth';
 
 let inFlightRefresh = null;
 

@@ -1,5 +1,5 @@
 import {useEffect, useRef} from 'react';
-import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
+import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
 
 export default function useEmoteMenuViewStoreUpdated(shouldUpdate, handleUpdate) {
   const handleUpdateRef = useRef(handleUpdate);

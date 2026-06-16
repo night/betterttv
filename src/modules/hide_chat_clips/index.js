@@ -1,7 +1,7 @@
-import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
-import {hasFlag} from '../../utils/flags.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
+import {ChatFlags, PlatformTypes, SettingIds} from '@/constants';
+import settings from '@/settings';
+import {hasFlag} from '@/utils/flags';
+import {loadModuleForPlatforms} from '@/utils/modules';
 
 class HideChatClipsModule {
   constructor() {

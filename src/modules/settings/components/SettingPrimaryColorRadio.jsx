@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
-import {DEFAULT_PRIMARY_COLOR} from '../../../constants.js';
-import formatMessage from '../../../i18n/index.js';
-import SettingColorRadio from './SettingColorRadio.jsx';
+import {DEFAULT_PRIMARY_COLOR} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingColorRadio from './SettingColorRadio';
 
 export const PRIMARY_COLOR_RADIO_DEFAULT = 'default';
 

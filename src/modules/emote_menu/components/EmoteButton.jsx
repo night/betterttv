@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React, {useCallback} from 'react';
-import Emote from '../../../common/components/Emote.jsx';
+import Emote from '@/common/components/Emote';
 import styles from './EmoteButton.module.css';
 
 function EmoteButton({emote, onClick, onMouseOver, active}) {

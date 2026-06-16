@@ -1,24 +1,24 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import emoteMenuViewStore, {CategoryPositions} from '../../../common/stores/emote-menu-view-store.js';
-import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuTips, NavigationModeTypes} from '../../../constants.js';
-import useHorizontalResize from '../hooks/HorizontalResize.jsx';
-import Header from './Header.jsx';
-import Sidebar from './Sidebar.jsx';
-import Tip, {markTipAsSeen} from './Tip.jsx';
+import emoteMenuViewStore, {CategoryPositions} from '@/common/stores/emote-menu-view-store';
+import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuTips, NavigationModeTypes} from '@/constants';
+import useHorizontalResize from '@/modules/emote_menu/hooks/HorizontalResize';
+import Header from './Header';
+import Sidebar from './Sidebar';
+import Tip, {markTipAsSeen} from './Tip';
 import styles from './EmoteMenu.module.css';
-import EmoteList from './EmoteList.jsx';
-import keyCodes from '../../../utils/keycodes.js';
+import EmoteList from './EmoteList';
+import keyCodes from '@/utils/keycodes';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import {autoUpdate, offset, useDismiss, useFloating, useInteractions} from '@floating-ui/react';
-import {isMac} from '../../../utils/window.js';
-import useEmoteMenuViewStoreUpdated from '../../../common/hooks/EmoteMenuViewStore.jsx';
-import {ScrollbarSizeTargetContext} from '../../../common/components/Scrollbar.jsx';
+import {isMac} from '@/utils/window';
+import useEmoteMenuViewStoreUpdated from '@/common/hooks/EmoteMenuViewStore';
+import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
 import {
   getCoordsOfSelected,
   getFirstCoords,
   getFirstCoordsInCategory,
   getSelectedAtCoords,
-} from '../utils/emote-list-grid.js';
+} from '@/modules/emote_menu/utils/emote-list-grid';
 import classNames from 'classnames';
 
 let keyPressCallback;

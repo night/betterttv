@@ -1,13 +1,13 @@
-import twemoji from 'twemoji';
-import {CDN_ENDPOINT, EmoteCategories, EmoteProviders} from '../../constants.js';
-import formatMessage from '../../i18n/index.js';
-import blacklistedEmoji from '../../utils/emoji-blacklist.js';
+import twemoji from '@twemoji/api';
+import {CDN_ENDPOINT, EmoteCategories, EmoteProviders} from '@/constants';
+import formatMessage from '@/i18n/index';
+import blacklistedEmoji from '@/utils/emoji-blacklist';
 
-import AbstractEmotes from './abstract-emotes.js';
+import AbstractEmotes from './abstract-emotes';
 // file gets created during bundle
 // eslint-disable-next-line import/no-unresolved
 import emojiBySlug from './emojis-by-slug.json';
-import Emote from './emote.js';
+import Emote from './emote';
 
 const category = {
   id: EmoteCategories.BETTERTTV_EMOJI,
@@ -63,7 +63,7 @@ class Emojis extends AbstractEmotes {
                 break;
             }
 
-            url = ''.concat(options.base, options.size, '/', icon, options.ext);
+            url = ''.concat(options.base, '/', options.size, '/', icon, options.ext);
 
             return false;
           },

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Switch} from '@mantine/core';
 import styles from './SettingSwitch.module.css';
-import SettingWrapper from './SettingWrapper.jsx';
+import SettingWrapper from './SettingWrapper';
 
 function SettingSwitch({name, description, value, onChange, disabled, ...props}) {
   return (

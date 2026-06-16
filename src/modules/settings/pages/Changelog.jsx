@@ -1,15 +1,15 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import reactStringReplace from 'react-string-replace';
-import {EXT_VER} from '../../../constants.js';
-import formatMessage from '../../../i18n/index.js';
-import api from '../../../utils/api.js';
-import debug from '../../../utils/debug.js';
-import Panel from '../components/Panel.jsx';
+import {EXT_VER} from '@/constants';
+import formatMessage from '@/i18n/index';
+import api from '@/utils/api';
+import debug from '@/utils/debug';
+import Panel from '@/modules/settings/components/Panel';
 import semver from 'semver';
-import PageLoader from '../components/PageLoader.jsx';
+import PageLoader from '@/modules/settings/components/PageLoader';
 import {Anchor, Text, Title} from '@mantine/core';
 import styles from './Changelog.module.css';
-import PageScrollBody from '../components/PageScrollBody.jsx';
+import PageScrollBody from '@/modules/settings/components/PageScrollBody';
 
 function IssueLink({issueNumber}) {
   return (

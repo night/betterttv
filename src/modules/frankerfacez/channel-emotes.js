@@ -1,12 +1,12 @@
-import {getFrankerFaceZChannelEmotes} from '../../actions/emotes.js';
-import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
-import formatMessage from '../../i18n/index.js';
-import settings from '../../settings.js';
-import {getCurrentChannel} from '../../utils/channel.js';
-import {hasFlag} from '../../utils/flags.js';
-import watcher from '../../watcher.js';
-import AbstractEmotes from '../emotes/abstract-emotes.js';
-import Emote from '../emotes/emote.js';
+import {getFrankerFaceZChannelEmotes} from '@/actions/emotes';
+import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import AbstractEmotes from '@/modules/emotes/abstract-emotes';
+import Emote from '@/modules/emotes/emote';
+import settings from '@/settings';
+import {getCurrentChannel} from '@/utils/channel';
+import {hasFlag} from '@/utils/flags';
+import watcher from '@/watcher';
 
 const category = {
   id: EmoteCategories.FRANKERFACEZ_CHANNEL,

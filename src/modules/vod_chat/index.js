@@ -1,10 +1,10 @@
-import {PlatformTypes} from '../../constants.js';
-import colors from '../../utils/colors.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import watcher from '../../watcher.js';
-import chat from '../chat/index.js';
-import nicknames from '../chat_nicknames/index.js';
-import splitChat from '../split_chat/index.js';
+import {PlatformTypes} from '@/constants';
+import chat from '@/modules/chat/index';
+import nicknames from '@/modules/chat_nicknames/index';
+import splitChat from '@/modules/split_chat/index';
+import colors from '@/utils/colors';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import watcher from '@/watcher';
 
 const CHAT_MESSAGE_SELECTOR = '.video-chat__message span[data-a-target="chat-message-text"]';
 const CHAT_FROM_SELECTOR = '.video-chat__message-author';

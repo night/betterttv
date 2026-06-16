@@ -1,7 +1,7 @@
 import {create} from 'zustand';
 import {persist, subscribeWithSelector} from 'zustand/middleware';
-import {getCurrentUser} from '../utils/user.js';
-import {getProvider} from '../utils/window.js';
+import {getCurrentUser} from '@/utils/user';
+import {getProvider} from '@/utils/window';
 
 const STORAGE_ID = 'bttvPrivate_credentials';
 
@@ -42,12 +42,12 @@ let getMe = null;
 
 export async function getActions() {
   if (getMe == null) {
-    const {getMe: getMeAction} = await import('../actions/oauth2.js');
+    const {getMe: getMeAction} = await import('@/actions/oauth2');
     getMe = getMeAction;
   }
 
   if (getConnections == null) {
-    const {getConnections: getConnectionsAction} = await import('../actions/connections.js');
+    const {getConnections: getConnectionsAction} = await import('@/actions/connections');
     getConnections = getConnectionsAction;
   }
 

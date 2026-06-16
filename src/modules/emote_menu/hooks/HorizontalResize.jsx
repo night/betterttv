@@ -1,7 +1,7 @@
 import React from 'react';
-import useStorageState from '../../../common/hooks/StorageState.jsx';
-import {EMOTE_MENU_MIN_WIDTH} from '../../../common/stores/emote-menu-view-store.js';
-import {SettingIds} from '../../../constants.js';
+import useStorageState from '@/common/hooks/StorageState';
+import {EMOTE_MENU_MIN_WIDTH} from '@/common/stores/emote-menu-view-store';
+import {SettingIds} from '@/constants';
 
 const WINDOW_HORIZONTAL_MARGIN = 20;
 

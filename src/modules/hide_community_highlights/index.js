@@ -1,10 +1,10 @@
-import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
-import domObserver from '../../observers/dom.js';
-import settings from '../../settings.js';
-import {hasFlag} from '../../utils/flags.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import twitch from '../../utils/twitch.js';
-import watcher from '../../watcher.js';
+import {ChatFlags, PlatformTypes, SettingIds} from '@/constants';
+import domObserver from '@/observers/dom';
+import settings from '@/settings';
+import {hasFlag} from '@/utils/flags';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import twitch from '@/utils/twitch';
+import watcher from '@/watcher';
 
 let removeCommunityHighlightsListener;
 

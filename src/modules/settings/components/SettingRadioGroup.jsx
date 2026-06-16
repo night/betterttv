@@ -1,6 +1,6 @@
 import React from 'react';
 import {RadioGroup} from '@mantine/core';
-import SettingGroup from './SettingGroup.jsx';
+import SettingGroup from './SettingGroup';
 
 function SettingRadioGroup({name, value, onChange, disabled, children}, ref) {
   const groupValue = value != null ? String(value) : null;

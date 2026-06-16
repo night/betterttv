@@ -1,8 +1,8 @@
 import React from 'react';
-import useStorageState from '../../../common/hooks/StorageState.jsx';
-import {DEFAULT_HIGHLIGHT_COLOR, SettingIds} from '../../../constants.js';
-import SettingKeywords from '../components/SettingKeywords.jsx';
-import PageScrollBody from '../components/PageScrollBody.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {DEFAULT_HIGHLIGHT_COLOR, SettingIds} from '@/constants';
+import SettingKeywords from '@/modules/settings/components/SettingKeywords';
+import PageScrollBody from '@/modules/settings/components/PageScrollBody';
 
 function HighlightKeywords() {
   const [value, setValue] = useStorageState(SettingIds.HIGHLIGHT_KEYWORDS);

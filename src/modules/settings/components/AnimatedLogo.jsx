@@ -1,6 +1,6 @@
 import {motion} from 'framer-motion';
 import React from 'react';
-import LogoIcon from '../../../common/components/LogoIcon.jsx';
+import LogoIcon from '@/common/components/LogoIcon';
 import styles from './AnimatedLogo.module.css';
 import classNames from 'classnames';
 

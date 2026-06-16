@@ -1,14 +1,13 @@
-// eslint-disable-next-line import/no-unresolved
 import pkceChallenge from 'pkce-challenge';
 import {
   exchangeCodeForCredentials as exchangeCodeForCredentialsAction,
   getAuthorizeUrl,
   refreshAccessToken as refreshAccessTokenAction,
   revokeAccessToken as revokeAccessTokenAction,
-} from '../actions/oauth2.js';
-import {OAUTH2_CLIENT_ID, OAUTH2_REDIRECT_URI} from '../constants.js';
-import formatMessage from '../i18n/index.js';
-import Popup from './popup.js';
+} from '@/actions/oauth2';
+import {OAUTH2_CLIENT_ID, OAUTH2_REDIRECT_URI} from '@/constants';
+import formatMessage from '@/i18n/index';
+import Popup from './popup';
 
 const REQUIRED_SCOPES = ['sso'];
 const POPUP_TIMEOUT = 5 * 60 * 1000;

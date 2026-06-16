@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '../../../constants.js';
+import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '@/constants';
 
 export default function useAutoSidebarScroll(section, containerRef, categories, windowHeight) {
   useEffect(() => {

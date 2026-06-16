@@ -1,7 +1,7 @@
 import {Text} from '@mantine/core';
 import {modals} from '@mantine/modals';
 import React from 'react';
-import formatMessage from '../../i18n/index.js';
+import formatMessage from '@/i18n/index';
 import styles from './Modal.module.css';
 
 const DEFAULT_LOADING_TIMEOUT = 500;

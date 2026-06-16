@@ -1,12 +1,12 @@
 import React from 'react';
-import EmoteTooltipContent from '../../common/components/EmoteTooltipContent.jsx';
-import emoteTooltipStyles from '../../common/components/EmoteTooltipContent.module.css';
-import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
-import {getCanonicalEmoteId} from '../../utils/emote.js';
-import {hasFlag} from '../../utils/flags.js';
-import {createSrc, createSrcSet} from '../../utils/image.js';
-import {bindTooltip} from '../tooltip/index.js';
+import EmoteTooltipContent from '@/common/components/EmoteTooltipContent';
+import emoteTooltipStyles from '@/common/components/EmoteTooltipContent.module.css';
+import {EmoteCategories, EmoteTypeFlags, SettingIds} from '@/constants';
+import settings from '@/settings';
+import {getCanonicalEmoteId} from '@/utils/emote';
+import {hasFlag} from '@/utils/flags';
+import {createSrc, createSrcSet} from '@/utils/image';
+import {bindTooltip} from '@/modules/tooltip/index';
 
 export default class Emote {
   constructor({

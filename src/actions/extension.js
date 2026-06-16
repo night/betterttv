@@ -1,4 +1,4 @@
-import api from '../utils/api.js';
+import api from '@/utils/api';
 
 export async function getExtensionSettings() {
   return api.get('extension/settings');

@@ -18,7 +18,7 @@ import {faTwitch, faYoutube} from '@fortawesome/free-brands-svg-icons';
 import classNames from 'classnames';
 import React from 'react';
 import styles from './Icons.module.css';
-import Icon from '../../../common/components/Icon.jsx';
+import Icon from '@/common/components/Icon';
 
 function BrandedImage({src, alt, brandSrc}) {
   return (

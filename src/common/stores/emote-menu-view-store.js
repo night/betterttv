@@ -8,23 +8,23 @@ import {
   EmoteCategories,
   PlatformTypes,
   EMOTE_CATEGORIES_ORDER_STORAGE_KEY,
-} from '../../constants.js';
-import formatMessage from '../../i18n/index.js';
-import Icons from '../../modules/emote_menu/components/Icons.jsx';
-import emoteStorage from '../../modules/emote_menu/stores/emote-menu-store.js';
-import {getEmojiCategories} from '../../modules/emote_menu/utils/emojis.js';
-import {loadTwitchEmotes} from '../../modules/emote_menu/utils/twitch-emotes.js';
-import {loadYouTubeEmotes} from '../../modules/emote_menu/utils/youtube-emotes.js';
-import emotes from '../../modules/emotes/index.js';
-import settings from '../../settings.js';
-import storage from '../../storage.js';
-import cdn from '../../utils/cdn.js';
-import {getCurrentChannel} from '../../utils/channel.js';
-import SafeEventEmitter from '../../utils/safe-event-emitter.js';
-import twitch from '../../utils/twitch.js';
-import {getCurrentUser} from '../../utils/user.js';
-import {getPlatform} from '../../utils/window.js';
-import watcher from '../../watcher.js';
+} from '@/constants';
+import formatMessage from '@/i18n/index';
+import Icons from '@/modules/emote_menu/components/Icons';
+import emoteStorage from '@/modules/emote_menu/stores/emote-menu-store';
+import {getEmojiCategories} from '@/modules/emote_menu/utils/emojis';
+import {loadTwitchEmotes} from '@/modules/emote_menu/utils/twitch-emotes';
+import {loadYouTubeEmotes} from '@/modules/emote_menu/utils/youtube-emotes';
+import emotes from '@/modules/emotes/index';
+import settings from '@/settings';
+import storage from '@/storage';
+import cdn from '@/utils/cdn';
+import {getCurrentChannel} from '@/utils/channel';
+import SafeEventEmitter from '@/utils/safe-event-emitter';
+import twitch from '@/utils/twitch';
+import {getCurrentUser} from '@/utils/user';
+import {getPlatform} from '@/utils/window';
+import watcher from '@/watcher';
 
 const MAX_FRECENTS = 36;
 

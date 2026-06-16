@@ -1,8 +1,8 @@
-import {SettingIds, ChannelPointsFlags, PlatformTypes} from '../../constants.js';
-import domObserver from '../../observers/dom.js';
-import settings from '../../settings.js';
-import {hasFlag} from '../../utils/flags.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
+import {SettingIds, ChannelPointsFlags, PlatformTypes} from '@/constants';
+import domObserver from '@/observers/dom';
+import settings from '@/settings';
+import {hasFlag} from '@/utils/flags';
+import {loadModuleForPlatforms} from '@/utils/modules';
 
 const CLAIM_BUTTON_SELECTOR = '.claimable-bonus__icon';
 

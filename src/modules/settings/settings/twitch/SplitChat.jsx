@@ -1,12 +1,12 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SplitChatModule from '../../../split_chat/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingSwitch from '../../components/SettingSwitch.jsx';
-import SettingGroup from '../../components/SettingGroup.jsx';
-import SettingColorPicker from '../../components/SettingColorPicker.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SplitChatModule from '@/modules/split_chat/index';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingColorPicker from '@/modules/settings/components/SettingColorPicker';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Split Chat'});
 

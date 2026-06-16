@@ -1,5 +1,5 @@
-import twitch from '../../utils/twitch.js';
-import watcher from '../../watcher.js';
+import twitch from '@/utils/twitch';
+import watcher from '@/watcher';
 
 export const PermissionLevels = {
   VIEWER: 0,

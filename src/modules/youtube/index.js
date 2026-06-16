@@ -1,9 +1,9 @@
-import {EmoteTypeFlags, PlatformTypes, SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
-import {hasFlag} from '../../utils/flags.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import watcher from '../../watcher.js';
-import chat from '../chat/index.js';
+import {EmoteTypeFlags, PlatformTypes, SettingIds} from '@/constants';
+import chat from '@/modules/chat/index';
+import settings from '@/settings';
+import {hasFlag} from '@/utils/flags';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import watcher from '@/watcher';
 
 const CHAT_MESSAGE_SELECTOR = '#content #message,#content #content-text';
 const CHAT_BADGES_CONTAINER_SELECTOR = '#chat-badges';

@@ -1,17 +1,17 @@
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
-import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '../../../constants.js';
-import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
-import {EmoteRow, HeaderRow} from './EmoteListRow.jsx';
-import Icons from './Icons.jsx';
-import VirtualizedList from './VirtualizedList.jsx';
-import Preview from './Preview.jsx';
+import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '@/constants';
+import useGridKeyboardNavigation from '@/modules/emote_menu/hooks/GridKeyboardNavigation';
+import {EmoteRow, HeaderRow} from './EmoteListRow';
+import Icons from './Icons';
+import VirtualizedList from './VirtualizedList';
+import Preview from './Preview';
 import {useElementSize, useMergedRef} from '@mantine/hooks';
 import {Text} from '@mantine/core';
 import styles from './EmoteList.module.css';
-import scrollbarStyles from '../../../common/styles/Scrollbar.module.css';
-import {getRowColumnCounts} from '../utils/emote-list-grid.js';
-import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
+import scrollbarStyles from '@/common/styles/Scrollbar.module.css';
+import {getRowColumnCounts} from '@/modules/emote_menu/utils/emote-list-grid';
+import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
 
 const GUARD_HEIGHT = 8;
 

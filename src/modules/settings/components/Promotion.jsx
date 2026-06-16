@@ -1,18 +1,18 @@
 import React, {useContext, useState} from 'react';
-import Panel from './Panel.jsx';
-import AnimatedCanvas from '../../../common/components/AnimatedCanvas.jsx';
+import Panel from './Panel';
+import AnimatedCanvas from '@/common/components/AnimatedCanvas';
 import styles from './Promotion.module.css';
 import {ActionIcon, Button, Image, Title} from '@mantine/core';
-import {PageContext} from '../contexts/PageContext.jsx';
-import {SettingPanelIds} from '../stores/SettingStore.jsx';
-import Icon from '../../../common/components/Icon.jsx';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import Icon from '@/common/components/Icon';
 import {faClose, faPaintBrush} from '@fortawesome/free-solid-svg-icons';
-import formatMessage from '../../../i18n/index.js';
-import NightbotLogoIcon from '../../../common/components/NightbotLogoIcon.jsx';
-import {SettingsPromotions} from '../../../constants.js';
-import cdn from '../../../utils/cdn.js';
+import formatMessage from '@/i18n/index';
+import NightbotLogoIcon from '@/common/components/NightbotLogoIcon';
+import {SettingsPromotions} from '@/constants';
+import cdn from '@/utils/cdn';
 import classNames from 'classnames';
-import promotionStore from '../stores/promotion-store.js';
+import promotionStore from '@/modules/settings/stores/promotion-store';
 
 function BotProviderPromotionIcons() {
   return (

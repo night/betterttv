@@ -1,3 +1,7 @@
+// Global (non-module) stylesheets.
+import.meta.glob(['./modules/**/*.css', '!./modules/**/*.module.css'], {eager: true});
+import '@mantine/core/styles.css';
+
 (async (currentScript) => {
   if (!String.prototype.includes || !Array.prototype.findIndex) return;
   if (window.location.pathname.endsWith('.html')) return;
@@ -33,27 +37,27 @@
   if (window.BetterTTV || window.__betterttv) return;
   window.__betterttv = true;
 
-  const {default: Sentry} = await import('./utils/sentry.js');
+  const {default: Sentry} = await import('@/utils/sentry');
 
   try {
-    const {load: loadI18n} = await import('./i18n/index.js');
+    const {load: loadI18n} = await import('@/i18n/index');
     await loadI18n();
 
-    const {default: extension} = await import('./utils/extension.js');
+    const {default: extension} = await import('@/utils/extension');
     await extension.setCurrentScript(currentScript);
 
-    const {default: globalCSS} = await import('./modules/global_css/index.js');
+    const {default: globalCSS} = await import('@/modules/global_css/index');
     const globalCSSLoadPromise = globalCSS.loadGlobalCSS();
 
-    const {default: debug} = await import('./utils/debug.js');
-    const {default: watcher} = await import('./watcher.js');
-    const {EXT_VER, NODE_ENV, GIT_REV} = await import('./constants.js');
+    const {default: debug} = await import('@/utils/debug');
+    const {default: watcher} = await import('./watcher');
+    const {EXT_VER, NODE_ENV, GIT_REV} = await import('./constants');
 
     // wait until styles load to prevent flashing
     await globalCSSLoadPromise;
 
-    // eslint-disable-next-line import/no-unresolved
-    await import('./modules/**/index.js');
+    const {importAll} = await import('@/utils/modules');
+    await importAll(import.meta.glob('./modules/**/index.{js,jsx}'));
 
     watcher.setup();
 
@@ -61,8 +65,8 @@
 
     window.BetterTTV = {
       version: EXT_VER,
-      settings: (await import('./settings.js')).default,
-      emoteMenu: (await import('./common/api/emote-menu.js')).default,
+      settings: (await import('./settings')).default,
+      emoteMenu: (await import('@/common/api/emote-menu')).default,
       watcher: {
         emitLoad: (name) => watcher.emit(`load.${name}`),
       },

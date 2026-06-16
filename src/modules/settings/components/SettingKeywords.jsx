@@ -17,15 +17,15 @@ import {
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import styles from './SettingKeywords.module.css';
-import {KeywordTypes} from '../../../utils/keywords.js';
-import formatMessage from '../../../i18n/index.js';
-import ColorPicker from './ColorPicker.jsx';
+import {KeywordTypes} from '@/utils/keywords';
+import formatMessage from '@/i18n/index';
+import ColorPicker from './ColorPicker';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
-import Panel from './Panel.jsx';
-import Icon from '../../../common/components/Icon.jsx';
-import usePortalRef from '../../../common/hooks/PortalRef.jsx';
-import useCurrentChannel from '../../../common/hooks/CurrentChannel.jsx';
+import Panel from './Panel';
+import Icon from '@/common/components/Icon';
+import usePortalRef from '@/common/hooks/PortalRef';
+import useCurrentChannel from '@/common/hooks/CurrentChannel';
 
 function KeywordRow({
   id,

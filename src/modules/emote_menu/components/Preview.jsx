@@ -1,8 +1,8 @@
 import React from 'react';
-import Emote from '../../../common/components/Emote.jsx';
-import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
-import formatMessage from '../../../i18n/index.js';
-import Icons from './Icons.jsx';
+import Emote from '@/common/components/Emote';
+import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
+import formatMessage from '@/i18n/index';
+import Icons from './Icons';
 import styles from './Preview.module.css';
 import classNames from 'classnames';
 import {Text, Title} from '@mantine/core';

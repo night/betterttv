@@ -1,13 +1,14 @@
 import React from 'react';
-import formatMessage from '../../../i18n/index.js';
-import domObserver from '../../../observers/dom.js';
-import Modal from '../components/SettingsModal.jsx';
-import shadowDOM from '../../shadow_dom';
-import {ShadowDOMComponentIds} from '../../../constants.js';
-import {bindTooltip} from '../../tooltip/index.js';
-import iconButtonStyles from '../../../common/styles/IconButton.module.css';
+import formatMessage from '@/i18n/index';
+import domObserver from '@/observers/dom';
+import Modal from '@/modules/settings/components/SettingsModal';
+import shadowDOM from '@/modules/shadow_dom';
+import {ShadowDOMComponentIds} from '@/constants';
+import {bindTooltip} from '@/modules/tooltip/index';
+import iconButtonStyles from '@/common/styles/IconButton.module.css';
 import topNavStyles from './TopNavButton.module.css';
-import promotionStore from '../stores/promotion-store.js';
+import promotionStore from '@/modules/settings/stores/promotion-store';
+import {importAll} from '@/utils/modules';
 
 const TOP_NAV_MENU_SELECTOR = '.top-nav__menu';
 const TOP_NAV_USER_MENU_SELECTOR = '[data-a-target="user-menu-toggle"]';
@@ -31,10 +32,8 @@ export default class SettingsModule {
   }
 
   async load() {
-    // eslint-disable-next-line import/no-unresolved
-    await import('../settings/global/*.jsx');
-    // eslint-disable-next-line import/no-unresolved
-    await import('../settings/twitch/*.jsx');
+    await importAll(import.meta.glob('../settings/global/*.jsx'));
+    await importAll(import.meta.glob('../settings/twitch/*.jsx'));
     this.renderSettings();
   }
 

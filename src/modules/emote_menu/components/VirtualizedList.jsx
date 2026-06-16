@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import styles from './VirtualizedList.module.css';
 import throttle from 'lodash.throttle';
 import {useElementSize, useMergedRef} from '@mantine/hooks';
-import {useScrollbarSize} from '../../../common/components/Scrollbar.jsx';
+import {useScrollbarSize} from '@/common/components/Scrollbar';
 
 function VirtualizedList(
   {

@@ -1,11 +1,11 @@
 import {darken, lighten, parseThemeColor} from '@mantine/core';
-import {DEFAULT_PRIMARY_COLOR, PlatformTypes, SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
-import useAuthStore from '../../stores/auth.js';
-import {variablesToCSS} from '../../utils/css.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import {getProSettingValue} from '../../utils/pro.js';
-import {theme} from '../shadow_dom/ThemeProvider.jsx';
+import {DEFAULT_PRIMARY_COLOR, PlatformTypes, SettingIds} from '@/constants';
+import {theme} from '@/modules/shadow_dom/ThemeProvider';
+import settings from '@/settings';
+import useAuthStore from '@/stores/auth';
+import {variablesToCSS} from '@/utils/css';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import {getProSettingValue} from '@/utils/pro';
 
 const CSS_VARIABLES_STYLE_ID = 'twitch-purple-css-variables';
 

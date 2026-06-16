@@ -1,6 +1,6 @@
 import React from 'react';
-import AutocompleteRow from '../../../common/components/AutocompleteRow.jsx';
-import Emote from '../../../common/components/Emote.jsx';
+import AutocompleteRow from '@/common/components/AutocompleteRow';
+import Emote from '@/common/components/Emote';
 import styles from './EmoteRow.module.css';
 
 function EmoteRow({item: emote, active, selected, onMouseOver, onClick}) {

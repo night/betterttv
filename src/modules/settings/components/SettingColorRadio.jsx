@@ -1,10 +1,10 @@
 import React from 'react';
 import {RadioGroup, RadioCard, Tooltip} from '@mantine/core';
-import formatMessage from '../../../i18n/index.js';
+import formatMessage from '@/i18n/index';
 import styles from './SettingColorRadio.module.css';
-import SettingWrapper from './SettingWrapper.jsx';
-import usePortalRef from '../../../common/hooks/PortalRef.jsx';
-import Icon from '../../../common/components/Icon.jsx';
+import SettingWrapper from './SettingWrapper';
+import usePortalRef from '@/common/hooks/PortalRef';
+import Icon from '@/common/components/Icon';
 import {faCheckCircle} from '@fortawesome/free-solid-svg-icons';
 
 function SettingColorRadio({

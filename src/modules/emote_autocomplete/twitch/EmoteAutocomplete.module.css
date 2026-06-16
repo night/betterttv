@@ -1,13 +1,11 @@
-:global {
-  .emote-autocomplete-provider__image[srcset*='/__BTTV__'],
-  .chat-line__message--emote[srcset*='/__BTTV__'] {
-    display: none;
-  }
+:global(.emote-autocomplete-provider__image[srcset*='/__BTTV__']),
+:global(.chat-line__message--emote[srcset*='/__BTTV__']) {
+  display: none;
+}
 
-  /* handle wide emotes like FireSpeed */
-  .emote-autocomplete-provider__image {
-    height: 2.8rem;
-    width: 2.8rem;
-    object-fit: contain;
-  }
+/* handle wide emotes like FireSpeed */
+:global(.emote-autocomplete-provider__image) {
+  height: 2.8rem;
+  width: 2.8rem;
+  object-fit: contain;
 }

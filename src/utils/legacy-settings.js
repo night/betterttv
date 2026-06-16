@@ -9,9 +9,9 @@ import {
   SettingIds,
   SidebarFlags,
   UsernameFlags,
-} from '../constants.js';
-import {setFlag} from './flags.js';
-import {serializeKeywords} from './keywords.js';
+} from '@/constants';
+import {setFlag} from './flags';
+import {serializeKeywords} from './keywords';
 
 const LegacySettingIds = {
   ANON_CHAT: 'anonChat',

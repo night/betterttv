@@ -1,7 +1,7 @@
 import React from 'react';
-import {ShadowDOMComponentIds} from '../../constants.js';
-import shadowDOM from '../shadow_dom/index.js';
-import TooltipController, {TOOLTIP_MARKER_ATTRIBUTE} from './TooltipController.jsx';
+import {ShadowDOMComponentIds} from '@/constants';
+import shadowDOM from '@/modules/shadow_dom/index';
+import TooltipController, {TOOLTIP_MARKER_ATTRIBUTE} from './TooltipController';
 
 export function bindTooltip(element, {content, className = null, alignment = 'center'}) {
   element.__bttvTooltip = {content, className, alignment};

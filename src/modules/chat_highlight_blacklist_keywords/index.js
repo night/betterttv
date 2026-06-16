@@ -1,16 +1,16 @@
 import {DateTime} from 'luxon';
 import isSafeRegex from 'safe-regex2';
-import {PlatformTypes, SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
-import cdn from '../../utils/cdn.js';
-import {getCurrentChannel} from '../../utils/channel.js';
-import colors from '../../utils/colors.js';
-import {computeKeywords, KeywordTypes} from '../../utils/keywords.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import {escapeRegExp} from '../../utils/regex.js';
-import {getCurrentUser} from '../../utils/user.js';
-import watcher from '../../watcher.js';
-import splitChat from '../split_chat/index.js';
+import {PlatformTypes, SettingIds} from '@/constants';
+import splitChat from '@/modules/split_chat/index';
+import settings from '@/settings';
+import cdn from '@/utils/cdn';
+import {getCurrentChannel} from '@/utils/channel';
+import colors from '@/utils/colors';
+import {computeKeywords, KeywordTypes} from '@/utils/keywords';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import {escapeRegExp} from '@/utils/regex';
+import {getCurrentUser} from '@/utils/user';
+import watcher from '@/watcher';
 
 const CHAT_LIST_SELECTOR =
   '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container,.video-chat div[data-test-selector="video-chat-message-list-wrapper"]';

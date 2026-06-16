@@ -1,10 +1,10 @@
 import throttle from 'lodash.throttle';
-import {SOCKET_ENDPOINT} from './constants.js';
-import useAuthStore, {getCredentials, setCredentials} from './stores/auth.js';
-import {refreshAndSetCredentials} from './utils/auth.js';
-import debug from './utils/debug.js';
-import SafeEventEmitter from './utils/safe-event-emitter.js';
-import {getCurrentUser} from './utils/user.js';
+import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
+import {refreshAndSetCredentials} from '@/utils/auth';
+import debug from '@/utils/debug';
+import SafeEventEmitter from '@/utils/safe-event-emitter';
+import {getCurrentUser} from '@/utils/user';
+import {SOCKET_ENDPOINT} from './constants';
 
 const CONNECTION_STATES = {
   DISCONNECTED: 0,

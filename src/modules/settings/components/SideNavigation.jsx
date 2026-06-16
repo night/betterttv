@@ -1,16 +1,16 @@
 import React, {useCallback, useContext} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import styles from './SideNavigation.module.css';
-import AnimatedLogo from './AnimatedLogo.jsx';
+import AnimatedLogo from './AnimatedLogo';
 import {ActionIcon, Avatar, Button, Overlay, Tooltip, useMantineTheme} from '@mantine/core';
 import {faArrowLeft, faCog, faScroll, faUser, faUserGear} from '@fortawesome/free-solid-svg-icons';
-import {PageTypes} from '../../../constants.js';
+import {PageTypes} from '@/constants';
 import classNames from 'classnames';
-import formatMessage from '../../../i18n/index.js';
-import {PageContext} from '../contexts/PageContext.jsx';
-import usePortalRef from '../../../common/hooks/PortalRef.jsx';
-import useAuthStore from '../../../stores/auth.js';
-import Icon from '../../../common/components/Icon.jsx';
+import formatMessage from '@/i18n/index';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import usePortalRef from '@/common/hooks/PortalRef';
+import useAuthStore from '@/stores/auth';
+import Icon from '@/common/components/Icon';
 
 function CloseMenuButton({onClick, className}) {
   return (
