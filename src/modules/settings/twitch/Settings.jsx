@@ -100,17 +100,12 @@ export default class SettingsModule {
   }
 
   renderTopNavButton() {
-    const userMenuToggle = document.querySelector(TOP_NAV_USER_MENU_SELECTOR);
-    // The avatar is wrapped two levels under the top nav menu, alongside the native icons.
-    // Grab that wrapper so we can drop our button in right before it.
-    const avatarWrapper = userMenuToggle?.closest(`${TOP_NAV_MENU_SELECTOR} > * > *`);
-    if (avatarWrapper == null) {
+    const iconRow = document.querySelector(`${TOP_NAV_MENU_SELECTOR} > *:has(${TOP_NAV_USER_MENU_SELECTOR})`);
+    if (iconRow == null) {
       return;
     }
 
-    // Twitch loads promotional buttons (Bits, ad-free) after we mount and inserts them right
-    // before the avatar, so pin our button's position with flex order rather than DOM order.
-    avatarWrapper.classList.add(topNavStyles.avatar);
+    iconRow.classList.add(topNavStyles.iconRow);
 
     if (document.getElementById(TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID) != null) {
       return;
@@ -127,7 +122,7 @@ export default class SettingsModule {
     bindTooltip(button, {content: formatMessage({defaultMessage: 'BetterTTV Settings'})});
 
     container.appendChild(button);
-    avatarWrapper.before(container);
+    iconRow.appendChild(container);
 
     this.updateTopNavPromotionIndicator();
   }

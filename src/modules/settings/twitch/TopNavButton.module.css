@@ -2,12 +2,15 @@
   display: flex;
   align-items: center;
   order: 1;
-  margin: 0 4px;
+  margin-inline: 4px;
 }
 
-/* Applied to Twitch's avatar wrapper so it always renders after our button, even when
-   promotional buttons (Bits, ad-free) load in after us. */
-.avatar {
+/* Render our button (order 1) just before Twitch's Turbo ("Go Ad-Free") icon and the avatar by
+   ordering both of those after it. They load in after us, so flex order keeps the button in
+   place. Neither has a stable class, so match the Turbo icon by its battery SVG path and the
+   avatar by its menu toggle. */
+.iconRow > *:has(svg path[d^='M2 19V5h17']),
+.iconRow > *:has([data-a-target='user-menu-toggle']) {
   order: 2;
 }
 
