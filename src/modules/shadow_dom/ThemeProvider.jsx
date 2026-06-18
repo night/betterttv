@@ -220,7 +220,14 @@ function ThemeProvider({children, ...props}) {
         <div ref={portalRef} id="bttv-shadow-dom-portal" />
         {/* portalRef.current is not available during the initial render */}
         {isMounted ? (
-          <ModalsProvider modalProps={{portalProps: {target: portalRef.current}}}>{children}</ModalsProvider>
+          /* withinPortal:false must be the provider-level default, not just per-modal. The manager
+          renders a single persistent Modal whose per-modal props only apply while a modal is open,
+          so without this the closed Modal falls back to withinPortal:true (portaled) and the first
+          open flips it to inline — remounting the Transition already-open and skipping the enter
+          animation. Keeping it false in both states avoids that remount. */
+          <ModalsProvider modalProps={{withinPortal: false, portalProps: {target: portalRef.current}}}>
+            {children}
+          </ModalsProvider>
         ) : null}
       </MantineProvider>
     </PortalContext.Provider>
