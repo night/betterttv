@@ -18,7 +18,7 @@ import useCloudBackupSettings from '@/common/hooks/CloudBackup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import Promotion from '@/modules/settings/components/Promotion';
-import {EXT_VER} from '@/constants';
+import {EXT_VER, SettingsPrompts} from '@/constants';
 
 function BackupSetting({description, disabled}) {
   function backupFile() {
@@ -85,6 +85,8 @@ function SignInButton() {
     await revokeAccessToken(accessToken);
     setCredentials(null);
     setCloudBackupSettings({enabled: false});
+    // Re-arm the one-time settings sign-in prompt so the user is nudged again next time.
+    storage.set(SettingsPrompts.SIGN_IN, false);
   }
 
   function handleSignOut() {
