@@ -1,7 +1,11 @@
 import {Text} from '@mantine/core';
 import {modals} from '@mantine/modals';
 import React from 'react';
+import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
+import useAuthStore from '@/stores/auth';
+import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
+import {isUserPro} from '@/utils/pro';
 import styles from './Modal.module.css';
 
 const DEFAULT_LOADING_TIMEOUT = 500;
@@ -101,6 +105,93 @@ export function openModal({title, description, ...props}) {
       body: styles.modalBody,
       header: styles.modalHeader,
       title: styles.modalTitle,
+    },
+    ...props,
+  });
+}
+
+export function openSignInModal(props = {}, callback = () => {}) {
+  const controller = new AbortController();
+  const {signal} = controller;
+
+  let unsubscribeUserUpdated = null;
+
+  function onConfirm() {
+    return new Promise((resolve, reject) => {
+      signal.addEventListener('abort', () => reject(new Error('Aborted')));
+
+      function handleUserUpdated() {
+        unsubscribeUserUpdated?.();
+        unsubscribeUserUpdated = null;
+
+        const {user: currentUser} = useAuthStore.getState();
+        currentUser != null ? resolve() : reject(new Error('no user found'));
+      }
+
+      unsubscribeUserUpdated = useAuthStore.subscribe(
+        (state) => state.user,
+        () => handleUserUpdated()
+      );
+
+      executeOAuth2SignInAndSetCredentials({signal}).catch(reject);
+    });
+  }
+
+  return openConfirmModal({
+    title: formatMessage({defaultMessage: 'Sign In Required'}),
+    description: formatMessage({defaultMessage: 'You must be signed in to use this feature.'}),
+    onConfirm: () => onConfirm().then(callback),
+    onClose: () => {
+      controller.abort();
+      unsubscribeUserUpdated?.();
+    },
+    labels: {
+      confirm: formatMessage({defaultMessage: 'Sign In'}),
+      cancel: formatMessage({defaultMessage: 'Cancel'}),
+    },
+    ...props,
+  });
+}
+
+export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
+  const controller = new AbortController();
+  const {signal} = controller;
+
+  let unsubscribeUserUpdated = null;
+
+  function onConfirm() {
+    return new Promise((resolve, reject) => {
+      signal.addEventListener('abort', () => reject(new Error('Aborted')));
+
+      // TODO: Make this open in a popup
+      window.open(ExternalLinks.PRO, '_blank');
+
+      function handleUserUpdated() {
+        unsubscribeUserUpdated?.();
+        unsubscribeUserUpdated = null;
+
+        const {user: currentUser} = useAuthStore.getState();
+        isUserPro(currentUser) ? resolve() : reject(new Error('user is not pro'));
+      }
+
+      unsubscribeUserUpdated = useAuthStore.subscribe(
+        (state) => state.user,
+        () => handleUserUpdated()
+      );
+    });
+  }
+
+  return openConfirmModal({
+    title: formatMessage({defaultMessage: 'Subscription Required'}),
+    description: formatMessage({defaultMessage: 'You must be a Pro subscriber to use this feature.'}),
+    onConfirm: () => onConfirm().then(callback),
+    onClose: () => {
+      controller.abort();
+      unsubscribeUserUpdated?.();
+    },
+    labels: {
+      confirm: formatMessage({defaultMessage: 'Upgrade'}),
+      cancel: formatMessage({defaultMessage: 'Cancel'}),
     },
     ...props,
   });
