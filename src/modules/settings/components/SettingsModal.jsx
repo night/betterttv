@@ -37,7 +37,8 @@ function maybePromptSignIn() {
   storage.set(SettingsPrompts.SIGN_IN, true);
 
   openSignInModal(undefined, {
-    description: formatMessage({defaultMessage: 'Sign in to use BetterTTV to its fullest.'}),
+    title: formatMessage({defaultMessage: 'Sign in to BetterTTV'}),
+    description: formatMessage({defaultMessage: 'Authenticate to unlock more features.'}),
   });
 }
 
