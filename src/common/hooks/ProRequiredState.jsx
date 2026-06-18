@@ -13,12 +13,12 @@ function useProRequiredState(props = {}) {
       const {user} = useAuthStore.getState();
 
       if (user == null) {
-        openSignInModal(() => updateValue(newValue));
+        openSignInModal({}, () => updateValue(newValue));
         return;
       }
 
       if (!isUserPro(user)) {
-        openSubscriptionUpgradeModal(() => updateValue(newValue));
+        openSubscriptionUpgradeModal({}, () => updateValue(newValue));
         return;
       }
 

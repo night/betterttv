@@ -110,7 +110,7 @@ export function openModal({title, description, ...props}) {
   });
 }
 
-export function openSignInModal(callback = () => {}, props = {}) {
+export function openSignInModal(props = {}, callback = () => {}) {
   const controller = new AbortController();
   const {signal} = controller;
 
@@ -153,7 +153,7 @@ export function openSignInModal(callback = () => {}, props = {}) {
   });
 }
 
-export function openSubscriptionUpgradeModal(callback = () => {}, props = {}) {
+export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
   const controller = new AbortController();
   const {signal} = controller;
 
