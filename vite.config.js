@@ -84,7 +84,7 @@ function emojisVirtualModulePlugin() {
   return {
     name: 'bttv-emojis-by-slug',
     async resolveId(id, importer) {
-      if (id.endsWith('emojis-by-slug.json') && importer?.includes(path.join('modules', 'emotes'))) {
+      if (id.endsWith('emojis-by-slug.json') && importer?.replace(/\\/g, '/').includes('modules/emotes')) {
         return VIRTUAL_ID;
       }
       return null;
