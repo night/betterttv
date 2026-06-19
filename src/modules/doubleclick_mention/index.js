@@ -1,5 +1,7 @@
 import {off, on} from 'delegated-events';
 import {PlatformTypes} from '@/constants';
+import formatMessage from '@/i18n/index';
+import {bindTooltip} from '@/modules/tooltip/index';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import twitch from '@/utils/twitch';
 import watcher from '@/watcher';
@@ -8,6 +10,7 @@ const CHAT_ROOM_SELECTOR = '.chat-list,.chat-list--default,.chat-list--other';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const USERNAME_SELECTORS =
   '.chat-line__message span.chat-author__display-name, .chat-line__message span[data-a-target="chat-message-mention"]';
+const CHAT_LINE_USERNAME_SELECTOR = '.chat-author__display-name';
 
 function clearSelection() {
   if (document.selection && document.selection.empty) {
@@ -42,6 +45,16 @@ function handleDoubleClick(e) {
 class DoubleClickMentionModule {
   constructor() {
     watcher.on('load.chat', () => this.load());
+    watcher.on('chat.message', (element) => this.bindUsernameTooltip(element));
+  }
+
+  bindUsernameTooltip(element) {
+    const usernameElement = element.querySelector(CHAT_LINE_USERNAME_SELECTOR);
+    if (usernameElement == null) {
+      return;
+    }
+
+    bindTooltip(usernameElement, {content: formatMessage({defaultMessage: 'Double-click to reply'})});
   }
 
   load() {
