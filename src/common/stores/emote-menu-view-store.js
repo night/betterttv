@@ -281,21 +281,12 @@ class EmoteMenuViewStore extends SafeEventEmitter {
 
     const {channel: channelQuery, term} = parseSearchQuery(search);
 
-    let items;
+    // A bare `c:<channel>` query has no term, so list the whole (already sorted) collection;
+    // otherwise fuzzy-search the term. When a channel filter is present, narrow to that channel.
+    let items = term.length === 0 ? this.collection : fuse.search(term).map(({item}) => item);
+
     if (channelQuery != null) {
-      if (term.length === 0) {
-        items = sortBy(
-          this.collection.filter((emote) => emoteMatchesChannel(emote, channelQuery)),
-          ({code}) => code.toLowerCase()
-        );
-      } else {
-        items = fuse
-          .search(term)
-          .map(({item}) => item)
-          .filter((emote) => emoteMatchesChannel(emote, channelQuery));
-      }
-    } else {
-      items = fuse.search(search).map(({item}) => item);
+      items = items.filter((emote) => emoteMatchesChannel(emote, channelQuery));
     }
 
     return chunkResults ? chunk(items, this.totalCols) : items;
@@ -379,8 +370,8 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       this.headers.unshift(0);
     }
 
-    this.collection = collection;
-    fuse.setCollection(collection);
+    this.collection = sortBy(collection, ({code}) => code.toLowerCase());
+    fuse.setCollection(this.collection);
     this.dirty = false;
     this.emit('updated');
   }
