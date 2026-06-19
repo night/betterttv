@@ -1,8 +1,8 @@
 import {PlatformTypes, SettingIds} from '@/constants';
 import domObserver from '@/observers/dom';
 import settings from '@/settings';
+import {getCurrentChannel} from '@/utils/channel';
 import {loadModuleForPlatforms} from '@/utils/modules';
-import twitch from '@/utils/twitch';
 import watcher from '@/watcher';
 
 const RAID_BANNER_SELECTOR = '[data-test-selector="raid-banner"]';
@@ -22,7 +22,7 @@ class AutoJoinRaidsModule {
     const channels = settingEnabled
       ? settings.get(SettingIds.AUTO_JOIN_RAIDS_WHITELISTED_CHANNELS)
       : settings.get(SettingIds.AUTO_JOIN_RAIDS_BLACKLISTED_CHANNELS);
-    const currentChannelName = twitch.getCurrentChat()?.props?.channelLogin;
+    const currentChannelName = getCurrentChannel()?.name?.toLowerCase();
 
     let autoJoin = channels.map((channel) => channel.toLowerCase()).includes(currentChannelName);
     if (settingEnabled) {
