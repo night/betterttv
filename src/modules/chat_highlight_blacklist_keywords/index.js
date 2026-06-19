@@ -335,7 +335,10 @@ class ChatHighlightBlacklistKeywordsModule {
 
     splitChat.render(message, messageObj);
 
+    const isFirstTimeChatter = messageObj.isFirstMsg === true && settings.get(SettingIds.HIGHLIGHT_FIRST_TIME_CHATTERS);
+
     if (
+      isFirstTimeChatter ||
       badges.some((value) => fieldContainsKeyword(highlightBadges, from, value, handleColorChange)) ||
       fieldContainsKeyword(highlightUsers, from, from, handleColorChange) ||
       fieldContainsKeyword(highlightKeywords, from, messageText, handleColorChange) ||
