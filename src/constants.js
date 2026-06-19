@@ -67,6 +67,7 @@ export const SettingIds = {
   SELF_BOT_COMMANDS_LIST: 'selfBotCommandsList',
   SELF_BOT_TIMERS_LIST: 'selfBotTimersList',
   REDUCED_MOTION: 'reducedMotion',
+  CELEBRATIONS: 'celebrations',
 };
 
 export const CategoryTypes = {
@@ -132,6 +133,11 @@ export const ChannelPointsFlags = {
   CHANNEL_POINTS: 1 << 0,
   AUTO_CLAIM: 1 << 1,
   MESSAGE_HIGHLIGHTS: 1 << 2,
+};
+
+export const CelebrationFlags = {
+  CELEBRATIONS: 1 << 0,
+  CHEER_EFFECTS: 1 << 1,
 };
 
 export const AutoPlayFlags = {
@@ -349,6 +355,7 @@ export const SettingDefaultValues = {
   ],
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
   [SettingIds.AUTO_CLAIM]: [0, 0],
+  [SettingIds.CELEBRATIONS]: [CelebrationFlags.CELEBRATIONS | CelebrationFlags.CHEER_EFFECTS, 0],
   [SettingIds.LIVE_CHAT_VIEW]: false,
   [SettingIds.EMOTE_MENU_WIDTH]: 498,
   [SettingIds.HYPE_CHAT]: true,
@@ -368,6 +375,7 @@ export const FlagSettings = [
   SettingIds.USERNAMES,
   SettingIds.CHANNEL_POINTS,
   SettingIds.AUTO_CLAIM,
+  SettingIds.CELEBRATIONS,
 ];
 
 export const PlatformTypes = {

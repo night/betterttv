@@ -1,0 +1,19 @@
+import {CelebrationFlags, PlatformTypes, SettingIds} from '@/constants';
+import settings from '@/settings';
+import {hasFlag} from '@/utils/flags';
+import {loadModuleForPlatforms} from '@/utils/modules';
+
+class HideCelebrationsModule {
+  constructor() {
+    settings.on(`changed.${SettingIds.CELEBRATIONS}`, () => this.load());
+    this.load();
+  }
+
+  load() {
+    const celebrations = settings.get(SettingIds.CELEBRATIONS);
+    document.body.classList.toggle('bttv-hide-celebrations', !hasFlag(celebrations, CelebrationFlags.CELEBRATIONS));
+    document.body.classList.toggle('bttv-hide-cheer-effects', !hasFlag(celebrations, CelebrationFlags.CHEER_EFFECTS));
+  }
+}
+
+export default loadModuleForPlatforms([PlatformTypes.TWITCH, () => new HideCelebrationsModule()]);
