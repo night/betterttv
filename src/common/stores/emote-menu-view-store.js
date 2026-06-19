@@ -81,15 +81,42 @@ function parseSearchQuery(search) {
   return {channel: match[1].toLowerCase(), term: match[2]};
 }
 
+// BetterTTV, FrankerFaceZ, and 7TV channel categories only ever contain the current channel's
+// emotes (they are fetched by the current channel id), but each emote's `channel` field holds the
+// individual emote uploader rather than the streamer. So these are matched against the current
+// channel instead of the per-emote channel.
+const CURRENT_CHANNEL_CATEGORY_IDS = [
+  EmoteCategories.BETTERTTV_CHANNEL,
+  EmoteCategories.FRANKERFACEZ_CHANNEL,
+  EmoteCategories.SEVENTV_CHANNEL,
+];
+
+function nameMatches(name, channelQuery) {
+  return name != null && name.toLowerCase() === channelQuery;
+}
+
 function emoteMatchesChannel(emote, channelQuery) {
-  const {channel} = emote;
-  if (channel == null) {
-    return false;
+  const categoryId = emote.category?.id;
+
+  // Personal emotes belong to the logged-in user, so match them against the current user's name.
+  if (categoryId === EmoteCategories.BETTERTTV_PERSONAL) {
+    const currentUser = getCurrentUser();
+    return nameMatches(currentUser?.name, channelQuery) || nameMatches(currentUser?.displayName, channelQuery);
   }
-  return (
-    (channel.name != null && channel.name.toLowerCase() === channelQuery) ||
-    (channel.displayName != null && channel.displayName.toLowerCase() === channelQuery)
-  );
+
+  if (CURRENT_CHANNEL_CATEGORY_IDS.includes(categoryId)) {
+    const currentChannel = getCurrentChannel();
+    return nameMatches(currentChannel?.name, channelQuery) || nameMatches(currentChannel?.displayName, channelQuery);
+  }
+
+  // Twitch channel emotes carry the owning channel's display name as a string and may span multiple
+  // channels the user is subscribed to.
+  const {channel} = emote;
+  if (typeof channel === 'string') {
+    return nameMatches(channel, channelQuery);
+  }
+
+  return false;
 }
 
 let providerCategories = [];
