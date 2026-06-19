@@ -54,7 +54,7 @@ class DoubleClickMentionModule {
       return;
     }
 
-    bindTooltip(usernameElement, {content: formatMessage({defaultMessage: 'Double-click to reply'})});
+    bindTooltip(usernameElement, {content: formatMessage({defaultMessage: 'Double-click to mention'})});
   }
 
   load() {
