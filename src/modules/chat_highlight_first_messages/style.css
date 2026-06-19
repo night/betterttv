@@ -1,0 +1,4 @@
+.chat-line__message.bttv-highlight-first-message {
+  background-color: rgba(0, 200, 100, 0.12);
+  border-left: 3px solid rgba(0, 200, 100, 0.85);
+}
