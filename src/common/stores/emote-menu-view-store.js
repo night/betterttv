@@ -70,6 +70,28 @@ const fuse = new Fuse([], {
   threshold: 0.3,
 });
 
+// Parses a search query for a `c:<channel>` prefix used to filter emotes by channel.
+// Returns the channel filter (or null) and the remaining search term.
+const CHANNEL_QUERY_REGEX = /^c:(\S+)\s*(.*)$/i;
+function parseSearchQuery(search) {
+  const match = search.match(CHANNEL_QUERY_REGEX);
+  if (match == null) {
+    return {channel: null, term: search};
+  }
+  return {channel: match[1].toLowerCase(), term: match[2]};
+}
+
+function emoteMatchesChannel(emote, channelQuery) {
+  const {channel} = emote;
+  if (channel == null) {
+    return false;
+  }
+  return (
+    (channel.name != null && channel.name.toLowerCase().includes(channelQuery)) ||
+    (channel.displayName != null && channel.displayName.toLowerCase().includes(channelQuery))
+  );
+}
+
 let providerCategories = [];
 let platformCategories = [];
 
@@ -96,6 +118,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
 
     this.rows = [];
     this.headers = [];
+    this.collection = [];
 
     this.dirty = true;
     this.categories = {};
@@ -256,8 +279,21 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       return [];
     }
 
-    const results = fuse.search(search);
-    const items = results.map(({item}) => item);
+    const {channel: channelQuery, term} = parseSearchQuery(search);
+
+    let items;
+    if (channelQuery != null) {
+      const channelEmotes = this.collection.filter((emote) => emoteMatchesChannel(emote, channelQuery));
+
+      if (term.length === 0) {
+        items = sortBy(channelEmotes, ({code}) => code.toLowerCase());
+      } else {
+        const channelFuse = new Fuse(channelEmotes, {keys: ['code'], shouldSort: true, threshold: 0.3});
+        items = channelFuse.search(term).map(({item}) => item);
+      }
+    } else {
+      items = fuse.search(search).map(({item}) => item);
+    }
 
     return chunkResults ? chunk(items, this.totalCols) : items;
   }
@@ -340,6 +376,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       this.headers.unshift(0);
     }
 
+    this.collection = collection;
     fuse.setCollection(collection);
     this.dirty = false;
     this.emit('updated');
