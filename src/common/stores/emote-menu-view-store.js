@@ -87,8 +87,8 @@ function emoteMatchesChannel(emote, channelQuery) {
     return false;
   }
   return (
-    (channel.name != null && channel.name.toLowerCase().includes(channelQuery)) ||
-    (channel.displayName != null && channel.displayName.toLowerCase().includes(channelQuery))
+    (channel.name != null && channel.name.toLowerCase() === channelQuery) ||
+    (channel.displayName != null && channel.displayName.toLowerCase() === channelQuery)
   );
 }
 
