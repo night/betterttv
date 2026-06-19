@@ -283,13 +283,16 @@ class EmoteMenuViewStore extends SafeEventEmitter {
 
     let items;
     if (channelQuery != null) {
-      const channelEmotes = this.collection.filter((emote) => emoteMatchesChannel(emote, channelQuery));
-
       if (term.length === 0) {
-        items = sortBy(channelEmotes, ({code}) => code.toLowerCase());
+        items = sortBy(
+          this.collection.filter((emote) => emoteMatchesChannel(emote, channelQuery)),
+          ({code}) => code.toLowerCase()
+        );
       } else {
-        const channelFuse = new Fuse(channelEmotes, {keys: ['code'], shouldSort: true, threshold: 0.3});
-        items = channelFuse.search(term).map(({item}) => item);
+        items = fuse
+          .search(term)
+          .map(({item}) => item)
+          .filter((emote) => emoteMatchesChannel(emote, channelQuery));
       }
     } else {
       items = fuse.search(search).map(({item}) => item);
