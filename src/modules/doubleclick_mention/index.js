@@ -2,6 +2,7 @@ import {off, on} from 'delegated-events';
 import {PlatformTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import {bindTooltip} from '@/modules/tooltip/index';
+import storage from '@/storage';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import twitch from '@/utils/twitch';
 import watcher from '@/watcher';
@@ -11,6 +12,12 @@ const CHAT_LINE_SELECTOR = '.chat-line__message';
 const USERNAME_SELECTORS =
   '.chat-line__message span.chat-author__display-name, .chat-line__message span[data-a-target="chat-message-mention"]';
 const CHAT_LINE_USERNAME_SELECTOR = '.chat-author__display-name';
+
+// Stop hinting once the user has clearly learned the gesture.
+const MENTION_USAGE_STORAGE_KEY = 'doubleClickMentionUsage';
+const MENTION_USAGE_HINT_LIMIT = 3;
+
+let mentionUsageCount = storage.get(MENTION_USAGE_STORAGE_KEY) ?? 0;
 
 function clearSelection() {
   if (document.selection && document.selection.empty) {
@@ -40,6 +47,11 @@ function handleDoubleClick(e) {
   const input = chatInputValue.trim();
   const output = input ? `${input} @${user} ` : `@${user}, `;
   twitch.setChatInputValue(output, true);
+
+  if (mentionUsageCount < MENTION_USAGE_HINT_LIMIT) {
+    mentionUsageCount += 1;
+    storage.set(MENTION_USAGE_STORAGE_KEY, mentionUsageCount);
+  }
 }
 
 class DoubleClickMentionModule {
@@ -49,6 +61,10 @@ class DoubleClickMentionModule {
   }
 
   bindUsernameTooltip(element) {
+    if (mentionUsageCount >= MENTION_USAGE_HINT_LIMIT) {
+      return;
+    }
+
     const usernameElement = element.querySelector(CHAT_LINE_USERNAME_SELECTOR);
     if (usernameElement == null) {
       return;
