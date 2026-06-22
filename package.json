@@ -78,7 +78,7 @@
     "eslint-plugin-react": "7.37.5",
     "git-rev-sync": "3.0.2",
     "globals": "17.6.0",
-    "got": "15.0.5",
+    "got": "15.0.6",
     "postcss": "8.5.15",
     "postcss-hexrgba": "2.1.0",
     "postcss-prefixwrap": "^1.58.0",
