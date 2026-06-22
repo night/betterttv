@@ -29,7 +29,7 @@
     "@mantine/core": "^9.3.1",
     "@mantine/hooks": "^9.3.1",
     "@mantine/modals": "^9.3.1",
-    "@sentry/browser": "10.58.0",
+    "@sentry/browser": "10.59.0",
     "@twemoji/api": "17.0.3",
     "classnames": "2.5.1",
     "cookies-js": "1.2.3",
@@ -38,7 +38,7 @@
     "file-saver": "2.0.5",
     "framer-motion": "12.40.0",
     "fuse.js": "7.4.2",
-    "graphql-tag": "2.12.6",
+    "graphql-tag": "2.12.7",
     "lodash.chunk": "4.2.0",
     "lodash.debounce": "4.0.8",
     "lodash.isequal": "^4.5.0",
@@ -52,7 +52,7 @@
     "react-string-replace": "2.0.1",
     "reconnecting-eventsource": "1.6.5",
     "safe-regex2": "5.1.1",
-    "semver": "7.8.4",
+    "semver": "7.8.5",
     "zustand": "^5.0.14"
   },
   "browserslist": [
