@@ -19,6 +19,9 @@ function Highlights(props, ref) {
   const [maxPinnedHighlights, setMaxPinnedHighlights] = useStorageState(SettingIds.MAX_PINNED_HIGHLIGHTS);
   const [timeoutHighlightsValue, setTimeoutHighlightsValue] = useStorageState(SettingIds.TIMEOUT_HIGHLIGHTS);
   const [highlightFeedback, setHighlightFeedback] = useStorageState(SettingIds.HIGHLIGHT_FEEDBACK);
+  const [highlightFirstTimeChatters, setHighlightFirstTimeChatters] = useStorageState(
+    SettingIds.HIGHLIGHT_FIRST_TIME_CHATTERS
+  );
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
@@ -63,6 +66,15 @@ function Highlights(props, ref) {
       />
       <SettingSwitch
         reverse
+        name={formatMessage({defaultMessage: 'Highlight First-Time Chatters'})}
+        description={formatMessage({
+          defaultMessage: 'Highlight messages from viewers chatting in the channel for the first time.',
+        })}
+        value={highlightFirstTimeChatters}
+        onChange={setHighlightFirstTimeChatters}
+      />
+      <SettingSwitch
+        reverse
         name={formatMessage({defaultMessage: 'Highlight Deleted Messages'})}
         description={formatMessage({defaultMessage: 'Highlight and prevent deletion of messages.'})}
         value={deletedMessages === DeletedMessageTypes.HIGHLIGHT}
@@ -76,7 +88,7 @@ SettingStore.registerSetting(React.forwardRef(Highlights), {
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['pinned', 'highlights', 'highlight', 'feedback', 'keywords'],
+  keywords: ['pinned', 'highlights', 'highlight', 'feedback', 'keywords', 'first', 'chatter', 'first-time'],
 });
 
 export default React.forwardRef(Highlights);
