@@ -1,6 +1,7 @@
 import {PlatformTypes, SettingIds} from '@/constants';
 import domObserver from '@/observers/dom';
 import settings from '@/settings';
+import {getCurrentChannel} from '@/utils/channel';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import watcher from '@/watcher';
 
@@ -11,11 +12,22 @@ class AutoJoinRaidsModule {
   constructor() {
     watcher.on('load.chat', () => this.load());
     settings.on(`changed.${SettingIds.AUTO_JOIN_RAIDS}`, () => this.load());
+    settings.on(`changed.${SettingIds.AUTO_JOIN_RAIDS_WHITELISTED_CHANNELS}`, () => this.load());
+    settings.on(`changed.${SettingIds.AUTO_JOIN_RAIDS_BLACKLISTED_CHANNELS}`, () => this.load());
     this.removeRaidListener = null;
   }
 
   load() {
-    const autoJoin = settings.get(SettingIds.AUTO_JOIN_RAIDS);
+    const settingEnabled = settings.get(SettingIds.AUTO_JOIN_RAIDS);
+    const channels = settingEnabled
+      ? settings.get(SettingIds.AUTO_JOIN_RAIDS_WHITELISTED_CHANNELS)
+      : settings.get(SettingIds.AUTO_JOIN_RAIDS_BLACKLISTED_CHANNELS);
+    const currentChannelName = getCurrentChannel()?.name?.toLowerCase();
+
+    let autoJoin = channels.map((channel) => channel.toLowerCase()).includes(currentChannelName);
+    if (settingEnabled) {
+      autoJoin = !autoJoin;
+    }
 
     if (autoJoin && this.removeRaidListener != null) {
       this.removeRaidListener();

@@ -5,11 +5,15 @@ import formatMessage from '@/i18n/index';
 import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingTagInput from '@/modules/settings/components/SettingTagInput';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Raids'});
 
 function AutoJoinRaids(props, ref) {
   const [value, setValue] = useStorageState(SettingIds.AUTO_JOIN_RAIDS);
+  const [channels, setChannels] = useStorageState(
+    value ? SettingIds.AUTO_JOIN_RAIDS_WHITELISTED_CHANNELS : SettingIds.AUTO_JOIN_RAIDS_BLACKLISTED_CHANNELS
+  );
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
@@ -18,6 +22,22 @@ function AutoJoinRaids(props, ref) {
         description={formatMessage({defaultMessage: 'Join raids when possible.'})}
         value={value}
         onChange={setValue}
+      />
+      <SettingTagInput
+        name={
+          value
+            ? formatMessage({defaultMessage: 'Whitelist Channels'})
+            : formatMessage({defaultMessage: 'Blacklist Channels'})
+        }
+        description={
+          value
+            ? formatMessage({defaultMessage: 'List of channels that disable auto joining raids.'})
+            : formatMessage({defaultMessage: 'List of channels that enable auto joining raids.'})
+        }
+        value={channels}
+        onChange={setChannels}
+        withCurrentChannel
+        placeholder={formatMessage({defaultMessage: 'channel, etc..'})}
       />
     </SettingGroup>
   );
