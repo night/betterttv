@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Avatar,
   Button,
+  Kbd,
   NativeSelect,
   Pill,
   Table,
@@ -15,7 +16,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
+import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
 import styles from './SettingKeywords.module.css';
 import {KeywordTypes} from '@/utils/keywords';
 import formatMessage from '@/i18n/index';
@@ -26,6 +27,67 @@ import Panel from './Panel';
 import Icon from '@/common/components/Icon';
 import usePortalRef from '@/common/hooks/PortalRef';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
+import {openModal} from '@/common/utils/modal';
+
+const REGEX_EXAMPLES = [
+  {pattern: '~/(cat|dog)s?/i', description: formatMessage({defaultMessage: 'Matches cat, dogs, and similar'})},
+  {pattern: '~/\\bgg\\b/i', description: formatMessage({defaultMessage: 'Matches "gg" on its own, not "eggs"'})},
+  {
+    pattern: '~/!(give|raffle)/i',
+    description: formatMessage({defaultMessage: 'Matches the !give and !raffle commands'}),
+  },
+  {pattern: '~/[A-Z]{5,}/', description: formatMessage({defaultMessage: 'Matches 5 or more capitals in a row'})},
+];
+
+function RegexGuideModalBody() {
+  return (
+    <div className={styles.regexModalBody}>
+      <Text size="md" c="dimmed">
+        {formatMessage(
+          {
+            defaultMessage:
+              'Wrap a pattern in {syntax} to match with a regular expression instead of plain text, with optional flags such as {flag} for case-insensitivity.',
+          },
+          {syntax: <Kbd>~/ /</Kbd>, flag: <Kbd>i</Kbd>}
+        )}
+      </Text>
+      <div className={styles.regexTableWrapper}>
+        <Table withColumnBorders className={styles.regexTable}>
+          <TableThead>
+            <TableTr>
+              <TableTh>{formatMessage({defaultMessage: 'Pattern'})}</TableTh>
+              <TableTh>{formatMessage({defaultMessage: 'Matches'})}</TableTh>
+            </TableTr>
+          </TableThead>
+          <TableTbody>
+            {REGEX_EXAMPLES.map(({pattern, description}) => (
+              <TableTr key={pattern}>
+                <TableTd>
+                  <Kbd size="lg">{pattern}</Kbd>
+                </TableTd>
+                <TableTd>
+                  <Text size="md" c="dimmed">
+                    {description}
+                  </Text>
+                </TableTd>
+              </TableTr>
+            ))}
+          </TableTbody>
+        </Table>
+      </div>
+      <Text size="md" c="dimmed">
+        {formatMessage({defaultMessage: 'It works for the Message, Username, and Badge targets.'})}
+      </Text>
+    </div>
+  );
+}
+
+function openRegexGuideModal() {
+  return openModal({
+    title: formatMessage({defaultMessage: 'Advanced Keywords'}),
+    children: <RegexGuideModalBody />,
+  });
+}
 
 function KeywordRow({
   id,
@@ -160,7 +222,19 @@ function KeywordsTable({
         <TableTr>
           {showColorColumn ? <TableTh className={styles.colorColumn} /> : null}
           <TableTh className={styles.targetColumn}>{formatMessage({defaultMessage: 'Target'})}</TableTh>
-          <TableTh className={styles.keywordColumn}>{formatMessage({defaultMessage: 'Keyword'})}</TableTh>
+          <TableTh className={styles.keywordColumn}>
+            <div className={styles.keywordHeader}>
+              {formatMessage({defaultMessage: 'Keyword'})}
+              <ActionIcon
+                size="sm"
+                variant="transparent"
+                className={styles.infoButton}
+                aria-label={formatMessage({defaultMessage: 'Advanced keywords'})}
+                onClick={openRegexGuideModal}>
+                <Icon icon={faCircleInfo} />
+              </ActionIcon>
+            </div>
+          </TableTh>
           <TableTh className={styles.channelsColumn}>{formatMessage({defaultMessage: 'Channels'})}</TableTh>
           <TableTh className={styles.actionsColumn} />
         </TableTr>
