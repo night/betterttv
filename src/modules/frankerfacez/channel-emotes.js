@@ -36,7 +36,7 @@ class FrankerFaceZChannelEmotes extends AbstractEmotes {
 
     getFrankerFaceZChannelEmotes(currentChannel.provider, currentChannel.id)
       .then((emotes) =>
-        emotes.forEach(({id, user, code, images, animated, modifier}) => {
+        emotes.forEach(({id, user, code, images, animated, modifier, imageType}) => {
           this.emotes.set(
             code,
             new Emote({
@@ -47,6 +47,7 @@ class FrankerFaceZChannelEmotes extends AbstractEmotes {
               images,
               animated,
               modifier,
+              metadata: {imageType},
             })
           );
         })
