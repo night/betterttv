@@ -2,6 +2,7 @@ import React from 'react';
 import EmoteTooltipContent from '@/common/components/EmoteTooltipContent';
 import emoteTooltipStyles from '@/common/components/EmoteTooltipContent.module.css';
 import {EmoteCategories, EmoteTypeFlags, SettingIds} from '@/constants';
+import {bindEmoteModal} from '@/modules/emote_modal/index';
 import {bindTooltip} from '@/modules/tooltip/index';
 import settings from '@/settings';
 import {getCanonicalEmoteId} from '@/utils/emote';
@@ -100,6 +101,8 @@ export default class Emote {
       ),
       className: emoteTooltipStyles.emote,
     });
+
+    bindEmoteModal(container, {emote: this});
 
     return container;
   }
