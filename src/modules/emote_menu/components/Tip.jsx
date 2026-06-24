@@ -23,6 +23,7 @@ function getTipToDisplay(onClose) {
   const replaceDefaultEmoteMenu = () => {
     markTipAsSeen(EmoteMenuTips.EMOTE_MENU_REPLACE_DEFAULT);
     setEmoteMenuValue(EmoteMenuTypes.ENABLED);
+    onClose();
   };
 
   const customizeAccentColor = () => {
