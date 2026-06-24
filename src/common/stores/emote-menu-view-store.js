@@ -70,6 +70,55 @@ const fuse = new Fuse([], {
   threshold: 0.3,
 });
 
+// Parses a search query for a `c:<channel>` prefix used to filter emotes by channel.
+// Returns the channel filter (or null) and the remaining search term.
+const CHANNEL_QUERY_REGEX = /^c:(\S+)\s*(.*)$/i;
+function parseSearchQuery(search) {
+  const match = search.match(CHANNEL_QUERY_REGEX);
+  if (match == null) {
+    return {channel: null, term: search};
+  }
+  return {channel: match[1].toLowerCase(), term: match[2]};
+}
+
+// BetterTTV, FrankerFaceZ, and 7TV channel categories only ever contain the current channel's
+// emotes (they are fetched by the current channel id), but each emote's `channel` field holds the
+// individual emote uploader rather than the streamer. So these are matched against the current
+// channel instead of the per-emote channel.
+const CURRENT_CHANNEL_CATEGORY_IDS = [
+  EmoteCategories.BETTERTTV_CHANNEL,
+  EmoteCategories.FRANKERFACEZ_CHANNEL,
+  EmoteCategories.SEVENTV_CHANNEL,
+];
+
+function nameMatches(name, channelQuery) {
+  return name != null && name.toLowerCase() === channelQuery;
+}
+
+function emoteMatchesChannel(emote, channelQuery) {
+  const categoryId = emote.category?.id;
+
+  // Personal emotes belong to the logged-in user, so match them against the current user's name.
+  if (categoryId === EmoteCategories.BETTERTTV_PERSONAL) {
+    const currentUser = getCurrentUser();
+    return nameMatches(currentUser?.name, channelQuery) || nameMatches(currentUser?.displayName, channelQuery);
+  }
+
+  if (CURRENT_CHANNEL_CATEGORY_IDS.includes(categoryId)) {
+    const currentChannel = getCurrentChannel();
+    return nameMatches(currentChannel?.name, channelQuery) || nameMatches(currentChannel?.displayName, channelQuery);
+  }
+
+  // Twitch channel emotes carry the owning channel's display name as a string and may span multiple
+  // channels the user is subscribed to.
+  const {channel} = emote;
+  if (typeof channel === 'string') {
+    return nameMatches(channel, channelQuery);
+  }
+
+  return false;
+}
+
 let providerCategories = [];
 let platformCategories = [];
 
@@ -96,6 +145,7 @@ class EmoteMenuViewStore extends SafeEventEmitter {
 
     this.rows = [];
     this.headers = [];
+    this.collection = [];
 
     this.dirty = true;
     this.categories = {};
@@ -256,8 +306,15 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       return [];
     }
 
-    const results = fuse.search(search);
-    const items = results.map(({item}) => item);
+    const {channel: channelQuery, term} = parseSearchQuery(search);
+
+    // A bare `c:<channel>` query has no term, so list the whole (already sorted) collection;
+    // otherwise fuzzy-search the term. When a channel filter is present, narrow to that channel.
+    let items = term.length === 0 ? this.collection : fuse.search(term).map(({item}) => item);
+
+    if (channelQuery != null) {
+      items = items.filter((emote) => emoteMatchesChannel(emote, channelQuery));
+    }
 
     return chunkResults ? chunk(items, this.totalCols) : items;
   }
@@ -340,7 +397,8 @@ class EmoteMenuViewStore extends SafeEventEmitter {
       this.headers.unshift(0);
     }
 
-    fuse.setCollection(collection);
+    this.collection = sortBy(collection, ({code}) => code.toLowerCase());
+    fuse.setCollection(this.collection);
     this.dirty = false;
     this.emit('updated');
   }
