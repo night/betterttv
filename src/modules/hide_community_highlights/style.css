@@ -1,3 +1,9 @@
 .bttv-hide-community-highlights {
-  display: none;
+  /* Twitch renders the highlight stack (hype trains, predictions, polls, pinned
+     messages, etc.) as cards inside a scrollable container, wrapped in extra
+     chrome (a sticky highlight, a header). Hiding the individual cards leaves
+     that chrome behind as an empty bar, so hide the whole container. */
+  div:has(> [class*='community-highlight-stack__scroll']) {
+    display: none !important;
+  }
 }
