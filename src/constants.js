@@ -62,6 +62,8 @@ export const SettingIds = {
   HYPE_CHAT: 'hypeChat',
   PRIMARY_COLOR: 'primaryColor',
   CHATBOT_COMMAND_AUTOCOMPLETE: 'chatbotCommandAutocomplete',
+  SELF_BOT: 'selfBot',
+  SELF_BOT_COMMANDS_LIST: 'selfBotCommandsList',
 };
 
 export const CategoryTypes = {
@@ -152,10 +154,11 @@ export const PageTypes = {
   USER_SETTINGS: 3,
   HIGHLIGHT_KEYWORDS: 4,
   BLACKLIST_KEYWORDS: 5,
+  SELF_BOT_COMMANDS: 6,
 };
 
 export const PageDecendants = {
-  [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS],
+  [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS, PageTypes.SELF_BOT_COMMANDS],
 };
 
 export const NavigationModeTypes = {
@@ -222,6 +225,7 @@ export const EmoteMenuTips = {
 export const SettingsPromotions = {
   THEME_CUSTOMIZE: 'settingsPromotionDismissedThemeCustomize',
   CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
+  SELF_BOT: 'settingsPromotionDismissedSelfBot',
 };
 
 export const SettingsPrompts = {
@@ -307,6 +311,8 @@ export const SettingDefaultValues = {
   [SettingIds.HYPE_CHAT]: true,
   [SettingIds.PRIMARY_COLOR]: null,
   [SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE]: true,
+  [SettingIds.SELF_BOT]: false,
+  [SettingIds.SELF_BOT_COMMANDS_LIST]: {},
 };
 
 export const FlagSettings = [

@@ -17,6 +17,11 @@ const PROMOTION_SLOTS = [
     isAvailable: () => !getProSettingValue(SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE, false),
   },
   {
+    storageKey: SettingsPromotions.SELF_BOT,
+    settingId: SettingIds.SELF_BOT,
+    isAvailable: () => settings.get(SettingIds.SELF_BOT) !== true,
+  },
+  {
     storageKey: SettingsPromotions.THEME_CUSTOMIZE,
     settingId: SettingIds.PRIMARY_COLOR,
     isAvailable: () => getProSettingValue(SettingIds.PRIMARY_COLOR, null) == null,

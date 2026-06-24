@@ -1,3 +1,5 @@
+import watcher from '@/watcher';
+
 let currentUser;
 
 export function setCurrentUser({provider, id, name, displayName, avatar}) {
@@ -8,6 +10,8 @@ export function setCurrentUser({provider, id, name, displayName, avatar}) {
     displayName,
     avatar,
   };
+
+  watcher.emit('user.updated', currentUser);
 }
 
 export function getCurrentUser() {

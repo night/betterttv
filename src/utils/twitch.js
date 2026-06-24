@@ -494,10 +494,23 @@ export default {
     });
   },
 
-  sendChatMessage(message) {
+  sendChatMessage(message, {replyParentMessage} = {}) {
     const currentChat = this.getCurrentChat();
     if (!currentChat) return;
-    currentChat.props.onSendMessage(message);
+    if (replyParentMessage != null) {
+      currentChat.props.onSendMessage(message, {
+        reply: {
+          parentDeleted: replyParentMessage.deleted ?? false,
+          parentMsgId: replyParentMessage.id,
+          parentMessageBody: replyParentMessage.messageBody,
+          parentUid: replyParentMessage.user?.userID,
+          parentUserLogin: replyParentMessage.user?.userLogin,
+          parentDisplayName: replyParentMessage.user?.userDisplayName,
+        },
+      });
+    } else {
+      currentChat.props.onSendMessage(message);
+    }
   },
 
   getCurrentUserIsModerator() {
