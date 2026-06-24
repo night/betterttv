@@ -2,6 +2,7 @@ import {ChatFlags, PlatformTypes, SettingIds} from '@/constants';
 import settings from '@/settings';
 import {hasFlag} from '@/utils/flags';
 import {loadModuleForPlatforms} from '@/utils/modules';
+import styles from './styles.module.css';
 
 class HideCommunityHighlightsModule {
   constructor() {
@@ -11,7 +12,7 @@ class HideCommunityHighlightsModule {
 
   load() {
     document.body.classList.toggle(
-      'bttv-hide-community-highlights',
+      styles.hideCommunityHighlights,
       !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.COMMUNITY_HIGHLIGHTS)
     );
   }
