@@ -14,7 +14,6 @@ const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 export const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_WYSIWYG_INPUT_EDITOR = '.chat-wysiwyg-input__editor';
-const COMMUNITY_HIGHLIGHT = '.community-highlight';
 const STREAM_CHAT = '.stream-chat';
 
 const USER_PROFILE_IMAGE_GQL_QUERY = gql`
@@ -821,19 +820,6 @@ export default {
     }
 
     return messages;
-  },
-
-  getCommunityHighlight() {
-    let highlight;
-    try {
-      const node = searchReactParents(
-        getReactInstance(document.querySelector(COMMUNITY_HIGHLIGHT)),
-        (n) => n.memoizedProps?.highlight?.event != null
-      );
-      highlight = node.memoizedProps.highlight;
-    } catch (e) {}
-
-    return highlight;
   },
 
   getSidebarSection(element) {
