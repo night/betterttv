@@ -107,7 +107,8 @@ class ChatDeletedMessagesModule {
           if (deletedMessages === DeletedMessageTypes.HIGHLIGHT) {
             ChatHighlightBlacklistKeywords.markHighlighted(
               message,
-              settings.get(SettingIds.DELETED_MESSAGES_HIGHLIGHT_COLOR)
+              settings.get(SettingIds.DELETED_MESSAGES_HIGHLIGHT_COLOR),
+              formatMessage({defaultMessage: 'Deleted message'})
             );
           }
           message.classList.toggle(CHAT_LINE_DELETED_CLASS, true);

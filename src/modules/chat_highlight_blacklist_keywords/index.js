@@ -1,7 +1,9 @@
 import {DateTime} from 'luxon';
 import isSafeRegex from 'safe-regex2';
 import {PlatformTypes, SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
 import splitChat from '@/modules/split_chat/index';
+import {bindTooltip} from '@/modules/tooltip/index';
 import settings from '@/settings';
 import cdn from '@/utils/cdn';
 import {getCurrentChannel} from '@/utils/channel';
@@ -11,6 +13,7 @@ import {loadModuleForPlatforms} from '@/utils/modules';
 import {escapeRegExp} from '@/utils/regex';
 import {getCurrentUser} from '@/utils/user';
 import watcher from '@/watcher';
+import {renderHighlightReasonTooltip} from './HighlightReasonTooltip';
 
 const CHAT_LIST_SELECTOR =
   '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container,.video-chat div[data-test-selector="video-chat-message-list-wrapper"]';
@@ -337,31 +340,42 @@ class ChatHighlightBlacklistKeywordsModule {
 
     const isFirstTimeChatter = messageObj.isFirstMsg === true && settings.get(SettingIds.HIGHLIGHT_FIRST_TIME_CHATTERS);
 
-    if (
-      isFirstTimeChatter ||
-      badges.some((value) => fieldContainsKeyword(highlightBadges, from, value, handleColorChange)) ||
-      fieldContainsKeyword(highlightUsers, from, from, handleColorChange) ||
+    // evaluate matches in priority order so we can surface why the message was highlighted
+    let highlightReason;
+    if (isFirstTimeChatter) {
+      highlightReason = formatMessage({defaultMessage: 'First-time chatter'});
+    } else if (badges.some((value) => fieldContainsKeyword(highlightBadges, from, value, handleColorChange))) {
+      highlightReason = formatMessage({defaultMessage: 'Highlighted badge'});
+    } else if (fieldContainsKeyword(highlightUsers, from, from, handleColorChange)) {
+      highlightReason = formatMessage({defaultMessage: 'Highlighted user'});
+    } else if (
       fieldContainsKeyword(highlightKeywords, from, messageText, handleColorChange) ||
       (reply != null &&
         (fieldContainsKeyword(highlightKeywords, from, reply.parentMessageBody, handleColorChange) ||
           fieldContainsKeyword(highlightKeywords, from, `@${reply.threadParentDisplayName}`, handleColorChange)))
     ) {
-      // keyword/user/badge colors take priority; otherwise fall back to the first-time chatter color
-      const highlightColor =
-        color ?? (isFirstTimeChatter ? settings.get(SettingIds.FIRST_MESSAGE_HIGHLIGHT_COLOR) : undefined);
-      this.markHighlighted(message, highlightColor);
+      highlightReason = formatMessage({defaultMessage: 'Highlighted keyword'});
+    }
 
-      if (isReply(message) || isDuplicateHighlight({date, from, message: messageText})) {
-        return;
-      }
+    if (highlightReason == null) {
+      return;
+    }
 
-      if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
-        this.handleHighlightSound();
-      }
+    // keyword/user/badge colors take priority; otherwise fall back to the first-time chatter color
+    const highlightColor =
+      color ?? (isFirstTimeChatter ? settings.get(SettingIds.FIRST_MESSAGE_HIGHLIGHT_COLOR) : undefined);
+    this.markHighlighted(message, highlightColor, highlightReason);
 
-      if (timestamp > loadTime) {
-        this.pinHighlight({from, message: messageText, date});
-      }
+    if (isReply(message) || isDuplicateHighlight({date, from, message: messageText})) {
+      return;
+    }
+
+    if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
+      this.handleHighlightSound();
+    }
+
+    if (timestamp > loadTime) {
+      this.pinHighlight({from, message: messageText, date});
     }
   }
 
@@ -389,24 +403,33 @@ class ChatHighlightBlacklistKeywordsModule {
       return;
     }
 
-    if (
-      badges.some((value) => fieldContainsKeyword(highlightBadges, from, value, handleColorChange)) ||
-      fieldContainsKeyword(highlightUsers, from, from, handleColorChange) ||
-      fieldContainsKeyword(highlightKeywords, from, messageContent, handleColorChange)
-    ) {
-      this.markHighlighted(message, color);
-
-      if (!isDuplicateHighlight({from, message: messageContent, date: new Date()})) {
-        if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
-          this.handleHighlightSound();
-        }
-
-        this.pinHighlight({from, message: messageContent, date: new Date()});
-      }
+    let highlightReason;
+    if (badges.some((value) => fieldContainsKeyword(highlightBadges, from, value, handleColorChange))) {
+      highlightReason = formatMessage({defaultMessage: 'Highlighted badge'});
+    } else if (fieldContainsKeyword(highlightUsers, from, from, handleColorChange)) {
+      highlightReason = formatMessage({defaultMessage: 'Highlighted user'});
+    } else if (fieldContainsKeyword(highlightKeywords, from, messageContent, handleColorChange)) {
+      highlightReason = formatMessage({defaultMessage: 'Highlighted keyword'});
     }
+
+    if (highlightReason == null) {
+      return;
+    }
+
+    this.markHighlighted(message, color, highlightReason);
+
+    if (isDuplicateHighlight({from, message: messageContent, date: new Date()})) {
+      return;
+    }
+
+    if (settings.get(SettingIds.HIGHLIGHT_FEEDBACK)) {
+      this.handleHighlightSound();
+    }
+
+    this.pinHighlight({from, message: messageContent, date: new Date()});
   }
 
-  markHighlighted(message, color = undefined) {
+  markHighlighted(message, color = undefined, reason = undefined) {
     message.classList.add('bttv-highlighted');
 
     if (color == null) {
@@ -415,6 +438,10 @@ class ChatHighlightBlacklistKeywordsModule {
 
     const {r, g, b} = colors.getRgb(color);
     message.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
+
+    if (reason != null) {
+      bindTooltip(message, {content: renderHighlightReasonTooltip(reason)});
+    }
   }
 
   markBlacklisted(message) {
