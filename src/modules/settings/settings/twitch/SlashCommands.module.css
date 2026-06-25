@@ -11,6 +11,8 @@
   flex-direction: column;
   align-items: left;
   row-gap: 8px;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 .command {

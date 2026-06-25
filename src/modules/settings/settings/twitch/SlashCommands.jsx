@@ -56,10 +56,7 @@ function SlashCommands(props, ref) {
         value={value}
         onChange={setValue}
         description={formatMessage(
-          {
-            defaultMessage:
-              'Adds extra <link>slash commands</link> to Twitch chat, such as /viewers, /uptime, and /localmod.',
-          },
+          {defaultMessage: 'Adds extra <link>slash commands</link> to Twitch chat.'},
           {
             link: (string) => (
               <Anchor key="slashCommandsLink" component="button" onClick={openSlashCommandsModal}>
