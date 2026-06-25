@@ -54,6 +54,13 @@ function ChatModule(props, ref) {
         })}
       />
       <SettingCheckbox
+        value={ChatFlags.WATCH_STREAKS}
+        name={formatMessage({defaultMessage: 'Watch Streaks'})}
+        description={formatMessage({
+          defaultMessage: 'Show watch streaks in chat and on followed channels in the sidebar.',
+        })}
+      />
+      <SettingCheckbox
         value={ChatFlags.CHAT_MESSAGE_HISTORY}
         name={formatMessage({defaultMessage: 'Message History'})}
         description={formatMessage({
@@ -68,7 +75,18 @@ SettingStore.registerSetting(React.forwardRef(ChatModule), {
   settingPanelId: SettingPanelIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['bits', 'highlights', 'community', 'chat', 'replies', 'clips', 'subs', 'subscriptions'],
+  keywords: [
+    'bits',
+    'highlights',
+    'community',
+    'chat',
+    'replies',
+    'clips',
+    'subs',
+    'subscriptions',
+    'watch',
+    'streaks',
+  ],
 });
 
 export default React.forwardRef(ChatModule);
