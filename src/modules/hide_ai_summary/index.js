@@ -2,6 +2,7 @@ import {ChatFlags, PlatformTypes, SettingIds} from '@/constants';
 import settings from '@/settings';
 import {hasFlag} from '@/utils/flags';
 import {loadModuleForPlatforms} from '@/utils/modules';
+import styles from './styles.module.css';
 
 class HideAISummaryModule {
   constructor() {
@@ -11,7 +12,7 @@ class HideAISummaryModule {
 
   load() {
     document.body.classList.toggle(
-      'bttv-hide-ai-summary',
+      styles.hideAiSummary,
       !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.AI_STREAM_SUMMARY)
     );
   }
