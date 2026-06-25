@@ -33,7 +33,7 @@ class GlobalEmotes extends AbstractEmotes {
 
     getFrankerFaceZGlobalEmotes()
       .then((emotes) =>
-        emotes.forEach(({id, user, code, images, animated, modifier}) => {
+        emotes.forEach(({id, user, code, images, animated, modifier, imageType}) => {
           this.emotes.set(
             code,
             new Emote({
@@ -44,6 +44,7 @@ class GlobalEmotes extends AbstractEmotes {
               images,
               animated,
               modifier,
+              metadata: {imageType},
             })
           );
         })

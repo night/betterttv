@@ -349,6 +349,7 @@ export const ShadowDOMComponentIds = {
   EMOTE_MENU: 'emote-menu',
   COMMAND_AUTOCOMPLETE: 'command-autocomplete',
   TOOLTIP_CONTROLLER: 'tooltip-controller',
+  EMOTE_MODAL_CONTROLLER: 'emote-modal-controller',
 };
 
 export const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';

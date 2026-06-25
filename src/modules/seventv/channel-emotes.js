@@ -55,6 +55,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         for (const {
           id,
           name: code,
+          timestamp,
           data: {
             listed,
             animated,
@@ -67,7 +68,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
             continue;
           }
 
-          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url));
+          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url, timestamp));
         }
 
         eventSource = new ReconnectingEventSource(
@@ -98,6 +99,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
       const {
         id,
         name: code,
+        timestamp,
         data: {
           listed,
           animated,
@@ -111,7 +113,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         continue;
       }
 
-      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url));
+      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url, timestamp));
 
       watcher.emit(
         'chat.send_admin_message',
@@ -130,6 +132,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
       const {
         id,
         name: code,
+        timestamp,
         data: {
           listed,
           animated,
@@ -150,7 +153,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         continue;
       }
 
-      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url));
+      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url, timestamp));
     }
 
     for (const {key, old_value: oldValue} of pulledItems) {

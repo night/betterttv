@@ -7,6 +7,7 @@ import {getCanonicalEmoteId} from '@/utils/emote';
 import {hasFlag} from '@/utils/flags';
 import {createSrc, createSrcSet} from '@/utils/image';
 import {bindTooltip} from '@/modules/tooltip/index';
+import {bindEmoteModal} from '@/modules/emote_modal/index';
 
 export default class Emote {
   constructor({
@@ -100,6 +101,8 @@ export default class Emote {
       ),
       className: emoteTooltipStyles.emote,
     });
+
+    bindEmoteModal(container, {emote: this});
 
     return container;
   }

@@ -11,3 +11,7 @@ export async function getFrankerFaceZGlobalEmotes() {
 export async function getFrankerFaceZChannelEmotes(provider, userId) {
   return api.get(`cached/frankerfacez/users/${provider}/${userId}`);
 }
+
+export async function getEmoteDetails(emoteId) {
+  return api.get(`emotes/${emoteId}`);
+}

@@ -1,0 +1,88 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--mantine-color-default-border);
+  padding: 16px;
+}
+
+.metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.metadataRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.metadataLabel {
+  font-size: var(--mantine-font-size-md);
+  color: var(--mantine-color-dimmed);
+}
+
+.metadataValue {
+  font-size: var(--mantine-font-size-md);
+  font-weight: 600;
+}
+
+.clickable {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.1s ease-in-out;
+}
+
+.clickable:hover {
+  background-color: var(--color-background-interactable-hover);
+}
+
+.clickable:active {
+  background-color: var(--color-background-interactable-active);
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.titleLogo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.imageWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--mantine-radius-md);
+  border: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-body-secondary);
+  padding: 24px;
+  min-height: 160px;
+  line-height: 0;
+}
+
+.image {
+  display: block;
+  max-width: 100%;
+  max-height: 128px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  image-rendering: auto;
+}

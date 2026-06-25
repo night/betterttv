@@ -10,6 +10,7 @@ import styles from './Modal.module.css';
 
 const DEFAULT_LOADING_TIMEOUT = 500;
 const DEFAULT_SUCCESS_TIMEOUT = 1000;
+const MODAL_TRANSITION_DURATION = 100;
 
 const DEFAULT_CONFIRM_PROPS = {
   size: 'lg',
@@ -35,7 +36,7 @@ export function openConfirmModal({title, description, onConfirm, ...props}) {
     title,
     centered: true,
     closeButtonProps: {size: 'xl', radius: 'md'},
-    transitionProps: {transition: 'pop', duration: 100},
+    transitionProps: {transition: 'pop', duration: MODAL_TRANSITION_DURATION},
     radius: 'lg',
     size: 'lg',
     withinPortal: false,
@@ -88,7 +89,7 @@ export function openModal({title, description, ...props}) {
     title,
     centered: true,
     closeButtonProps: {size: 'xl', radius: 'md'},
-    transitionProps: {transition: 'pop', duration: 100},
+    transitionProps: {transition: 'pop', duration: MODAL_TRANSITION_DURATION},
     radius: 'lg',
     size: 'lg',
     withinPortal: false,
