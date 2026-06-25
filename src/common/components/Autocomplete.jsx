@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import useDomObserver from '@/common/hooks/DomObserver';
 import formatMessage from '@/i18n/index';
 import Icon from './Icon';
+import LogoIcon from './LogoIcon';
 import {faArrowDown, faArrowTurnDown, faArrowUp} from '@fortawesome/free-solid-svg-icons';
 import {Kbd, Text} from '@mantine/core';
 import Scrollbar from './Scrollbar';
@@ -318,6 +319,7 @@ function Autocomplete({
       onMouseMove={handleMouseMove}
       {...getFloatingProps()}>
       <div className={styles.autocompleteHeader}>
+        <LogoIcon className={styles.logoIcon} />
         <Text truncate>
           {formatMessage(
             {defaultMessage: 'Results for <bold>{query}</bold>'},
