@@ -14,22 +14,18 @@ const USERNAME_SELECTORS =
   '.chat-line__message span.chat-author__display-name, .chat-line__message span[data-a-target="chat-message-mention"]';
 const CHAT_LINE_USERNAME_SELECTOR = '.chat-author__display-name';
 
-// Hide the hint once the gesture is used, but bring it back after a week of no
-// usage so it isn't forgotten. The timestamp is the only state we need: a never-used
-// value of 0 reads as older than a week, so it shows by default.
-const MENTION_LAST_USED_STORAGE_KEY = 'doubleClickMentionLastUsedAt';
-const MENTION_HINT_RESET_DELAY = 7 * 24 * 60 * 60 * 1000;
+// Hide the hint for good once the user has used the double-click gesture.
+const MENTION_USED_STORAGE_KEY = 'doubleClickMentionUsed';
 
-let mentionLastUsedAt = storage.get(MENTION_LAST_USED_STORAGE_KEY) ?? 0;
+let hasUsedMention = storage.get(MENTION_USED_STORAGE_KEY) ?? false;
 
 function recordMentionUsage() {
-  // Renew the timestamp on every use so the hint only returns after a full week of inactivity.
-  mentionLastUsedAt = Date.now();
-  storage.set(MENTION_LAST_USED_STORAGE_KEY, mentionLastUsedAt);
-}
+  if (hasUsedMention) {
+    return;
+  }
 
-function shouldShowMentionHint() {
-  return Date.now() - mentionLastUsedAt >= MENTION_HINT_RESET_DELAY;
+  hasUsedMention = true;
+  storage.set(MENTION_USED_STORAGE_KEY, true);
 }
 
 function clearSelection() {
@@ -71,7 +67,7 @@ class DoubleClickMentionModule {
   }
 
   bindUsernameTooltip(element) {
-    if (!shouldShowMentionHint()) {
+    if (hasUsedMention) {
       return;
     }
 
