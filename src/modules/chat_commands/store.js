@@ -1,6 +1,4 @@
-import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
-import settings from '@/settings';
 import twitch from '@/utils/twitch';
 import watcher from '@/watcher';
 
@@ -23,68 +21,28 @@ function buildInjectedDescription(description) {
 class CommandStore {
   constructor() {
     this.commands = [];
-    // original command -> decorated command injected into Twitch (stable reference for add/remove)
-    this.injectedCommands = new Map();
-    watcher.on('load.chat', () => this.syncCommands());
-    settings.on(`changed.${SettingIds.TWITCH_SLASH_COMMANDS}`, () => this.syncCommands());
+    watcher.on('load.chat', () => this.loadCommands());
   }
 
-  get enabled() {
-    return settings.get(SettingIds.TWITCH_SLASH_COMMANDS);
-  }
-
-  getCommands() {
-    return this.commands;
-  }
-
-  getVisibleCommands() {
-    return this.commands.filter((command) => !command.hidden);
-  }
-
-  getInjectedCommand(command) {
-    const cached = this.injectedCommands.get(command);
-    if (cached != null) {
-      return cached;
-    }
-
-    const injectedCommand = {...command, description: buildInjectedDescription(command.description)};
-    this.injectedCommands.set(command, injectedCommand);
-    return injectedCommand;
-  }
-
-  syncCommand(twitchCommandStore, command, enabled) {
-    const injectedCommand = this.getInjectedCommand(command);
-    // always remove first so re-syncs (toggle / chat reload) never duplicate
-    twitchCommandStore.removeCommand?.(injectedCommand);
-    if (enabled) {
-      twitchCommandStore.addCommand(injectedCommand);
-    }
-  }
-
-  syncCommands() {
+  loadCommands() {
     const twitchCommandStore = twitch.getChatCommandStore();
     if (twitchCommandStore == null || this.commands.length === 0) {
       return;
     }
-
-    const {enabled} = this;
     for (const command of this.commands) {
-      this.syncCommand(twitchCommandStore, command, enabled);
+      twitchCommandStore.addCommand(command);
     }
   }
 
   registerCommand(command) {
-    this.commands.push(command);
-
-    if (!this.enabled) {
-      return;
-    }
+    const injectedCommand = {...command, description: buildInjectedDescription(command.description)};
+    this.commands.push(injectedCommand);
 
     const twitchCommandStore = twitch.getChatCommandStore();
     if (twitchCommandStore == null) {
       return;
     }
-    twitchCommandStore.addCommand(this.getInjectedCommand(command));
+    twitchCommandStore.addCommand(injectedCommand);
   }
 }
 

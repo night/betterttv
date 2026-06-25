@@ -62,7 +62,6 @@ export const SettingIds = {
   HYPE_CHAT: 'hypeChat',
   PRIMARY_COLOR: 'primaryColor',
   CHATBOT_COMMAND_AUTOCOMPLETE: 'chatbotCommandAutocomplete',
-  TWITCH_SLASH_COMMANDS: 'twitchSlashCommands',
 };
 
 export const CategoryTypes = {
@@ -308,7 +307,6 @@ export const SettingDefaultValues = {
   [SettingIds.HYPE_CHAT]: true,
   [SettingIds.PRIMARY_COLOR]: null,
   [SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE]: true,
-  [SettingIds.TWITCH_SLASH_COMMANDS]: true,
 };
 
 export const FlagSettings = [
