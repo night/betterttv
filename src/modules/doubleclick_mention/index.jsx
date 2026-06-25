@@ -1,11 +1,12 @@
+import React from 'react';
 import {off, on} from 'delegated-events';
 import {PlatformTypes} from '@/constants';
-import formatMessage from '@/i18n/index';
 import {bindTooltip} from '@/modules/tooltip/index';
 import storage from '@/storage';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import twitch from '@/utils/twitch';
 import watcher from '@/watcher';
+import MentionHintTooltip from './MentionHintTooltip';
 
 const CHAT_ROOM_SELECTOR = '.chat-list,.chat-list--default,.chat-list--other';
 const CHAT_LINE_SELECTOR = '.chat-line__message';
@@ -13,11 +14,40 @@ const USERNAME_SELECTORS =
   '.chat-line__message span.chat-author__display-name, .chat-line__message span[data-a-target="chat-message-mention"]';
 const CHAT_LINE_USERNAME_SELECTOR = '.chat-author__display-name';
 
-// Stop hinting once the user has clearly learned the gesture.
+// Stop hinting once the user has clearly learned the gesture, but bring the hint
+// back if the gesture goes unused for a week so it isn't forgotten.
 const MENTION_USAGE_STORAGE_KEY = 'doubleClickMentionUsage';
-const MENTION_USAGE_HINT_LIMIT = 3;
+const MENTION_LAST_USED_STORAGE_KEY = 'doubleClickMentionLastUsedAt';
+const MENTION_USAGE_HINT_LIMIT = 1;
+const MENTION_USAGE_RESET_DELAY = 7 * 24 * 60 * 60 * 1000;
 
 let mentionUsageCount = storage.get(MENTION_USAGE_STORAGE_KEY) ?? 0;
+let mentionLastUsedAt = storage.get(MENTION_LAST_USED_STORAGE_KEY) ?? 0;
+
+function recordMentionUsage() {
+  // Renew the timestamp on every use so the hint only returns after a full week of inactivity.
+  mentionLastUsedAt = Date.now();
+  storage.set(MENTION_LAST_USED_STORAGE_KEY, mentionLastUsedAt);
+
+  if (mentionUsageCount < MENTION_USAGE_HINT_LIMIT) {
+    mentionUsageCount += 1;
+    storage.set(MENTION_USAGE_STORAGE_KEY, mentionUsageCount);
+  }
+}
+
+function shouldShowMentionHint() {
+  // Forget the learned gesture after a week of no usage so the hint is shown again.
+  if (
+    mentionUsageCount >= MENTION_USAGE_HINT_LIMIT &&
+    mentionLastUsedAt > 0 &&
+    Date.now() - mentionLastUsedAt >= MENTION_USAGE_RESET_DELAY
+  ) {
+    mentionUsageCount = 0;
+    storage.set(MENTION_USAGE_STORAGE_KEY, mentionUsageCount);
+  }
+
+  return mentionUsageCount < MENTION_USAGE_HINT_LIMIT;
+}
 
 function clearSelection() {
   if (document.selection && document.selection.empty) {
@@ -48,10 +78,7 @@ function handleDoubleClick(e) {
   const output = input ? `${input} @${user} ` : `@${user}, `;
   twitch.setChatInputValue(output, true);
 
-  if (mentionUsageCount < MENTION_USAGE_HINT_LIMIT) {
-    mentionUsageCount += 1;
-    storage.set(MENTION_USAGE_STORAGE_KEY, mentionUsageCount);
-  }
+  recordMentionUsage();
 }
 
 class DoubleClickMentionModule {
@@ -61,7 +88,7 @@ class DoubleClickMentionModule {
   }
 
   bindUsernameTooltip(element) {
-    if (mentionUsageCount >= MENTION_USAGE_HINT_LIMIT) {
+    if (!shouldShowMentionHint()) {
       return;
     }
 
@@ -70,7 +97,7 @@ class DoubleClickMentionModule {
       return;
     }
 
-    bindTooltip(usernameElement, {content: formatMessage({defaultMessage: 'Double-click to mention'})});
+    bindTooltip(usernameElement, {content: <MentionHintTooltip />});
   }
 
   load() {
