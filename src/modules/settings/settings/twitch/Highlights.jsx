@@ -86,16 +86,14 @@ function Highlights(props, ref) {
         value={highlightFirstTimeChatters}
         onChange={setHighlightFirstTimeChatters}
       />
-      {highlightFirstTimeChatters ? (
-        <SettingColorPicker
-          reverse
-          name={formatMessage({defaultMessage: 'First-Time Chatter Highlight Color'})}
-          description={formatMessage({defaultMessage: 'The color used to highlight first-time chatter messages.'})}
-          value={firstMessageColor}
-          defaultValue={DEFAULT_HIGHLIGHT_COLOR}
-          onChange={makeColorChangeHandler(setFirstMessageColor)}
-        />
-      ) : null}
+      <SettingColorPicker
+        reverse
+        name={formatMessage({defaultMessage: 'First-Time Chatter Highlight Color'})}
+        description={formatMessage({defaultMessage: 'The color used to highlight first-time chatter messages.'})}
+        value={firstMessageColor}
+        defaultValue={DEFAULT_HIGHLIGHT_COLOR}
+        onChange={makeColorChangeHandler(setFirstMessageColor)}
+      />
       <SettingSwitch
         reverse
         name={formatMessage({defaultMessage: 'Highlight Deleted Messages'})}
@@ -103,16 +101,14 @@ function Highlights(props, ref) {
         value={deletedMessages === DeletedMessageTypes.HIGHLIGHT}
         onChange={(value) => setDeletedMessages(value ? DeletedMessageTypes.HIGHLIGHT : DeletedMessageTypes.DEFAULT)}
       />
-      {deletedMessages === DeletedMessageTypes.HIGHLIGHT ? (
-        <SettingColorPicker
-          reverse
-          name={formatMessage({defaultMessage: 'Deleted Message Highlight Color'})}
-          description={formatMessage({defaultMessage: 'The color used to highlight deleted messages.'})}
-          value={deletedMessagesColor}
-          defaultValue={DEFAULT_HIGHLIGHT_COLOR}
-          onChange={makeColorChangeHandler(setDeletedMessagesColor)}
-        />
-      ) : null}
+      <SettingColorPicker
+        reverse
+        name={formatMessage({defaultMessage: 'Deleted Message Highlight Color'})}
+        description={formatMessage({defaultMessage: 'The color used to highlight deleted messages.'})}
+        value={deletedMessagesColor}
+        defaultValue={DEFAULT_HIGHLIGHT_COLOR}
+        onChange={makeColorChangeHandler(setDeletedMessagesColor)}
+      />
     </SettingGroup>
   );
 }
