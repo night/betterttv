@@ -1,0 +1,20 @@
+/*
+ * Twitch's "Mid-Stream Summary" (a.k.a. Stream Summary) — an AI-generated recap
+ * shown to viewers who join an ongoing stream. It ships as a chat "private callout"
+ * (callout type `mid-stream-summary`), rendered by the chat private-callout queue.
+ *
+ * The callout reuses the generic private-callout chrome shared by sub upsells,
+ * hype-train rewards, etc., so it has no feature-specific class. Instead we match
+ * the two ids its component hard-codes — the "Stream Summary" heading and the
+ * feedback survey — and :has() walks up to hide the whole callout.
+ */
+.hideAiSummary {
+  /*
+   * Matched as `[id='…']` rather than `#…` so CSS Modules leaves them literal —
+   * bare id/class selectors get scoped/hashed. The ids are hard-coded by the
+   * component and not localized, so they're reliable hooks.
+   */
+  [role='status']:has([id='summary-title'], [id='summary-survey-question']) {
+    display: none !important;
+  }
+}
