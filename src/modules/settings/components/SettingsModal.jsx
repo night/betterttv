@@ -14,6 +14,7 @@ import SideNavigation from './SideNavigation';
 import PageHeader from './PageHeader';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
 import BlacklistKeywords from '@/modules/settings/pages/BlacklistKeywords';
+import SelfBotCommands from '@/modules/settings/pages/SelfBotCommands';
 import {AnimatePresence, motion, usePresenceData} from 'framer-motion';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import Icon from '@/common/components/Icon';
@@ -42,6 +43,16 @@ function maybePromptSignIn() {
   });
 }
 
+function getParentPage(page) {
+  for (const [parentPage, childPages] of Object.entries(PageDecendants)) {
+    if (childPages.includes(page)) {
+      return Number(parentPage);
+    }
+  }
+
+  return PageTypes.SETTINGS;
+}
+
 function Page({page, search, handleSettingRefCallback}) {
   switch (page) {
     case PageTypes.CHANGELOG:
@@ -50,6 +61,8 @@ function Page({page, search, handleSettingRefCallback}) {
       return <HighlightKeywords />;
     case PageTypes.BLACKLIST_KEYWORDS:
       return <BlacklistKeywords />;
+    case PageTypes.SELF_BOT_COMMANDS:
+      return <SelfBotCommands />;
     case PageTypes.SETTINGS:
       return <Settings search={search} handleSettingRefCallback={handleSettingRefCallback} />;
     case PageTypes.USER_SETTINGS:
@@ -218,9 +231,9 @@ function SettingsModal({setHandleOpen}) {
     setSearch(value);
   }, []);
 
-  const handleBackToSettings = useCallback(() => {
-    handlePageChange(PageTypes.SETTINGS);
-  }, [handlePageChange]);
+  const handleBack = useCallback(() => {
+    handlePageChange(getParentPage(page));
+  }, [handlePageChange, page]);
 
   const leftContent = useMemo(() => {
     switch (page) {
@@ -242,6 +255,7 @@ function SettingsModal({setHandleOpen}) {
         return <Title order={1}>{formatMessage({defaultMessage: 'Changelog'})}</Title>;
       case PageTypes.HIGHLIGHT_KEYWORDS:
       case PageTypes.BLACKLIST_KEYWORDS:
+      case PageTypes.SELF_BOT_COMMANDS:
         return (
           <div className={styles.backHeader}>
             <ActionIcon
@@ -250,21 +264,23 @@ function SettingsModal({setHandleOpen}) {
               variant="subtle"
               color="gray"
               className={styles.backIcon}
-              onClick={handleBackToSettings}
-              aria-label={formatMessage({defaultMessage: 'Back to Settings'})}>
+              onClick={handleBack}
+              aria-label={formatMessage({defaultMessage: 'Back'})}>
               <Icon className={styles.backButtonIcon} icon={faArrowLeft} />
             </ActionIcon>
             <Title order={1}>
               {page === PageTypes.HIGHLIGHT_KEYWORDS
                 ? formatMessage({defaultMessage: 'Highlight Keywords'})
-                : formatMessage({defaultMessage: 'Blacklist Keywords'})}
+                : page === PageTypes.BLACKLIST_KEYWORDS
+                  ? formatMessage({defaultMessage: 'Blacklist Keywords'})
+                  : formatMessage({defaultMessage: 'Self Bot Commands'})}
             </Title>
           </div>
         );
       default:
         return null;
     }
-  }, [page, search, inputRef, handleSearchChange, handleBackToSettings]);
+  }, [page, search, inputRef, handleSearchChange, handleBack]);
 
   const computeDefaultScrollTop = useCallback(() => {
     if (

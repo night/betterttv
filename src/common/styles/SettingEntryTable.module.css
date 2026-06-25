@@ -1,0 +1,90 @@
+.settingGroupContent {
+  padding: 0;
+  overflow: hidden;
+}
+
+.newEntryButton {
+  margin-left: auto;
+}
+
+.table {
+  font-size: var(--mantine-font-size-md);
+
+  th {
+    font-weight: 500;
+  }
+
+  th,
+  td {
+    padding: 8px 12px;
+    height: 36px;
+  }
+
+  --table-border-color: var(--mantine-color-default-border);
+
+  td:hover {
+    background-color: var(--table-hover-color);
+  }
+}
+
+.actionsColumn {
+  width: 0;
+}
+
+.dataCell {
+  padding: 0 !important;
+}
+
+.dataCellMiddle {
+  padding: 0 !important;
+  vertical-align: middle;
+}
+
+.selectInput {
+  font-size: var(--mantine-font-size-md);
+  padding-left: 12px;
+}
+
+.textInput {
+  font-size: var(--mantine-font-size-md);
+  padding-left: 12px;
+}
+
+.textInput:focus {
+  box-shadow: unset;
+}
+
+.textInputRoot,
+.textInputWrapper,
+.textInput {
+  height: 100%;
+}
+
+.actionIcon {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 8px;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.actionIconIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.emptyText {
+  padding: 20px;
+  text-align: center;
+}
+
+td.actionsColumn {
+  width: 36px;
+  min-width: 36px;
+  max-width: 36px;
+}

@@ -11,6 +11,7 @@ function SettingWrapper({
   children,
   showProBadge = false,
   showBetaBadge = false,
+  showComingSoonBadge = false,
   reverse = false,
   wrap = false,
   controlClassName = '',
@@ -48,6 +49,11 @@ function SettingWrapper({
                   {formatMessage({defaultMessage: 'Beta'})}
                 </Badge>
               </Tooltip>
+            ) : null}
+            {showComingSoonBadge ? (
+              <Badge color="green" variant="elevated" size="lg">
+                {formatMessage({defaultMessage: 'Coming Soon'})}
+              </Badge>
             ) : null}
           </Title>
         ) : null}

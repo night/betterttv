@@ -4,7 +4,7 @@ import styles from './SideNavigation.module.css';
 import AnimatedLogo from './AnimatedLogo';
 import {ActionIcon, Avatar, Button, Overlay, Tooltip, useMantineTheme} from '@mantine/core';
 import {faArrowLeft, faCog, faScroll, faUser, faUserGear} from '@fortawesome/free-solid-svg-icons';
-import {PageTypes} from '@/constants';
+import {PageDecendants, PageTypes} from '@/constants';
 import classNames from 'classnames';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
@@ -111,11 +111,7 @@ function SideNavigation({open, setOpen}) {
         </div>
         <NavigationButton
           className={styles.topNavigationButton}
-          active={
-            page === PageTypes.SETTINGS ||
-            page === PageTypes.HIGHLIGHT_KEYWORDS ||
-            page === PageTypes.BLACKLIST_KEYWORDS
-          }
+          active={page === PageTypes.SETTINGS || PageDecendants[PageTypes.SETTINGS].includes(page)}
           value={PageTypes.SETTINGS}
           setPage={setPage}
           label={formatMessage({defaultMessage: 'Settings'})}>

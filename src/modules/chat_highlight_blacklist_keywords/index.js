@@ -1,11 +1,12 @@
 import {DateTime} from 'luxon';
-import isSafeRegex from 'safe-regex2';
 import {PlatformTypes, SettingIds} from '@/constants';
 import splitChat from '@/modules/split_chat/index';
 import settings from '@/settings';
 import cdn from '@/utils/cdn';
 import {getCurrentChannel} from '@/utils/channel';
+import {messageTextFromAST} from '@/utils/chat-message-text';
 import colors from '@/utils/colors';
+import {extractRegex} from '@/utils/keyword-regex';
 import {computeKeywords, KeywordTypes} from '@/utils/keywords';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import {escapeRegExp} from '@/utils/regex';
@@ -21,7 +22,6 @@ const VOD_CHAT_MESSAGE_EMOTE_SELECTOR = '.chat-line__message--emote';
 const PINNED_HIGHLIGHT_ID = 'bttv-pinned-highlight';
 const PINNED_CONTAINER_ID = 'bttv-pin-container';
 const PINNED_HIGHLIGHT_TIMEOUT = 60 * 1000;
-const REGEX_KEYWORD_REGEX = /^~\/(.*)\/([a-z]+)?$/;
 
 function createPinnedHighlight({timestamp, from, message: messageText}) {
   const container = document.createElement('div');
@@ -181,19 +181,6 @@ function exactMatch(keyword) {
   return keyword.replace(/^<(.*)>$/g, '^$1$$');
 }
 
-function extractRegex(keyword) {
-  const matches = REGEX_KEYWORD_REGEX.exec(keyword);
-  if (matches == null || !isSafeRegex(matches[1])) {
-    return null;
-  }
-
-  try {
-    return new RegExp(matches[1], matches[2]);
-  } catch (_) {}
-
-  return null;
-}
-
 function keywordRegEx(keyword) {
   return new RegExp(`(\\s|^|@)${keyword}([!.,:';?/]|\\s|$)`, 'i');
 }
@@ -244,27 +231,6 @@ function fieldContainsKeyword(keywords, from, field, onColorChange) {
 
 function isReply(message) {
   return message.closest('.chat-input-tray__open') != null;
-}
-
-function messageTextFromAST(ast) {
-  return ast
-    .map((node) => {
-      switch (node.type) {
-        case 0: // Text
-          return node.content.trim();
-        case 3: // CurrentUserHighlight
-          return `@${node.content}`;
-        case 4: // Mention
-          return `@${node.content.recipient}`;
-        case 5: // Link
-          return node.content.url;
-        case 6: // Emote
-          return node.content.alt;
-        default:
-          return '';
-      }
-    })
-    .join(' ');
 }
 
 let pinnedHighlightsContainer;

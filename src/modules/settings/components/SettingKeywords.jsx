@@ -17,6 +17,7 @@ import {
 } from '@mantine/core';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
+import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import styles from './SettingKeywords.module.css';
 import {KeywordTypes} from '@/utils/keywords';
 import formatMessage from '@/i18n/index';
@@ -110,7 +111,7 @@ function KeywordRow({
   return (
     <TableTr {...props}>
       {colorColumn != null ? (
-        <TableTd className={styles.colorDataCell}>
+        <TableTd className={tableStyles.dataCell}>
           <ColorPicker
             size="sm"
             variant="transparent"
@@ -122,10 +123,10 @@ function KeywordRow({
           />
         </TableTd>
       ) : null}
-      <TableTd className={styles.targetDataCell}>
+      <TableTd className={tableStyles.dataCell}>
         <NativeSelect
           variant="unstyled"
-          classNames={{input: styles.targetSelectInput}}
+          classNames={{input: tableStyles.selectInput}}
           value={data.type}
           data={[
             {label: formatMessage({defaultMessage: 'Message'}), value: KeywordTypes.MESSAGE},
@@ -136,13 +137,13 @@ function KeywordRow({
           onChange={({target: {value}}) => onUpdate({type: parseInt(value, 10)})}
         />
       </TableTd>
-      <TableTd className={styles.keywordDataCell}>
+      <TableTd className={tableStyles.dataCell}>
         <TextInput
           variant="unstyled"
           classNames={{
-            input: styles.keywordInput,
-            root: styles.keywordRoot,
-            wrapper: styles.keywordWrapper,
+            input: tableStyles.textInput,
+            root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
+            wrapper: tableStyles.textInputWrapper,
           }}
           ref={keywordInputRef}
           defaultValue={data.keyword}
@@ -186,13 +187,13 @@ function KeywordRow({
           )}
         </button>
       </TableTd>
-      <TableTd className={styles.actionsDataCell}>
+      <TableTd className={tableStyles.dataCell}>
         <ActionIcon
           color="gray"
           variant="transparent"
-          className={styles.actionIcon}
+          className={tableStyles.actionIcon}
           size="sm"
-          classNames={{icon: styles.actionIconIcon}}
+          classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
           <Icon icon={faTrash} />
         </ActionIcon>
@@ -217,7 +218,7 @@ function KeywordsTable({
   onPaste,
 }) {
   return (
-    <Table withColumnBorders className={styles.table} onPaste={onPaste}>
+    <Table withColumnBorders className={tableStyles.table} onPaste={onPaste}>
       <TableThead>
         <TableTr>
           {showColorColumn ? <TableTh className={styles.colorColumn} /> : null}
@@ -236,7 +237,7 @@ function KeywordsTable({
             </div>
           </TableTh>
           <TableTh className={styles.channelsColumn}>{formatMessage({defaultMessage: 'Channels'})}</TableTh>
-          <TableTh className={styles.actionsColumn} />
+          <TableTh className={tableStyles.actionsColumn} />
         </TableTr>
       </TableThead>
       <TableTbody>
@@ -369,7 +370,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
         />
       }
       rightContent={
-        <Button size="lg" className={styles.newEntryButton} onClick={newEntryHandler}>
+        <Button size="lg" className={tableStyles.newEntryButton} onClick={newEntryHandler}>
           {formatMessage({defaultMessage: 'New Entry'})}
         </Button>
       }
@@ -390,7 +391,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
           {formatMessage({defaultMessage: 'No keywords match your search.'})}
         </Text>
       ) : (
-        <Text className={styles.noKeywordsText} c="dimmed">
+        <Text className={tableStyles.emptyText} c="dimmed">
           {formatMessage({defaultMessage: 'No keywords found, start by adding a new entry.'})}
         </Text>
       )}

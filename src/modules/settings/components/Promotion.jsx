@@ -6,7 +6,7 @@ import {ActionIcon, Button, Image, Title} from '@mantine/core';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
 import {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 import Icon from '@/common/components/Icon';
-import {faClose, faPaintBrush} from '@fortawesome/free-solid-svg-icons';
+import {faClose, faPaintBrush, faRobot} from '@fortawesome/free-solid-svg-icons';
 import formatMessage from '@/i18n/index';
 import NightbotLogoIcon from '@/common/components/NightbotLogoIcon';
 import {SettingsPromotions} from '@/constants';
@@ -33,6 +33,13 @@ function getPromotionToDisplay() {
         settingPanelId: SettingPanelIds.CHATBOTS,
         title: formatMessage({defaultMessage: 'Command Autocomplete'}),
         icon: <BotProviderPromotionIcons />,
+      };
+    case SettingsPromotions.SELF_BOT:
+      return {
+        storageKey: SettingsPromotions.SELF_BOT,
+        settingPanelId: SettingPanelIds.SELF_BOT,
+        title: formatMessage({defaultMessage: 'Auto-respond to your chat messages'}),
+        icon: <Icon icon={faRobot} className={styles.logo} />,
       };
     case SettingsPromotions.THEME_CUSTOMIZE:
       return {
