@@ -12,7 +12,7 @@ export const PermissionLevels = {
 const ADDED_BY_BTTV_SUFFIX = formatMessage({defaultMessage: '(Added by BetterTTV)'});
 
 function buildInjectedDescription(description) {
-  if (!description) {
+  if (description == null) {
     return ADDED_BY_BTTV_SUFFIX;
   }
   return `${description} ${ADDED_BY_BTTV_SUFFIX}`;
