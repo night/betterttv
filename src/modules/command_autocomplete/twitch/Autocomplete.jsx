@@ -160,6 +160,32 @@ function replaceChatInputPartialCommand(command) {
   return {newValue, shouldClose: command.arguments?.length === 0};
 }
 
+function getCommandNameLength(command) {
+  if (command?.name == null) {
+    return null;
+  }
+  return command.name.length;
+}
+
+// Tab past the command name adds a space to advance to the next argument —
+// unless the caret is in a phrase argument, which soaks up the rest of the
+// message (always the last argument) and owns its own spacing.
+function appendChatInputSpace(command, caretPosition) {
+  const value = getChatInputPartialCommand();
+  if (value == null || value.endsWith(' ')) {
+    return;
+  }
+
+  const args = command.arguments ?? [];
+  const argumentIndex = value.slice(command.name.length, caretPosition).trim().split(/\s+/).length - 1;
+  const focusedArgument = args[Math.min(argumentIndex, args.length - 1)];
+  if (focusedArgument?.type === CommandAutocompleteArgumentTypes.PHRASE) {
+    return;
+  }
+
+  twitch.setChatInputValue(`${value} `);
+}
+
 let currentCommands = [];
 let sortedCommandIndex = [];
 let fetchPromise = null;
@@ -318,6 +344,8 @@ class CommandAutocomplete {
         offset={8}
         showKeyboardNavigationTips={false}
         fullWidthOnSmallScreens={false}
+        getCompletionLength={getCommandNameLength}
+        onAppendSpace={appendChatInputSpace}
         chatInputQuerySelector={CHAT_TEXT_AREA}
         getChatInputPartialInput={getChatInputPartialCommand}
         getChatInputCaretPosition={getChatInputCaretPosition}

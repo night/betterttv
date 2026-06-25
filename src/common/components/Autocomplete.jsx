@@ -53,6 +53,11 @@ function getFocusedWordIndex(value, caretPosition) {
   return Math.max(0, beforeCaret.split(/\s+/).length - 1);
 }
 
+function stopEvent(event) {
+  event.preventDefault();
+  event.stopPropagation();
+}
+
 const AutocompleteListRow = React.memo(function AutocompleteListRow({
   item,
   index,
@@ -85,6 +90,8 @@ function Autocomplete({
   fullWidthOnSmallScreens = true,
   offset = 24,
   showKeyboardNavigationTips = true,
+  getCompletionLength = null,
+  onAppendSpace = null,
 }) {
   const navigationMode = useRef(NavigationModeTypes.ARROW_KEYS);
   const [partialInput, setPartialInput] = useState('');
@@ -273,12 +280,32 @@ function Autocomplete({
 
       switch (event.key) {
         case keyCodes.Enter:
-        case keyCodes.Tab:
-          event.preventDefault();
-          event.stopPropagation();
+        case keyCodes.Tab: {
+          // Only capture Enter/Tab while the caret is within the command name
+          // (which may be multiple words, e.g. "!commands add"). Past it the user
+          // is typing an argument, so let Enter send and Tab add a space.
+          const selectedItem = itemsRef.current[selectedRef.current];
+          const completionLength = getCompletionLength?.(selectedItem);
+          const caretPosition = getChatInputCaretPosition?.();
+          const caretPastCommandName =
+            completionLength != null && caretPosition != null && caretPosition > completionLength;
+
+          if (caretPastCommandName && event.key === keyCodes.Enter) {
+            handleClose();
+            break;
+          }
+
+          if (caretPastCommandName && event.key === keyCodes.Tab) {
+            stopEvent(event);
+            onAppendSpace?.(selectedItem, caretPosition);
+            break;
+          }
+
+          stopEvent(event);
           pendingComplete.current = true;
           setPendingCompleteIndex(selectedRef.current);
           break;
+        }
         case keyCodes.End:
           event.preventDefault();
           handleSelectedChange(itemsRef.current.length - 1);
@@ -288,13 +315,11 @@ function Autocomplete({
           handleSelectedChange(0);
           break;
         case keyCodes.ArrowUp:
-          event.preventDefault();
-          event.stopPropagation();
+          stopEvent(event);
           handleSelectedChange(travelUp(selectedRef.current, itemsRef.current.length));
           break;
         case keyCodes.ArrowDown:
-          event.preventDefault();
-          event.stopPropagation();
+          stopEvent(event);
           handleSelectedChange(travelDown(selectedRef.current, itemsRef.current.length));
           break;
       }
