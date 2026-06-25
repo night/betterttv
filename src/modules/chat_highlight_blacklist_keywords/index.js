@@ -346,7 +346,10 @@ class ChatHighlightBlacklistKeywordsModule {
         (fieldContainsKeyword(highlightKeywords, from, reply.parentMessageBody, handleColorChange) ||
           fieldContainsKeyword(highlightKeywords, from, `@${reply.threadParentDisplayName}`, handleColorChange)))
     ) {
-      this.markHighlighted(message, color);
+      // keyword/user/badge colors take priority; otherwise fall back to the first-time chatter color
+      const highlightColor =
+        color ?? (isFirstTimeChatter ? settings.get(SettingIds.FIRST_MESSAGE_HIGHLIGHT_COLOR) : undefined);
+      this.markHighlighted(message, highlightColor);
 
       if (isReply(message) || isDuplicateHighlight({date, from, message: messageText})) {
         return;

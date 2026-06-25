@@ -105,7 +105,10 @@ class ChatDeletedMessagesModule {
         case DeletedMessageTypes.HIGHLIGHT:
         case DeletedMessageTypes.SHOW:
           if (deletedMessages === DeletedMessageTypes.HIGHLIGHT) {
-            ChatHighlightBlacklistKeywords.markHighlighted(message);
+            ChatHighlightBlacklistKeywords.markHighlighted(
+              message,
+              settings.get(SettingIds.DELETED_MESSAGES_HIGHLIGHT_COLOR)
+            );
           }
           message.classList.toggle(CHAT_LINE_DELETED_CLASS, true);
 
