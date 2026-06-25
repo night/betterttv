@@ -29,6 +29,7 @@ export const SettingPanelIds = {
   AUTO_PLAY: 'autoPlay',
   AUTO_CLAIM: 'autoClaim',
   CHATBOTS: 'chatbots',
+  SLASH_COMMANDS: 'slashCommands',
 };
 
 class SettingStore {
