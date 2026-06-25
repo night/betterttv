@@ -60,6 +60,13 @@ function ChatFeatures({ref, ...props}) {
           defaultMessage: 'Restore what you previously typed by pressing up/down arrow in chat.',
         })}
       />
+      <SettingCheckbox
+        value={ChatFlags.AI_STREAM_SUMMARY}
+        name={formatMessage({defaultMessage: 'AI Stream Summaries'})}
+        description={formatMessage({
+          defaultMessage: "Show Twitch's AI-generated mid-stream summary recaps in the chat window.",
+        })}
+      />
     </SettingCheckboxGroup>
   );
 }
