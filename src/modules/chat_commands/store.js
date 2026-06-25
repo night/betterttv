@@ -13,6 +13,13 @@ export const PermissionLevels = {
 
 const ADDED_BY_BTTV_SUFFIX = formatMessage({defaultMessage: '(Added by BetterTTV)'});
 
+function buildInjectedDescription(description) {
+  if (!description) {
+    return ADDED_BY_BTTV_SUFFIX;
+  }
+  return `${description} ${ADDED_BY_BTTV_SUFFIX}`;
+}
+
 class CommandStore {
   constructor() {
     this.commands = [];
@@ -35,15 +42,23 @@ class CommandStore {
   }
 
   getInjectedCommand(command) {
-    let injectedCommand = this.injectedCommands.get(command);
-    if (injectedCommand == null) {
-      injectedCommand = {
-        ...command,
-        description: command.description ? `${command.description} ${ADDED_BY_BTTV_SUFFIX}` : ADDED_BY_BTTV_SUFFIX,
-      };
-      this.injectedCommands.set(command, injectedCommand);
+    const cached = this.injectedCommands.get(command);
+    if (cached != null) {
+      return cached;
     }
+
+    const injectedCommand = {...command, description: buildInjectedDescription(command.description)};
+    this.injectedCommands.set(command, injectedCommand);
     return injectedCommand;
+  }
+
+  syncCommand(twitchCommandStore, command, enabled) {
+    const injectedCommand = this.getInjectedCommand(command);
+    // always remove first so re-syncs (toggle / chat reload) never duplicate
+    twitchCommandStore.removeCommand?.(injectedCommand);
+    if (enabled) {
+      twitchCommandStore.addCommand(injectedCommand);
+    }
   }
 
   syncCommands() {
@@ -54,12 +69,7 @@ class CommandStore {
 
     const {enabled} = this;
     for (const command of this.commands) {
-      const injectedCommand = this.getInjectedCommand(command);
-      // always remove first so re-syncs (toggle / chat reload) never duplicate
-      twitchCommandStore.removeCommand?.(injectedCommand);
-      if (enabled) {
-        twitchCommandStore.addCommand(injectedCommand);
-      }
+      this.syncCommand(twitchCommandStore, command, enabled);
     }
   }
 
