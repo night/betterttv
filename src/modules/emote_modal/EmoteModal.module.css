@@ -38,6 +38,103 @@
   font-weight: 600;
 }
 
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.emptyAlternatives {
+  font-size: var(--mantine-font-size-md);
+  color: var(--mantine-color-dimmed);
+  text-align: center;
+}
+
+.altTile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 8px;
+  border: none;
+  border-radius: var(--mantine-radius-lg);
+  background-color: var(--mantine-color-body-secondary);
+  /* keep a transparent outline so selecting only transitions its color (the default outline color
+     would otherwise flash dark while the transition runs) */
+  outline: 4px solid transparent;
+  cursor: pointer;
+  transition:
+    outline-color 100ms ease-in-out,
+    background-color 120ms ease;
+}
+
+.altTile:hover {
+  background-color: var(--mantine-primary-color-light-hover);
+}
+
+.altTile[data-checked='true'] {
+  background-color: var(--mantine-primary-color-light-hover);
+  outline-color: var(--mantine-primary-color-3);
+}
+
+.altImage {
+  max-width: 100%;
+  max-height: 56px;
+  object-fit: contain;
+}
+
+.altCheck {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  background-color: inherit;
+  color: var(--mantine-primary-color-3);
+  opacity: 0;
+  scale: 0;
+  transition:
+    opacity 100ms ease-in-out,
+    scale 100ms ease-in-out;
+}
+
+.altTile[data-checked='true'] .altCheck {
+  opacity: 1;
+  scale: 1;
+}
+
+.addButtonGroup {
+  display: inline-flex;
+}
+
+/* square icon button for the add-destination menu */
+.menuChevron {
+  width: 36px;
+  min-width: 36px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.menuDropdown {
+  padding: 2px;
+}
+
+/* a subtle, even gap inside the menu: the radius is the dropdown's radius minus the gap so the
+   rounded corners stay concentric, and the left padding is trimmed by the gap so the item's avatar
+   still lines up with the button's avatar. keep the row compact. */
+.menuItemButton {
+  --button-height: auto;
+  min-height: 0;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  /* Mantine reduces the section-side padding to (padding-x / 1.5) when there's a leftSection;
+     match that, then trim the 2px gap so the item's avatar lines up with the button's avatar */
+  padding-left: calc(var(--button-padding-x-lg) / 1.5 - 2px);
+  border-radius: calc(var(--mantine-radius-lg) - 2px);
+}
+
 .clickable {
   cursor: pointer;
   border-radius: 4px;

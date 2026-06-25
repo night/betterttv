@@ -171,6 +171,11 @@ export const EmoteProviders = {
   SEVENTV: 'seventv',
 };
 
+export const EmoteAddDestinations = {
+  CHANNEL: 'channel',
+  PERSONAL: 'personal',
+};
+
 export const EmoteCategories = {
   BETTERTTV_GLOBAL: 'bttv-global',
   BETTERTTV_CHANNEL: 'bttv-channel',
@@ -335,6 +340,7 @@ export const EMOTE_MENU_GRID_ROW_HEIGHT = 36;
 export const EMOTE_MENU_GRID_HEIGHT = 300;
 
 export const EMOTE_CATEGORIES_ORDER_STORAGE_KEY = 'emote-categories-order';
+export const LAST_EMOTE_ADD_DESTINATION_STORAGE_KEY = 'last-emote-add-destination';
 
 export const BadgeTypes = {
   DEVELOPER: 1,

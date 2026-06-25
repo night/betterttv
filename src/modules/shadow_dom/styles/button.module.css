@@ -12,13 +12,22 @@
     border: 1px solid var(--button-bd);
     border-bottom-width: 2px;
 
-    &:active {
+    &:active:not(:disabled, [data-disabled]) {
       border-bottom-width: 1px;
     }
 
     transition-property: background-color, border-color, border-bottom-width;
     transition-duration: 0.1s;
     transition-timing-function: ease-in-out;
+
+    /* keep the button's own colors when disabled, just muted, instead of a flat grey */
+    &:disabled:not([data-loading]),
+    &[data-disabled]:not([data-loading]) {
+      background-color: var(--button-bg);
+      color: var(--button-color);
+      border-color: var(--button-bd);
+      opacity: 0.5;
+    }
   }
 
   &[data-size='lg'] {
