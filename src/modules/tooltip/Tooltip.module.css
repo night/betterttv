@@ -1,5 +1,5 @@
 .tooltip {
-  --tooltip-bg: light-dark(black, white);
+  --tooltip-bg: black;
   padding-inline: 8px;
   padding-block: 4px;
   font-weight: 600;
@@ -8,7 +8,7 @@
   border-radius: 0.4rem;
   background-color: var(--tooltip-bg);
   box-shadow: var(--mantine-shadow-lg);
-  color: light-dark(white, black);
+  color: white;
   text-align: center;
   z-index: 2000;
   pointer-events: none;
@@ -19,6 +19,11 @@
   isolation: isolate;
   transition-property: transform;
   transition-timing-function: ease;
+}
+
+[data-mantine-color-scheme='dark'] .tooltip {
+  --tooltip-bg: white;
+  color: black;
 }
 
 main[data-platform='youtube'] .tooltip {

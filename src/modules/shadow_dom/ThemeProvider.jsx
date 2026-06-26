@@ -35,6 +35,14 @@ import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '@/common/
 import {PortalContext} from '@/common/contexts/PortalContext';
 import {useMounted} from '@mantine/hooks';
 
+// The elevated variant's default case picks shades off the runtime color prop (e.g. a red button or
+// indigo badge), so it can't use a fixed CSS variable like the dark/contrast cases below. Express
+// its light/dark pair with our own --bttv-light / --bttv-dark toggle (defined per scheme in the
+// resolver) rather than light-dark(), which the prod CSS minifier would lower to a broken polyfill.
+function lightDark(light, dark) {
+  return `var(--bttv-light, ${light}) var(--bttv-dark, ${dark})`;
+}
+
 const mantineTheme = createTheme({
   primaryColor: DEFAULT_PRIMARY_COLOR,
   primaryShade: 6,
@@ -70,15 +78,14 @@ const mantineTheme = createTheme({
 
     if (variant === 'elevated') {
       const grayBase = theme.colors.gray;
-      const darkBase = theme.colors.dark;
 
       if (parsedColor.color === 'dark') {
         return {
-          background: `light-dark(${grayBase[1]}, ${darkBase[6]})`,
-          hover: `light-dark(${grayBase[2]}, ${darkBase[5]})`,
-          active: `light-dark(${grayBase[3]}, ${darkBase[4]})`,
-          color: `light-dark(${grayBase[8]}, ${darkBase[0]})`,
-          border: `light-dark(${grayBase[4]}, ${darkBase[4]})`,
+          background: 'var(--mantine-color-button-elevated-background)',
+          hover: 'var(--mantine-color-button-elevated-hover)',
+          active: 'var(--mantine-color-button-elevated-active)',
+          color: 'var(--mantine-color-button-elevated-color)',
+          border: 'var(--mantine-color-button-elevated-border)',
         };
       }
 
@@ -94,20 +101,20 @@ const mantineTheme = createTheme({
 
       if (parsedColor.color === 'contrast') {
         return {
-          background: `light-dark(${darkBase[6]}, ${grayBase[1]})`,
-          hover: `light-dark(${darkBase[5]}, ${grayBase[2]})`,
-          active: `light-dark(${darkBase[4]}, ${grayBase[3]})`,
-          color: `light-dark(${grayBase[0]}, ${grayBase[8]})`,
-          border: `light-dark(${darkBase[4]}, ${grayBase[4]})`,
+          background: 'var(--mantine-color-button-elevated-contrast-background)',
+          hover: 'var(--mantine-color-button-elevated-contrast-hover)',
+          active: 'var(--mantine-color-button-elevated-contrast-active)',
+          color: 'var(--mantine-color-button-elevated-contrast-color)',
+          border: 'var(--mantine-color-button-elevated-contrast-border)',
         };
       }
 
       return {
-        background: `light-dark(${base[6]}, ${base[9]})`,
-        hover: `light-dark(${base[7]}, ${base[8]})`,
-        active: `light-dark(${base[8]}, ${base[7]})`,
-        color: `light-dark(${base[0]}, ${base[0]})`,
-        border: `light-dark(${base[8]}, ${base[7]})`,
+        background: lightDark(base[6], base[9]),
+        hover: lightDark(base[7], base[8]),
+        active: lightDark(base[8], base[7]),
+        color: base[0],
+        border: lightDark(base[8], base[7]),
       };
     }
 
@@ -161,6 +168,21 @@ const resolver = (theme) => ({
     '--mantine-color-body-secondary': 'var(--mantine-color-dark-9)',
     '--mantine-color-body': 'var(--mantine-color-dark-8)',
     '--mantine-color-body-inverse': 'var(--mantine-color-dark-0)',
+    // elevated button variant, color="dark"
+    '--mantine-color-button-elevated-background': 'var(--mantine-color-dark-6)',
+    '--mantine-color-button-elevated-hover': 'var(--mantine-color-dark-5)',
+    '--mantine-color-button-elevated-active': 'var(--mantine-color-dark-4)',
+    '--mantine-color-button-elevated-color': 'var(--mantine-color-dark-0)',
+    '--mantine-color-button-elevated-border': 'var(--mantine-color-dark-4)',
+    // elevated button variant, color="contrast"
+    '--mantine-color-button-elevated-contrast-background': 'var(--mantine-color-gray-1)',
+    '--mantine-color-button-elevated-contrast-hover': 'var(--mantine-color-gray-2)',
+    '--mantine-color-button-elevated-contrast-active': 'var(--mantine-color-gray-3)',
+    '--mantine-color-button-elevated-contrast-color': 'var(--mantine-color-gray-8)',
+    '--mantine-color-button-elevated-contrast-border': 'var(--mantine-color-gray-4)',
+    // dark scheme: --bttv-light collapses to empty, --bttv-dark falls back to its value
+    '--bttv-light': ' ',
+    '--bttv-dark': 'initial',
   },
   light: {
     '--mantine-color-text': 'var(--mantine-color-gray-9)',
@@ -169,6 +191,21 @@ const resolver = (theme) => ({
     '--mantine-color-default-border': 'var(--mantine-color-gray-3)',
     '--mantine-color-body-secondary': 'var(--mantine-color-gray-0)',
     '--mantine-color-body-inverse': 'var(--mantine-color-gray-9)',
+    // elevated button variant, color="dark"
+    '--mantine-color-button-elevated-background': 'var(--mantine-color-gray-1)',
+    '--mantine-color-button-elevated-hover': 'var(--mantine-color-gray-2)',
+    '--mantine-color-button-elevated-active': 'var(--mantine-color-gray-3)',
+    '--mantine-color-button-elevated-color': 'var(--mantine-color-gray-8)',
+    '--mantine-color-button-elevated-border': 'var(--mantine-color-gray-4)',
+    // elevated button variant, color="contrast"
+    '--mantine-color-button-elevated-contrast-background': 'var(--mantine-color-dark-6)',
+    '--mantine-color-button-elevated-contrast-hover': 'var(--mantine-color-dark-5)',
+    '--mantine-color-button-elevated-contrast-active': 'var(--mantine-color-dark-4)',
+    '--mantine-color-button-elevated-contrast-color': 'var(--mantine-color-gray-0)',
+    '--mantine-color-button-elevated-contrast-border': 'var(--mantine-color-dark-4)',
+    // light scheme: --bttv-light falls back to its value, --bttv-dark collapses to empty
+    '--bttv-light': 'initial',
+    '--bttv-dark': ' ',
   },
 });
 

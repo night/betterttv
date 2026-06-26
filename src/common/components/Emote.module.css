@@ -7,7 +7,11 @@
 
 .placeholder {
   border-radius: var(--mantine-radius-md);
-  background-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-6));
+  background-color: var(--mantine-color-gray-4);
+}
+
+[data-mantine-color-scheme='dark'] .placeholder {
+  background-color: var(--mantine-color-dark-6);
 }
 
 .emoteImageLocked {
