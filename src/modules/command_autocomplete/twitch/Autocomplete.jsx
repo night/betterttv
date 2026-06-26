@@ -132,12 +132,17 @@ function getMatchingCommands(commands, partialInput) {
       return true;
     }
 
-    if (normalizedInputTrimmed.startsWith(normalizedCommandName)) {
+    const textAfterCommand = normalizedInputTrimmed.slice(normalizedCommandName.length);
+
+    // Only treat the input as "command name followed by arguments" when a space
+    // separates them. Without the boundary check, typing a longer command (e.g.
+    // "!commands") would match a shorter one ("!c") by reading the remaining
+    // characters ("ommands") as that command's argument.
+    if (normalizedInputTrimmed.startsWith(normalizedCommandName) && textAfterCommand.startsWith(' ')) {
       if (command.arguments.some((argument) => argument.type === CommandAutocompleteArgumentTypes.PHRASE)) {
         return true;
       }
 
-      const textAfterCommand = normalizedInputTrimmed.slice(normalizedCommandName.length);
       const textArgumentCount = textAfterCommand.trimStart().split(/\s+/).length;
       const commandArgumentCount = command.arguments?.length ?? 0;
 
