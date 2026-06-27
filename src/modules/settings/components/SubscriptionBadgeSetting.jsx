@@ -3,7 +3,7 @@ import {useShallow} from 'zustand/react/shallow';
 import formatMessage from '@/i18n';
 import {updateSubscriptionBadge} from '@/actions/account';
 import useAuthStore from '@/stores/auth';
-import {isUserPro} from '@/utils/pro';
+import useProRequiredState from '@/common/hooks/ProRequiredState';
 import SettingSwitch from './SettingSwitch';
 import styles from './SubscriptionBadgeSetting.module.css';
 
@@ -12,34 +12,36 @@ function SubscriptionBadgeSetting() {
   const updateUser = useAuthStore((state) => state.updateUser);
   const [loading, setLoading] = useState(false);
 
-  if (!isUserPro(user)) {
-    return null;
-  }
-
-  async function toggleBadge(badge) {
-    try {
-      setLoading(true);
-      await updateSubscriptionBadge(badge);
-      updateUser({...user, subscriptionBadge: badge});
-    } finally {
-      setLoading(false);
-    }
-  }
+  const [badgeEnabled, setBadgeEnabled] = useProRequiredState({
+    value: user?.subscriptionBadge === true,
+    defaultValue: false,
+    setValue: async (badge) => {
+      try {
+        setLoading(true);
+        await updateSubscriptionBadge(badge);
+        updateUser({...user, subscriptionBadge: badge});
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
 
   return (
     <SettingSwitch
+      showProBadge
       name={
         <React.Fragment>
-          <img src={user.subscriptionBadgeUrl} className={styles.badge} alt="" />
+          {user?.subscriptionBadgeUrl != null ? (
+            <img src={user.subscriptionBadgeUrl} className={styles.badge} alt="" />
+          ) : null}
           {formatMessage({defaultMessage: 'Subscriber Badge'})}
         </React.Fragment>
       }
       description={formatMessage({
-        defaultMessage:
-          'Show a BetterTTV Pro badge next to your name when you type in chat. The badge changes over time based on how many months you have been subscribed.',
+        defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
       })}
-      value={user.subscriptionBadge === true}
-      onChange={toggleBadge}
+      value={badgeEnabled}
+      onChange={setBadgeEnabled}
       disabled={loading}
     />
   );
