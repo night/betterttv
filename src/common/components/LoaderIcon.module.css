@@ -51,15 +51,11 @@
   height: 20px;
   opacity: 0;
   border-radius: 10px;
-  background: var(--mantine-color-green-5);
+  background: light-dark(var(--mantine-color-green-5), var(--mantine-color-green-6));
   position: relative;
   transform: rotate(45deg);
   animation: checkmarkCircle 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   animation-delay: 100ms;
-}
-
-[data-mantine-color-scheme='dark'] .checkmark {
-  background: var(--mantine-color-green-6);
 }
 
 .checkmark::after {
@@ -111,15 +107,11 @@
   height: 20px;
   opacity: 0;
   border-radius: 10px;
-  background: var(--mantine-color-red-5);
+  background: light-dark(var(--mantine-color-red-5), var(--mantine-color-red-7));
   position: relative;
   transform: rotate(45deg);
   animation: errorCircle 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   animation-delay: 100ms;
-}
-
-[data-mantine-color-scheme='dark'] .error {
-  background: var(--mantine-color-red-7);
 }
 
 .error::after,
