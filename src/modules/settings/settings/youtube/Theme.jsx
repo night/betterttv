@@ -22,7 +22,6 @@ function Theme(props, ref) {
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingPrimaryColorRadio
         showProBadge
-        showBetaBadge
         value={normalizedValue}
         onChange={setNormalizedValue}
         name={formatMessage({defaultMessage: 'Accent Color'})}

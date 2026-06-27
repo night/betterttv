@@ -40,7 +40,6 @@ function Theme(props, ref) {
       />
       <SettingPrimaryColorRadio
         showProBadge
-        showBetaBadge
         value={normalizedThemeColorValue}
         onChange={setNormalizedThemeColorValue}
         name={formatMessage({defaultMessage: 'Accent Color'})}

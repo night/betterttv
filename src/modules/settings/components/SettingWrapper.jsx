@@ -51,9 +51,16 @@ function SettingWrapper({
               </Tooltip>
             ) : null}
             {showComingSoonBadge ? (
-              <Badge color="green" variant="elevated" size="lg">
-                {formatMessage({defaultMessage: 'Coming Soon'})}
-              </Badge>
+              <Tooltip
+                withArrow
+                label={
+                  <Text size="md">{formatMessage({defaultMessage: 'This feature is not available yet.'})}</Text>
+                }
+                portalProps={{target: portalRef.current}}>
+                <Badge color="green" variant="elevated" size="lg">
+                  {formatMessage({defaultMessage: 'Coming Soon'})}
+                </Badge>
+              </Tooltip>
             ) : null}
           </Title>
         ) : null}
