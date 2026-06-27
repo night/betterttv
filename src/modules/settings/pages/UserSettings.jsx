@@ -155,8 +155,8 @@ function UserSettings() {
         />
       </SettingGroup>
       <SettingGroup name={formatMessage({defaultMessage: 'Account'})}>
-        <SignInButton />
         <SubscriptionBadgeSetting />
+        <SignInButton />
       </SettingGroup>
       <Footer />
     </PageScrollBody>
