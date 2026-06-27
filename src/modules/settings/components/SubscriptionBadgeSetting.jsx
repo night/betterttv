@@ -1,34 +1,28 @@
-import React, {useCallback, useState} from 'react';
+import React from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import formatMessage from '@/i18n';
 import {updateSubscriptionBadge} from '@/actions/account';
-import useAuthStore from '@/stores/auth';
+import useDebouncedRemoteState from '@/common/hooks/DebouncedRemoteState';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
+import formatMessage from '@/i18n';
+import useAuthStore from '@/stores/auth';
 import SettingSwitch from './SettingSwitch';
 import styles from './SubscriptionBadgeSetting.module.css';
 
 function SubscriptionBadgeSetting() {
-  const user = useAuthStore(useShallow((state) => state.user));
-  const updateUser = useAuthStore((state) => state.updateUser);
-  const [loading, setLoading] = useState(false);
+  const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
 
-  const handleSubscriptionBadgeChange = useCallback(
-    async (badge) => {
-      try {
-        setLoading(true);
-        await updateSubscriptionBadge(badge);
-        updateUser({...user, subscriptionBadge: badge});
-      } finally {
-        setLoading(false);
-      }
+  const [badge, setBadge] = useDebouncedRemoteState({
+    value: user?.subscriptionBadge === true,
+    onSave: async (value, {signal}) => {
+      await updateSubscriptionBadge(value, {signal});
+      updateUser({...useAuthStore.getState().user, subscriptionBadge: value});
     },
-    [user, updateUser]
-  );
+  });
 
   const [badgeEnabled, setBadgeEnabled] = useProRequiredState({
-    value: user?.subscriptionBadge === true,
+    value: badge,
     defaultValue: false,
-    setValue: handleSubscriptionBadgeChange,
+    setValue: setBadge,
   });
 
   return (
@@ -37,7 +31,11 @@ function SubscriptionBadgeSetting() {
       name={
         <React.Fragment>
           {user?.subscriptionBadgeUrl != null ? (
-            <img src={user.subscriptionBadgeUrl} className={styles.badge} alt="" />
+            <img
+              src={user.subscriptionBadgeUrl}
+              className={styles.badge}
+              alt={formatMessage({defaultMessage: 'BetterTTV Pro Badge'})}
+            />
           ) : null}
           {formatMessage({defaultMessage: 'Subscriber Badge'})}
         </React.Fragment>
@@ -47,7 +45,6 @@ function SubscriptionBadgeSetting() {
       })}
       value={badgeEnabled}
       onChange={setBadgeEnabled}
-      disabled={loading}
     />
   );
 }
