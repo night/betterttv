@@ -57,8 +57,10 @@
     "zustand": "^5.0.14"
   },
   "browserslist": [
-    "last 1 version",
-    "> 0.25%, not dead"
+    "chrome >= 123",
+    "edge >= 123",
+    "firefox >= 120",
+    "safari >= 17.5"
   ],
   "devDependencies": {
     "@eslint/compat": "2.1.0",
