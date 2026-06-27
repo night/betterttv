@@ -70,6 +70,7 @@
     "autoprefixer": "10.5.0",
     "browserslist-to-esbuild": "2.1.1",
     "emoji-toolkit": "10.0.0",
+    "esbuild": "0.28.1",
     "eslint": "9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "4.4.5",

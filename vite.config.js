@@ -293,7 +293,9 @@ export default defineConfig(async ({mode}) => {
       cssCodeSplit: false,
       sourcemap: prod ? 'hidden' : true,
       minify: prod,
-      cssMinify: prod,
+      // esbuild's CSS minifier (unlike rolldown's default lightningcss) doesn't lower modern
+      // CSS — it leaves light-dark() and logical properties native — so prod matches dev
+      cssMinify: prod ? 'esbuild' : false,
       rollupOptions: {
         // IIFE output forces codeSplitting: false, so the whole graph lands in one self-executing
         // file.
