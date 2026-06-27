@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import formatMessage from '@/i18n';
 import {updateSubscriptionBadge} from '@/actions/account';
@@ -12,10 +12,8 @@ function SubscriptionBadgeSetting() {
   const updateUser = useAuthStore((state) => state.updateUser);
   const [loading, setLoading] = useState(false);
 
-  const [badgeEnabled, setBadgeEnabled] = useProRequiredState({
-    value: user?.subscriptionBadge === true,
-    defaultValue: false,
-    setValue: async (badge) => {
+  const handleSubscriptionBadgeChange = useCallback(
+    async (badge) => {
       try {
         setLoading(true);
         await updateSubscriptionBadge(badge);
@@ -24,6 +22,13 @@ function SubscriptionBadgeSetting() {
         setLoading(false);
       }
     },
+    [user, updateUser]
+  );
+
+  const [badgeEnabled, setBadgeEnabled] = useProRequiredState({
+    value: user?.subscriptionBadge === true,
+    defaultValue: false,
+    setValue: handleSubscriptionBadgeChange,
   });
 
   return (
