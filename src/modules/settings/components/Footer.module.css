@@ -7,7 +7,7 @@
   width: 100%;
   padding: 24px;
   border-top: 1px solid var(--mantine-color-default-border);
-  background-color: var(--mantine-color-gray-0);
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
 }
 
 .column {
@@ -31,10 +31,5 @@
   justify-content: space-between;
   padding: 24px;
   border-top: 1px solid var(--mantine-color-default-border);
-  background-color: var(--mantine-color-gray-0);
-}
-
-[data-mantine-color-scheme='dark'] .columns,
-[data-mantine-color-scheme='dark'] .copyright {
-  background-color: var(--mantine-color-dark-8);
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
 }
