@@ -25,6 +25,9 @@ const useAuthStore = create(
 
         set({credentials});
       },
+      updateUser(user) {
+        set({user});
+      },
     })),
     {
       name: STORAGE_ID,
