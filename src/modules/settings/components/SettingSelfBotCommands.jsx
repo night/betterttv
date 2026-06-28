@@ -63,7 +63,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
           placeholder={formatMessage({defaultMessage: 'Response message'})}
         />
       </TableTd>
-      <TableTd className={classNames(tableStyles.dataCellMiddle, styles.userLevelColumn)}>
+      <TableTd className={classNames(tableStyles.dataCellMiddle, tableStyles.selectColumn, styles.userLevelColumn)}>
         <NativeSelect
           variant="unstyled"
           classNames={{input: tableStyles.selectInput}}

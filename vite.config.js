@@ -9,8 +9,10 @@ import {sentryVitePlugin} from '@sentry/vite-plugin';
 import autoprefixer from 'autoprefixer';
 import browserslistToEsbuild from 'browserslist-to-esbuild';
 import got from 'got';
+import {Features} from 'lightningcss';
 import postcssHexrgba from 'postcss-hexrgba';
 import postcssPrefixwrap from 'postcss-prefixwrap';
+import postcssPresetEnv from 'postcss-preset-env';
 import postcssUrl from 'postcss-url';
 import {defineConfig} from 'vite';
 
@@ -281,7 +283,12 @@ export default defineConfig(async ({mode}) => {
           }),
           postcssHexrgba(),
           autoprefixer(),
+          postcssPresetEnv(),
         ],
+      },
+      lightningcss: {
+        // We use postcss preset env to handle browser compatibility due to bugs in lightningcss, so we can safely disable it here
+        exclude: Object.values(Features).reduce((acc, feature) => acc | feature, 0),
       },
     },
     build: {

@@ -18,6 +18,24 @@
   td {
     padding: 8px 12px;
     height: 36px;
+
+    &.dataCell {
+      padding: 0 12px;
+    }
+
+    &.dataCellMiddle {
+      padding: 0 12px;
+      vertical-align: middle;
+    }
+
+    &.selectColumn {
+      padding: 0 0 0 12px;
+    }
+
+    &.actionsColumn {
+      width: 0;
+      padding: 0;
+    }
   }
 
   --table-border-color: var(--mantine-color-default-border);
@@ -27,27 +45,12 @@
   }
 }
 
-.actionsColumn {
-  width: 0;
-}
-
-.dataCell {
-  padding: 0 !important;
-}
-
-.dataCellMiddle {
-  padding: 0 !important;
-  vertical-align: middle;
-}
-
 .selectInput {
   font-size: var(--mantine-font-size-md);
-  padding-left: 12px;
 }
 
 .textInput {
   font-size: var(--mantine-font-size-md);
-  padding-left: 12px;
 }
 
 .textInput:focus {

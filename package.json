@@ -70,7 +70,6 @@
     "autoprefixer": "10.5.0",
     "browserslist-to-esbuild": "2.1.1",
     "emoji-toolkit": "10.0.0",
-    "esbuild": "0.28.1",
     "eslint": "9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "4.4.5",
@@ -84,6 +83,7 @@
     "postcss": "8.5.15",
     "postcss-hexrgba": "2.1.0",
     "postcss-prefixwrap": "^1.58.0",
+    "postcss-preset-env": "^11.3.2",
     "postcss-url": "10.1.4",
     "prettier": "3.8.4",
     "vite": "8.1.0"

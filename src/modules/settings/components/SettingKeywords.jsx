@@ -123,7 +123,7 @@ function KeywordRow({
           />
         </TableTd>
       ) : null}
-      <TableTd className={tableStyles.dataCell}>
+      <TableTd className={classNames(tableStyles.dataCell, tableStyles.selectColumn)}>
         <NativeSelect
           variant="unstyled"
           classNames={{input: tableStyles.selectInput}}
@@ -187,7 +187,7 @@ function KeywordRow({
           )}
         </button>
       </TableTd>
-      <TableTd className={tableStyles.dataCell}>
+      <TableTd className={classNames(tableStyles.dataCell, tableStyles.actionsColumn)}>
         <ActionIcon
           color="gray"
           variant="transparent"
