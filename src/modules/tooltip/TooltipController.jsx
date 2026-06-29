@@ -1,91 +1,61 @@
-import React, {useState, useCallback, useEffect, useRef} from 'react';
-import Tooltip from './Tooltip';
+import {arrow, autoUpdate, flip, FloatingArrow, offset, shift, useFloating} from '@floating-ui/react';
+import classNames from 'classnames';
+import React, {useLayoutEffect, useRef} from 'react';
+import useTooltipStore, {closeTooltip, resetTooltip} from './store';
+import styles from './Tooltip.module.css';
 
-export const TOOLTIP_MARKER_ATTRIBUTE = 'data-bttv-tooltip';
+const VIEWPORT_PADDING = 8;
+const ARROW_PADDING = 4;
+const ARROW_WIDTH = 12;
+const ARROW_HEIGHT = 6;
 
-function getTooltipElement(target) {
-  if (target == null || !(target instanceof Element)) {
-    return null;
-  }
-
-  return target.hasAttribute(TOOLTIP_MARKER_ATTRIBUTE) ? target : null;
+function whileElementsMounted(reference, floating, update) {
+  return autoUpdate(reference, floating, () => {
+    if (!reference.isConnected) {
+      closeTooltip(reference);
+      return;
+    }
+    update();
+  });
 }
 
 export default function TooltipController() {
-  const tooltipStateRef = useRef();
+  const arrowRef = useRef(null);
+  const {open, content, className, alignment, referenceElement, tooltipKey} = useTooltipStore();
 
-  const [tooltipState, setTooltipState] = useState({
-    open: false,
-    tooltipKey: null,
-    content: null,
-    className: null,
-    alignment: 'center',
-    referenceElement: null,
+  useLayoutEffect(() => {
+    resetTooltip();
+  }, []);
+
+  const {refs, floatingStyles, context} = useFloating({
+    open,
+    placement: `top-${alignment ?? 'center'}`,
+    strategy: 'fixed',
+    elements: {reference: referenceElement},
+    whileElementsMounted,
+    middleware: [
+      offset({mainAxis: ARROW_HEIGHT + ARROW_PADDING}),
+      flip({padding: VIEWPORT_PADDING}),
+      shift({padding: VIEWPORT_PADDING}),
+      arrow({element: arrowRef, padding: ARROW_PADDING}),
+    ],
   });
 
-  const handleMouseEnter = useCallback((event) => {
-    const element = getTooltipElement(event.target);
-    if (element == null) {
-      return;
-    }
+  if (!open) {
+    return null;
+  }
 
-    if (element.contains(event.relatedTarget)) {
-      return;
-    }
-
-    const config = element.__bttvTooltip;
-    if (config == null || config.content == null) {
-      return;
-    }
-
-    const tooltipKey = element.getAttribute(TOOLTIP_MARKER_ATTRIBUTE);
-    if (tooltipKey == null || tooltipKey === '') {
-      return;
-    }
-
-    const currentTooltipKey = tooltipStateRef.current?.tooltipKey;
-    const currentTooltipOpen = tooltipStateRef.current?.open;
-    if (currentTooltipKey != null && currentTooltipKey === tooltipKey && currentTooltipOpen) {
-      return;
-    }
-
-    const newTooltipState = {
-      open: true,
-      tooltipKey,
-      content: config.content,
-      className: config.className ?? null,
-      alignment: config.alignment ?? 'center',
-      referenceElement: element,
-    };
-
-    tooltipStateRef.current = newTooltipState;
-    setTooltipState(newTooltipState);
-  }, []);
-
-  const handleMouseLeave = useCallback((event) => {
-    if (getTooltipElement(event.target) == null) {
-      return;
-    }
-
-    if (tooltipStateRef.current == null || !tooltipStateRef.current.open) {
-      return;
-    }
-
-    const newTooltipState = {...tooltipStateRef.current, open: false};
-
-    tooltipStateRef.current = newTooltipState;
-    setTooltipState(newTooltipState);
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener('mouseenter', handleMouseEnter, true);
-    document.addEventListener('mouseleave', handleMouseLeave, true);
-
-    return () => {
-      document.removeEventListener('mouseenter', handleMouseEnter, true);
-      document.removeEventListener('mouseleave', handleMouseLeave, true);
-    };
-  }, [handleMouseEnter, handleMouseLeave]);
-
-  return <Tooltip state={tooltipState} />;
+  return (
+    <div ref={refs.setFloating} className={classNames(styles.tooltip, className)} style={floatingStyles}>
+      <React.Fragment key={tooltipKey}>{content}</React.Fragment>
+      <FloatingArrow
+        ref={arrowRef}
+        context={context}
+        className={styles.arrow}
+        width={ARROW_WIDTH}
+        height={ARROW_HEIGHT}
+        fill="var(--tooltip-bg)"
+      />
+    </div>
+  );
 }
