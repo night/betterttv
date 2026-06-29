@@ -1,5 +1,8 @@
 .settingGroupContent {
-  padding: 0;
+  /* Override Panel's default 20px padding regardless of stylesheet order so the
+     table sits flush to the card's rounded border (otherwise the inset table
+     borders show as a stray inner border). */
+  padding: 0 !important;
   overflow: hidden;
 }
 
