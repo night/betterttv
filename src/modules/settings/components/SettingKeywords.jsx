@@ -111,7 +111,7 @@ function KeywordRow({
   return (
     <TableTr {...props}>
       {colorColumn != null ? (
-        <TableTd className={tableStyles.dataCell}>
+        <TableTd className={classNames(tableStyles.dataCell, tableStyles.colorColumn)}>
           <ColorPicker
             size="sm"
             variant="transparent"
@@ -221,7 +221,7 @@ function KeywordsTable({
     <Table withColumnBorders className={tableStyles.table} onPaste={onPaste}>
       <TableThead>
         <TableTr>
-          {showColorColumn ? <TableTh className={styles.colorColumn} /> : null}
+          {showColorColumn ? <TableTh className={tableStyles.colorColumn} /> : null}
           <TableTh className={styles.targetColumn}>{formatMessage({defaultMessage: 'Target'})}</TableTh>
           <TableTh className={styles.keywordColumn}>
             <div className={styles.keywordHeader}>

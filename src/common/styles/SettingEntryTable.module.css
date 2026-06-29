@@ -36,6 +36,11 @@
       width: 0;
       padding: 0;
     }
+
+    &.colorColumn {
+      width: 0;
+      padding: 0;
+    }
   }
 
   --table-border-color: var(--mantine-color-default-border);
@@ -86,7 +91,8 @@
   text-align: center;
 }
 
-td.actionsColumn {
+td.actionsColumn,
+td.colorColumn {
   width: 36px;
   min-width: 36px;
   max-width: 36px;
