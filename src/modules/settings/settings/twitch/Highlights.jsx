@@ -12,7 +12,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Highlights'});
 
-function Highlights(props, ref) {
+function Highlights({ref, ...props}) {
   const {setPage} = use(PageContext);
   const [value, setValue] = useStorageState(SettingIds.PINNED_HIGHLIGHTS);
   const [deletedMessages, setDeletedMessages] = useStorageState(SettingIds.DELETED_MESSAGES);
@@ -84,11 +84,11 @@ function Highlights(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(Highlights), {
+SettingStore.registerSetting(Highlights, {
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['pinned', 'highlights', 'highlight', 'feedback', 'keywords', 'first', 'chatter', 'first-time'],
 });
 
-export default React.forwardRef(Highlights);
+export default Highlights;

@@ -9,7 +9,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Anon Chat'});
 
-function AnonChat(props, ref) {
+function AnonChat({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.ANON_CHAT);
   const [channels, setChannels] = useStorageState(
     value ? SettingIds.ANON_CHAT_WHITELISTED_CHANNELS : SettingIds.ANON_CHAT_BLACKLISTED_CHANNELS
@@ -43,11 +43,11 @@ function AnonChat(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(AnonChat), {
+SettingStore.registerSetting(AnonChat, {
   settingPanelId: SettingPanelIds.ANON_CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['anon', 'chat'],
 });
 
-export default React.forwardRef(AnonChat);
+export default AnonChat;

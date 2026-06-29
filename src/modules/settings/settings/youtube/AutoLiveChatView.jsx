@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Live Chat View'});
 
-function EmoteAutoLiveChatView(props, ref) {
+function EmoteAutoLiveChatView({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.AUTO_LIVE_CHAT_VIEW);
 
   return (
@@ -25,11 +25,11 @@ function EmoteAutoLiveChatView(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(EmoteAutoLiveChatView), {
+SettingStore.registerSetting(EmoteAutoLiveChatView, {
   settingPanelId: SettingPanelIds.AUTO_LIVE_CHAT_VIEW,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['auto', 'live', 'chat', 'view'],
 });
 
-export default React.forwardRef(EmoteAutoLiveChatView);
+export default EmoteAutoLiveChatView;

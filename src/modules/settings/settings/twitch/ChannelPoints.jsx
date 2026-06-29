@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Channel Points'});
 
-function ChannelPointsModule(props, ref) {
+function ChannelPointsModule({ref, ...props}) {
   const [channelPoints, setChannelPoints] = useStorageState(SettingIds.CHANNEL_POINTS);
 
   return (
@@ -40,11 +40,11 @@ function ChannelPointsModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(ChannelPointsModule), {
+SettingStore.registerSetting(ChannelPointsModule, {
   settingPanelId: SettingPanelIds.CHANNEL_POINTS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['channel', 'points', 'auto', 'claim'],
 });
 
-export default React.forwardRef(ChannelPointsModule);
+export default ChannelPointsModule;

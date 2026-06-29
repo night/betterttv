@@ -10,7 +10,7 @@ import SplitChatModule from '@/modules/split_chat/index';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Split Chat'});
 
-function SplitChat(props, ref) {
+function SplitChat({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.SPLIT_CHAT);
   const [colorValue, setColorValue] = useStorageState(SettingIds.SPLIT_CHAT_COLOR);
   const defaultColor = SplitChatModule.getDefaultColor();
@@ -48,11 +48,11 @@ function SplitChat(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(SplitChat), {
+SettingStore.registerSetting(SplitChat, {
   settingPanelId: SettingPanelIds.SPLIT_CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['split', 'chat'],
 });
 
-export default React.forwardRef(SplitChat);
+export default SplitChat;

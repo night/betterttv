@@ -72,7 +72,7 @@ function openEmoteModifiersModal() {
   });
 }
 
-function EmotesModule(props, ref) {
+function EmotesModule({ref, ...props}) {
   const [emotes, setEmotes] = useStorageState(SettingIds.EMOTES);
 
   function handleEmoteModifiersChange(newFlags) {
@@ -166,11 +166,11 @@ function EmotesModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(EmotesModule), {
+SettingStore.registerSetting(EmotesModule, {
   settingPanelId: SettingPanelIds.EMOTES,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['bttv', 'ffz', '7tv', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
 });
 
-export default React.forwardRef(EmotesModule);
+export default EmotesModule;

@@ -9,7 +9,7 @@ import {hasFlag, setFlag} from '@/utils/flags';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Claim'});
 
-function AutoClaim(props, ref) {
+function AutoClaim({ref, ...props}) {
   const [autoClaim, setAutoClaim] = useStorageState(SettingIds.AUTO_CLAIM);
   const [channelPoints, setChannelPoints] = useStorageState(SettingIds.CHANNEL_POINTS);
 
@@ -35,11 +35,11 @@ function AutoClaim(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(AutoClaim), {
+SettingStore.registerSetting(AutoClaim, {
   settingPanelId: SettingPanelIds.AUTO_CLAIM,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['auto', 'claim', 'drops', 'moments', 'points'],
 });
 
-export default React.forwardRef(AutoClaim);
+export default AutoClaim;

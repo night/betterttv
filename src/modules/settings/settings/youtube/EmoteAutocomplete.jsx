@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Autocomplete'});
 
-function EmoteAutocomplete(props, ref) {
+function EmoteAutocomplete({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.EMOTE_AUTOCOMPLETE);
 
   return (
@@ -25,11 +25,11 @@ function EmoteAutocomplete(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(EmoteAutocomplete), {
+SettingStore.registerSetting(EmoteAutocomplete, {
   settingPanelId: SettingPanelIds.EMOTE_AUTOCOMPLETE,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['auto', 'autocomplete', 'emote', ':'],
 });
 
-export default React.forwardRef(EmoteAutocomplete);
+export default EmoteAutocomplete;

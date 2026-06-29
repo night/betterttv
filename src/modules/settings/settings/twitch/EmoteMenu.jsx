@@ -10,7 +10,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Menu'});
 
-function EmoteMenu(props, ref) {
+function EmoteMenu({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.EMOTE_MENU);
   const [width, setWidth] = useStorageState(SettingIds.EMOTE_MENU_WIDTH);
   const toggled = value !== EmoteMenuTypes.NONE;
@@ -43,11 +43,11 @@ function EmoteMenu(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(EmoteMenu), {
+SettingStore.registerSetting(EmoteMenu, {
   settingPanelId: SettingPanelIds.EMOTE_MENU,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['emotes', 'popup'],
 });
 
-export default React.forwardRef(EmoteMenu);
+export default EmoteMenu;

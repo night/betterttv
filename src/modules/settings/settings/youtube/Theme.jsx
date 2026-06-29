@@ -9,7 +9,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Theme'});
 
-function Theme(props, ref) {
+function Theme({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.PRIMARY_COLOR);
 
   const [normalizedValue, setNormalizedValue] = useProRequiredState({
@@ -31,11 +31,11 @@ function Theme(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(Theme), {
+SettingStore.registerSetting(Theme, {
   settingPanelId: SettingPanelIds.THEME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['primary', 'color', 'theme', 'accent'],
 });
 
-export default React.forwardRef(Theme);
+export default Theme;

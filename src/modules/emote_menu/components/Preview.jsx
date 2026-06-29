@@ -7,7 +7,7 @@ import formatMessage from '@/i18n/index';
 import Icons from './Icons';
 import styles from './Preview.module.css';
 
-const Preview = React.forwardRef(({className, emote}, ref) => {
+const Preview = ({className, emote, ref}) => {
   if (emote == null) return null;
 
   let icon = null;
@@ -31,6 +31,6 @@ const Preview = React.forwardRef(({className, emote}, ref) => {
       <div className={styles.emoteStatusIcon}>{icon}</div>
     </div>
   );
-});
+};
 
 export default Preview;

@@ -30,7 +30,7 @@ function openEnableSelfBotModal(setEnabled) {
   });
 }
 
-function SelfBot(props, ref) {
+function SelfBot({ref, ...props}) {
   const {setPage} = use(PageContext);
   const isOnOwnChannel = useIsOnOwnChannel();
   const [enabled, setEnabled] = useStorageState(SettingIds.SELF_BOT);
@@ -86,11 +86,11 @@ function SelfBot(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(SelfBot), {
+SettingStore.registerSetting(SelfBot, {
   settingPanelId: SettingPanelIds.SELF_BOT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['self', 'bot', 'commands', 'reply', 'automatic', 'timers'],
 });
 
-export default React.forwardRef(SelfBot);
+export default SelfBot;

@@ -9,7 +9,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Bots'});
 
-function ChatBots(props, ref) {
+function ChatBots({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE);
   const [normalizedValue, setNormalizedValue] = useProRequiredState({
     value,
@@ -35,11 +35,11 @@ function ChatBots(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(ChatBots), {
+SettingStore.registerSetting(ChatBots, {
   settingPanelId: SettingPanelIds.CHATBOTS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['command', 'autocomplete', 'nightbot', 'fossabot', 'moobot', 'streamelements', 'commands', 'chat', 'bot'],
 });
 
-export default React.forwardRef(ChatBots);
+export default ChatBots;

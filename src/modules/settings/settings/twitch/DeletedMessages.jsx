@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Deleted Messages'});
 
-function DeletedMessagesModule(props, ref) {
+function DeletedMessagesModule({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.DELETED_MESSAGES);
 
   return (
@@ -41,11 +41,11 @@ function DeletedMessagesModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(DeletedMessagesModule), {
+SettingStore.registerSetting(DeletedMessagesModule, {
   settingPanelId: SettingPanelIds.DELETED_MESSAGES,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['messages', 'deleted'],
 });
 
-export default React.forwardRef(DeletedMessagesModule);
+export default DeletedMessagesModule;

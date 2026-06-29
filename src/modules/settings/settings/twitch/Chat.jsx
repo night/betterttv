@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat'});
 
-function ChatModule(props, ref) {
+function ChatModule({ref, ...props}) {
   const [chat, setChat] = useStorageState(SettingIds.CHAT);
 
   return (
@@ -64,11 +64,11 @@ function ChatModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(ChatModule), {
+SettingStore.registerSetting(ChatModule, {
   settingPanelId: SettingPanelIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['bits', 'highlights', 'community', 'chat', 'replies', 'clips', 'subs', 'subscriptions'],
 });
 
-export default React.forwardRef(ChatModule);
+export default ChatModule;

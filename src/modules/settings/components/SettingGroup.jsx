@@ -3,7 +3,7 @@ import React from 'react';
 import Panel from './Panel';
 import styles from './SettingGroup.module.css';
 
-function SettingGroup({children, name, rightContent, className, ...restProps}, ref) {
+function SettingGroup({children, name, rightContent, className, ref, ...restProps}) {
   return (
     <Panel
       ref={ref}
@@ -17,4 +17,4 @@ function SettingGroup({children, name, rightContent, className, ...restProps}, r
   );
 }
 
-export default React.forwardRef(SettingGroup);
+export default SettingGroup;

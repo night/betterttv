@@ -10,7 +10,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Theme'});
 
-function Theme(props, ref) {
+function Theme({ref, ...props}) {
   const [darkThemeValue, setDarkThemeValue] = useStorageState(SettingIds.DARKENED_MODE);
   const [autoThemeValue, setAutoThemeValue] = useStorageState(SettingIds.AUTO_THEME_MODE);
   const [themeColorValue, setThemeColorValue] = useStorageState(SettingIds.PRIMARY_COLOR);
@@ -49,11 +49,11 @@ function Theme(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(Theme), {
+SettingStore.registerSetting(Theme, {
   settingPanelId: SettingPanelIds.THEME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['dark', 'mode', 'light', 'theme', 'white', 'black'],
 });
 
-export default React.forwardRef(Theme);
+export default Theme;

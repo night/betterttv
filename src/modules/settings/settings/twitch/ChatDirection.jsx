@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Direction'});
 
-function ChatDirection(props, ref) {
+function ChatDirection({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.REVERSE_CHAT_DIRECTION);
 
   return (
@@ -23,11 +23,11 @@ function ChatDirection(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(ChatDirection), {
+SettingStore.registerSetting(ChatDirection, {
   settingPanelId: SettingPanelIds.CHAT_DIRECTION,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['chat', 'direction', 'up', 'down', 'reverse'],
 });
 
-export default React.forwardRef(ChatDirection);
+export default ChatDirection;

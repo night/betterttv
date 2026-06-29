@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Layout'});
 
-function ChatLayout(props, ref) {
+function ChatLayout({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.CHAT_LAYOUT);
 
   return (
@@ -27,10 +27,10 @@ function ChatLayout(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(ChatLayout), {
+SettingStore.registerSetting(ChatLayout, {
   settingPanelId: SettingPanelIds.CHAT_LAYOUT,
   name: SETTING_NAME,
   keywords: ['chat', 'layout', 'position', 'placement', 'left', 'right'],
 });
 
-export default React.forwardRef(ChatLayout);
+export default ChatLayout;

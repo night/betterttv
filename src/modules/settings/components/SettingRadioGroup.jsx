@@ -2,7 +2,7 @@ import {RadioGroup} from '@mantine/core';
 import React from 'react';
 import SettingGroup from './SettingGroup';
 
-function SettingRadioGroup({name, value, onChange, disabled, children}, ref) {
+function SettingRadioGroup({name, value, onChange, disabled, children, ref}) {
   const groupValue = value != null ? String(value) : null;
 
   function handleChange(stringVal) {
@@ -19,4 +19,4 @@ function SettingRadioGroup({name, value, onChange, disabled, children}, ref) {
   );
 }
 
-export default React.forwardRef(SettingRadioGroup);
+export default SettingRadioGroup;

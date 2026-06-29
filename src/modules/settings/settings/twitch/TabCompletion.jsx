@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Tab Completion'});
 
-function TabCompletion(props, ref) {
+function TabCompletion({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.TAB_COMPLETION_EMOTE_PRIORITY);
 
   return (
@@ -23,11 +23,11 @@ function TabCompletion(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(TabCompletion), {
+SettingStore.registerSetting(TabCompletion, {
   settingPanelId: SettingPanelIds.TAB_COMPLETION,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['tab', 'completion', 'emote', 'priority'],
 });
 
-export default React.forwardRef(TabCompletion);
+export default TabCompletion;
