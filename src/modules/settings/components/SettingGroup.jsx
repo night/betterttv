@@ -1,7 +1,7 @@
-import React from 'react';
-import styles from './SettingGroup.module.css';
 import classNames from 'classnames';
+import React from 'react';
 import Panel from './Panel';
+import styles from './SettingGroup.module.css';
 
 function SettingGroup({children, name, rightContent, className, ...restProps}, ref) {
   return (

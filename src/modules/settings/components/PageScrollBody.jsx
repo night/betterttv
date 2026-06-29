@@ -1,7 +1,7 @@
-import React, {useContext} from 'react';
 import classNames from 'classnames';
-import styles from './SettingsModal.module.css';
+import React, {useContext} from 'react';
 import Scrollbar from '@/common/components/Scrollbar';
+import styles from './SettingsModal.module.css';
 
 export const PageScrollContext = React.createContext(null);
 

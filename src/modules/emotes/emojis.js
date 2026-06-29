@@ -5,7 +5,7 @@ import blacklistedEmoji from '@/utils/emoji-blacklist';
 
 import AbstractEmotes from './abstract-emotes';
 // file gets created during bundle
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import-x/no-unresolved
 import emojiBySlug from './emojis-by-slug.json';
 import Emote from './emote';
 

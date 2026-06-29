@@ -1,17 +1,17 @@
 import React from 'react';
+import iconButtonStyles from '@/common/styles/IconButton.module.css';
 import {ChatLayoutTypes, EmoteMenuTypes, SettingIds, ShadowDOMComponentIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import EmoteMenu from '@/modules/emote_menu/components/EmoteMenu';
+import shadowDOM from '@/modules/shadow_dom/index';
+import {bindTooltip} from '@/modules/tooltip/index';
 import domObserver from '@/observers/dom';
 import settings from '@/settings';
 import twitch from '@/utils/twitch';
 import {getCurrentUser} from '@/utils/user';
+import {isStandaloneWindow} from '@/utils/window';
 import watcher from '@/watcher';
 import styles from './EmoteMenu.module.css';
-import iconButtonStyles from '@/common/styles/IconButton.module.css';
-import EmoteMenu from '@/modules/emote_menu/components/EmoteMenu';
-import shadowDOM from '@/modules/shadow_dom/index';
-import {isStandaloneWindow} from '@/utils/window';
-import {bindTooltip} from '@/modules/tooltip/index';
-import formatMessage from '@/i18n/index';
 
 const CHAT_TEXT_AREA = '.chat-input__textarea, textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_INPUT = '.chat-input';

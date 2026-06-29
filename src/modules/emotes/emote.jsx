@@ -2,11 +2,11 @@ import React from 'react';
 import EmoteTooltipContent from '@/common/components/EmoteTooltipContent';
 import emoteTooltipStyles from '@/common/components/EmoteTooltipContent.module.css';
 import {EmoteCategories, EmoteTypeFlags, SettingIds} from '@/constants';
+import {bindTooltip} from '@/modules/tooltip/index';
 import settings from '@/settings';
 import {getCanonicalEmoteId} from '@/utils/emote';
 import {hasFlag} from '@/utils/flags';
 import {createSrc, createSrcSet} from '@/utils/image';
-import {bindTooltip} from '@/modules/tooltip/index';
 
 export default class Emote {
   constructor({

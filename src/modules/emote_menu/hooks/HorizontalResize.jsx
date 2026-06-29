@@ -68,7 +68,6 @@ export default function useHorizontalResize({
     document.addEventListener('mouseup', handleResizeEnd);
     window.addEventListener('resize', handleWindowResize);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       currentRef.removeEventListener('mousedown', handleResizeStart);
       document.removeEventListener('mouseup', handleResizeEnd);

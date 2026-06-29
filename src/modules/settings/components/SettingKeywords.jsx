@@ -1,3 +1,4 @@
+import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Avatar,
@@ -15,20 +16,19 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
-import tableStyles from '@/common/styles/SettingEntryTable.module.css';
-import styles from './SettingKeywords.module.css';
-import {KeywordTypes} from '@/utils/keywords';
-import formatMessage from '@/i18n/index';
-import ColorPicker from './ColorPicker';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
-import Panel from './Panel';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import Icon from '@/common/components/Icon';
-import usePortalRef from '@/common/hooks/PortalRef';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
+import usePortalRef from '@/common/hooks/PortalRef';
+import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openModal} from '@/common/utils/modal';
+import formatMessage from '@/i18n/index';
+import {KeywordTypes} from '@/utils/keywords';
+import ColorPicker from './ColorPicker';
+import Panel from './Panel';
+import styles from './SettingKeywords.module.css';
 
 const REGEX_EXAMPLES = [
   {pattern: '~/(cat|dog)s?/i', description: formatMessage({defaultMessage: 'Matches cat, dogs, and similar'})},

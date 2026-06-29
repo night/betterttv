@@ -60,7 +60,7 @@ class SettingStore {
       settingPanelId,
       keywords,
       supportsStandaloneWindow,
-      render: ({...props}) => <Component {...props} key={settingPanelId} />,
+      render: ({...props}) => <Component key={settingPanelId} {...props} />,
     };
   }
 

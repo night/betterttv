@@ -1,16 +1,16 @@
-import React from 'react';
 import {Button} from '@mantine/core';
+import React from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import formatMessage from '@/i18n/index';
-import {SETTINGS_STORAGE_KEY} from '@/settings';
-import storage from '@/storage';
-import {EXT_VER, SettingDefaultValues} from '@/constants';
-import SettingWrapper from './SettingWrapper';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
 import {openConfirmModal} from '@/common/utils/modal';
+import {EXT_VER, SettingDefaultValues} from '@/constants';
+import formatMessage from '@/i18n/index';
 import cloudBackup from '@/modules/cloud_backup/index';
-import {isUserPro} from '@/utils/pro';
+import {SETTINGS_STORAGE_KEY} from '@/settings';
+import storage from '@/storage';
 import useAuthStore from '@/stores/auth';
+import {isUserPro} from '@/utils/pro';
+import SettingWrapper from './SettingWrapper';
 
 function ResetSetting({description, disabled, resetting, setResetting}) {
   const [cloudBackupSettings, setCloudBackupSettings] = useCloudBackupSettings();

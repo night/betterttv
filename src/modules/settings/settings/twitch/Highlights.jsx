@@ -1,14 +1,14 @@
+import {Button} from '@mantine/core';
 import React, {useContext} from 'react';
 import useStorageState from '@/common/hooks/StorageState';
 import {DeletedMessageTypes, PageTypes, SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
-import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingNumberInput from '@/modules/settings/components/SettingNumberInput';
-import {Button} from '@mantine/core';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Highlights'});
 

@@ -2,11 +2,11 @@ import React from 'react';
 import Autocomplete from '@/common/components/Autocomplete';
 import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
 import {EmoteProviders, SettingIds, ShadowDOMComponentIds} from '@/constants';
+import EmoteRow from '@/modules/emote_autocomplete/components/EmoteRow';
+import shadowDom from '@/modules/shadow_dom/index';
 import domObserver from '@/observers/dom';
 import settings from '@/settings';
 import {createYoutubeEmojiNode, findFocusedWord} from '@/utils/youtube';
-import shadowDom from '@/modules/shadow_dom/index';
-import EmoteRow from '@/modules/emote_autocomplete/components/EmoteRow';
 import styles from './EmoteAutocomplete.module.css';
 
 const CHAT_TEXT_AREA = '.yt-live-chat-renderer #input-container';

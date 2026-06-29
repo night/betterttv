@@ -1,15 +1,15 @@
+import {Anchor, Kbd, Text} from '@mantine/core';
 import React from 'react';
 import useStorageState from '@/common/hooks/StorageState';
+import {openConfirmModal, openModal} from '@/common/utils/modal';
 import {SettingIds, EmoteTypeFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
-import {hasFlag} from '@/utils/flags';
 import globalEmotes from '@/modules/emotes/global-emotes';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import {hasFlag} from '@/utils/flags';
 import styles from './Emotes.module.css';
-import {Anchor, Kbd, Text} from '@mantine/core';
-import {openConfirmModal, openModal} from '@/common/utils/modal';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emotes'});
 

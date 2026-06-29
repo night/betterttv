@@ -1,5 +1,5 @@
-import React from 'react';
 import {Checkbox} from '@mantine/core';
+import React from 'react';
 import styles from './SettingCheckbox.module.css';
 import SettingWrapper from './SettingWrapper';
 

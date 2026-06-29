@@ -1,27 +1,27 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {PageDecendants, PageTypes, SettingsPrompts} from '@/constants';
-import UserSettings from '@/modules/settings/pages/UserSettings';
-import Changelog from '@/modules/settings/pages/Changelog';
-import Settings from '@/modules/settings/pages/Settings';
-import settingsStyles from '@/modules/settings/pages/Settings.module.css';
-import styles from './SettingsModal.module.css';
+import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import {ActionIcon, Modal, TextInput, Title} from '@mantine/core';
 import {useDisclosure, useFocusTrap, useViewportSize} from '@mantine/hooks';
-import {PageScrollContext} from './PageScrollBody';
+import {AnimatePresence, motion, usePresenceData} from 'framer-motion';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import Icon from '@/common/components/Icon';
 import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
-import HighlightKeywords from '@/modules/settings/pages/HighlightKeywords';
-import SideNavigation from './SideNavigation';
-import PageHeader from './PageHeader';
+import {openSignInModal} from '@/common/utils/modal';
+import {PageDecendants, PageTypes, SettingsPrompts} from '@/constants';
+import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
 import BlacklistKeywords from '@/modules/settings/pages/BlacklistKeywords';
+import Changelog from '@/modules/settings/pages/Changelog';
+import HighlightKeywords from '@/modules/settings/pages/HighlightKeywords';
 import SelfBotCommands from '@/modules/settings/pages/SelfBotCommands';
-import {AnimatePresence, motion, usePresenceData} from 'framer-motion';
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import Icon from '@/common/components/Icon';
-import formatMessage from '@/i18n/index';
-import {openSignInModal} from '@/common/utils/modal';
-import {getCredentials} from '@/stores/auth';
+import Settings from '@/modules/settings/pages/Settings';
+import settingsStyles from '@/modules/settings/pages/Settings.module.css';
+import UserSettings from '@/modules/settings/pages/UserSettings';
 import storage from '@/storage';
+import {getCredentials} from '@/stores/auth';
+import PageHeader from './PageHeader';
+import {PageScrollContext} from './PageScrollBody';
+import styles from './SettingsModal.module.css';
+import SideNavigation from './SideNavigation';
 
 // The first time a signed-out user opens settings we nudge them to sign in, but only once ever.
 function maybePromptSignIn() {

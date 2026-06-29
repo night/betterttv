@@ -1,17 +1,17 @@
-import React, {useRef} from 'react';
 import {Button} from '@mantine/core';
-import formatMessage from '@/i18n/index';
-import {SETTINGS_STORAGE_KEY} from '@/settings';
-import storage from '@/storage';
-import {loadLegacySettings} from '@/utils/legacy-settings';
-import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY} from '@/constants';
-import SettingWrapper from './SettingWrapper';
+import React, {useRef} from 'react';
+import {useShallow} from 'zustand/react/shallow';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
 import {openConfirmModal} from '@/common/utils/modal';
+import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY} from '@/constants';
+import formatMessage from '@/i18n/index';
 import cloudBackup from '@/modules/cloud_backup/index';
-import {isUserPro} from '@/utils/pro';
+import {SETTINGS_STORAGE_KEY} from '@/settings';
+import storage from '@/storage';
 import useAuthStore from '@/stores/auth';
-import {useShallow} from 'zustand/react/shallow';
+import {loadLegacySettings} from '@/utils/legacy-settings';
+import {isUserPro} from '@/utils/pro';
+import SettingWrapper from './SettingWrapper';
 
 function loadJSON(string) {
   let json = null;

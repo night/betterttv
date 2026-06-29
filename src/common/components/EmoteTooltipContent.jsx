@@ -1,7 +1,7 @@
-import React, {useCallback, useLayoutEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
-import styles from './EmoteTooltipContent.module.css';
+import React, {useCallback, useLayoutEffect, useRef, useState} from 'react';
 import formatMessage from '@/i18n';
+import styles from './EmoteTooltipContent.module.css';
 
 function getAspectRatio(image) {
   if (image == null) {

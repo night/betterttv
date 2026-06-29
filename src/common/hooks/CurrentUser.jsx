@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
-import watcher from '@/watcher';
 import {getCurrentUser} from '@/utils/user';
+import watcher from '@/watcher';
 
 function useCurrentUser() {
   const [user, setUser] = useState(() => getCurrentUser());

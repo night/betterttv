@@ -1,17 +1,16 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus */
-import classNames from 'classnames';
-import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react';
 import {DndContext, PointerSensor, closestCenter, useSensor, useSensors} from '@dnd-kit/core';
 import {restrictToVerticalAxis} from '@dnd-kit/modifiers';
 import {SortableContext, arrayMove, verticalListSortingStrategy, useSortable} from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
+import {useElementSize} from '@mantine/hooks';
+import classNames from 'classnames';
+import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react';
 import Emote from '@/common/components/Emote';
 import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
 import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '@/constants';
-import emojis from '@/modules/emotes/emojis';
 import useAutoSidebarScroll from '@/modules/emote_menu/hooks/AutoSidebarScroll';
+import emojis from '@/modules/emotes/emojis';
 import styles from './Sidebar.module.css';
-import {useElementSize} from '@mantine/hooks';
 
 const DEFAULT_EMOJI = '\ud83d\ude03'; // Smiley face
 

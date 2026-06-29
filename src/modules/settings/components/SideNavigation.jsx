@@ -1,16 +1,16 @@
+import {faArrowLeft, faCog, faScroll, faUser, faUserGear} from '@fortawesome/free-solid-svg-icons';
+import {ActionIcon, Avatar, Button, Overlay, Tooltip, useMantineTheme} from '@mantine/core';
+import classNames from 'classnames';
 import React, {useCallback, useContext} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import styles from './SideNavigation.module.css';
-import AnimatedLogo from './AnimatedLogo';
-import {ActionIcon, Avatar, Button, Overlay, Tooltip, useMantineTheme} from '@mantine/core';
-import {faArrowLeft, faCog, faScroll, faUser, faUserGear} from '@fortawesome/free-solid-svg-icons';
+import Icon from '@/common/components/Icon';
+import usePortalRef from '@/common/hooks/PortalRef';
 import {PageDecendants, PageTypes} from '@/constants';
-import classNames from 'classnames';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
-import usePortalRef from '@/common/hooks/PortalRef';
 import useAuthStore from '@/stores/auth';
-import Icon from '@/common/components/Icon';
+import AnimatedLogo from './AnimatedLogo';
+import styles from './SideNavigation.module.css';
 
 function CloseMenuButton({onClick, className}) {
   return (

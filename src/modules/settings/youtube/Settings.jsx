@@ -1,13 +1,13 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import domObserver from '@/observers/dom';
-import {getElementData} from '@/utils/youtube';
+import {ShadowDOMComponentIds} from '@/constants';
 import SettingsModal from '@/modules/settings/components/SettingsModal';
+import shadowDOM from '@/modules/shadow_dom';
+import domObserver from '@/observers/dom';
+import {importAll} from '@/utils/modules';
+import {getElementData} from '@/utils/youtube';
 import DropdownButton from './DropdownButton';
 import './Settings.module.css';
-import {ShadowDOMComponentIds} from '@/constants';
-import shadowDOM from '@/modules/shadow_dom';
-import {importAll} from '@/utils/modules';
 
 const CHAT_SETTINGS_DROPDOWN_CONTAINER_SELECTOR = 'tp-yt-iron-dropdown';
 const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = 'tp-yt-paper-listbox';

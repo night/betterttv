@@ -1,6 +1,6 @@
-import React, {useRef} from 'react';
-import classNames from 'classnames';
 import {arrow, autoUpdate, flip, FloatingArrow, offset, shift, useFloating} from '@floating-ui/react';
+import classNames from 'classnames';
+import React, {useRef} from 'react';
 import styles from './Tooltip.module.css';
 
 const VIEWPORT_PADDING = 8;
