@@ -41,6 +41,7 @@ export default function useHorizontalResize({
 
   React.useEffect(() => {
     if (!open) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- syncing resize state during a drag
       setIsResizing(false);
     }
 

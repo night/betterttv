@@ -55,12 +55,12 @@ function EmoteMenu({
   const [navigationMode, setNavigationMode] = useState(NavigationModeTypes.ARROW_KEYS);
   const focusRef = useFocusTrap(opened && navigationMode === NavigationModeTypes.ARROW_KEYS);
 
-  const [emoteListData, setEmoteListData] = useState({
+  const [emoteListData, setEmoteListData] = useState(() => ({
     search: '',
     rows: [],
     totalCols: emoteMenuViewStore.totalCols,
     categories: getCategories(),
-  });
+  }));
 
   const emoteListDataRef = useRef(emoteListData);
 

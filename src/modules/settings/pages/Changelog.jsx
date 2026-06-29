@@ -75,6 +75,7 @@ function ChangelogEntryList({changelogEntries: rawChangelogEntries}) {
 }
 
 function Changelog() {
+  // eslint-disable-next-line @eslint-react/use-state -- request state is intentionally destructured inline
   const [{loading, changelogEntries}, setRequestState] = useState({
     loading: true,
     changelogEntries: null,

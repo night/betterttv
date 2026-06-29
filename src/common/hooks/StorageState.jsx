@@ -9,6 +9,7 @@ export default function useStorageState(settingId) {
       setValue(newValue);
     }
 
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- syncing value from the storage subscription
     setValue(settings.get(settingId));
 
     const cleanup = settings.on(`changed.${settingId}`, callback);
