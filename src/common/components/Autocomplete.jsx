@@ -60,13 +60,12 @@ function stopEvent(event) {
 
 const AutocompleteListRow = React.memo(function AutocompleteListRow({
   item,
-  index,
   renderRow,
   isSelected,
   isActive,
   focusedWordIndex,
   handleCompleteResultItem,
-  onHoverIndex,
+  onHover,
 }) {
   return renderRow({
     item,
@@ -74,7 +73,7 @@ const AutocompleteListRow = React.memo(function AutocompleteListRow({
     selected: isSelected,
     active: isActive,
     focusedWordIndex,
-    onMouseOver: () => onHoverIndex(index),
+    onMouseOver: () => onHover(item),
   });
 });
 
@@ -238,9 +237,14 @@ function Autocomplete({
     [handleCompleteResult, onComplete, handleClose]
   );
 
-  const onHoverIndex = useCallback(
-    (index) => {
+  const onHover = useCallback(
+    (item) => {
       if (navigationMode.current !== NavigationModeTypes.MOUSE) {
+        return;
+      }
+
+      const index = itemsRef.current.indexOf(item);
+      if (index === -1) {
         return;
       }
 
@@ -359,13 +363,12 @@ function Autocomplete({
           <AutocompleteListRow
             key={getItemKey(item)}
             item={item}
-            index={index}
             renderRow={renderRow}
             isSelected={selected === index}
             isActive={pendingCompleteIndex === index}
             focusedWordIndex={focusedWordIndex}
             handleCompleteResultItem={handleComplete}
-            onHoverIndex={onHoverIndex}
+            onHover={onHover}
           />
         ))}
       </Scrollbar>
