@@ -86,6 +86,7 @@ function Sidebar({section, onClick, categories, className}) {
 
   useEffect(() => {
     handleScroll();
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- intentionally re-runs only when bottomDepth changes
   }, [bottomDepth]);
 
   function createCategories(arr) {

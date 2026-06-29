@@ -22,6 +22,7 @@ function useDomObserver(selector, options = {}) {
 
     const unsubscribe = domObserver.on(selector, updateNode, options);
     return () => unsubscribe();
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- only the selector should recreate the observer
   }, [selector]);
 
   return node;

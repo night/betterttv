@@ -24,6 +24,7 @@ function useProRequiredState(props = {}) {
 
       props.setValue?.(newValue);
     },
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- intentionally depends on props.setValue only
     [props.setValue]
   );
 
@@ -33,6 +34,7 @@ function useProRequiredState(props = {}) {
     }
 
     return props.value;
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- value is props.value destructured at the top
   }, [currentUser, defaultValue, value]);
 
   return [normalizedValue, updateValue];
