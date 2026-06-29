@@ -1,43 +1,61 @@
-import React, {useState, useEffect} from 'react';
-import Tooltip from './Tooltip';
+import {arrow, autoUpdate, flip, FloatingArrow, offset, shift, useFloating} from '@floating-ui/react';
+import classNames from 'classnames';
+import React, {useLayoutEffect, useRef} from 'react';
+import useTooltipStore, {closeTooltip, resetTooltip} from './store';
+import styles from './Tooltip.module.css';
 
-const CLOSED = {
-  open: false,
-  content: null,
-  className: null,
-  alignment: 'center',
-  referenceElement: null,
-};
+const VIEWPORT_PADDING = 8;
+const ARROW_PADDING = 4;
+const ARROW_WIDTH = 12;
+const ARROW_HEIGHT = 6;
 
-// The mounted controller registers its setState here so the per-element listeners in
-// index.jsx can drive the single shared tooltip without document-level delegation.
-let setActive = null;
-
-export function openTooltip(element, config) {
-  setActive?.({
-    open: true,
-    content: config.content,
-    className: config.className ?? null,
-    alignment: config.alignment ?? 'center',
-    referenceElement: element,
+function whileElementsMounted(reference, floating, update) {
+  return autoUpdate(reference, floating, () => {
+    if (!reference.isConnected) {
+      closeTooltip(reference);
+      return;
+    }
+    update();
   });
 }
 
-export function closeTooltip(element) {
-  // Only close if this element owns the visible tooltip — guards against a stale leave from a
-  // previously-hovered element closing a newer tooltip.
-  setActive?.((current) => (current.referenceElement === element ? {...current, open: false} : current));
-}
-
 export default function TooltipController() {
-  const [state, setState] = useState(CLOSED);
+  const arrowRef = useRef(null);
+  const {open, content, className, alignment, referenceElement, tooltipKey} = useTooltipStore();
 
-  useEffect(() => {
-    setActive = setState;
-    return () => {
-      setActive = null;
-    };
+  useLayoutEffect(() => {
+    resetTooltip();
   }, []);
 
-  return <Tooltip state={state} onAutoClose={() => setState((current) => ({...current, open: false}))} />;
+  const {refs, floatingStyles, context} = useFloating({
+    open,
+    placement: `top-${alignment ?? 'center'}`,
+    strategy: 'fixed',
+    elements: {reference: referenceElement},
+    whileElementsMounted,
+    middleware: [
+      offset({mainAxis: ARROW_HEIGHT + ARROW_PADDING}),
+      flip({padding: VIEWPORT_PADDING}),
+      shift({padding: VIEWPORT_PADDING}),
+      arrow({element: arrowRef, padding: ARROW_PADDING}),
+    ],
+  });
+
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <div ref={refs.setFloating} className={classNames(styles.tooltip, className)} style={floatingStyles}>
+      <React.Fragment key={tooltipKey}>{content}</React.Fragment>
+      <FloatingArrow
+        ref={arrowRef}
+        context={context}
+        className={styles.arrow}
+        width={ARROW_WIDTH}
+        height={ARROW_HEIGHT}
+        fill="var(--tooltip-bg)"
+      />
+    </div>
+  );
 }

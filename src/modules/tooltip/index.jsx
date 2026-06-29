@@ -1,11 +1,9 @@
 import React from 'react';
 import {ShadowDOMComponentIds} from '@/constants';
 import shadowDOM from '@/modules/shadow_dom/index';
-import TooltipController, {openTooltip, closeTooltip} from './TooltipController';
+import {closeTooltip, openTooltip} from './store';
+import TooltipController from './TooltipController';
 
-// Module-level constants: no per-element closure, and addEventListener dedups by reference so
-// re-binding the same element on re-render can't stack listeners. Listeners live on the element
-// itself, so they're garbage-collected with it when the node scrolls out — no manual cleanup.
 function handleMouseEnter(event) {
   const config = event.currentTarget.__bttvTooltip;
   if (config?.content == null) {
