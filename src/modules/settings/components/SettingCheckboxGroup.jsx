@@ -1,5 +1,5 @@
-import React from 'react';
 import {CheckboxGroup} from '@mantine/core';
+import React from 'react';
 import {hasFlag} from '@/utils/flags';
 import SettingGroup from './SettingGroup';
 

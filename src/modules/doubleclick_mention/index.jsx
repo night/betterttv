@@ -1,5 +1,5 @@
-import React from 'react';
 import {off, on} from 'delegated-events';
+import React from 'react';
 import {PlatformTypes} from '@/constants';
 import {bindTooltip} from '@/modules/tooltip/index';
 import storage from '@/storage';

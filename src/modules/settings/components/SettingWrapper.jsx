@@ -1,9 +1,9 @@
-import React from 'react';
 import {Badge, Text, Title, Tooltip} from '@mantine/core';
-import styles from './SettingWrapper.module.css';
 import classNames from 'classnames';
-import formatMessage from '@/i18n';
+import React from 'react';
 import usePortalRef from '@/common/hooks/PortalRef';
+import formatMessage from '@/i18n';
+import styles from './SettingWrapper.module.css';
 
 function SettingWrapper({
   name,

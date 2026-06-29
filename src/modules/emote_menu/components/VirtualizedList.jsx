@@ -1,9 +1,9 @@
-import classNames from 'classnames';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import styles from './VirtualizedList.module.css';
-import throttle from 'lodash.throttle';
 import {useElementSize, useMergedRef} from '@mantine/hooks';
+import classNames from 'classnames';
+import throttle from 'lodash.throttle';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useScrollbarSize} from '@/common/components/Scrollbar';
+import styles from './VirtualizedList.module.css';
 
 function VirtualizedList(
   {

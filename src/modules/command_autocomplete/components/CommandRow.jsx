@@ -1,10 +1,10 @@
-import React, {useMemo} from 'react';
 import classNames from 'classnames';
+import React, {useMemo} from 'react';
 import AutocompleteRow from '@/common/components/AutocompleteRow';
 import NightbotLogoIcon from '@/common/components/NightbotLogoIcon';
-import styles from './CommandRow.module.css';
 import {CommandProviders, CommandAutocompleteArgumentTypes} from '@/constants';
 import cdn from '@/utils/cdn';
+import styles from './CommandRow.module.css';
 
 const LogoByCommandProvider = {
   [CommandProviders.FOSSABOT]: cdn.url('/assets/logos/fossabot_logo.png'),

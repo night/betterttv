@@ -1,6 +1,6 @@
+import {Text, Title} from '@mantine/core';
 import classNames from 'classnames';
 import React from 'react';
-import {Text, Title} from '@mantine/core';
 import styles from './AutocompleteRow.module.css';
 
 function AutocompleteRow({

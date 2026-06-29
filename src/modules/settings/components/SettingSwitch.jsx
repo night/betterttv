@@ -1,5 +1,5 @@
-import React from 'react';
 import {Switch} from '@mantine/core';
+import React from 'react';
 import styles from './SettingSwitch.module.css';
 import SettingWrapper from './SettingWrapper';
 

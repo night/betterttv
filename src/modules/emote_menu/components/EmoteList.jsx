@@ -1,17 +1,17 @@
+import {Text} from '@mantine/core';
+import {useElementSize, useMergedRef} from '@mantine/hooks';
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
+import scrollbarStyles from '@/common/styles/Scrollbar.module.css';
 import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '@/constants';
 import useGridKeyboardNavigation from '@/modules/emote_menu/hooks/GridKeyboardNavigation';
+import {getRowColumnCounts} from '@/modules/emote_menu/utils/emote-list-grid';
+import styles from './EmoteList.module.css';
 import {EmoteRow, HeaderRow} from './EmoteListRow';
 import Icons from './Icons';
-import VirtualizedList from './VirtualizedList';
 import Preview from './Preview';
-import {useElementSize, useMergedRef} from '@mantine/hooks';
-import {Text} from '@mantine/core';
-import styles from './EmoteList.module.css';
-import scrollbarStyles from '@/common/styles/Scrollbar.module.css';
-import {getRowColumnCounts} from '@/modules/emote_menu/utils/emote-list-grid';
-import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
+import VirtualizedList from './VirtualizedList';
 
 const GUARD_HEIGHT = 8;
 

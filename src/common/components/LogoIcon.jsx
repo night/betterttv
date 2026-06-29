@@ -1,8 +1,8 @@
-import React from 'react';
-import {SettingDefaultValues, SettingIds} from '@/constants';
-import useStorageState from '@/common/hooks/StorageState';
 import {getThemeColor} from '@mantine/core';
+import React from 'react';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingDefaultValues, SettingIds} from '@/constants';
 import {theme} from '@/modules/shadow_dom/ThemeProvider';
 
 export default function LogoIcon(props) {

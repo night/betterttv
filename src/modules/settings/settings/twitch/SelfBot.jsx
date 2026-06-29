@@ -1,17 +1,17 @@
-import React, {useCallback, useContext} from 'react';
 import {Button} from '@mantine/core';
+import React, {useCallback, useContext} from 'react';
 import {useShallow} from 'zustand/react/shallow';
+import useIsOnOwnChannel from '@/common/hooks/IsOnOwnChannel';
+import useStorageState from '@/common/hooks/StorageState';
+import {openSignInModal, openConfirmModal} from '@/common/utils/modal';
 import {PageTypes, SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
-import useStorageState from '@/common/hooks/StorageState';
-import useIsOnOwnChannel from '@/common/hooks/IsOnOwnChannel';
-import {openSignInModal, openConfirmModal} from '@/common/utils/modal';
-import useAuthStore from '@/stores/auth';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
-import {PageContext} from '@/modules/settings/contexts/PageContext';
-import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import useAuthStore from '@/stores/auth';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Self Bot'});
 

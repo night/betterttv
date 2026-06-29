@@ -1,3 +1,4 @@
+import {faTwitch, faYoutube} from '@fortawesome/free-brands-svg-icons';
 import {
   faBasketballBall,
   faBox,
@@ -14,11 +15,10 @@ import {
   faStar,
   faUnlock,
 } from '@fortawesome/free-solid-svg-icons';
-import {faTwitch, faYoutube} from '@fortawesome/free-brands-svg-icons';
 import classNames from 'classnames';
 import React from 'react';
-import styles from './Icons.module.css';
 import Icon from '@/common/components/Icon';
+import styles from './Icons.module.css';
 
 function BrandedImage({src, alt, brandSrc}) {
   return (

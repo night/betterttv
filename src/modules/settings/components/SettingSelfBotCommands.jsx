@@ -1,3 +1,4 @@
+import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Button,
@@ -11,19 +12,18 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
 import classNames from 'classnames';
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import tableStyles from '@/common/styles/SettingEntryTable.module.css';
-import styles from './SettingSelfBotCommands.module.css';
-import formatMessage from '@/i18n/index';
-import Panel from './Panel';
 import Icon from '@/common/components/Icon';
+import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
+import formatMessage from '@/i18n/index';
+import {SelfBotUserLevels} from '@/modules/self_bot/commands';
 import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
-import {SelfBotUserLevels} from '@/modules/self_bot/commands';
+import Panel from './Panel';
+import styles from './SettingSelfBotCommands.module.css';
 
 const FREE_COMMAND_LIMIT = 5;
 

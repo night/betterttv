@@ -1,5 +1,5 @@
-import React from 'react';
 import {RadioGroup} from '@mantine/core';
+import React from 'react';
 import SettingGroup from './SettingGroup';
 
 function SettingRadioGroup({name, value, onChange, disabled, children}, ref) {

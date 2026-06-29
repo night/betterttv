@@ -2,9 +2,9 @@ import React from 'react';
 import useStorageState from '@/common/hooks/StorageState';
 import {SettingIds, DeletedMessageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 import SettingRadio from '@/modules/settings/components/SettingRadio';
 import SettingRadioGroup from '@/modules/settings/components/SettingRadioGroup';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Deleted Messages'});
 

@@ -2,9 +2,9 @@ import React from 'react';
 import useStorageState from '@/common/hooks/StorageState';
 import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
-import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Autocomplete'});
 

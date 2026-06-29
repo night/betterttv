@@ -1,5 +1,5 @@
-import React from 'react';
 import {Radio} from '@mantine/core';
+import React from 'react';
 import styles from './SettingRadio.module.css';
 import SettingWrapper from './SettingWrapper';
 

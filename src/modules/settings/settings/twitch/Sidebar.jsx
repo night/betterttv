@@ -2,9 +2,9 @@ import React from 'react';
 import useStorageState from '@/common/hooks/StorageState';
 import {SettingIds, SidebarFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Sidebar'});
 

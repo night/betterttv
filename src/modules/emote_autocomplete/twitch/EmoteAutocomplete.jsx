@@ -1,4 +1,6 @@
 import {EmoteCategories, EmoteTypeFlags, SettingIds} from '@/constants';
+import chat, {getMessagePartsFromMessageElement, formatChatUser} from '@/modules/chat/index';
+import emotes from '@/modules/emotes/index';
 import dom from '@/observers/dom';
 import settings from '@/settings';
 import {hasFlag} from '@/utils/flags';
@@ -6,8 +8,6 @@ import {createSrcSet, createSrc} from '@/utils/image';
 import twitch from '@/utils/twitch';
 import {getCurrentUser} from '@/utils/user';
 import watcher from '@/watcher';
-import chat, {getMessagePartsFromMessageElement, formatChatUser} from '@/modules/chat/index';
-import emotes from '@/modules/emotes/index';
 import './EmoteAutocomplete.module.css';
 
 const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
@@ -229,7 +229,6 @@ export default class EmoteAutocomplete {
       emoteAutocompleteProvider.__bttvAutocompletePatched = PATCHED_SENTINEL;
       twitchComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
 
-      // eslint-disable-next-line no-inner-declarations
       function bttvComponentDidUpdate(prevProps) {
         if (prevProps.emotes !== this.props.emotes) {
           injectEmoteSets();

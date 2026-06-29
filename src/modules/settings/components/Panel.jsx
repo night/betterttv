@@ -1,7 +1,7 @@
+import {Title} from '@mantine/core';
+import classNames from 'classnames';
 import React from 'react';
 import styles from './Panel.module.css';
-import classNames from 'classnames';
-import {Title} from '@mantine/core';
 
 function Panel({title, rightContent, children, className, containerClassName, style, ...restProps}, ref) {
   const hasHeader = title != null || rightContent != null;

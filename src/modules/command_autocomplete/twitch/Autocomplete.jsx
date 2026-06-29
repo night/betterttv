@@ -1,4 +1,6 @@
+import gql from 'graphql-tag';
 import React from 'react';
+import {getAutocompleteSuggestions} from '@/actions/autocomplete';
 import Autocomplete from '@/common/components/Autocomplete';
 import {
   SettingIds,
@@ -9,18 +11,16 @@ import {
   COMMAND_PREFIX,
   CommandAutocompleteArgumentTypes,
 } from '@/constants';
+import CommandRow from '@/modules/command_autocomplete/components/CommandRow';
+import shadowDom from '@/modules/shadow_dom/index';
 import domObserver from '@/observers/dom';
 import settings from '@/settings';
-import shadowDom from '@/modules/shadow_dom/index';
-import twitch, {CHAT_INPUT} from '@/utils/twitch';
-import CommandRow from '@/modules/command_autocomplete/components/CommandRow';
 import useAuthStore from '@/stores/auth';
-import {getAutocompleteSuggestions} from '@/actions/autocomplete';
 import {getCurrentChannel} from '@/utils/channel';
-import watcher from '@/watcher';
-import {getProSettingValue} from '@/utils/pro';
-import gql from 'graphql-tag';
 import HTTPError from '@/utils/http-error';
+import {getProSettingValue} from '@/utils/pro';
+import twitch, {CHAT_INPUT} from '@/utils/twitch';
+import watcher from '@/watcher';
 
 const GET_CHANNEL_CHATBOTS = gql`
   query BTTVGetChannelChatbots($userId: ID!) {

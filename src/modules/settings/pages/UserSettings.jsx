@@ -1,24 +1,24 @@
+import {Button} from '@mantine/core';
 import {saveAs} from 'file-saver';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import formatMessage from '@/i18n/index';
-import storage from '@/storage';
-import Footer from '@/modules/settings/components/Footer';
-import PageScrollBody from '@/modules/settings/components/PageScrollBody';
-import SettingGroup from '@/modules/settings/components/SettingGroup';
-import SettingWrapper from '@/modules/settings/components/SettingWrapper';
-import ImportSetting from '@/modules/settings/components/ImportSetting';
-import ResetSetting from '@/modules/settings/components/ResetSetting';
-import {Button} from '@mantine/core';
-import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
-import {revokeAccessToken} from '@/utils/oauth';
-import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
-import {openConfirmModal} from '@/common/utils/modal';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
-import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
-import Promotion from '@/modules/settings/components/Promotion';
+import {openConfirmModal} from '@/common/utils/modal';
 import {EXT_VER, SettingsPrompts} from '@/constants';
+import formatMessage from '@/i18n/index';
+import Footer from '@/modules/settings/components/Footer';
+import ImportSetting from '@/modules/settings/components/ImportSetting';
+import PageScrollBody from '@/modules/settings/components/PageScrollBody';
+import Promotion from '@/modules/settings/components/Promotion';
+import ResetSetting from '@/modules/settings/components/ResetSetting';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import storage from '@/storage';
+import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
+import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
+import {revokeAccessToken} from '@/utils/oauth';
 
 function BackupSetting({description, disabled}) {
   function backupFile() {

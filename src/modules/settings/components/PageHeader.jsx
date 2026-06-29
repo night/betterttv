@@ -1,12 +1,12 @@
-import React, {useContext} from 'react';
-import styles from './PageHeader.module.css';
+import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {ActionIcon, Avatar, CloseButton, Title} from '@mantine/core';
-import {PageContext} from '@/modules/settings/contexts/PageContext';
 import classNames from 'classnames';
-import useAuthStore from '@/stores/auth';
+import React, {useContext} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
-import {faBars} from '@fortawesome/free-solid-svg-icons';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import useAuthStore from '@/stores/auth';
+import styles from './PageHeader.module.css';
 
 const PageHeader = React.forwardRef(({className, leftContent, onClose}, ref) => {
   const {setSidenavOpen} = useContext(PageContext);

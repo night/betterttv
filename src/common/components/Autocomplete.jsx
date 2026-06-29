@@ -1,16 +1,15 @@
-import React, {useEffect, useState, useCallback, useRef} from 'react';
-import keyCodes from '@/utils/keycodes';
-import styles from './Autocomplete.module.css';
-import {useDisclosure} from '@mantine/hooks';
-import {autoUpdate, offset as floatingOffset, size, useDismiss, useFloating} from '@floating-ui/react';
-import {useInteractions} from '@floating-ui/react';
-import classNames from 'classnames';
-import useDomObserver from '@/common/hooks/DomObserver';
-import formatMessage from '@/i18n/index';
-import Icon from './Icon';
-import LogoIcon from './LogoIcon';
+import {autoUpdate, offset as floatingOffset, size, useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 import {faArrowDown, faArrowTurnDown, faArrowUp} from '@fortawesome/free-solid-svg-icons';
 import {Kbd, Text} from '@mantine/core';
+import {useDisclosure} from '@mantine/hooks';
+import classNames from 'classnames';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
+import useDomObserver from '@/common/hooks/DomObserver';
+import formatMessage from '@/i18n/index';
+import keyCodes from '@/utils/keycodes';
+import styles from './Autocomplete.module.css';
+import Icon from './Icon';
+import LogoIcon from './LogoIcon';
 import Scrollbar from './Scrollbar';
 
 const MAX_ITEMS_SHOWN = 8;

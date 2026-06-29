@@ -1,5 +1,3 @@
-import React, {useMemo, useRef} from 'react';
-import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
 import {
   ActionIcon,
   Avatar,
@@ -21,20 +19,22 @@ import {
   mergeMantineTheme,
   Loader,
 } from '@mantine/core';
-import badgeStyles from '@/modules/shadow_dom/styles/badge.module.css';
-import buttonStyles from '@/modules/shadow_dom/styles/button.module.css';
-import pillStyles from '@/modules/shadow_dom/styles/pill.module.css';
-import inputStyles from '@/modules/shadow_dom/styles/input.module.css';
-import kbdStyles from '@/modules/shadow_dom/styles/kbd.module.css';
-import switchStyles from '@/modules/shadow_dom/styles/switch.module.css';
-import checkboxStyles from '@/modules/shadow_dom/styles/checkbox.module.css';
-import radioStyles from '@/modules/shadow_dom/styles/radio.module.css';
-import useStorageState from '@/common/hooks/StorageState';
+import {useMounted} from '@mantine/hooks';
 import {ModalsProvider} from '@mantine/modals';
-import useProRequiredState from '@/common/hooks/ProRequiredState';
+import React, {useMemo, useRef} from 'react';
 import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '@/common/components/LoaderIcon';
 import {PortalContext} from '@/common/contexts/PortalContext';
-import {useMounted} from '@mantine/hooks';
+import useProRequiredState from '@/common/hooks/ProRequiredState';
+import useStorageState from '@/common/hooks/StorageState';
+import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
+import badgeStyles from '@/modules/shadow_dom/styles/badge.module.css';
+import buttonStyles from '@/modules/shadow_dom/styles/button.module.css';
+import checkboxStyles from '@/modules/shadow_dom/styles/checkbox.module.css';
+import inputStyles from '@/modules/shadow_dom/styles/input.module.css';
+import kbdStyles from '@/modules/shadow_dom/styles/kbd.module.css';
+import pillStyles from '@/modules/shadow_dom/styles/pill.module.css';
+import radioStyles from '@/modules/shadow_dom/styles/radio.module.css';
+import switchStyles from '@/modules/shadow_dom/styles/switch.module.css';
 
 const mantineTheme = createTheme({
   primaryColor: DEFAULT_PRIMARY_COLOR,

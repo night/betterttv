@@ -1,4 +1,5 @@
 import React from 'react';
+import {getAutocompleteSuggestions} from '@/actions/autocomplete';
 import Autocomplete from '@/common/components/Autocomplete';
 import {
   SettingIds,
@@ -7,14 +8,13 @@ import {
   COMMAND_PREFIX,
   CommandAutocompleteArgumentTypes,
 } from '@/constants';
+import CommandRow from '@/modules/command_autocomplete/components/CommandRow';
+import shadowDom from '@/modules/shadow_dom/index';
 import domObserver from '@/observers/dom';
 import settings from '@/settings';
-import shadowDom from '@/modules/shadow_dom/index';
-import CommandRow from '@/modules/command_autocomplete/components/CommandRow';
 import useAuthStore from '@/stores/auth';
-import {getAutocompleteSuggestions} from '@/actions/autocomplete';
 import {getCurrentChannel} from '@/utils/channel';
-import watcher from '@/watcher';
+import HTTPError from '@/utils/http-error';
 import {getProSettingValue} from '@/utils/pro';
 import {
   getCaretOffsetInContentEditable,
@@ -22,7 +22,7 @@ import {
   setYoutubeChatInputValue,
   YOUTUBE_CHAT_CONTENTEDITABLE_SELECTOR,
 } from '@/utils/youtube';
-import HTTPError from '@/utils/http-error';
+import watcher from '@/watcher';
 
 const CHAT_TEXT_AREA = '#input-container';
 
