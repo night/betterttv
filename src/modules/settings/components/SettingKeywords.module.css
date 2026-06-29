@@ -36,11 +36,6 @@
   }
 }
 
-.colorColumn,
-.actionsColumn {
-  width: 0;
-}
-
 .targetDataCell,
 .keywordDataCell,
 .colorDataCell,
