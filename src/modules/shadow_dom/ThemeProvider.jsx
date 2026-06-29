@@ -7,6 +7,7 @@ import {
   Button,
   Checkbox,
   createTheme,
+  darken,
   defaultVariantColorsResolver,
   v8CssVariablesResolver,
   DEFAULT_THEME,
@@ -152,12 +153,6 @@ const resolver = (theme) => ({
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
     '--mantine-color-default-border': 'var(--mantine-color-gray-0)',
     '--mantine-color-default-border': 'var(--mantine-color-dark-9)',
-    // Mantine never generates a `-light-active` variant, so every `:active`/`:focus` rule that
-    // references it (emote buttons, sidebar nav, header) resolves to transparent. Derive it from
-    // the scheme-aware hover tint nudged toward the brand color, so a press reads as one step
-    // stronger than hover everywhere instead of matching it.
-    '--mantine-primary-color-light-active':
-      'color-mix(in srgb, var(--mantine-primary-color-light-hover), var(--mantine-primary-color-filled) 20%)',
   },
   dark: {
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
@@ -167,6 +162,11 @@ const resolver = (theme) => ({
     '--mantine-color-body-secondary': 'var(--mantine-color-dark-9)',
     '--mantine-color-body': 'var(--mantine-color-dark-8)',
     '--mantine-color-body-inverse': 'var(--mantine-color-dark-0)',
+    // Mantine generates no `-light-active` shade, so `:active`/`:focus` rules referencing it
+    // (emote buttons, sidebar nav, header) fell back to transparent. Continue Mantine's own
+    // light(darken 0.5) -> light-hover(darken 0.3) progression one step further so a press reads
+    // stronger than hover.
+    '--mantine-primary-color-light-active': darken(theme.colors[theme.primaryColor][9], 0.1),
   },
   light: {
     '--mantine-color-text': 'var(--mantine-color-gray-9)',
@@ -175,6 +175,8 @@ const resolver = (theme) => ({
     '--mantine-color-default-border': 'var(--mantine-color-gray-3)',
     '--mantine-color-body-secondary': 'var(--mantine-color-gray-0)',
     '--mantine-color-body-inverse': 'var(--mantine-color-gray-9)',
+    // Continue Mantine's light(shade 1) -> light-hover(shade 2) progression to shade 3 (see dark).
+    '--mantine-primary-color-light-active': `var(--mantine-color-${theme.primaryColor}-3)`,
   },
 });
 
