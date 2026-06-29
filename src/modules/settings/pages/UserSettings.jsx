@@ -16,6 +16,7 @@ import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
 import {openConfirmModal} from '@/common/utils/modal';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SubscriptionBadgeSetting from '@/modules/settings/components/SubscriptionBadgeSetting';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import Promotion from '@/modules/settings/components/Promotion';
 import {EXT_VER, SettingsPrompts} from '@/constants';
@@ -154,6 +155,7 @@ function UserSettings() {
         />
       </SettingGroup>
       <SettingGroup name={formatMessage({defaultMessage: 'Account'})}>
+        <SubscriptionBadgeSetting />
         <SignInButton />
       </SettingGroup>
       <Footer />
