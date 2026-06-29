@@ -28,7 +28,7 @@
 
 .selected {
   color: var(--mantine-primary-color-filled);
-  background-color: var(--mantine-primary-color-light);
+  background-color: var(--mantine-primary-color-light-hover);
   --bttv-dimmed-active-color: var(--mantine-primary-color-filled-hover);
 }
 
@@ -46,7 +46,7 @@
 
 .active,
 .row:active {
-  background-color: var(--mantine-primary-color-light-hover);
+  background-color: var(--mantine-primary-color-light-active);
   transition-property: background-color, color;
   transition-duration: 0.1s;
   transition-timing-function: ease-in-out;
