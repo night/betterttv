@@ -91,7 +91,7 @@ function Autocomplete({
   getCompletionLength = null,
   onAppendSpace = null,
 }) {
-  const navigationMode = useRef(NavigationModeTypes.ARROW_KEYS);
+  const navigationModeRef = useRef(NavigationModeTypes.ARROW_KEYS);
   const [partialInput, setPartialInput] = useState('');
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(0);
@@ -100,16 +100,16 @@ function Autocomplete({
   const [opened, {open, close}] = useDisclosure(false);
   const chatInputElement = useDomObserver(chatInputQuerySelector);
   const itemsBodyRef = useRef(null);
-  const pendingComplete = useRef(false);
+  const pendingCompleteRef = useRef(false);
   const lastValueRef = useRef(null);
   const openedRef = useRef(false);
   const updateAutocompleteSuggestionsRef = useRef(null);
-  const updateAutocompleteSuggestionsRequestId = useRef(0);
+  const updateAutocompleteSuggestionsRequestIdRef = useRef(0);
   const [pendingCompleteIndex, setPendingCompleteIndex] = useState(null);
   const [focusedWordIndex, setFocusedWordIndex] = useState(0);
 
   const handleMouseMove = useCallback(() => {
-    navigationMode.current = NavigationModeTypes.MOUSE;
+    navigationModeRef.current = NavigationModeTypes.MOUSE;
   }, []);
 
   const handleSelectedChange = useCallback((newSelected, forceScroll = false) => {
@@ -117,7 +117,7 @@ function Autocomplete({
 
     selectedRef.current = newSelected;
 
-    if (navigationMode.current === NavigationModeTypes.MOUSE && !forceScroll) {
+    if (navigationModeRef.current === NavigationModeTypes.MOUSE && !forceScroll) {
       return;
     }
 
@@ -143,7 +143,7 @@ function Autocomplete({
   const handleOpen = useCallback(() => {
     open();
     openedRef.current = true;
-    navigationMode.current = NavigationModeTypes.ARROW_KEYS;
+    navigationModeRef.current = NavigationModeTypes.ARROW_KEYS;
   }, [open]);
 
   const updateAutocompleteSuggestions = useCallback(
@@ -163,7 +163,7 @@ function Autocomplete({
 
       lastValueRef.current = value;
 
-      const requestId = ++updateAutocompleteSuggestionsRequestId.current;
+      const requestId = ++updateAutocompleteSuggestionsRequestIdRef.current;
 
       if (value == null) {
         itemsRef.current = [];
@@ -173,7 +173,7 @@ function Autocomplete({
         itemsRef.current = (await computeItems(value)).slice(0, MAX_ITEMS_SHOWN);
       }
 
-      if (requestId !== updateAutocompleteSuggestionsRequestId.current) {
+      if (requestId !== updateAutocompleteSuggestionsRequestIdRef.current) {
         return;
       }
 
@@ -238,7 +238,7 @@ function Autocomplete({
 
   const onHover = useCallback(
     (item) => {
-      if (navigationMode.current !== NavigationModeTypes.MOUSE) {
+      if (navigationModeRef.current !== NavigationModeTypes.MOUSE) {
         return;
       }
 
@@ -260,12 +260,12 @@ function Autocomplete({
     let pendingPromise = null;
 
     async function keyupCallback() {
-      if (!pendingComplete.current) {
+      if (!pendingCompleteRef.current) {
         pendingPromise = await updateAutocompleteSuggestionsRef.current();
         return;
       }
 
-      pendingComplete.current = false;
+      pendingCompleteRef.current = false;
       setPendingCompleteIndex(null);
       handleComplete(itemsRef.current[selectedRef.current]);
     }
@@ -279,7 +279,7 @@ function Autocomplete({
         return;
       }
 
-      navigationMode.current = NavigationModeTypes.ARROW_KEYS;
+      navigationModeRef.current = NavigationModeTypes.ARROW_KEYS;
 
       switch (event.key) {
         case keyCodes.Enter:
@@ -305,7 +305,7 @@ function Autocomplete({
           }
 
           stopEvent(event);
-          pendingComplete.current = true;
+          pendingCompleteRef.current = true;
           setPendingCompleteIndex(selectedRef.current);
           break;
         }

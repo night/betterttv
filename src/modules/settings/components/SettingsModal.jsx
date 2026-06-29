@@ -97,7 +97,7 @@ const pageMotionVariants = {
   },
 };
 
-function PageTransition({children, className, computeDefaultScrollTop, scrollRef, pendingScrollToSettingPanelId}) {
+function PageTransition({children, className, computeDefaultScrollTop, scrollRef, pendingScrollToSettingPanelIdRef}) {
   const direction = usePresenceData();
   const {initial, exit} = pageMotionVariants[direction];
 
@@ -107,11 +107,11 @@ function PageTransition({children, className, computeDefaultScrollTop, scrollRef
     }
 
     scrollRef.current.scrollTop = computeDefaultScrollTop();
-    pendingScrollToSettingPanelId.current = null;
+    pendingScrollToSettingPanelIdRef.current = null;
   }, []);
 
   return (
-    <PageScrollContext.Provider value={scrollRef}>
+    <PageScrollContext value={scrollRef}>
       <motion.div
         variants={pageMotionVariants}
         initial={initial}
@@ -120,7 +120,7 @@ function PageTransition({children, className, computeDefaultScrollTop, scrollRef
         className={className}>
         {children}
       </motion.div>
-    </PageScrollContext.Provider>
+    </PageScrollContext>
   );
 }
 
@@ -149,18 +149,18 @@ function SettingsModal({setHandleOpen}) {
   const [open, modalHandlers] = useDisclosure(false);
   const [sidenavOpen, setSidenavOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const settingRefs = useRef({});
-  const pendingScrollToSettingPanelId = useRef(null);
+  const settingRefsRef = useRef({});
+  const pendingScrollToSettingPanelIdRef = useRef(null);
   const [pageTransitionDirection, setPageTransitionDirection] = useState(PageTransitionDirection.RIGHT);
   const pageContentRef = useRef(null);
   const pageColumnRef = useRef(null);
-  const lastParentData = useRef({scrollTop: 0, page: null});
+  const lastParentDataRef = useRef({scrollTop: 0, page: null});
   const inputRef = useFocusTrap(isInteractive && page === PageTypes.SETTINGS);
 
   function handlePageChange(newPage) {
-    if (lastParentData.current.page !== newPage) {
-      lastParentData.current.scrollTop = 0;
-      lastParentData.current.page = null;
+    if (lastParentDataRef.current.page !== newPage) {
+      lastParentDataRef.current.scrollTop = 0;
+      lastParentDataRef.current.page = null;
     }
 
     let newDirection = PageTransitionDirection.UP;
@@ -175,8 +175,8 @@ function SettingsModal({setHandleOpen}) {
     if (currentPageDecendants != null && currentPageDecendants.includes(newPage)) {
       newDirection = PageTransitionDirection.LEFT;
 
-      lastParentData.current.page = page;
-      lastParentData.current.scrollTop = pageContentRef.current.scrollTop;
+      lastParentDataRef.current.page = page;
+      lastParentDataRef.current.scrollTop = pageContentRef.current.scrollTop;
     }
 
     if (newPageDecendants != null && newPageDecendants.includes(page)) {
@@ -188,7 +188,7 @@ function SettingsModal({setHandleOpen}) {
   }
 
   function handleSettingRefCallback(settingPanelId, ref) {
-    settingRefs.current[settingPanelId] = ref;
+    settingRefsRef.current[settingPanelId] = ref;
   }
 
   function handleGotoSettingPanel(settingPanelId) {
@@ -196,14 +196,14 @@ function SettingsModal({setHandleOpen}) {
       return;
     }
 
-    if (settingPanelId != null && settingRefs.current[settingPanelId] != null) {
-      const setting = settingRefs.current[settingPanelId];
+    if (settingPanelId != null && settingRefsRef.current[settingPanelId] != null) {
+      const setting = settingRefsRef.current[settingPanelId];
       setting.scrollIntoView();
       return;
     }
 
     handlePageChange(PageTypes.SETTINGS);
-    pendingScrollToSettingPanelId.current = settingPanelId;
+    pendingScrollToSettingPanelIdRef.current = settingPanelId;
   }
 
   useEffect(() => {
@@ -285,18 +285,18 @@ function SettingsModal({setHandleOpen}) {
   const computeDefaultScrollTop = useCallback(() => {
     if (
       page === PageTypes.SETTINGS &&
-      pendingScrollToSettingPanelId.current != null &&
-      settingRefs.current[pendingScrollToSettingPanelId.current] != null
+      pendingScrollToSettingPanelIdRef.current != null &&
+      settingRefsRef.current[pendingScrollToSettingPanelIdRef.current] != null
     ) {
-      const setting = settingRefs.current[pendingScrollToSettingPanelId.current];
+      const setting = settingRefsRef.current[pendingScrollToSettingPanelIdRef.current];
       return setting.offsetTop;
     }
 
-    if (lastParentData.current.page !== page) {
+    if (lastParentDataRef.current.page !== page) {
       return 0;
     }
 
-    return lastParentData.current.scrollTop;
+    return lastParentDataRef.current.scrollTop;
   }, [page]);
 
   return (
@@ -321,10 +321,9 @@ function SettingsModal({setHandleOpen}) {
       classNames={{content: styles.modal, body: styles.modalBody}}
       transitionProps={{transition: 'pop', duration: 100}}
       onClose={modalHandlers.close}>
-      <PageContext.Provider
-        value={{page, setPage: handlePageChange, sidenavOpen, setSidenavOpen, handleGotoSettingPanel}}>
+      <PageContext value={{page, setPage: handlePageChange, sidenavOpen, setSidenavOpen, handleGotoSettingPanel}}>
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />
-        <ScrollbarSizeTargetContext.Provider value={pageColumnRef}>
+        <ScrollbarSizeTargetContext value={pageColumnRef}>
           <div className={styles.pageColumn} ref={pageColumnRef}>
             <PageHeader
               leftContent={
@@ -340,15 +339,15 @@ function SettingsModal({setHandleOpen}) {
               <PageTransition
                 scrollRef={pageContentRef}
                 key={page}
-                pendingScrollToSettingPanelId={pendingScrollToSettingPanelId}
+                pendingScrollToSettingPanelIdRef={pendingScrollToSettingPanelIdRef}
                 className={styles.pageContent}
                 computeDefaultScrollTop={computeDefaultScrollTop}>
                 <Page page={page} search={search} handleSettingRefCallback={handleSettingRefCallback} />
               </PageTransition>
             </AnimatePresence>
           </div>
-        </ScrollbarSizeTargetContext.Provider>
-      </PageContext.Provider>
+        </ScrollbarSizeTargetContext>
+      </PageContext>
     </Modal>
   );
 }

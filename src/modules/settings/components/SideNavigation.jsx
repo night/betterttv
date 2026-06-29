@@ -1,7 +1,7 @@
 import {faArrowLeft, faCog, faScroll, faUser, faUserGear} from '@fortawesome/free-solid-svg-icons';
 import {ActionIcon, Avatar, Button, Overlay, Tooltip, useMantineTheme} from '@mantine/core';
 import classNames from 'classnames';
-import React, {useCallback, useContext} from 'react';
+import React, {useCallback, use} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
 import usePortalRef from '@/common/hooks/PortalRef';
@@ -99,7 +99,7 @@ function UserSettingsNavigationButton({active, ...props}) {
 }
 
 function SideNavigation({open, setOpen}) {
-  const {page, setPage} = useContext(PageContext);
+  const {page, setPage} = use(PageContext);
   const close = useCallback(() => setOpen(false), [setOpen]);
 
   return (

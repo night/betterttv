@@ -28,7 +28,7 @@ function Sidebar({section, onClick, categories, className}) {
   const containerRef = useRef(null);
   const [hovering, setHovering] = useState(false);
   const [emojiButtonHidden, setEmojiButtonHidden] = useState(false);
-  const hoverEmojiCount = useRef(0);
+  const hoverEmojiCountRef = useRef(0);
   const middleCategories = categories.middle;
 
   const bottomDepth = useMemo(
@@ -107,9 +107,9 @@ function Sidebar({section, onClick, categories, className}) {
     let code = DEFAULT_EMOJI;
 
     if (hovering) {
-      const count = hoverEmojiCount.current;
+      const count = hoverEmojiCountRef.current;
       code = HOVER_EMOJI[count % HOVER_EMOJI.length];
-      hoverEmojiCount.current = count + 1;
+      hoverEmojiCountRef.current = count + 1;
     }
 
     return emojis.getEligibleEmote(code);

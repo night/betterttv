@@ -212,7 +212,7 @@ function ThemeProvider({children, ...props}) {
   }, [normalizedPrimaryColor]);
 
   return (
-    <PortalContext.Provider value={portalRef}>
+    <PortalContext value={portalRef}>
       <MantineProvider
         forceColorScheme={dark ? 'dark' : 'light'}
         classNamesPrefix="bttv-mantine-"
@@ -233,7 +233,7 @@ function ThemeProvider({children, ...props}) {
           </ModalsProvider>
         ) : null}
       </MantineProvider>
-    </PortalContext.Provider>
+    </PortalContext>
   );
 }
 

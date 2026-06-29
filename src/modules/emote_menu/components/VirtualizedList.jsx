@@ -23,7 +23,7 @@ function VirtualizedList(
   const wrapperRef = useRef(null);
   const {ref: sizeRef, height: windowHeight} = useElementSize(null);
   const mergedRef = useMergedRef(forwardedRef, sizeRef, wrapperRef);
-  const headerIndex = useRef(null);
+  const headerIndexRef = useRef(null);
   useScrollbarSize(wrapperRef);
 
   const listHeight = useMemo(
@@ -76,7 +76,7 @@ function VirtualizedList(
         top = (startIndex - 1) * rowHeight;
       }
 
-      return {rows: rowsVisible, top, headerIndex: stickyRowIndex};
+      return {rows: rowsVisible, top, headerIndexRef: stickyRowIndex};
     },
     [totalRows, rowHeight, windowHeight, stickyRows, overscanCount, onHeaderChange]
   );
@@ -87,14 +87,14 @@ function VirtualizedList(
     const currentWrapperRef = wrapperRef.current;
     const scrollTop = currentWrapperRef?.scrollTop ?? 0;
 
-    const {rows, top, headerIndex: newHeaderIndex} = handleViewportUpdate(scrollTop);
+    const {rows, top, headerIndexRef: newHeaderIndex} = handleViewportUpdate(scrollTop);
 
-    if (headerIndex.current != null && headerIndex.current !== newHeaderIndex) {
+    if (headerIndexRef.current != null && headerIndexRef.current !== newHeaderIndex) {
       onHeaderChange(newHeaderIndex);
     }
 
-    headerIndex.current = newHeaderIndex;
-    setData({rows, top, headerIndex: newHeaderIndex});
+    headerIndexRef.current = newHeaderIndex;
+    setData({rows, top, headerIndexRef: newHeaderIndex});
   }, [handleViewportUpdate, onHeaderChange]);
 
   useEffect(() => {
