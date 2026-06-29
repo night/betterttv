@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Whispers'});
 
-function DisableWhispers(props, ref) {
+function DisableWhispers({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.WHISPERS);
 
   return (
@@ -23,10 +23,10 @@ function DisableWhispers(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(DisableWhispers), {
+SettingStore.registerSetting(DisableWhispers, {
   settingPanelId: SettingPanelIds.WHISPERS,
   name: SETTING_NAME,
   keywords: ['whispers', 'direct', 'messages'],
 });
 
-export default React.forwardRef(DisableWhispers);
+export default DisableWhispers;

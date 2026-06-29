@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Usernames'});
 
-function UsernamesModule(props, ref) {
+function UsernamesModule({ref, ...props}) {
   const [usernames, setUsernames] = useStorageState(SettingIds.USERNAMES);
 
   return (
@@ -47,11 +47,11 @@ function UsernamesModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(UsernamesModule), {
+SettingStore.registerSetting(UsernamesModule, {
   settingPanelId: SettingPanelIds.USERNAMES,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['color', 'username', 'accessibility', 'readability'],
 });
 
-export default React.forwardRef(UsernamesModule);
+export default UsernamesModule;

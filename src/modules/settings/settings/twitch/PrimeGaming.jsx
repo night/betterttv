@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Prime Gaming'});
 
-function PrimeGaming(props, ref) {
+function PrimeGaming({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.PRIME_PROMOTIONS);
 
   return (
@@ -23,10 +23,10 @@ function PrimeGaming(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(PrimeGaming), {
+SettingStore.registerSetting(PrimeGaming, {
   settingPanelId: SettingPanelIds.PRIME_GAMING,
   name: SETTING_NAME,
   keywords: ['ad', 'prime', 'promotions', 'block', 'gaming'],
 });
 
-export default React.forwardRef(PrimeGaming);
+export default PrimeGaming;

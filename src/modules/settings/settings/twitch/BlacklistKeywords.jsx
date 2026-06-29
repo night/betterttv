@@ -9,7 +9,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Blacklist Keywords'});
 
-function BlacklistKeywords(props, ref) {
+function BlacklistKeywords({ref, ...props}) {
   const {setPage} = use(PageContext);
 
   return (
@@ -26,11 +26,11 @@ function BlacklistKeywords(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(BlacklistKeywords), {
+SettingStore.registerSetting(BlacklistKeywords, {
   settingPanelId: SettingPanelIds.BLACKLIST_KEYWORDS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['black', 'list', 'keywords', 'banned', 'remove', 'hide'],
 });
 
-export default React.forwardRef(BlacklistKeywords);
+export default BlacklistKeywords;

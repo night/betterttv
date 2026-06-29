@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Directory'});
 
-function ShowDirectoryLiveTab(props, ref) {
+function ShowDirectoryLiveTab({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.SHOW_DIRECTORY_LIVE_TAB);
 
   return (
@@ -23,10 +23,10 @@ function ShowDirectoryLiveTab(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(ShowDirectoryLiveTab), {
+SettingStore.registerSetting(ShowDirectoryLiveTab, {
   settingPanelId: SettingPanelIds.DIRECTORY,
   name: SETTING_NAME,
   keywords: ['live', 'tab'],
 });
 
-export default React.forwardRef(ShowDirectoryLiveTab);
+export default ShowDirectoryLiveTab;

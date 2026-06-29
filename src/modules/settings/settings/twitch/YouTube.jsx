@@ -59,7 +59,7 @@ function requestYouTubePermission() {
   sendExtensionCommand({type: 'REQUEST_YOUTUBE_PERMISSION'});
 }
 
-function YouTube(props, ref) {
+function YouTube({ref, ...props}) {
   const [loading, setLoading] = React.useState(true);
   const [value, setValue] = React.useState(false);
 
@@ -111,16 +111,14 @@ function maybeRegisterComponent() {
     return null;
   }
 
-  const YouTubeForwardRef = React.forwardRef(YouTube);
-
-  SettingStore.registerSetting(YouTubeForwardRef, {
+  SettingStore.registerSetting(YouTube, {
     settingPanelId: SettingPanelIds.YOUTUBE,
     name: SETTING_NAME,
     supportsStandaloneWindow: true,
     keywords: ['youtube'],
   });
 
-  return YouTubeForwardRef;
+  return YouTube;
 }
 
 export default maybeRegisterComponent();

@@ -9,7 +9,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Raids'});
 
-function AutoJoinRaids(props, ref) {
+function AutoJoinRaids({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.AUTO_JOIN_RAIDS);
   const [channels, setChannels] = useStorageState(
     value ? SettingIds.AUTO_JOIN_RAIDS_WHITELISTED_CHANNELS : SettingIds.AUTO_JOIN_RAIDS_BLACKLISTED_CHANNELS
@@ -43,11 +43,11 @@ function AutoJoinRaids(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(AutoJoinRaids), {
+SettingStore.registerSetting(AutoJoinRaids, {
   settingPanelId: SettingPanelIds.RAIDS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['auto', 'join', 'raids'],
 });
 
-export default React.forwardRef(AutoJoinRaids);
+export default AutoJoinRaids;

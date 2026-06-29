@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Play'});
 
-function AutoplayModule(props, ref) {
+function AutoplayModule({ref, ...props}) {
   const [autoplay, setAutoplay] = useStorageState(SettingIds.AUTO_PLAY);
 
   return (
@@ -42,10 +42,10 @@ function AutoplayModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(AutoplayModule), {
+SettingStore.registerSetting(AutoplayModule, {
   settingPanelId: SettingPanelIds.AUTO_PLAY,
   name: SETTING_NAME,
   keywords: ['auto', 'play'],
 });
 
-export default React.forwardRef(AutoplayModule);
+export default AutoplayModule;

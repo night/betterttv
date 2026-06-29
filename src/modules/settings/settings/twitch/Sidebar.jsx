@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Sidebar'});
 
-function SidebarComponent(props, ref) {
+function SidebarComponent({ref, ...props}) {
   const [sidebar, setSidebar] = useStorageState(SettingIds.SIDEBAR);
 
   return (
@@ -60,7 +60,7 @@ function SidebarComponent(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(SidebarComponent), {
+SettingStore.registerSetting(SidebarComponent, {
   settingPanelId: SettingPanelIds.SIDEBAR,
   name: SETTING_NAME,
   keywords: [
@@ -77,4 +77,4 @@ SettingStore.registerSetting(React.forwardRef(SidebarComponent), {
   ],
 });
 
-export default React.forwardRef(SidebarComponent);
+export default SidebarComponent;

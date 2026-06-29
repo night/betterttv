@@ -8,7 +8,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Moderation'});
 
-function Moderation(props, ref) {
+function Moderation({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.AUTO_MOD_VIEW);
 
   return (
@@ -25,10 +25,10 @@ function Moderation(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(Moderation), {
+SettingStore.registerSetting(Moderation, {
   settingPanelId: SettingPanelIds.MODERATION,
   name: SETTING_NAME,
   keywords: ['auto', 'mod', 'view'],
 });
 
-export default React.forwardRef(Moderation);
+export default Moderation;
