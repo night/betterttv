@@ -152,6 +152,12 @@ const resolver = (theme) => ({
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
     '--mantine-color-default-border': 'var(--mantine-color-gray-0)',
     '--mantine-color-default-border': 'var(--mantine-color-dark-9)',
+    // Mantine never generates a `-light-active` variant, so every `:active`/`:focus` rule that
+    // references it (emote buttons, sidebar nav, header) resolves to transparent. Derive it from
+    // the scheme-aware hover tint nudged toward the brand color, so a press reads as one step
+    // stronger than hover everywhere instead of matching it.
+    '--mantine-primary-color-light-active':
+      'color-mix(in srgb, var(--mantine-primary-color-light-hover), var(--mantine-primary-color-filled) 20%)',
   },
   dark: {
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
