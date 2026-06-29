@@ -1,91 +1,43 @@
-import React, {useState, useCallback, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import Tooltip from './Tooltip';
 
-export const TOOLTIP_MARKER_ATTRIBUTE = 'data-bttv-tooltip';
+const CLOSED = {
+  open: false,
+  content: null,
+  className: null,
+  alignment: 'center',
+  referenceElement: null,
+};
 
-function getTooltipElement(target) {
-  if (target == null || !(target instanceof Element)) {
-    return null;
-  }
+// The mounted controller registers its setState here so the per-element listeners in
+// index.jsx can drive the single shared tooltip without document-level delegation.
+let setActive = null;
 
-  return target.hasAttribute(TOOLTIP_MARKER_ATTRIBUTE) ? target : null;
+export function openTooltip(element, config) {
+  setActive?.({
+    open: true,
+    content: config.content,
+    className: config.className ?? null,
+    alignment: config.alignment ?? 'center',
+    referenceElement: element,
+  });
+}
+
+export function closeTooltip(element) {
+  // Only close if this element owns the visible tooltip — guards against a stale leave from a
+  // previously-hovered element closing a newer tooltip.
+  setActive?.((current) => (current.referenceElement === element ? {...current, open: false} : current));
 }
 
 export default function TooltipController() {
-  const tooltipStateRef = useRef();
-
-  const [tooltipState, setTooltipState] = useState({
-    open: false,
-    tooltipKey: null,
-    content: null,
-    className: null,
-    alignment: 'center',
-    referenceElement: null,
-  });
-
-  const handleMouseEnter = useCallback((event) => {
-    const element = getTooltipElement(event.target);
-    if (element == null) {
-      return;
-    }
-
-    if (element.contains(event.relatedTarget)) {
-      return;
-    }
-
-    const config = element.__bttvTooltip;
-    if (config == null || config.content == null) {
-      return;
-    }
-
-    const tooltipKey = element.getAttribute(TOOLTIP_MARKER_ATTRIBUTE);
-    if (tooltipKey == null || tooltipKey === '') {
-      return;
-    }
-
-    const currentTooltipKey = tooltipStateRef.current?.tooltipKey;
-    const currentTooltipOpen = tooltipStateRef.current?.open;
-    if (currentTooltipKey != null && currentTooltipKey === tooltipKey && currentTooltipOpen) {
-      return;
-    }
-
-    const newTooltipState = {
-      open: true,
-      tooltipKey,
-      content: config.content,
-      className: config.className ?? null,
-      alignment: config.alignment ?? 'center',
-      referenceElement: element,
-    };
-
-    tooltipStateRef.current = newTooltipState;
-    setTooltipState(newTooltipState);
-  }, []);
-
-  const handleMouseLeave = useCallback((event) => {
-    if (getTooltipElement(event.target) == null) {
-      return;
-    }
-
-    if (tooltipStateRef.current == null || !tooltipStateRef.current.open) {
-      return;
-    }
-
-    const newTooltipState = {...tooltipStateRef.current, open: false};
-
-    tooltipStateRef.current = newTooltipState;
-    setTooltipState(newTooltipState);
-  }, []);
+  const [state, setState] = useState(CLOSED);
 
   useEffect(() => {
-    document.addEventListener('mouseenter', handleMouseEnter, true);
-    document.addEventListener('mouseleave', handleMouseLeave, true);
-
+    setActive = setState;
     return () => {
-      document.removeEventListener('mouseenter', handleMouseEnter, true);
-      document.removeEventListener('mouseleave', handleMouseLeave, true);
+      setActive = null;
     };
-  }, [handleMouseEnter, handleMouseLeave]);
+  }, []);
 
-  return <Tooltip state={tooltipState} />;
+  return <Tooltip state={state} onAutoClose={() => setState((current) => ({...current, open: false}))} />;
 }
