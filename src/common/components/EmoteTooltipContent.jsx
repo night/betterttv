@@ -34,6 +34,7 @@ function EmoteTooltipContent({imageSrc, sourceImage, code, provider, channelName
       return;
     }
 
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- image load state is synced from the img element via an effect
     setImageLoaded(true);
   }, []);
 

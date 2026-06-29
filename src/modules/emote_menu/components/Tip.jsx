@@ -117,6 +117,7 @@ export function markTipAsSeen(tipStorageKey) {
 }
 
 function Tip({className, onClose, ...props}) {
+  // eslint-disable-next-line @eslint-react/use-state -- value is intentionally destructured into a tuple
   const [[tipStorageKey, tipDisplayText], setTipToDisplay] = useState(useTipToDisplay(onClose));
 
   const handleClose = () => {

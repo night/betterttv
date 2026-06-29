@@ -81,6 +81,7 @@ function Sidebar({section, onClick, categories, className}) {
       return;
     }
 
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- deriving button visibility from measured layout
     setEmojiButtonHidden(isHidden);
   }
 

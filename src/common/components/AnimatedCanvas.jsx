@@ -10,6 +10,7 @@ const FRAME_INTERVAL = 1000 / FRAME_RATE;
 
 export default function AnimatedCanvas({width = CANVAS_WIDTH, height = CANVAS_HEIGHT, className, ...props}) {
   const ref = useRef(null);
+  // eslint-disable-next-line @eslint-react/purity -- random seed for a mutable animation-time ref
   const timeRef = React.useRef(Math.random() * 1000);
   const documentState = useDocumentVisibility();
   const isVisible = useInView(ref);

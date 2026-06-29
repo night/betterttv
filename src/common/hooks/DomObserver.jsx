@@ -6,6 +6,7 @@ function useDomObserver(selector, options = {}) {
 
   useEffect(() => {
     if (selector == null || selector.length === 0) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- syncing the observed DOM node into state
       setNode(null);
       return undefined;
     }
@@ -15,6 +16,7 @@ function useDomObserver(selector, options = {}) {
         foundNode = document.querySelector(selector);
       }
 
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- syncing the observed DOM node into state
       setNode(foundNode);
     }
 

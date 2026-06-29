@@ -6,6 +6,7 @@ function usePortalRef() {
   const [ref, setRef] = useState(portalRef);
 
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- syncing the portal ref from context
     setRef(portalRef);
   }, [portalRef]);
 

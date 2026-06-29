@@ -5,24 +5,22 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useScrollbarSize} from '@/common/components/Scrollbar';
 import styles from './VirtualizedList.module.css';
 
-function VirtualizedList(
-  {
-    className,
-    totalRows,
-    rowHeight,
-    renderRow,
-    stickyRows,
-    onHeaderChange = () => {},
-    bottomGuardHeight = 0,
-    topGuardHeight = 0,
-    overscanCount = 10,
-    ...props
-  },
-  forwardedRef
-) {
+function VirtualizedList({
+  className,
+  totalRows,
+  rowHeight,
+  renderRow,
+  stickyRows,
+  onHeaderChange = () => {},
+  bottomGuardHeight = 0,
+  topGuardHeight = 0,
+  overscanCount = 10,
+  ref,
+  ...props
+}) {
   const wrapperRef = useRef(null);
   const {ref: sizeRef, height: windowHeight} = useElementSize(null);
-  const mergedRef = useMergedRef(forwardedRef, sizeRef, wrapperRef);
+  const mergedRef = useMergedRef(ref, sizeRef, wrapperRef);
   const headerIndexRef = useRef(null);
   useScrollbarSize(wrapperRef);
 
@@ -81,7 +79,7 @@ function VirtualizedList(
     [totalRows, rowHeight, windowHeight, stickyRows, overscanCount]
   );
 
-  const [data, setData] = useState(handleViewportUpdate(0));
+  const [data, setData] = useState(() => handleViewportUpdate(0));
 
   const handleScroll = useCallback(() => {
     const currentWrapperRef = wrapperRef.current;
@@ -126,4 +124,4 @@ function VirtualizedList(
   );
 }
 
-export default React.forwardRef(VirtualizedList);
+export default VirtualizedList;

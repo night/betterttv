@@ -54,6 +54,7 @@ function CommandRow({item, active, selected, focusedWordIndex, onMouseOver, onCl
   const title = useMemo(
     () =>
       titleWords.map((word, index) => (
+        // eslint-disable-next-line @eslint-react/no-array-index-key -- static word list, never reordered
         <React.Fragment key={index}>
           {index > 0 ? ' ' : null}
           <span className={classNames(styles.word, {[styles.focusedWord]: index === highlightedWordIndex})}>
