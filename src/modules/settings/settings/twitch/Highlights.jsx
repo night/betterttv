@@ -1,5 +1,5 @@
 import {Button} from '@mantine/core';
-import React, {useContext} from 'react';
+import React, {use} from 'react';
 import useStorageState from '@/common/hooks/StorageState';
 import {DeletedMessageTypes, PageTypes, SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
@@ -13,7 +13,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 const SETTING_NAME = formatMessage({defaultMessage: 'Highlights'});
 
 function Highlights(props, ref) {
-  const {setPage} = useContext(PageContext);
+  const {setPage} = use(PageContext);
   const [value, setValue] = useStorageState(SettingIds.PINNED_HIGHLIGHTS);
   const [deletedMessages, setDeletedMessages] = useStorageState(SettingIds.DELETED_MESSAGES);
   const [maxPinnedHighlights, setMaxPinnedHighlights] = useStorageState(SettingIds.MAX_PINNED_HIGHLIGHTS);

@@ -1,7 +1,7 @@
 import {faClose, faPaintBrush, faRobot} from '@fortawesome/free-solid-svg-icons';
 import {ActionIcon, Button, Image, Title} from '@mantine/core';
 import classNames from 'classnames';
-import React, {useContext, useState} from 'react';
+import React, {use, useState} from 'react';
 import AnimatedCanvas from '@/common/components/AnimatedCanvas';
 import Icon from '@/common/components/Icon';
 import NightbotLogoIcon from '@/common/components/NightbotLogoIcon';
@@ -54,7 +54,7 @@ function getPromotionToDisplay() {
 }
 
 function Promotion() {
-  const {handleGotoSettingPanel} = useContext(PageContext);
+  const {handleGotoSettingPanel} = use(PageContext);
   const [activePromotion, setActivePromotion] = useState(getPromotionToDisplay);
 
   if (activePromotion == null) {

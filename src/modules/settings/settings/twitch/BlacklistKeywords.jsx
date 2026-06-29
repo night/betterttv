@@ -1,5 +1,5 @@
 import {Button} from '@mantine/core';
-import React, {useContext} from 'react';
+import React, {use} from 'react';
 import {PageTypes, SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
@@ -10,7 +10,7 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingSt
 const SETTING_NAME = formatMessage({defaultMessage: 'Blacklist Keywords'});
 
 function BlacklistKeywords(props, ref) {
-  const {setPage} = useContext(PageContext);
+  const {setPage} = use(PageContext);
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>

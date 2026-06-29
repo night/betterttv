@@ -45,8 +45,8 @@ function EmoteMenu({
   const handleRef = useRef(null);
   const emoteMenuContentRef = useRef(null);
   const [selected, setSelected] = useState(null);
-  const altPressed = useRef(false);
-  const shiftPressed = useRef(false);
+  const altPressedRef = useRef(false);
+  const shiftPressedRef = useRef(false);
   const [section, setSection] = useState(null);
   const [opened, {close, open}] = useDisclosure(false);
   const width = useHorizontalResize({boundingQuerySelector, handleRef, open: opened, placement});
@@ -212,7 +212,7 @@ function EmoteMenu({
   }, [handleClose]);
 
   const handleClick = useCallback((emote) => {
-    if (altPressed.current) {
+    if (altPressedRef.current) {
       emoteMenuViewStore.toggleFavorite(emote);
       markTipAsSeen(EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE);
       return;
@@ -222,10 +222,10 @@ function EmoteMenu({
       return;
     }
 
-    appendToChat(emote, !shiftPressed.current);
+    appendToChat(emote, !shiftPressedRef.current);
     emoteMenuViewStore.trackHistory(emote);
 
-    if (shiftPressed.current) {
+    if (shiftPressedRef.current) {
       markTipAsSeen(EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE);
       return;
     }
@@ -234,8 +234,8 @@ function EmoteMenu({
   }, []);
 
   const handleKeyEvent = useCallback((event) => {
-    altPressed.current = event.altKey;
-    shiftPressed.current = event.shiftKey;
+    altPressedRef.current = event.altKey;
+    shiftPressedRef.current = event.shiftKey;
   }, []);
 
   const {onKeyDown, ...restProps} = getFloatingProps();
@@ -256,7 +256,7 @@ function EmoteMenu({
         return;
       }
 
-      keyPressCallback(event, shiftPressed.current);
+      keyPressCallback(event, shiftPressedRef.current);
     },
     [handleClick, keyPressCallback, selected]
   );
@@ -302,7 +302,7 @@ function EmoteMenu({
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyEvent}
       {...restProps}>
-      <ScrollbarSizeTargetContext.Provider value={emoteMenuContentRef}>
+      <ScrollbarSizeTargetContext value={emoteMenuContentRef}>
         <div ref={emoteMenuContentRef} className={styles.emoteMenuContent}>
           <div
             ref={handleRef}
@@ -341,7 +341,7 @@ function EmoteMenu({
             setCoords={handleCoordsChange}
           />
         </div>
-      </ScrollbarSizeTargetContext.Provider>
+      </ScrollbarSizeTargetContext>
       {opened ? <Tip className={styles.tip} onClose={handleClose} /> : null}
     </div>
   );

@@ -1,5 +1,5 @@
 import {Button} from '@mantine/core';
-import React, {useCallback, useContext} from 'react';
+import React, {useCallback, use} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import useIsOnOwnChannel from '@/common/hooks/IsOnOwnChannel';
 import useStorageState from '@/common/hooks/StorageState';
@@ -31,7 +31,7 @@ function openEnableSelfBotModal(setEnabled) {
 }
 
 function SelfBot(props, ref) {
-  const {setPage} = useContext(PageContext);
+  const {setPage} = use(PageContext);
   const isOnOwnChannel = useIsOnOwnChannel();
   const [enabled, setEnabled] = useStorageState(SettingIds.SELF_BOT);
   const bttvUser = useAuthStore(useShallow((state) => state.user));
