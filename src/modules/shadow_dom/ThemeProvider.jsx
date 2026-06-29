@@ -171,7 +171,7 @@ const resolver = (theme) => ({
     '--mantine-color-default-border': 'var(--mantine-color-gray-3)',
     '--mantine-color-body-secondary': 'var(--mantine-color-gray-0)',
     '--mantine-color-body-inverse': 'var(--mantine-color-gray-9)',
-    '--mantine-primary-color-light-active': `var(--mantine-color-${theme.primaryColor}-3)`,
+    '--mantine-primary-color-light-active': 'var(--mantine-primary-color-3)',
   },
 });
 
