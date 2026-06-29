@@ -40,6 +40,7 @@ const BrowseEmotes = React.forwardRef(
 
         return <EmoteRow row={row} rowIndex={y} coords={coords} onClick={onClick} onMouseOver={setCoords} {...props} />;
       },
+      // eslint-disable-next-line @eslint-react/exhaustive-deps -- onClick/setCoords props are stable
       [coords, emoteListRows]
     );
 
@@ -147,7 +148,7 @@ const EmoteList = React.forwardRef(
           currentRef.scrollTo(0, depth + EMOTE_MENU_GRID_ROW_HEIGHT - height);
         }
       },
-      [height, headerRows]
+      [height, headerRows, ref]
     );
 
     const handleCoordsChangeByKeyboard = useCallback(
@@ -156,6 +157,7 @@ const EmoteList = React.forwardRef(
         setCoords(newCoords);
         updateScrollPositionByCoords(newCoords);
       },
+      // eslint-disable-next-line @eslint-react/exhaustive-deps -- setCoords prop is stable
       [updateScrollPositionByCoords, setNavigationMode]
     );
 
@@ -179,6 +181,7 @@ const EmoteList = React.forwardRef(
 
     useEffect(() => {
       setKeyPressCallback(handleKeyPress);
+      // eslint-disable-next-line @eslint-react/exhaustive-deps -- setKeyPressCallback prop is stable
     }, [handleKeyPress]);
 
     return (

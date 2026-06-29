@@ -182,6 +182,7 @@ function Autocomplete({
 
       itemsRef.current.length > 0 ? handleOpen() : handleClose();
     },
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- handleClose is stable for this memoized callback
     [getChatInputPartialInput, getChatInputCaretPosition, computeItems, handleOpen, close, handleSelectedChange]
   );
 
@@ -337,6 +338,7 @@ function Autocomplete({
       chatInputElement.removeEventListener('keydown', keydownCallback, true);
       chatInputElement.removeEventListener('keyup', keyupCallback, true);
     };
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- effect re-binds only when the chat input element changes
   }, [chatInputElement, refs]);
 
   return (

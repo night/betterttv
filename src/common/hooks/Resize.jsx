@@ -13,5 +13,6 @@ export default function useResize(callback) {
 
     window.addEventListener('resize', requestResize);
     return () => window.removeEventListener('resize', requestResize);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- resize listener is intentionally bound once on mount
   }, []);
 }

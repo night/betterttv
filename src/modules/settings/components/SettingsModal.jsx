@@ -108,6 +108,7 @@ function PageTransition({children, className, computeDefaultScrollTop, scrollRef
 
     scrollRef.current.scrollTop = computeDefaultScrollTop();
     pendingScrollToSettingPanelIdRef.current = null;
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- runs once on mount to set initial scroll
   }, []);
 
   return (
@@ -157,6 +158,7 @@ function SettingsModal({setHandleOpen}) {
   const lastParentDataRef = useRef({scrollTop: 0, page: null});
   const inputRef = useFocusTrap(isInteractive && page === PageTypes.SETTINGS);
 
+  // eslint-disable-next-line @eslint-react/exhaustive-deps -- handlePageChange is intentionally not memoized
   function handlePageChange(newPage) {
     if (lastParentDataRef.current.page !== newPage) {
       lastParentDataRef.current.scrollTop = 0;
@@ -211,6 +213,7 @@ function SettingsModal({setHandleOpen}) {
       isOpen ? modalHandlers.open() : modalHandlers.close();
       handleGotoSettingPanel(scrollToSettingPanelId);
     });
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- modalHandlers/setHandleOpen are stable
   }, [modalHandlers.open, modalHandlers.close, handleGotoSettingPanel]);
 
   const stopPropagation = useCallback((event) => {

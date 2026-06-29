@@ -197,13 +197,14 @@ function EmoteMenu({
 
       document.activeElement.blur();
     },
-    [toggle, focusRef]
+    [toggle]
   );
 
   useEffect(() => {
     setHandleOpen(toggle);
     document.addEventListener('keydown', handleToggleHotkey);
     return () => document.removeEventListener('keydown', handleToggleHotkey);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- setHandleOpen prop is stable
   }, [handleToggleHotkey, toggle]);
 
   const handleCloseRef = useRef(handleClose);
@@ -231,6 +232,7 @@ function EmoteMenu({
     }
 
     handleCloseRef.current();
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- runs once on mount
   }, []);
 
   const handleKeyEvent = useCallback((event) => {
@@ -258,6 +260,7 @@ function EmoteMenu({
 
       keyPressCallback(event, shiftPressedRef.current);
     },
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- handler dependencies are stable for this callback
     [handleClick, keyPressCallback, selected]
   );
 

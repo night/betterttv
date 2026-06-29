@@ -78,7 +78,7 @@ function VirtualizedList(
 
       return {rows: rowsVisible, top, headerIndexRef: stickyRowIndex};
     },
-    [totalRows, rowHeight, windowHeight, stickyRows, overscanCount, onHeaderChange]
+    [totalRows, rowHeight, windowHeight, stickyRows, overscanCount]
   );
 
   const [data, setData] = useState(handleViewportUpdate(0));
@@ -111,7 +111,7 @@ function VirtualizedList(
 
   const rows = useMemo(
     () => data.rows.map((value) => renderRow({key: `row-${value}`, index: value, style: {height: `${rowHeight}px`}})),
-    [data.rows, renderRow]
+    [data.rows, renderRow, rowHeight]
   );
 
   return (

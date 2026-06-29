@@ -73,6 +73,7 @@ export default function useHorizontalResize({
       document.removeEventListener('mouseup', handleResizeEnd);
       window.removeEventListener('resize', handleWindowResize);
     };
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- setWidth is defined in this hook and is stable
   }, [handleRef, emoteMenuWidth, open]);
 
   React.useEffect(() => {
@@ -91,6 +92,7 @@ export default function useHorizontalResize({
 
     document.addEventListener('mousemove', handleResizeMove);
     return () => document.removeEventListener('mousemove', handleResizeMove);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- setWidth is defined in this hook and is stable
   }, [isResizing, boundingQuerySelector, placement]);
 
   return displayWidth;

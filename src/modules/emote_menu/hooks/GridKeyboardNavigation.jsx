@@ -162,6 +162,7 @@ export default function useGridKeyboardNavigation({coords, setCoords, rowColumnC
 
       setCoords(newCoords);
     },
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- setCoords is stable; navigation reads current coords
     [coords, rowColumnCounts]
   );
 
