@@ -3,6 +3,7 @@ import {
   ActionIcon,
   Button,
   NativeSelect,
+  Pill,
   Table,
   TableTbody,
   TableTd,
@@ -131,6 +132,9 @@ function SettingSelfBotCommands({value, setValue}) {
   const pendingCommandFocusRef = useRef(null);
   const bttvUser = useAuthStore(useShallow((state) => state.user));
 
+  const commandCount = entryList.length;
+  const isPro = isUserPro(bttvUser);
+
   const filteredEntryList = useMemo(() => {
     const query = search.trim().toLowerCase();
     if (query.length === 0) {
@@ -221,9 +225,19 @@ function SettingSelfBotCommands({value, setValue}) {
         />
       }
       rightContent={
-        <Button size="lg" className={tableStyles.newEntryButton} onClick={newEntryHandler}>
-          {formatMessage({defaultMessage: 'New Entry'})}
-        </Button>
+        <div className={styles.headerActions}>
+          {!isPro ? (
+            <Pill size="lg" className={styles.limitPill}>
+              {formatMessage(
+                {defaultMessage: 'Entry {count} / {limit}'},
+                {count: commandCount, limit: FREE_COMMAND_LIMIT}
+              )}
+            </Pill>
+          ) : null}
+          <Button size="lg" className={tableStyles.newEntryButton} onClick={newEntryHandler}>
+            {formatMessage({defaultMessage: 'New Entry'})}
+          </Button>
+        </div>
       }
       className={tableStyles.settingGroupContent}>
       {filteredEntryList.length > 0 ? (
