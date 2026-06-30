@@ -81,8 +81,8 @@
     "postcss-prefixwrap": "^1.58.0",
     "postcss-preset-env": "^11.3.2",
     "postcss-url": "10.1.4",
-    "prettier": "3.9.3",
-    "vite": "8.1.0"
+    "prettier": "3.9.4",
+    "vite": "8.1.1"
   },
   "overrides": {
     "postcss-url": {
