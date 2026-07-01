@@ -1,0 +1,58 @@
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.profileNameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profileName {
+  line-height: 1.2;
+}
+
+.profileSubtitle {
+  font-size: 16px;
+}
+
+.linkAccountButton {
+  margin-left: auto;
+}
+
+.linkAccountWarningIcon {
+  width: 18px;
+  height: 18px;
+  color: var(--mantine-color-yellow-5);
+}
+
+/* negative margin cancels the page's 20px side padding so the underline spans edge to edge */
+.tabsList {
+  margin: 0 -20px 20px;
+  padding: 0 20px;
+}
+
+.tab {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 16px;
+  transition: color 150ms ease-in-out;
+}
+
+/* dim inactive tab labels; hovering an inactive tab restores the normal text color */
+.tab[aria-selected='false'] {
+  color: var(--mantine-color-dimmed);
+}
+
+.tab[aria-selected='false']:hover {
+  color: var(--mantine-color-text);
+}
