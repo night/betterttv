@@ -1,4 +1,5 @@
 import {SettingIds, SettingsPromotions} from '@/constants';
+import {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 import settings from '@/settings';
 import storage from '@/storage';
 import AuthStore from '@/stores/auth';
@@ -9,24 +10,32 @@ const PROMOTION_COOLDOWN_MS = 2 * 24 * 60 * 60 * 1000; // 2 days
 const LAST_DISMISSED_ANY_AT_KEY = 'settingsPromotionLastDismissedAnyAt';
 
 // Ordered by priority; the first available promotion is the one shown. `settingId` is the pro
-// setting whose value gates the promotion, watched so availability stays in sync.
+// setting whose value gates the promotion, watched so availability stays in sync. `settingPanelId`
+// is the settings panel the promotion points at (used to mark it in the navigation).
 const PROMOTION_SLOTS = [
   {
     storageKey: SettingsPromotions.CHATBOT_COMMAND_AUTOCOMPLETE,
     settingId: SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE,
+    settingPanelId: SettingPanelIds.CHATBOTS,
     isAvailable: () => !getProSettingValue(SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE, false),
   },
   {
     storageKey: SettingsPromotions.SELF_BOT,
     settingId: SettingIds.SELF_BOT,
+    settingPanelId: SettingPanelIds.SELF_BOT,
     isAvailable: () => settings.get(SettingIds.SELF_BOT) !== true,
   },
   {
     storageKey: SettingsPromotions.THEME_CUSTOMIZE,
     settingId: SettingIds.PRIMARY_COLOR,
+    settingPanelId: SettingPanelIds.THEME,
     isAvailable: () => getProSettingValue(SettingIds.PRIMARY_COLOR, null) == null,
   },
 ];
+
+// Setting panels that have a promotion slot — marked with a dot in the settings navigation,
+// regardless of whether the promotion is currently available.
+export const PROMOTION_SETTING_PANEL_IDS = new Set(PROMOTION_SLOTS.map((slot) => slot.settingPanelId));
 
 function isGlobalPromotionCooldown() {
   const lastDismissedAnyAt = storage.get(LAST_DISMISSED_ANY_AT_KEY);
