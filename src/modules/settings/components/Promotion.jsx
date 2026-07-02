@@ -9,7 +9,7 @@ import {SettingsPromotions} from '@/constants';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
 import promotionStore from '@/modules/settings/stores/promotion-store';
-import {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import {SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import cdn from '@/utils/cdn';
 import Panel from './Panel';
 import styles from './Promotion.module.css';

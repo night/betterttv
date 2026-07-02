@@ -8,7 +8,7 @@ import SettingNumberInput from '@/modules/settings/components/SettingNumberInput
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Highlights'});
 

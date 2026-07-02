@@ -4,7 +4,7 @@ import {SettingIds, SidebarFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Sidebar'});
 

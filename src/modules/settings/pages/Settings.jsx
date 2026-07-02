@@ -1,10 +1,14 @@
 import {Text, Button} from '@mantine/core';
-import React, {useMemo} from 'react';
+import React, {use, useCallback, useEffect, useMemo} from 'react';
+import useScrollSpy from '@/common/hooks/ScrollSpy';
 import formatMessage from '@/i18n/index';
-import PageScrollBody from '@/modules/settings/components/PageScrollBody';
+import PageHeader from '@/modules/settings/components/PageHeader';
+import PageScrollBody, {PageScrollContext} from '@/modules/settings/components/PageScrollBody';
 import Panel from '@/modules/settings/components/Panel';
 import Promotion from '@/modules/settings/components/Promotion';
-import SettingStore from '@/modules/settings/stores/SettingStore';
+import {orderSettingsByCategory} from '@/modules/settings/setting-categories';
+import SettingStore from '@/modules/settings/stores/setting-store';
+import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
 import extension from '@/utils/extension';
 import styles from './Settings.module.css';
 
@@ -38,44 +42,61 @@ function UnsupportedChromiumVersion() {
   );
 }
 
-function SettingsList({search, settings, handleSettingRefCallback}) {
+// Memoized so a scroll-spy active-panel change (which re-renders Settings) doesn't re-render every
+// panel and re-thrash all their ref callbacks — props are stable, so this skips the work on scroll.
+const SettingsList = React.memo(function SettingsList({settings, handleSettingRefCallback}) {
   if (IS_UNSUPPORTED_CHROME_INSTALL) {
     return <UnsupportedChromiumVersion />;
   }
 
-  const searchedSettings = settings
-    .filter(
-      (setting) =>
-        search.length === 0 ||
-        setting.keywords.join(' ').includes(search.toLowerCase()) ||
-        setting.name.toLowerCase().includes(search.toLowerCase())
-    )
-    .map((setting) =>
-      setting.render({
-        ref: (ref) => handleSettingRefCallback(setting.settingPanelId, ref),
-      })
-    );
+  return settings.map((setting) =>
+    setting.render({ref: (ref) => handleSettingRefCallback(setting.settingPanelId, ref)})
+  );
+});
 
-  if (searchedSettings.length === 0) {
-    return (
-      <Panel>
-        <Text size="lg" className={styles.noResultsText} c="dimmed">
-          {formatMessage({defaultMessage: 'No settings found.'})}
-        </Text>
-      </Panel>
-    );
-  }
+function Settings({handleSettingRefCallback}) {
+  const settings = useMemo(() => orderSettingsByCategory(SettingStore.getSupportedSettings()), []);
+  const scrollRef = use(PageScrollContext);
+  const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
 
-  return searchedSettings;
-}
+  // Tag each panel with its id so the scroll spy can discover it and report which one is in view.
+  const handleSettingRef = useCallback(
+    (settingPanelId, element) => {
+      if (element != null) {
+        element.dataset.settingPanelId = settingPanelId;
+      }
+      handleSettingRefCallback(settingPanelId, element);
+    },
+    [handleSettingRefCallback]
+  );
 
-function Settings({search, handleSettingRefCallback}) {
-  const settings = useMemo(() => SettingStore.getSupportedSettings().sort((a, b) => a.name.localeCompare(b.name)), []);
+  // The sticky page header overlaps the top of the scroll area, so the detection line sits below it
+  // (header height plus the panels' scroll-margin).
+  const getScrollOffset = useCallback(() => {
+    const scroller = scrollRef?.current;
+    if (scroller == null) {
+      return 0;
+    }
+    const header = scroller.parentElement?.querySelector('[data-page-header]');
+    const scrollMargin = parseFloat(getComputedStyle(scroller).getPropertyValue('--page-scroll-margin-top')) || 0;
+    return (header?.offsetHeight ?? 0) + scrollMargin;
+  }, [scrollRef]);
+
+  const activePanelId = useScrollSpy({
+    scrollHost: scrollRef,
+    selector: '[data-setting-panel-id]',
+    getValue: (element) => element.dataset.settingPanelId,
+    offset: getScrollOffset,
+  });
+
+  useEffect(() => {
+    setActivePanelId(activePanelId);
+  }, [activePanelId, setActivePanelId]);
 
   return (
-    <PageScrollBody>
-      {search.length === 0 ? <Promotion /> : null}
-      <SettingsList search={search} settings={settings} handleSettingRefCallback={handleSettingRefCallback} />
+    <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'Settings'})} />}>
+      <Promotion />
+      <SettingsList settings={settings} handleSettingRefCallback={handleSettingRef} />
     </PageScrollBody>
   );
 }

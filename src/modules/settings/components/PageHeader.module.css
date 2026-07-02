@@ -1,17 +1,33 @@
 .header {
-  --vertical-padding: 10px;
-  --horizontal-padding: 12px;
+  --horizontal-padding: 20px;
+  flex-shrink: 0;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--vertical-padding) 12px var(--vertical-padding) 20px;
-  background-color: var(--mantine-color-body-secondary);
+  /* matches the sidebar logo container so the two line up (64px content + 1px border). border-box
+     is explicit so the 1px border is counted inside --header-height rather than added on top. */
+  box-sizing: border-box;
+  min-height: var(--header-height);
+  padding: 0 var(--horizontal-padding);
+  background-color: var(--page-bg);
   border-bottom: 1px solid var(--mantine-color-default-border);
   z-index: 10;
-  gap: var(--horizontal-padding);
+  gap: 12px;
 }
 
-.closeButton,
+/* pinned to the right edge of the header */
+.closeButton {
+  margin-left: auto;
+  min-width: 36px;
+  min-height: 36px;
+  background-color: transparent;
+  color: var(--mantine-color-dimmed);
+}
+
+.closeButton:hover {
+  background-color: transparent;
+  color: var(--mantine-color-text);
+}
+
 .sidenavToggleButton {
   min-width: 36px;
   min-height: 36px;
@@ -20,24 +36,25 @@
   justify-content: center;
 }
 
-.closeButton {
-  background-color: transparent;
-  color: var(--mantine-color-dimmed);
-  margin-left: -12px;
+.sidenavToggleButtonIcon {
+  width: 20px;
+  height: 20px;
 }
 
-.closeButton:hover {
-  background-color: transparent;
-  color: var(--mantine-color-text);
+/* breadcrumb text keeps the same size as the page title (h1) */
+.breadcrumbs {
+  font-size: var(--mantine-h1-font-size);
+  font-weight: var(--mantine-h1-font-weight);
+  line-height: var(--mantine-h1-line-height);
+  min-width: 0;
+}
+
+.breadcrumbSeparator {
+  color: var(--mantine-color-dimmed);
 }
 
 @media (min-width: 800px) {
   .sidenavToggleButton {
     display: none;
   }
-}
-
-.sidenavToggleButtonIcon {
-  width: 20px;
-  height: 20px;
 }

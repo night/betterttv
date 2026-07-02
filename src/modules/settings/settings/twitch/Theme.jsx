@@ -6,7 +6,7 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingPrimaryColorRadio from '@/modules/settings/components/SettingPrimaryColorRadio';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Theme'});
 

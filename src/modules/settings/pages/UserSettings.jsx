@@ -9,6 +9,7 @@ import {EXT_VER, SettingsPrompts} from '@/constants';
 import formatMessage from '@/i18n/index';
 import Footer from '@/modules/settings/components/Footer';
 import ImportSetting from '@/modules/settings/components/ImportSetting';
+import PageHeader from '@/modules/settings/components/PageHeader';
 import PageScrollBody from '@/modules/settings/components/PageScrollBody';
 import Promotion from '@/modules/settings/components/Promotion';
 import ResetSetting from '@/modules/settings/components/ResetSetting';
@@ -132,7 +133,7 @@ function UserSettings() {
   const [resetting, setResetting] = useState(false);
 
   return (
-    <PageScrollBody>
+    <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'User Settings'})} />}>
       <Promotion />
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />

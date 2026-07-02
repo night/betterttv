@@ -60,7 +60,7 @@ class SettingStore {
       settingPanelId,
       keywords,
       supportsStandaloneWindow,
-      render: ({...props}) => <Component key={settingPanelId} {...props} />,
+      render: ({...props}) => React.createElement(Component, {key: settingPanelId, ...props}),
     };
   }
 

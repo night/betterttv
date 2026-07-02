@@ -10,7 +10,7 @@ import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import useAuthStore from '@/stores/auth';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Self Bot'});

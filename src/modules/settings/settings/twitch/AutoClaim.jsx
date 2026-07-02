@@ -4,7 +4,7 @@ import {SettingIds, AutoClaimFlags, ChannelPointsFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import {hasFlag, setFlag} from '@/utils/flags';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Claim'});
