@@ -17,3 +17,7 @@ export function setCurrentUser({provider, id, name, displayName, avatar}) {
 export function getCurrentUser() {
   return currentUser;
 }
+
+export function getCurrentUserProfilePicture() {
+  return document.querySelector('[data-a-target="user-menu-toggle"] .tw-image-avatar')?.getAttribute('src');
+}

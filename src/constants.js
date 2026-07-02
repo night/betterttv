@@ -161,6 +161,11 @@ export const PageDecendants = {
   [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS, PageTypes.SELF_BOT_COMMANDS],
 };
 
+export const UserSettingsTabs = {
+  EXTENSION: 'extension',
+  ACCOUNT: 'account',
+};
+
 export const NavigationModeTypes = {
   MOUSE: 0,
   ARROW_KEYS: 1,

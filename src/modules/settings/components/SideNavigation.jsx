@@ -1,9 +1,16 @@
-import {faArrowRight as faPanelLeftClose, faChevronDown, faScroll, faUserGear} from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowRight as faPanelLeftClose,
+  faChevronDown,
+  faScroll,
+  faTriangleExclamation,
+  faUserGear,
+} from '@fortawesome/free-solid-svg-icons';
 import {ActionIcon, Avatar, Badge, Button, Collapse, Overlay, useMantineTheme} from '@mantine/core';
 import classNames from 'classnames';
 import React, {use, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
+import useCurrentUser from '@/common/hooks/CurrentUser';
 import {PageDecendants, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
@@ -13,7 +20,8 @@ import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-s
 import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
 import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
-import AnimatedLogo from './AnimatedLogo';
+import {getCurrentUserProfilePicture} from '@/utils/user';
+import LogoButton from './LogoButton';
 import styles from './SideNavigation.module.css';
 
 // The category collapse animation scales linearly with the number of items, so every category
@@ -75,7 +83,9 @@ const SettingNavigationButton = React.memo(function SettingNavigationButton({set
 });
 
 function UserSettingsNavigationButton({active, onClick}) {
-  const currentUser = useAuthStore(useShallow((state) => state.user));
+  const currentUser = useCurrentUser();
+  const bttvUser = useAuthStore(useShallow((state) => state.user));
+  const avatarSrc = bttvUser?.avatar ?? getCurrentUserProfilePicture();
   const {primaryColor} = useMantineTheme();
   const activeColor = active ? primaryColor : undefined;
   return (
@@ -85,16 +95,18 @@ function UserSettingsNavigationButton({active, onClick}) {
       className={styles.userSettingsNavigationButton}
       label={currentUser?.displayName ?? formatMessage({defaultMessage: 'User Settings'})}
       rightSection={
-        isUserPro(currentUser) ? (
+        bttvUser == null ? (
+          <Icon icon={faTriangleExclamation} className={styles.warningIcon} />
+        ) : isUserPro(bttvUser) ? (
           <Badge color="indigo" variant="elevated" size="lg">
             {formatMessage({defaultMessage: 'Pro'})}
           </Badge>
         ) : null
       }>
-      {currentUser != null ? (
+      {avatarSrc != null ? (
         <Avatar
           color={activeColor}
-          src={currentUser?.avatar}
+          src={avatarSrc}
           size="md"
           className={styles.avatar}
           classNames={{image: styles.avatarImage}}
@@ -166,7 +178,7 @@ function SideNavigation({open, setOpen}) {
     <React.Fragment>
       <div className={classNames(styles.sidenavContainer, {[styles.open]: open})}>
         <div className={styles.logoContainer}>
-          <AnimatedLogo className={styles.logo} />
+          <LogoButton logoClassName={styles.logo} />
           <CloseMenuButton onClick={close} className={styles.closeButton} />
         </div>
         <div className={styles.settingsScrollArea} ref={containerRef}>
