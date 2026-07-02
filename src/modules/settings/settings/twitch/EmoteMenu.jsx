@@ -6,9 +6,19 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingNumberInput from '@/modules/settings/components/SettingNumberInput';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import searchStore from '@/modules/settings/stores/search-store';
 import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
+import {gotoSettingPanel} from '@/modules/settings/stores/settings-navigation';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Menu'});
+const SETTING_DESCRIPTION = formatMessage({defaultMessage: 'Enables a more advanced emote menu for chat.'});
+
+const REPLACE_NATIVE_NAME = formatMessage({defaultMessage: 'Replace Native'});
+const REPLACE_NATIVE_DESCRIPTION = formatMessage({defaultMessage: "Replace Twitch's native emote menu."});
+const MAX_WIDTH_NAME = formatMessage({defaultMessage: 'Max Width'});
+const MAX_WIDTH_DESCRIPTION = formatMessage({
+  defaultMessage: 'Maximum width of the emote menu, measured in pixels.',
+});
 
 function EmoteMenu({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.EMOTE_MENU);
@@ -18,22 +28,22 @@ function EmoteMenu({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Emote Menu'})}
-        description={formatMessage({defaultMessage: 'Enables a more advanced emote menu for chat.'})}
+        name={SETTING_NAME}
+        description={SETTING_DESCRIPTION}
         value={toggled}
         onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.NONE)}
       />
       <SettingSwitch
         disabled={!toggled}
-        name={formatMessage({defaultMessage: 'Replace Native'})}
-        description={formatMessage({defaultMessage: "Replace Twitch's native emote menu."})}
+        name={REPLACE_NATIVE_NAME}
+        description={REPLACE_NATIVE_DESCRIPTION}
         value={value === EmoteMenuTypes.ENABLED}
         onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.LEGACY_ENABLED)}
       />
       <SettingNumberInput
         disabled={!toggled}
-        name={formatMessage({defaultMessage: 'Max Width'})}
-        description={formatMessage({defaultMessage: 'Maximum width of the emote menu, measured in pixels.'})}
+        name={MAX_WIDTH_NAME}
+        description={MAX_WIDTH_DESCRIPTION}
         value={width}
         onChange={setWidth}
         placeholder={SettingDefaultValues[SettingIds.EMOTE_MENU_WIDTH]}
@@ -47,7 +57,14 @@ SettingStore.registerSetting(EmoteMenu, {
   settingPanelId: SettingPanelIds.EMOTE_MENU,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['emotes', 'popup'],
 });
+
+for (const entry of [
+  {name: SETTING_NAME, description: SETTING_DESCRIPTION},
+  {name: REPLACE_NATIVE_NAME, description: REPLACE_NATIVE_DESCRIPTION},
+  {name: MAX_WIDTH_NAME, description: MAX_WIDTH_DESCRIPTION},
+]) {
+  searchStore.registerSearchEntry({...entry, goto: () => gotoSettingPanel(SettingPanelIds.EMOTE_MENU)});
+}
 
 export default EmoteMenu;

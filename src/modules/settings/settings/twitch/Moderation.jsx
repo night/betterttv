@@ -4,9 +4,15 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import searchStore from '@/modules/settings/stores/search-store';
 import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
+import {gotoSettingPanel} from '@/modules/settings/stores/settings-navigation';
+import {isStandaloneWindow} from '@/utils/window';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Moderation'});
+
+const AUTO_MOD_VIEW_NAME = formatMessage({defaultMessage: 'Auto Mod View'});
+const AUTO_MOD_VIEW_DESCRIPTION = formatMessage({defaultMessage: 'Enter moderation view when possible.'});
 
 function Moderation({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.AUTO_MOD_VIEW);
@@ -14,10 +20,8 @@ function Moderation({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Auto Mod View'})}
-        description={formatMessage({
-          defaultMessage: 'Enter moderation view when possible.',
-        })}
+        name={AUTO_MOD_VIEW_NAME}
+        description={AUTO_MOD_VIEW_DESCRIPTION}
         value={value}
         onChange={setValue}
       />
@@ -28,7 +32,13 @@ function Moderation({ref, ...props}) {
 SettingStore.registerSetting(Moderation, {
   settingPanelId: SettingPanelIds.MODERATION,
   name: SETTING_NAME,
-  keywords: ['auto', 'mod', 'view'],
+});
+
+searchStore.registerSearchEntry({
+  name: AUTO_MOD_VIEW_NAME,
+  description: AUTO_MOD_VIEW_DESCRIPTION,
+  goto: () => gotoSettingPanel(SettingPanelIds.MODERATION),
+  predicate: () => !isStandaloneWindow(),
 });
 
 export default Moderation;

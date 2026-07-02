@@ -14,6 +14,7 @@ import useSettingsNavigationStore from '@/modules/settings/stores/settings-navig
 import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
 import AnimatedLogo from './AnimatedLogo';
+import SettingsSearch from './SettingsSearch';
 import styles from './SideNavigation.module.css';
 
 // The category collapse animation scales linearly with the number of items, so every category
@@ -170,6 +171,7 @@ function SideNavigation({open, setOpen}) {
           <CloseMenuButton onClick={close} className={styles.closeButton} />
         </div>
         <div className={styles.settingsScrollArea} ref={containerRef}>
+          <SettingsSearch onNavigate={close} />
           {categorizedGroups.map((group) => {
             const isCollapsed = openCategory !== group.id;
             const hasActiveChild =

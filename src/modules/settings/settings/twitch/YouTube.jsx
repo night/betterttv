@@ -2,10 +2,13 @@ import React, {useEffect} from 'react';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import searchStore from '@/modules/settings/stores/search-store';
 import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
+import {gotoSettingPanel} from '@/modules/settings/stores/settings-navigation';
 import extension from '@/utils/extension';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'YouTube (beta)'});
+const SETTING_DESCRIPTION = formatMessage({defaultMessage: 'Show BetterTTV emotes on YouTube Live Chat.'});
 const browser = window.chrome || window.browser;
 
 function sendExtensionCommand(commandData, callback = undefined) {
@@ -97,7 +100,7 @@ function YouTube({ref, ...props}) {
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
         name={SETTING_NAME}
-        description={formatMessage({defaultMessage: 'Show BetterTTV emotes on YouTube Live Chat.'})}
+        description={SETTING_DESCRIPTION}
         value={value}
         onChange={() => requestPermission()}
         disabled={loading || value}
@@ -115,7 +118,12 @@ function maybeRegisterComponent() {
     settingPanelId: SettingPanelIds.YOUTUBE,
     name: SETTING_NAME,
     supportsStandaloneWindow: true,
-    keywords: ['youtube'],
+  });
+
+  searchStore.registerSearchEntry({
+    name: SETTING_NAME,
+    description: SETTING_DESCRIPTION,
+    goto: () => gotoSettingPanel(SettingPanelIds.YOUTUBE),
   });
 
   return YouTube;

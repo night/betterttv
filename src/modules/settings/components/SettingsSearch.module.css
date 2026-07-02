@@ -1,0 +1,47 @@
+.searchInputRoot {
+  --input-height: 40px;
+  margin: 8px;
+}
+
+.searchIcon {
+  width: 14px;
+  height: 14px;
+}
+
+/* results are capped (MAX_RESULTS) instead of scrolled, so the dropdown never shows a scrollbar */
+.dropdown {
+  padding: 6px;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: var(--mantine-radius-md);
+}
+
+/* mirror the autocomplete row states (see AutocompleteRow.module.css): the selection (which
+   follows both the keyboard and the mouse) gets the light-hover surface with primary text,
+   pressing darkens to light-active */
+.option[data-combobox-selected] {
+  color: var(--mantine-primary-color-filled);
+  background-color: var(--mantine-primary-color-light-hover);
+}
+
+.option[data-combobox-selected] .optionDescription {
+  color: var(--mantine-primary-color-text-dimmed) !important;
+}
+
+/* pressed: mouse-down on an option, or the selected option while Enter/Tab is held */
+.option:active,
+[data-pending-complete] .option[data-combobox-selected] {
+  background-color: var(--mantine-primary-color-light-active);
+  transition-property: background-color, color;
+  transition-duration: 0.1s;
+  transition-timing-function: ease-in-out;
+}
+
+.optionName {
+  font-weight: 500;
+}

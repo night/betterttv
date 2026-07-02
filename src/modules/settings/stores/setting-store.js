@@ -37,7 +37,7 @@ class SettingStore {
     this.settings = {};
   }
 
-  registerSetting(Component, {name, settingPanelId, keywords, supportsStandaloneWindow = false}) {
+  registerSetting(Component, {name, settingPanelId, supportsStandaloneWindow = false}) {
     if (name == null || typeof name !== 'string') {
       throw new Error('Name is required');
     }
@@ -46,19 +46,9 @@ class SettingStore {
       throw new Error('Setting panel ID is invalid');
     }
 
-    if (
-      keywords == null ||
-      keywords.length === 0 ||
-      !Array.isArray(keywords) ||
-      !keywords.every((keyword) => typeof keyword === 'string')
-    ) {
-      throw new Error('Keywords is invalid');
-    }
-
     this.settings[settingPanelId] = {
       name,
       settingPanelId,
-      keywords,
       supportsStandaloneWindow,
       render: ({...props}) => React.createElement(Component, {key: settingPanelId, ...props}),
     };

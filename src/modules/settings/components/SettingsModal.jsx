@@ -72,16 +72,18 @@ function PageContainer({children, className, scrollRef, onMount}) {
 
 function SettingsModal({setHandleOpen}) {
   const {width} = useViewportSize();
-  const [page, setPage] = useState(PageTypes.SETTINGS);
   const [open, modalHandlers] = useDisclosure(false);
   const [sidenavOpen, setSidenavOpen] = useState(false);
+  // True once the open animation finishes, so auto-focus doesn't fight the transition.
+  const [isInteractive, setIsInteractive] = useState(false);
   const settingRefsRef = useRef({});
-  const pendingScrollToSettingPanelIdRef = useRef(null);
   const pageContentRef = useRef(null);
   const pageColumnRef = useRef(null);
   const lastParentDataRef = useRef({scrollTop: 0, page: null});
 
+  const page = useSettingsNavigationStore((state) => state.page);
   const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
+  const pendingSettingPanelId = useSettingsNavigationStore((state) => state.pendingSettingPanelId);
 
   // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView.
   const scrollToPanel = useCallback(
@@ -107,7 +109,7 @@ function SettingsModal({setHandleOpen}) {
       lastParentDataRef.current.scrollTop = pageContentRef.current.scrollTop;
     }
 
-    setPage(newPage);
+    useSettingsNavigationStore.getState().setPage(newPage);
   }
 
   function handleSettingRefCallback(settingPanelId, ref) {
@@ -125,8 +127,19 @@ function SettingsModal({setHandleOpen}) {
     }
 
     handlePageChange(PageTypes.SETTINGS);
-    pendingScrollToSettingPanelIdRef.current = settingPanelId;
+    useSettingsNavigationStore.getState().gotoSettingPanel(settingPanelId);
   }
+
+  // Consume a pending panel navigation when the target is already rendered (e.g. navigating from
+  // search while on the settings page). Page changes are consumed by handlePageMount instead.
+  useEffect(() => {
+    if (pendingSettingPanelId == null || settingRefsRef.current[pendingSettingPanelId] == null) {
+      return;
+    }
+
+    scrollToPanel(pendingSettingPanelId);
+    useSettingsNavigationStore.getState().clearPendingSettingPanel();
+  }, [pendingSettingPanelId, scrollToPanel]);
 
   useEffect(() => {
     setHandleOpen((isOpen, {scrollToSettingPanelId} = {scrollToSettingPanelId: null}) => {
@@ -146,6 +159,9 @@ function SettingsModal({setHandleOpen}) {
     event.stopPropagation();
   }, []);
 
+  const handleEnterTransitionEnd = useCallback(() => setIsInteractive(true), []);
+  const handleExitTransitionEnd = useCallback(() => setIsInteractive(false), []);
+
   // Runs when a page mounts: scroll to a pending setting panel, otherwise restore the
   // parent page's scroll position (or start at the top).
   const handlePageMount = useCallback(() => {
@@ -154,11 +170,11 @@ function SettingsModal({setHandleOpen}) {
       return;
     }
 
-    const pendingPanelId = pendingScrollToSettingPanelIdRef.current;
-    pendingScrollToSettingPanelIdRef.current = null;
+    const {pendingSettingPanelId: pendingPanelId, clearPendingSettingPanel} = useSettingsNavigationStore.getState();
 
     if (page === PageTypes.SETTINGS && pendingPanelId != null && settingRefsRef.current[pendingPanelId] != null) {
       scrollToPanel(pendingPanelId);
+      clearPendingSettingPanel();
       return;
     }
 
@@ -184,6 +200,8 @@ function SettingsModal({setHandleOpen}) {
       withCloseButton={false}
       classNames={{content: styles.modal, body: styles.modalBody}}
       transitionProps={{transition: 'pop', duration: 100}}
+      onEnterTransitionEnd={handleEnterTransitionEnd}
+      onExitTransitionEnd={handleExitTransitionEnd}
       onClose={modalHandlers.close}>
       <PageContext
         value={{
@@ -193,6 +211,7 @@ function SettingsModal({setHandleOpen}) {
           setSidenavOpen,
           handleGotoSettingPanel,
           closeModal: modalHandlers.close,
+          isInteractive,
         }}>
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />
         <ScrollbarSizeTargetContext value={pageColumnRef}>

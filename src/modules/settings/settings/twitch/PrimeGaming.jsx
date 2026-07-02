@@ -4,9 +4,17 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import searchStore from '@/modules/settings/stores/search-store';
 import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
+import {gotoSettingPanel} from '@/modules/settings/stores/settings-navigation';
+import {isStandaloneWindow} from '@/utils/window';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Prime Gaming'});
+
+const PRIME_PROMOTIONS_NAME = formatMessage({defaultMessage: 'Prime Promotions'});
+const PRIME_PROMOTIONS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Show Prime Gaming loot notices, like the ones in the sidebar.',
+});
 
 function PrimeGaming({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.PRIME_PROMOTIONS);
@@ -14,8 +22,8 @@ function PrimeGaming({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Prime Promotions'})}
-        description={formatMessage({defaultMessage: 'Show Prime Gaming loot notices, like the ones in the sidebar.'})}
+        name={PRIME_PROMOTIONS_NAME}
+        description={PRIME_PROMOTIONS_DESCRIPTION}
         value={value}
         onChange={setValue}
       />
@@ -26,7 +34,13 @@ function PrimeGaming({ref, ...props}) {
 SettingStore.registerSetting(PrimeGaming, {
   settingPanelId: SettingPanelIds.PRIME_GAMING,
   name: SETTING_NAME,
-  keywords: ['ad', 'prime', 'promotions', 'block', 'gaming'],
+});
+
+searchStore.registerSearchEntry({
+  name: PRIME_PROMOTIONS_NAME,
+  description: PRIME_PROMOTIONS_DESCRIPTION,
+  goto: () => gotoSettingPanel(SettingPanelIds.PRIME_GAMING),
+  predicate: () => !isStandaloneWindow(),
 });
 
 export default PrimeGaming;

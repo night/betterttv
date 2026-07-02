@@ -7,11 +7,40 @@ import formatMessage from '@/i18n/index';
 import globalEmotes from '@/modules/emotes/global-emotes';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import searchStore from '@/modules/settings/stores/search-store';
 import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
+import {gotoSettingPanel} from '@/modules/settings/stores/settings-navigation';
 import {hasFlag} from '@/utils/flags';
 import styles from './Emotes.module.css';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emotes'});
+
+const ANIMATED_EMOTES_NAME = formatMessage({defaultMessage: 'Animated Emotes'});
+const ANIMATED_EMOTES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Autoplays animated emotes, otherwise only when hovered.',
+});
+const ANIMATED_PERSONAL_EMOTES_NAME = formatMessage({defaultMessage: 'Animated Personal Emotes'});
+const ANIMATED_PERSONAL_EMOTES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Autoplays animated personal emotes, otherwise only when hovered.',
+});
+const EMOTE_MODIFIERS_NAME = formatMessage({defaultMessage: 'Emote Modifiers'});
+const EMOTE_MODIFIERS_PLAIN_DESCRIPTION = formatMessage({
+  defaultMessage: 'Emote modifiers allow you to transform emotes in realtime.',
+});
+const BTTV_EMOTES_NAME = formatMessage({defaultMessage: 'BetterTTV Emotes'});
+const BTTV_EMOTES_DESCRIPTION = formatMessage({defaultMessage: 'Adds extra cool emotes for you to use.'});
+const FFZ_EMOTES_NAME = formatMessage({defaultMessage: 'FrankerFaceZ Emotes'});
+const FFZ_EMOTES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Enables emotes from the third party FrankerFaceZ extension.',
+});
+const SEVENTV_EMOTES_NAME = formatMessage({defaultMessage: '7TV Emotes'});
+const SEVENTV_EMOTES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Enables emotes from the third party 7TV extension.',
+});
+const SEVENTV_UNLISTED_EMOTES_NAME = formatMessage({defaultMessage: 'Unlisted 7TV Emotes'});
+const SEVENTV_UNLISTED_EMOTES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Enables unlisted emotes from the third party 7TV extension.',
+});
 
 const EMOTE_MODIFIERS_DESCRIPTION = {
   'w!': formatMessage({defaultMessage: 'Will display the emote in a wide format'}),
@@ -110,21 +139,17 @@ function EmotesModule({ref, ...props}) {
       flags={Object.values(EmoteTypeFlags)}>
       <SettingCheckbox
         value={EmoteTypeFlags.ANIMATED_EMOTES}
-        name={formatMessage({defaultMessage: 'Animated Emotes'})}
-        description={formatMessage({
-          defaultMessage: 'Autoplays animated emotes, otherwise only when hovered.',
-        })}
+        name={ANIMATED_EMOTES_NAME}
+        description={ANIMATED_EMOTES_DESCRIPTION}
       />
       <SettingCheckbox
         value={EmoteTypeFlags.ANIMATED_PERSONAL_EMOTES}
-        name={formatMessage({defaultMessage: 'Animated Personal Emotes'})}
-        description={formatMessage({
-          defaultMessage: 'Autoplays animated personal emotes, otherwise only when hovered.',
-        })}
+        name={ANIMATED_PERSONAL_EMOTES_NAME}
+        description={ANIMATED_PERSONAL_EMOTES_DESCRIPTION}
       />
       <SettingCheckbox
         value={EmoteTypeFlags.EMOTE_MODIFIERS}
-        name={formatMessage({defaultMessage: 'Emote Modifiers'})}
+        name={EMOTE_MODIFIERS_NAME}
         description={formatMessage(
           {defaultMessage: '<link>Emote modifiers</link> allow you to transform emotes in realtime.'},
           {
@@ -138,29 +163,19 @@ function EmotesModule({ref, ...props}) {
       />
       <SettingCheckbox
         value={EmoteTypeFlags.BTTV_EMOTES}
-        name={formatMessage({defaultMessage: 'BetterTTV Emotes'})}
-        description={formatMessage({defaultMessage: 'Adds extra cool emotes for you to use.'})}
+        name={BTTV_EMOTES_NAME}
+        description={BTTV_EMOTES_DESCRIPTION}
       />
-      <SettingCheckbox
-        value={EmoteTypeFlags.FFZ_EMOTES}
-        name={formatMessage({defaultMessage: 'FrankerFaceZ Emotes'})}
-        description={formatMessage({
-          defaultMessage: 'Enables emotes from the third party FrankerFaceZ extension.',
-        })}
-      />
+      <SettingCheckbox value={EmoteTypeFlags.FFZ_EMOTES} name={FFZ_EMOTES_NAME} description={FFZ_EMOTES_DESCRIPTION} />
       <SettingCheckbox
         value={EmoteTypeFlags.SEVENTV_EMOTES}
-        name={formatMessage({defaultMessage: '7TV Emotes'})}
-        description={formatMessage({
-          defaultMessage: 'Enables emotes from the third party 7TV extension.',
-        })}
+        name={SEVENTV_EMOTES_NAME}
+        description={SEVENTV_EMOTES_DESCRIPTION}
       />
       <SettingCheckbox
         value={EmoteTypeFlags.SEVENTV_UNLISTED_EMOTES}
-        name={formatMessage({defaultMessage: 'Unlisted 7TV Emotes'})}
-        description={formatMessage({
-          defaultMessage: 'Enables unlisted emotes from the third party 7TV extension.',
-        })}
+        name={SEVENTV_UNLISTED_EMOTES_NAME}
+        description={SEVENTV_UNLISTED_EMOTES_DESCRIPTION}
       />
     </SettingCheckboxGroup>
   );
@@ -170,7 +185,18 @@ SettingStore.registerSetting(EmotesModule, {
   settingPanelId: SettingPanelIds.EMOTES,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['bttv', 'ffz', '7tv', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
 });
+
+for (const entry of [
+  {name: ANIMATED_EMOTES_NAME, description: ANIMATED_EMOTES_DESCRIPTION},
+  {name: ANIMATED_PERSONAL_EMOTES_NAME, description: ANIMATED_PERSONAL_EMOTES_DESCRIPTION},
+  {name: EMOTE_MODIFIERS_NAME, description: EMOTE_MODIFIERS_PLAIN_DESCRIPTION},
+  {name: BTTV_EMOTES_NAME, description: BTTV_EMOTES_DESCRIPTION},
+  {name: FFZ_EMOTES_NAME, description: FFZ_EMOTES_DESCRIPTION},
+  {name: SEVENTV_EMOTES_NAME, description: SEVENTV_EMOTES_DESCRIPTION},
+  {name: SEVENTV_UNLISTED_EMOTES_NAME, description: SEVENTV_UNLISTED_EMOTES_DESCRIPTION},
+]) {
+  searchStore.registerSearchEntry({...entry, goto: () => gotoSettingPanel(SettingPanelIds.EMOTES)});
+}
 
 export default EmotesModule;

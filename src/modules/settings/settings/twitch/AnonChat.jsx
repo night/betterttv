@@ -5,9 +5,19 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingTagInput from '@/modules/settings/components/SettingTagInput';
+import searchStore from '@/modules/settings/stores/search-store';
 import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
+import {gotoSettingPanel} from '@/modules/settings/stores/settings-navigation';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Anon Chat'});
+const SETTING_DESCRIPTION = formatMessage({
+  defaultMessage: 'Anonymously read chat without appearing in the user list.',
+});
+
+const WHITELIST_CHANNELS_NAME = formatMessage({defaultMessage: 'Whitelist Channels'});
+const WHITELIST_CHANNELS_DESCRIPTION = formatMessage({defaultMessage: 'List of channels that disable Anon Chat.'});
+const BLACKLIST_CHANNELS_NAME = formatMessage({defaultMessage: 'Blacklist Channels'});
+const BLACKLIST_CHANNELS_DESCRIPTION = formatMessage({defaultMessage: 'List of channels that enable Anon Chat.'});
 
 function AnonChat({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.ANON_CHAT);
@@ -17,23 +27,10 @@ function AnonChat({ref, ...props}) {
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
-      <SettingSwitch
-        name={SETTING_NAME}
-        description={formatMessage({defaultMessage: 'Anonymously read chat without appearing in the user list.'})}
-        value={value}
-        onChange={setValue}
-      />
+      <SettingSwitch name={SETTING_NAME} description={SETTING_DESCRIPTION} value={value} onChange={setValue} />
       <SettingTagInput
-        name={
-          value
-            ? formatMessage({defaultMessage: 'Whitelist Channels'})
-            : formatMessage({defaultMessage: 'Blacklist Channels'})
-        }
-        description={
-          value
-            ? formatMessage({defaultMessage: 'List of channels that disable Anon Chat.'})
-            : formatMessage({defaultMessage: 'List of channels that enable Anon Chat.'})
-        }
+        name={value ? WHITELIST_CHANNELS_NAME : BLACKLIST_CHANNELS_NAME}
+        description={value ? WHITELIST_CHANNELS_DESCRIPTION : BLACKLIST_CHANNELS_DESCRIPTION}
         value={channels}
         onChange={setChannels}
         withCurrentChannel
@@ -47,7 +44,12 @@ SettingStore.registerSetting(AnonChat, {
   settingPanelId: SettingPanelIds.ANON_CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['anon', 'chat'],
+});
+
+searchStore.registerSearchEntry({
+  name: SETTING_NAME,
+  description: SETTING_DESCRIPTION,
+  goto: () => gotoSettingPanel(SettingPanelIds.ANON_CHAT),
 });
 
 export default AnonChat;

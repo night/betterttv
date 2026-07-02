@@ -5,9 +5,23 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingTagInput from '@/modules/settings/components/SettingTagInput';
+import searchStore from '@/modules/settings/stores/search-store';
 import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/setting-store';
+import {gotoSettingPanel} from '@/modules/settings/stores/settings-navigation';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Raids'});
+
+const AUTO_JOIN_NAME = formatMessage({defaultMessage: 'Auto Join'});
+const AUTO_JOIN_DESCRIPTION = formatMessage({defaultMessage: 'Join raids when possible.'});
+
+const WHITELIST_CHANNELS_NAME = formatMessage({defaultMessage: 'Whitelist Channels'});
+const WHITELIST_CHANNELS_DESCRIPTION = formatMessage({
+  defaultMessage: 'List of channels that disable auto joining raids.',
+});
+const BLACKLIST_CHANNELS_NAME = formatMessage({defaultMessage: 'Blacklist Channels'});
+const BLACKLIST_CHANNELS_DESCRIPTION = formatMessage({
+  defaultMessage: 'List of channels that enable auto joining raids.',
+});
 
 function AutoJoinRaids({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.AUTO_JOIN_RAIDS);
@@ -17,23 +31,10 @@ function AutoJoinRaids({ref, ...props}) {
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
-      <SettingSwitch
-        name={formatMessage({defaultMessage: 'Auto Join'})}
-        description={formatMessage({defaultMessage: 'Join raids when possible.'})}
-        value={value}
-        onChange={setValue}
-      />
+      <SettingSwitch name={AUTO_JOIN_NAME} description={AUTO_JOIN_DESCRIPTION} value={value} onChange={setValue} />
       <SettingTagInput
-        name={
-          value
-            ? formatMessage({defaultMessage: 'Whitelist Channels'})
-            : formatMessage({defaultMessage: 'Blacklist Channels'})
-        }
-        description={
-          value
-            ? formatMessage({defaultMessage: 'List of channels that disable auto joining raids.'})
-            : formatMessage({defaultMessage: 'List of channels that enable auto joining raids.'})
-        }
+        name={value ? WHITELIST_CHANNELS_NAME : BLACKLIST_CHANNELS_NAME}
+        description={value ? WHITELIST_CHANNELS_DESCRIPTION : BLACKLIST_CHANNELS_DESCRIPTION}
         value={channels}
         onChange={setChannels}
         withCurrentChannel
@@ -47,7 +48,12 @@ SettingStore.registerSetting(AutoJoinRaids, {
   settingPanelId: SettingPanelIds.RAIDS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['auto', 'join', 'raids'],
+});
+
+searchStore.registerSearchEntry({
+  name: AUTO_JOIN_NAME,
+  description: AUTO_JOIN_DESCRIPTION,
+  goto: () => gotoSettingPanel(SettingPanelIds.RAIDS),
 });
 
 export default AutoJoinRaids;
