@@ -48,7 +48,7 @@ function reparentHost(parent) {
 function syncHostToFullscreen() {
   const fullscreenElement = document.fullscreenElement ?? document.webkitFullscreenElement ?? null;
   if (fullscreenElement == null) {
-    if (!document.documentElement.contains(host)) {
+    if (host.parentElement !== document.documentElement) {
       reparentHost(document.documentElement);
     }
     return;
