@@ -15,7 +15,7 @@ function DisableWhispers({ref, ...props}) {
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
         name={SETTING_NAME}
-        description={formatMessage({defaultMessage: 'Enable and recieve Twitch whispers.'})}
+        description={formatMessage({defaultMessage: 'Enable and receive Twitch whispers.'})}
         value={value}
         onChange={setValue}
       />
