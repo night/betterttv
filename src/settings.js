@@ -127,6 +127,10 @@ class Settings extends SafeEventEmitter {
       }
     }
 
+    this.applyFlagDefaults();
+  }
+
+  applyFlagDefaults() {
     for (const flagSettingId of FlagSettings) {
       const defaultValue = SettingDefaultValues[flagSettingId];
       const defaultFlags = defaultValue[0];
@@ -151,8 +155,9 @@ class Settings extends SafeEventEmitter {
       // upgrade flags where default bits changed
       const [oldFlags, oldChangedBits] = settings[flagSettingId];
       const flagsToAdd = setFlag(defaultFlags, oldChangedBits, false);
-      if (flagsToAdd > 0) {
-        this.set(flagSettingId, setFlag(oldFlags, flagsToAdd, true));
+      const newFlags = setFlag(oldFlags, flagsToAdd, true);
+      if (newFlags !== oldFlags) {
+        this.set(flagSettingId, newFlags);
       }
     }
   }
