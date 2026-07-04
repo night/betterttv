@@ -1,9 +1,9 @@
 import React from 'react';
-import useStorageState from '../../../common/hooks/StorageState.jsx';
-import {SettingIds} from '../../../constants.js';
-import formatMessage from '../../../i18n/index.js';
-import SettingTextReplacements from '../components/SettingTextReplacements.jsx';
-import PageScrollBody from '../components/PageScrollBody.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import PageScrollBody from '@/modules/settings/components/PageScrollBody';
+import SettingTextReplacements from '@/modules/settings/components/SettingTextReplacements';
 
 function TextReplacements() {
   const [value, setValue] = useStorageState(SettingIds.TEXT_REPLACEMENTS);

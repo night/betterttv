@@ -82,7 +82,18 @@ SettingStore.registerSetting(ChatModule, {
   settingPanelId: SettingPanelIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['bits', 'highlights', 'community', 'chat', 'replies', 'clips', 'subs', 'subscriptions', 'text', 'replacements'],
+  keywords: [
+    'bits',
+    'highlights',
+    'community',
+    'chat',
+    'replies',
+    'clips',
+    'subs',
+    'subscriptions',
+    'text',
+    'replacements',
+  ],
 });
 
 export default ChatModule;

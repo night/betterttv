@@ -1,10 +1,22 @@
-import {ActionIcon, Button, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Text, TextInput} from '@mantine/core';
-import React, {useCallback, useMemo, useRef} from 'react';
 import {faTrash} from '@fortawesome/free-solid-svg-icons';
+import {
+  ActionIcon,
+  Button,
+  Table,
+  TableTbody,
+  TableTd,
+  TableTh,
+  TableThead,
+  TableTr,
+  Text,
+  TextInput,
+} from '@mantine/core';
+import React, {useCallback, useMemo, useRef} from 'react';
+import Icon from '@/common/components/Icon';
+import formatMessage from '@/i18n/index';
+import Panel from './Panel';
 import styles from './SettingTextReplacements.module.css';
-import formatMessage from '../../../i18n/index.js';
-import Panel from './Panel.jsx';
-import Icon from '../../../common/components/Icon.jsx';
+
 function ReplacementRow({id, data, updateHandler, deleteHandler, triggerInputRefCallback}) {
   const onUpdate = useCallback((newData) => updateHandler(id, newData), [updateHandler, id]);
   const onDelete = useCallback(() => deleteHandler(id), [deleteHandler, id]);
