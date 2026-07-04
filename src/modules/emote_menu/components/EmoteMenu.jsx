@@ -1,25 +1,25 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import emoteMenuViewStore, {CategoryPositions} from '../../../common/stores/emote-menu-view-store.js';
-import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuTips, NavigationModeTypes} from '../../../constants.js';
-import useHorizontalResize from '../hooks/HorizontalResize.jsx';
-import Header from './Header.jsx';
-import Sidebar from './Sidebar.jsx';
-import Tip, {markTipAsSeen} from './Tip.jsx';
-import styles from './EmoteMenu.module.css';
-import EmoteList from './EmoteList.jsx';
-import keyCodes from '../../../utils/keycodes.js';
-import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import {autoUpdate, offset, useDismiss, useFloating, useInteractions} from '@floating-ui/react';
-import {isMac} from '../../../utils/window.js';
-import useEmoteMenuViewStoreUpdated from '../../../common/hooks/EmoteMenuViewStore.jsx';
-import {ScrollbarSizeTargetContext} from '../../../common/components/Scrollbar.jsx';
+import {useDisclosure, useFocusTrap} from '@mantine/hooks';
+import classNames from 'classnames';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
+import useEmoteMenuViewStoreUpdated from '@/common/hooks/EmoteMenuViewStore';
+import emoteMenuViewStore, {CategoryPositions} from '@/common/stores/emote-menu-view-store';
+import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuTips, NavigationModeTypes} from '@/constants';
+import useHorizontalResize from '@/modules/emote_menu/hooks/HorizontalResize';
 import {
   getCoordsOfSelected,
   getFirstCoords,
   getFirstCoordsInCategory,
   getSelectedAtCoords,
-} from '../utils/emote-list-grid.js';
-import classNames from 'classnames';
+} from '@/modules/emote_menu/utils/emote-list-grid';
+import keyCodes from '@/utils/keycodes';
+import {isMac} from '@/utils/window';
+import EmoteList from './EmoteList';
+import styles from './EmoteMenu.module.css';
+import Header from './Header';
+import Sidebar from './Sidebar';
+import Tip, {markTipAsSeen} from './Tip';
 
 let keyPressCallback;
 function setKeyPressCallback(newKeyPressCallback) {
@@ -45,8 +45,8 @@ function EmoteMenu({
   const handleRef = useRef(null);
   const emoteMenuContentRef = useRef(null);
   const [selected, setSelected] = useState(null);
-  const altPressed = useRef(false);
-  const shiftPressed = useRef(false);
+  const altPressedRef = useRef(false);
+  const shiftPressedRef = useRef(false);
   const [section, setSection] = useState(null);
   const [opened, {close, open}] = useDisclosure(false);
   const width = useHorizontalResize({boundingQuerySelector, handleRef, open: opened, placement});
@@ -55,12 +55,12 @@ function EmoteMenu({
   const [navigationMode, setNavigationMode] = useState(NavigationModeTypes.ARROW_KEYS);
   const focusRef = useFocusTrap(opened && navigationMode === NavigationModeTypes.ARROW_KEYS);
 
-  const [emoteListData, setEmoteListData] = useState({
+  const [emoteListData, setEmoteListData] = useState(() => ({
     search: '',
     rows: [],
     totalCols: emoteMenuViewStore.totalCols,
     categories: getCategories(),
-  });
+  }));
 
   const emoteListDataRef = useRef(emoteListData);
 
@@ -77,7 +77,7 @@ function EmoteMenu({
 
       const selected = getSelectedAtCoords(currentEmoteListData.rows, newCoords);
       if (section == null && selected != null) {
-        setSection(selected.category.id);
+        setSection(selected.parentCategory?.id ?? selected.category.id);
       }
 
       setSelected(selected);
@@ -183,8 +183,8 @@ function EmoteMenu({
 
   useEmoteMenuViewStoreUpdated(opened, handleEmoteMenuViewStoreUpdate);
 
-  useEffect(() => {
-    function handleKeyDown(event) {
+  const handleToggleHotkey = useCallback(
+    (event) => {
       const isPressed =
         (event.altKey && event.key === keyCodes.E) || (isMac() && event.ctrlKey && event.key === keyCodes.E);
       if (!isPressed) {
@@ -194,16 +194,18 @@ function EmoteMenu({
       event.preventDefault();
       toggle();
       markTipAsSeen(EmoteMenuTips.EMOTE_MENU_HOTKEY);
-    }
 
+      document.activeElement.blur();
+    },
+    [toggle]
+  );
+
+  useEffect(() => {
     setHandleOpen(toggle);
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [toggle]);
+    document.addEventListener('keydown', handleToggleHotkey);
+    return () => document.removeEventListener('keydown', handleToggleHotkey);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- setHandleOpen prop is stable
+  }, [handleToggleHotkey, toggle]);
 
   const handleCloseRef = useRef(handleClose);
   useEffect(() => {
@@ -211,7 +213,7 @@ function EmoteMenu({
   }, [handleClose]);
 
   const handleClick = useCallback((emote) => {
-    if (altPressed.current) {
+    if (altPressedRef.current) {
       emoteMenuViewStore.toggleFavorite(emote);
       markTipAsSeen(EmoteMenuTips.EMOTE_MENU_FAVORITE_EMOTE);
       return;
@@ -221,20 +223,21 @@ function EmoteMenu({
       return;
     }
 
-    appendToChat(emote, !shiftPressed.current);
+    appendToChat(emote, !shiftPressedRef.current);
     emoteMenuViewStore.trackHistory(emote);
 
-    if (shiftPressed.current) {
+    if (shiftPressedRef.current) {
       markTipAsSeen(EmoteMenuTips.EMOTE_MENU_PREVENT_CLOSE);
       return;
     }
 
     handleCloseRef.current();
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- runs once on mount
   }, []);
 
   const handleKeyEvent = useCallback((event) => {
-    altPressed.current = event.altKey;
-    shiftPressed.current = event.shiftKey;
+    altPressedRef.current = event.altKey;
+    shiftPressedRef.current = event.shiftKey;
   }, []);
 
   const {onKeyDown, ...restProps} = getFloatingProps();
@@ -243,6 +246,7 @@ function EmoteMenu({
     (event) => {
       onKeyDown(event);
       handleKeyEvent(event);
+      handleToggleHotkey(event);
 
       /* Events like keydown are sometimes prevented by twitch,
       likely because it can't locate the focused element inside the shadow dom.
@@ -254,8 +258,9 @@ function EmoteMenu({
         return;
       }
 
-      keyPressCallback(event, shiftPressed.current);
+      keyPressCallback(event, shiftPressedRef.current);
     },
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- handler dependencies are stable for this callback
     [handleClick, keyPressCallback, selected]
   );
 
@@ -300,7 +305,7 @@ function EmoteMenu({
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyEvent}
       {...restProps}>
-      <ScrollbarSizeTargetContext.Provider value={emoteMenuContentRef}>
+      <ScrollbarSizeTargetContext value={emoteMenuContentRef}>
         <div ref={emoteMenuContentRef} className={styles.emoteMenuContent}>
           <div
             ref={handleRef}
@@ -339,7 +344,7 @@ function EmoteMenu({
             setCoords={handleCoordsChange}
           />
         </div>
-      </ScrollbarSizeTargetContext.Provider>
+      </ScrollbarSizeTargetContext>
       {opened ? <Tip className={styles.tip} onClose={handleClose} /> : null}
     </div>
   );

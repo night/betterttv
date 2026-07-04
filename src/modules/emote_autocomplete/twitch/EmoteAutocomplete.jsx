@@ -1,13 +1,13 @@
-import {EmoteCategories, EmoteTypeFlags, SettingIds} from '../../../constants.js';
-import dom from '../../../observers/dom.js';
-import settings from '../../../settings.js';
-import {hasFlag} from '../../../utils/flags.js';
-import {createSrcSet, createSrc} from '../../../utils/image.js';
-import twitch from '../../../utils/twitch.js';
-import {getCurrentUser} from '../../../utils/user.js';
-import watcher from '../../../watcher.js';
-import chat, {getMessagePartsFromMessageElement, formatChatUser} from '../../chat/index.js';
-import emotes from '../../emotes/index.js';
+import {EmoteCategories, EmoteTypeFlags, SettingIds} from '@/constants';
+import chat, {getMessagePartsFromMessageElement, formatChatUser} from '@/modules/chat/index';
+import emotes from '@/modules/emotes/index';
+import dom from '@/observers/dom';
+import settings from '@/settings';
+import {hasFlag} from '@/utils/flags';
+import {createSrcSet, createSrc} from '@/utils/image';
+import twitch from '@/utils/twitch';
+import {getCurrentUser} from '@/utils/user';
+import watcher from '@/watcher';
 import './EmoteAutocomplete.module.css';
 
 const EMOTE_ID_BETTERTTV_PREFIX = '__BTTV__';
@@ -51,13 +51,41 @@ function getAutocompleteEmoteProvider() {
 function createTwitchEmoteSet(allEmotes) {
   return {
     emotes: allEmotes.map((emote) => ({
+      __typename: 'Emote',
       id: serializeEmoteId(emote),
       modifiers: null,
       setID: CUSTOM_SET_ID,
       token: emote.code,
+      type: 'SUBSCRIPTIONS',
+      assetType: emote.animated ? 'ANIMATED' : 'STATIC',
     })),
     id: CUSTOM_SET_ID,
   };
+}
+
+function syncSlateEmoteMap(emoteSet) {
+  const slateEmoteMapHook = twitch.getSlateEmoteMapHook();
+  if (slateEmoteMapHook == null) {
+    return;
+  }
+
+  const currentMap = slateEmoteMapHook.memoizedState;
+  const newMap = {...currentMap};
+
+  let emoteMapUpdated = false;
+
+  for (const emote of emoteSet.emotes) {
+    if (currentMap[emote.token] == null) {
+      emoteMapUpdated = true;
+      newMap[emote.token] = emote;
+    }
+  }
+
+  if (!emoteMapUpdated) {
+    return;
+  }
+
+  slateEmoteMapHook.queue.dispatch(newMap);
 }
 
 function injectEmoteSets() {
@@ -86,6 +114,9 @@ function injectEmoteSets() {
   } else {
     autocompleteEmotes[index] = emoteSet;
   }
+
+  syncSlateEmoteMap(emoteSet);
+  autocompleteEmoteProvider.forceUpdate();
 }
 
 function patchEmoteImage(image, isConnected) {
@@ -198,14 +229,13 @@ export default class EmoteAutocomplete {
       emoteAutocompleteProvider.__bttvAutocompletePatched = PATCHED_SENTINEL;
       twitchComponentDidUpdate = emoteAutocompleteProvider.componentDidUpdate;
 
-      // eslint-disable-next-line no-inner-declarations
       function bttvComponentDidUpdate(prevProps) {
         if (prevProps.emotes !== this.props.emotes) {
           injectEmoteSets();
         }
 
         if (twitchComponentDidUpdate != null) {
-          twitchComponentDidUpdate.call(this, ...prevProps);
+          twitchComponentDidUpdate.call(this, prevProps);
         }
       }
 

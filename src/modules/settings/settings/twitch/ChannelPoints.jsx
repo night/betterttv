@@ -1,14 +1,14 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, ChannelPointsFlags} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingCheckbox from '../../components/SettingCheckbox.jsx';
-import SettingCheckboxGroup from '../../components/SettingCheckboxGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds, ChannelPointsFlags} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
+import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Channel Points'});
 
-function ChannelPointsModule(props, ref) {
+function ChannelPointsModule({ref, ...props}) {
   const [channelPoints, setChannelPoints] = useStorageState(SettingIds.CHANNEL_POINTS);
 
   return (
@@ -40,11 +40,11 @@ function ChannelPointsModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(ChannelPointsModule), {
+SettingStore.registerSetting(ChannelPointsModule, {
   settingPanelId: SettingPanelIds.CHANNEL_POINTS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['channel', 'points', 'auto', 'claim'],
 });
 
-export default React.forwardRef(ChannelPointsModule);
+export default ChannelPointsModule;

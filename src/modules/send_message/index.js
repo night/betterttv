@@ -1,15 +1,15 @@
-import {PlatformTypes, SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
-import socketClient from '../../socket-client.js';
-import {getCurrentChannel} from '../../utils/channel.js';
-import debug from '../../utils/debug.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import twitch from '../../utils/twitch.js';
-import {getCurrentUser} from '../../utils/user.js';
-import watcher from '../../watcher.js';
-import anonChat from '../anon_chat/index.js';
-import chatTabCompletion from '../chat_tab_completion/index.js';
-import emojis from '../emotes/emojis.js';
+import {PlatformTypes, SettingIds} from '@/constants';
+import anonChat from '@/modules/anon_chat/index';
+import chatTabCompletion from '@/modules/chat_tab_completion/index';
+import emojis from '@/modules/emotes/emojis';
+import settings from '@/settings';
+import socketClient from '@/socket-client';
+import {getCurrentChannel} from '@/utils/channel';
+import debug from '@/utils/debug';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import twitch from '@/utils/twitch';
+import {getCurrentUser} from '@/utils/user';
+import watcher from '@/watcher';
 
 function applyTextReplacements(sendState) {
   const replacements = settings.get(SettingIds.TEXT_REPLACEMENTS);

@@ -16,7 +16,7 @@ function Icon({icon, size = 16, className}) {
       aria-hidden="true"
       focusable="false"
       className={className}>
-      {Array.isArray(svgPathData) ? svgPathData.map((path, i) => <path key={i} d={path} />) : <path d={svgPathData} />}
+      {Array.isArray(svgPathData) ? svgPathData.map((path) => <path key={path} d={path} />) : <path d={svgPathData} />}
     </svg>
   );
 }

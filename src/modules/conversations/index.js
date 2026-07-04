@@ -1,8 +1,8 @@
-import {PlatformTypes, SettingIds} from '../../constants.js';
-import settings from '../../settings.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import watcher from '../../watcher.js';
-import chat from '../chat/index.js';
+import {PlatformTypes, SettingIds} from '@/constants';
+import chat from '@/modules/chat/index';
+import settings from '@/settings';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import watcher from '@/watcher';
 
 const CHAT_USER_SELECTOR = '.thread-message__message--user-name';
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';

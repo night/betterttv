@@ -1,7 +1,7 @@
 import React from 'react';
-import useStorageState from '../../../common/hooks/StorageState.jsx';
-import {EMOTE_MENU_MIN_WIDTH} from '../../../common/stores/emote-menu-view-store.js';
-import {SettingIds} from '../../../constants.js';
+import useStorageState from '@/common/hooks/StorageState';
+import {EMOTE_MENU_MIN_WIDTH} from '@/common/stores/emote-menu-view-store';
+import {SettingIds} from '@/constants';
 
 const WINDOW_HORIZONTAL_MARGIN = 20;
 
@@ -41,6 +41,7 @@ export default function useHorizontalResize({
 
   React.useEffect(() => {
     if (!open) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- syncing resize state during a drag
       setIsResizing(false);
     }
 
@@ -68,12 +69,12 @@ export default function useHorizontalResize({
     document.addEventListener('mouseup', handleResizeEnd);
     window.addEventListener('resize', handleWindowResize);
 
-    // eslint-disable-next-line consistent-return
     return () => {
       currentRef.removeEventListener('mousedown', handleResizeStart);
       document.removeEventListener('mouseup', handleResizeEnd);
       window.removeEventListener('resize', handleWindowResize);
     };
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- setWidth is defined in this hook and is stable
   }, [handleRef, emoteMenuWidth, open]);
 
   React.useEffect(() => {
@@ -92,6 +93,7 @@ export default function useHorizontalResize({
 
     document.addEventListener('mousemove', handleResizeMove);
     return () => document.removeEventListener('mousemove', handleResizeMove);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- setWidth is defined in this hook and is stable
   }, [isResizing, boundingQuerySelector, placement]);
 
   return displayWidth;

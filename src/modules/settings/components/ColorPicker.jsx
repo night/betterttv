@@ -1,11 +1,11 @@
-import React from 'react';
+import {useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 import {ActionIcon, ColorInput, ColorPicker as MantineColorPicker, Popover} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import styles from './ColorPicker.module.css';
-import formatMessage from '../../../i18n';
 import classNames from 'classnames';
-import usePortalRef from '../../../common/hooks/PortalRef.jsx';
-import {useDismiss, useFloating, useInteractions} from '@floating-ui/react';
+import React from 'react';
+import usePortalRef from '@/common/hooks/PortalRef';
+import formatMessage from '@/i18n';
+import styles from './ColorPicker.module.css';
 
 function ColorPicker({value, defaultValue, placeholder, onChange, className, ...props}) {
   const [opened, {open, close}] = useDisclosure(false);

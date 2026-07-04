@@ -1,15 +1,15 @@
-import React, {useContext} from 'react';
-import styles from './PageHeader.module.css';
-import {ActionIcon, Avatar, CloseButton, Title} from '@mantine/core';
-import {PageContext} from '../contexts/PageContext.jsx';
-import classNames from 'classnames';
-import useAuthStore from '../../../stores/auth.js';
-import {useShallow} from 'zustand/react/shallow';
-import Icon from '../../../common/components/Icon.jsx';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
+import {ActionIcon, Avatar, CloseButton, Title} from '@mantine/core';
+import classNames from 'classnames';
+import React, {use} from 'react';
+import {useShallow} from 'zustand/react/shallow';
+import Icon from '@/common/components/Icon';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import useAuthStore from '@/stores/auth';
+import styles from './PageHeader.module.css';
 
-const PageHeader = React.forwardRef(({className, leftContent, onClose}, ref) => {
-  const {setSidenavOpen} = useContext(PageContext);
+const PageHeader = ({className, leftContent, onClose, ref}) => {
+  const {setSidenavOpen} = use(PageContext);
   const currentUser = useAuthStore(useShallow((state) => state.user));
   return (
     <div ref={ref} className={classNames(styles.header, className)}>
@@ -29,6 +29,6 @@ const PageHeader = React.forwardRef(({className, leftContent, onClose}, ref) => 
       <CloseButton className={styles.closeButton} radius="lg" variant="subtle" size="md" onClick={onClose} />
     </div>
   );
-});
+};
 
 export default PageHeader;

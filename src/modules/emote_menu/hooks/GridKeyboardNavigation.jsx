@@ -1,5 +1,5 @@
 import {useCallback} from 'react';
-import keyCodes from '../../../utils/keycodes.js';
+import keyCodes from '@/utils/keycodes';
 
 function travelUp(rowColumnCounts, {x, y}, maxColumnCount, numBlocks = 1) {
   let newY = Math.max(0, y - numBlocks);
@@ -162,6 +162,7 @@ export default function useGridKeyboardNavigation({coords, setCoords, rowColumnC
 
       setCoords(newCoords);
     },
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- setCoords is stable; navigation reads current coords
     [coords, rowColumnCounts]
   );
 

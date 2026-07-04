@@ -1,13 +1,13 @@
-import {PlatformTypes} from '../../constants.js';
-import extension from '../../utils/extension.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import {getPlatform} from '../../utils/window.js';
+import {PlatformTypes} from '@/constants';
+import extension from '@/utils/extension';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import {getPlatform} from '@/utils/window';
 
 class GlobalCSSModule {
   constructor() {
     loadModuleForPlatforms(
-      [PlatformTypes.TWITCH, () => import('./twitch.js')],
-      [PlatformTypes.YOUTUBE, () => import('./youtube.js')]
+      [PlatformTypes.TWITCH, () => import('./twitch')],
+      [PlatformTypes.YOUTUBE, () => import('./youtube')]
     );
   }
 

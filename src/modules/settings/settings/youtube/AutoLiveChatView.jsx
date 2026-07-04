@@ -1,14 +1,14 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingSwitch from '../../components/SettingSwitch.jsx';
-import SettingGroup from '../../components/SettingGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Live Chat View'});
 
-function EmoteAutoLiveChatView(props, ref) {
+function EmoteAutoLiveChatView({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.AUTO_LIVE_CHAT_VIEW);
 
   return (
@@ -25,11 +25,11 @@ function EmoteAutoLiveChatView(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(EmoteAutoLiveChatView), {
+SettingStore.registerSetting(EmoteAutoLiveChatView, {
   settingPanelId: SettingPanelIds.AUTO_LIVE_CHAT_VIEW,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['auto', 'live', 'chat', 'view'],
 });
 
-export default React.forwardRef(EmoteAutoLiveChatView);
+export default EmoteAutoLiveChatView;

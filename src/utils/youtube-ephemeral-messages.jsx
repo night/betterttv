@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import watcher from '../watcher.js';
-import {getElementData} from './youtube.js';
+import watcher from '@/watcher';
+import {getElementData} from './youtube';
 
 const CHAT_ITEMS_SELECTOR = '.yt-live-chat-item-list-renderer > #items';
 
@@ -44,7 +44,7 @@ export async function sendEphemeralMessage(message) {
     return;
   }
   if (YoutubeEphemeralMessage == null) {
-    YoutubeEphemeralMessage = (await import('../common/components/YoutubeEphemeralMessage.jsx')).default;
+    YoutubeEphemeralMessage = (await import('@/common/components/YoutubeEphemeralMessage')).default;
   }
   const bttvMessageContainer = document.createElement('div');
   bttvMessageContainer.id = 'bttv-chat-admin-message';

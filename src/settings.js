@@ -1,4 +1,6 @@
 import semver from 'semver';
+import {getChangedFlags, hasFlag, setFlag} from '@/utils/flags';
+import SafeEventEmitter from '@/utils/safe-event-emitter';
 import {
   EXT_VER,
   SettingIds,
@@ -7,10 +9,8 @@ import {
   ChatFlags,
   EmoteMenuTypes,
   SidebarFlags,
-} from './constants.js';
-import storage from './storage.js';
-import {getChangedFlags, hasFlag, setFlag} from './utils/flags.js';
-import SafeEventEmitter from './utils/safe-event-emitter.js';
+} from './constants';
+import storage from './storage';
 
 export const SETTINGS_STORAGE_KEY = 'settings';
 let settings = {};

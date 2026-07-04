@@ -1,0 +1,102 @@
+.settingGroupContent {
+  /* Override Panel's default 20px padding regardless of stylesheet order so the
+     table sits flush to the card's rounded border (otherwise the inset table
+     borders show as a stray inner border). */
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.newEntryButton {
+  margin-left: auto;
+}
+
+.table {
+  font-size: var(--mantine-font-size-md);
+
+  th {
+    font-weight: 500;
+  }
+
+  th,
+  td {
+    padding: 8px 12px;
+    height: 36px;
+
+    &.dataCell {
+      padding: 0 12px;
+    }
+
+    &.dataCellMiddle {
+      padding: 0 12px;
+      vertical-align: middle;
+    }
+
+    &.selectColumn {
+      padding: 0 0 0 12px;
+    }
+
+    &.actionsColumn {
+      width: 0;
+      padding: 0;
+    }
+
+    &.colorColumn {
+      width: 0;
+      padding: 0;
+    }
+  }
+
+  --table-border-color: var(--mantine-color-default-border);
+
+  td:hover {
+    background-color: var(--table-hover-color);
+  }
+}
+
+.selectInput {
+  font-size: var(--mantine-font-size-md);
+}
+
+.textInput {
+  font-size: var(--mantine-font-size-md);
+}
+
+.textInput:focus {
+  box-shadow: unset;
+}
+
+.textInputRoot,
+.textInputWrapper,
+.textInput {
+  height: 100%;
+}
+
+.actionIcon {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 8px;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.actionIconIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.emptyText {
+  padding: 20px;
+  text-align: center;
+}
+
+td.actionsColumn,
+td.colorColumn {
+  width: 36px;
+  min-width: 36px;
+  max-width: 36px;
+}

@@ -1,8 +1,8 @@
+import {Text} from '@mantine/core';
 import classNames from 'classnames';
 import React, {useCallback} from 'react';
-import {Text} from '@mantine/core';
-import EmoteButton from './EmoteButton.jsx';
-import {getEmoteKey} from '../utils/emote-list-grid.js';
+import {getEmoteKey} from '@/modules/emote_menu/utils/emote-list-grid';
+import EmoteButton from './EmoteButton';
 import styles from './EmoteListRow.module.css';
 
 export function HeaderRow({style, className, row}) {

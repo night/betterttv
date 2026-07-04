@@ -1,0 +1,71 @@
+.emote {
+  white-space: normal;
+  padding: 0px !important;
+  padding-inline: 0px !important;
+  padding-block: 8px !important;
+  max-width: 360px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  gap: 8px;
+}
+
+.details {
+  padding: 0px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+.name {
+  width: 100%;
+  font-weight: 700;
+  text-align: center;
+}
+
+.provider,
+.channel {
+  width: 100%;
+  font-weight: 500;
+  color: var(--mantine-color-dimmed-inverse);
+  text-align: center;
+}
+
+.imageWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--mantine-radius-sm);
+  margin-inline: 8px;
+  /* fixed height + predicted aspect ratio reserve the box so the tooltip
+     doesn't resize while the preview loads */
+  height: 112px;
+  max-width: calc(100% - 16px);
+  line-height: 0;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+}
+
+.imageLoading {
+  visibility: hidden;
+}

@@ -1,10 +1,10 @@
-import React, {useMemo, useRef} from 'react';
-import {DEFAULT_PRIMARY_COLOR, SettingIds} from '../../constants.js';
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Button,
   Checkbox,
+  alpha,
   createTheme,
   defaultVariantColorsResolver,
   v8CssVariablesResolver,
@@ -17,23 +17,24 @@ import {
   Radio,
   Switch,
   mergeMantineTheme,
-  getThemeColor,
-  alpha,
   Loader,
 } from '@mantine/core';
-import buttonStyles from './styles/button.module.css';
-import pillStyles from './styles/pill.module.css';
-import inputStyles from './styles/input.module.css';
-import kbdStyles from './styles/kbd.module.css';
-import switchStyles from './styles/switch.module.css';
-import checkboxStyles from './styles/checkbox.module.css';
-import radioStyles from './styles/radio.module.css';
-import useStorageState from '../../common/hooks/StorageState.jsx';
-import {ModalsProvider} from '@mantine/modals';
-import useProRequiredState from '../../common/hooks/ProRequiredState.jsx';
-import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '../../common/components/LoaderIcon.jsx';
-import {PortalContext} from '../../common/contexts/PortalContext.jsx';
 import {useMounted} from '@mantine/hooks';
+import {ModalsProvider} from '@mantine/modals';
+import React, {useMemo, useRef} from 'react';
+import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '@/common/components/LoaderIcon';
+import {PortalContext} from '@/common/contexts/PortalContext';
+import useProRequiredState from '@/common/hooks/ProRequiredState';
+import useStorageState from '@/common/hooks/StorageState';
+import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
+import badgeStyles from '@/modules/shadow_dom/styles/badge.module.css';
+import buttonStyles from '@/modules/shadow_dom/styles/button.module.css';
+import checkboxStyles from '@/modules/shadow_dom/styles/checkbox.module.css';
+import inputStyles from '@/modules/shadow_dom/styles/input.module.css';
+import kbdStyles from '@/modules/shadow_dom/styles/kbd.module.css';
+import pillStyles from '@/modules/shadow_dom/styles/pill.module.css';
+import radioStyles from '@/modules/shadow_dom/styles/radio.module.css';
+import switchStyles from '@/modules/shadow_dom/styles/switch.module.css';
 
 const mantineTheme = createTheme({
   primaryColor: DEFAULT_PRIMARY_COLOR,
@@ -131,6 +132,7 @@ const mantineTheme = createTheme({
       defaultProps: {variant: 'elevated', color: 'dark'},
     }),
     Avatar: Avatar.extend({defaultProps: {color: 'dark'}}),
+    Badge: Badge.extend({classNames: badgeStyles}),
     Kbd: Kbd.extend({defaultProps: {size: 'lg'}, classNames: kbdStyles}),
     Loader: Loader.extend({
       defaultProps: {
@@ -151,18 +153,25 @@ const resolver = (theme) => ({
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
     '--mantine-color-default-border': 'var(--mantine-color-gray-0)',
     '--mantine-color-default-border': 'var(--mantine-color-dark-9)',
-    '--mantine-primary-color-light-active': alpha(getThemeColor(theme.primaryColor, theme), 0.3),
   },
   dark: {
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
+    '--mantine-color-text-inverse': 'var(--mantine-color-gray-9)',
+    '--mantine-color-dimmed-inverse': 'var(--mantine-color-gray-6)',
     '--mantine-color-default-border': 'var(--mantine-color-dark-6)',
     '--mantine-color-body-secondary': 'var(--mantine-color-dark-9)',
     '--mantine-color-body': 'var(--mantine-color-dark-8)',
+    '--mantine-color-body-inverse': 'var(--mantine-color-dark-0)',
+    '--mantine-primary-color-light-active': alpha(theme.colors[theme.primaryColor][theme.primaryShade - 2], 0.3),
   },
   light: {
     '--mantine-color-text': 'var(--mantine-color-gray-9)',
+    '--mantine-color-text-inverse': 'var(--mantine-color-dark-0)',
+    '--mantine-color-dimmed-inverse': 'var(--mantine-color-gray-5)',
     '--mantine-color-default-border': 'var(--mantine-color-gray-3)',
     '--mantine-color-body-secondary': 'var(--mantine-color-gray-0)',
+    '--mantine-color-body-inverse': 'var(--mantine-color-gray-9)',
+    '--mantine-primary-color-light-active': alpha(theme.colors[theme.primaryColor][theme.primaryShade], 0.18),
   },
 });
 
@@ -203,7 +212,7 @@ function ThemeProvider({children, ...props}) {
   }, [normalizedPrimaryColor]);
 
   return (
-    <PortalContext.Provider value={portalRef}>
+    <PortalContext value={portalRef}>
       <MantineProvider
         forceColorScheme={dark ? 'dark' : 'light'}
         classNamesPrefix="bttv-mantine-"
@@ -214,10 +223,17 @@ function ThemeProvider({children, ...props}) {
         <div ref={portalRef} id="bttv-shadow-dom-portal" />
         {/* portalRef.current is not available during the initial render */}
         {isMounted ? (
-          <ModalsProvider modalProps={{portalProps: {target: portalRef.current}}}>{children}</ModalsProvider>
+          /* withinPortal:false must be the provider-level default, not just per-modal. The manager
+          renders a single persistent Modal whose per-modal props only apply while a modal is open,
+          so without this the closed Modal falls back to withinPortal:true (portaled) and the first
+          open flips it to inline — remounting the Transition already-open and skipping the enter
+          animation. Keeping it false in both states avoids that remount. */
+          <ModalsProvider modalProps={{withinPortal: false, portalProps: {target: portalRef.current}}}>
+            {children}
+          </ModalsProvider>
         ) : null}
       </MantineProvider>
-    </PortalContext.Provider>
+    </PortalContext>
   );
 }
 

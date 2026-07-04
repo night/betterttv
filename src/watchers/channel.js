@@ -1,6 +1,6 @@
-import {getCachedUser} from '../actions/users.js';
-import {getCurrentChannel} from '../utils/channel.js';
-import debug from '../utils/debug.js';
+import {getCachedUser} from '@/actions/users';
+import {getCurrentChannel} from '@/utils/channel';
+import debug from '@/utils/debug';
 
 let channel;
 let watcher;

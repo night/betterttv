@@ -1,10 +1,10 @@
-import {PlatformTypes, SettingIds} from '../../constants.js';
-import formatMessage from '../../i18n/index.js';
-import settings from '../../settings.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import twitch from '../../utils/twitch.js';
-import {getCurrentUser} from '../../utils/user.js';
-import watcher from '../../watcher.js';
+import {PlatformTypes, SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import settings from '@/settings';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import twitch from '@/utils/twitch';
+import {getCurrentUser} from '@/utils/user';
+import watcher from '@/watcher';
 
 const forcedURL = window.location.search.includes('bttv_anon_chat=true');
 

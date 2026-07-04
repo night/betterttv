@@ -20,24 +20,28 @@
 
 .textContainer {
   width: 100%;
+  min-width: 0;
   display: flex;
-  gap: 16px;
+  gap: 8px;
   align-items: center;
 }
 
 .selected {
   color: var(--mantine-primary-color-filled);
   background-color: var(--mantine-primary-color-light-hover);
+  --bttv-dimmed-active-color: var(--mantine-primary-color-filled-hover);
 }
 
 .subtitle {
+  min-width: 0;
+  margin-left: auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .selected .subtitle {
-  color: var(--mantine-primary-color-filled) !important;
+  color: var(--mantine-primary-color-light) !important;
 }
 
 .active,
@@ -49,8 +53,9 @@
 }
 
 .title {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-weight: 600;
-  flex: 1;
 }
 
 @media (max-width: 400px) {

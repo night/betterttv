@@ -36,11 +36,6 @@
   }
 }
 
-.colorColumn,
-.actionsColumn {
-  width: 0;
-}
-
 .targetDataCell,
 .keywordDataCell,
 .colorDataCell,
@@ -148,6 +143,50 @@
 .noKeywordsText {
   padding: 20px;
   text-align: center;
+}
+
+.keywordHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.keywordHeader .infoButton {
+  color: var(--mantine-color-dimmed);
+}
+
+.keywordHeader .infoButton:hover {
+  color: var(--mantine-color-text);
+}
+
+.regexModalBody {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  row-gap: 16px;
+}
+
+.regexTableWrapper {
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+}
+
+/* Mantine sets --table-border-color directly on the table element, so it must
+   be overridden there (not on the wrapper) for the inner borders to match. */
+.regexTableWrapper .regexTable {
+  --table-border-color: var(--mantine-color-default-border);
+}
+
+.regexTable td,
+.regexTable th {
+  vertical-align: top;
+}
+
+.regexTable td:first-child,
+.regexTable th:first-child {
+  white-space: nowrap;
 }
 
 .channelOption {

@@ -1,9 +1,18 @@
 import React from 'react';
-import formatMessage from '../../../i18n/index.js';
-import domObserver from '../../../observers/dom.js';
-import Modal from '../components/SettingsModal.jsx';
-import shadowDOM from '../../shadow_dom';
-import {ShadowDOMComponentIds} from '../../../constants.js';
+import iconButtonStyles from '@/common/styles/IconButton.module.css';
+import {ShadowDOMComponentIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import Modal from '@/modules/settings/components/SettingsModal';
+import promotionStore from '@/modules/settings/stores/promotion-store';
+import shadowDOM from '@/modules/shadow_dom';
+import {bindTooltip} from '@/modules/tooltip/index';
+import domObserver from '@/observers/dom';
+import {importAll} from '@/utils/modules';
+import topNavStyles from './TopNavButton.module.css';
+
+const TOP_NAV_MENU_SELECTOR = '.top-nav__menu';
+const TOP_NAV_USER_MENU_SELECTOR = '[data-a-target="user-menu-toggle"]';
+const TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID = 'bttv-top-nav-settings-button-container';
 
 let handleOpen;
 function setHandleOpen(newHandleOpen) {
@@ -16,13 +25,15 @@ export default class SettingsModule {
     domObserver.on('a[data-test-selector="user-menu-dropdown__settings-link"],.tw-drop-down-menu-item-figure', () => {
       this.renderSettingsMenuOption();
     });
+    domObserver.on(TOP_NAV_MENU_SELECTOR, () => {
+      this.renderTopNavButton();
+    });
+    promotionStore.on('changed', () => this.updateTopNavPromotionIndicator());
   }
 
   async load() {
-    // eslint-disable-next-line import/no-unresolved
-    await import('../settings/global/*.jsx');
-    // eslint-disable-next-line import/no-unresolved
-    await import('../settings/twitch/*.jsx');
+    await importAll(import.meta.glob('../settings/global/*.jsx'));
+    await importAll(import.meta.glob('../settings/twitch/*.jsx'));
     this.renderSettings();
   }
 
@@ -86,6 +97,44 @@ export default class SettingsModule {
     const bttvSettingsIconDropDown = document.createElement('figure');
     bttvSettingsIconDropDown.classList.add('bttvSettingsIconDropDown');
     dropdownIconAspect.appendChild(bttvSettingsIconDropDown);
+  }
+
+  renderTopNavButton() {
+    const iconRow = document.querySelector(`${TOP_NAV_MENU_SELECTOR} > *:has(${TOP_NAV_USER_MENU_SELECTOR})`);
+    if (iconRow == null) {
+      return;
+    }
+
+    iconRow.classList.add(topNavStyles.iconRow);
+
+    if (document.getElementById(TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID) != null) {
+      return;
+    }
+
+    const container = document.createElement('div');
+    container.setAttribute('id', TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID);
+    container.classList.add(topNavStyles.container);
+
+    const button = document.createElement('button');
+    button.classList.add(iconButtonStyles.button);
+    button.setAttribute('data-a-target', 'betterttv-settings-button');
+    button.addEventListener('click', () => handleOpen?.(true));
+    bindTooltip(button, {content: formatMessage({defaultMessage: 'BetterTTV Settings'})});
+
+    container.appendChild(button);
+    iconRow.appendChild(container);
+
+    this.updateTopNavPromotionIndicator();
+  }
+
+  updateTopNavPromotionIndicator() {
+    const container = document.getElementById(TOP_NAV_SETTINGS_BUTTON_CONTAINER_ID);
+    const button = container?.querySelector('button');
+    if (button == null) {
+      return;
+    }
+
+    button.classList.toggle(topNavStyles.indicator, promotionStore.hasAvailablePromotion());
   }
 
   openSettings({scrollToSettingPanelId} = {scrollToSettingPanelId: null}) {

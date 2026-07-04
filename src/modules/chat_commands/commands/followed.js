@@ -1,10 +1,10 @@
 import gql from 'graphql-tag';
 import {DateTime} from 'luxon';
-import formatMessage from '../../../i18n/index.js';
-import {getCurrentChannel} from '../../../utils/channel.js';
-import twitch from '../../../utils/twitch.js';
-import {getCurrentUser} from '../../../utils/user.js';
-import commandStore, {PermissionLevels} from '../store.js';
+import formatMessage from '@/i18n/index';
+import commandStore, {PermissionLevels} from '@/modules/chat_commands/store';
+import {getCurrentChannel} from '@/utils/channel';
+import twitch from '@/utils/twitch';
+import {getCurrentUser} from '@/utils/user';
 
 commandStore.registerCommand({
   name: 'followed',

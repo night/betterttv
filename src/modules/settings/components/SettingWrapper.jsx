@@ -1,7 +1,9 @@
-import React from 'react';
-import {Badge, Text, Title} from '@mantine/core';
-import styles from './SettingWrapper.module.css';
+import {Badge, Text, Title, Tooltip} from '@mantine/core';
 import classNames from 'classnames';
+import React from 'react';
+import usePortalRef from '@/common/hooks/PortalRef';
+import formatMessage from '@/i18n';
+import styles from './SettingWrapper.module.css';
 
 function SettingWrapper({
   name,
@@ -9,10 +11,12 @@ function SettingWrapper({
   children,
   showProBadge = false,
   showBetaBadge = false,
+  showComingSoonBadge = false,
   reverse = false,
   wrap = false,
   controlClassName = '',
 }) {
+  const portalRef = usePortalRef();
   return (
     <div className={classNames(styles.root, {[styles.shouldWrap]: wrap})}>
       {!reverse ? <div className={classNames(styles.control, controlClassName)}>{children}</div> : null}
@@ -21,14 +25,40 @@ function SettingWrapper({
           <Title order={3} className={styles.title}>
             {name}
             {showProBadge ? (
-              <Badge color="indigo" variant="elevated" size="lg">
-                Pro
-              </Badge>
+              <Tooltip
+                withArrow
+                label={
+                  <Text size="md">
+                    {formatMessage({defaultMessage: 'This feature is only available to BetterTTV Pro users.'})}
+                  </Text>
+                }
+                portalProps={{target: portalRef.current}}>
+                <Badge color="indigo" variant="elevated" size="lg">
+                  {formatMessage({defaultMessage: 'Pro'})}
+                </Badge>
+              </Tooltip>
             ) : null}
             {showBetaBadge ? (
-              <Badge color="orange" variant="elevated" size="lg">
-                Beta
-              </Badge>
+              <Tooltip
+                withArrow
+                label={
+                  <Text size="md">{formatMessage({defaultMessage: 'This feature is new, and may be changed.'})}</Text>
+                }
+                portalProps={{target: portalRef.current}}>
+                <Badge color="orange" variant="elevated" size="lg">
+                  {formatMessage({defaultMessage: 'Beta'})}
+                </Badge>
+              </Tooltip>
+            ) : null}
+            {showComingSoonBadge ? (
+              <Tooltip
+                withArrow
+                label={<Text size="md">{formatMessage({defaultMessage: 'This feature is not available yet.'})}</Text>}
+                portalProps={{target: portalRef.current}}>
+                <Badge color="green" variant="elevated" size="lg">
+                  {formatMessage({defaultMessage: 'Coming Soon'})}
+                </Badge>
+              </Tooltip>
             ) : null}
           </Title>
         ) : null}

@@ -1,24 +1,24 @@
+import {Button} from '@mantine/core';
 import {saveAs} from 'file-saver';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import formatMessage from '../../../i18n/index.js';
-import storage from '../../../storage.js';
-import Footer from '../components/Footer.jsx';
-import PageScrollBody from '../components/PageScrollBody.jsx';
-import SettingGroup from '../components/SettingGroup.jsx';
-import SettingWrapper from '../components/SettingWrapper.jsx';
-import ImportSetting from '../components/ImportSetting.jsx';
-import ResetSetting from '../components/ResetSetting.jsx';
-import {Button} from '@mantine/core';
-import useAuthStore, {getCredentials, setCredentials} from '../../../stores/auth.js';
-import {revokeAccessToken} from '../../../utils/oauth.js';
-import {executeOAuth2SignInAndSetCredentials} from '../../../utils/auth.js';
-import {openConfirmModal} from '../../../common/utils/modal.js';
-import useCloudBackupSettings from '../../../common/hooks/CloudBackup.jsx';
-import SettingSwitch from '../components/SettingSwitch.jsx';
-import useProRequiredState from '../../../common/hooks/ProRequiredState.jsx';
-import Promotion from '../components/Promotion.jsx';
-import {EXT_VER} from '../../../constants.js';
+import useCloudBackupSettings from '@/common/hooks/CloudBackup';
+import useProRequiredState from '@/common/hooks/ProRequiredState';
+import {openConfirmModal} from '@/common/utils/modal';
+import {EXT_VER, SettingsPrompts} from '@/constants';
+import formatMessage from '@/i18n/index';
+import Footer from '@/modules/settings/components/Footer';
+import ImportSetting from '@/modules/settings/components/ImportSetting';
+import PageScrollBody from '@/modules/settings/components/PageScrollBody';
+import Promotion from '@/modules/settings/components/Promotion';
+import ResetSetting from '@/modules/settings/components/ResetSetting';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import storage from '@/storage';
+import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
+import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
+import {revokeAccessToken} from '@/utils/oauth';
 
 function BackupSetting({description, disabled}) {
   function backupFile() {
@@ -72,6 +72,7 @@ function CloudBackupSetting() {
 function SignInButton() {
   const user = useAuthStore(useShallow((state) => state.user));
   const [signingIn, setSigningIn] = useState(false);
+  const [, setCloudBackupSettings] = useCloudBackupSettings();
 
   function signIn() {
     setSigningIn(true);
@@ -83,6 +84,9 @@ function SignInButton() {
     const {accessToken} = getCredentials();
     await revokeAccessToken(accessToken);
     setCredentials(null);
+    setCloudBackupSettings({enabled: false});
+    // Re-arm the one-time settings sign-in prompt so the user is nudged again next time.
+    storage.set(SettingsPrompts.SIGN_IN, false);
   }
 
   function handleSignOut() {

@@ -1,29 +1,27 @@
-import classNames from 'classnames';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import styles from './VirtualizedList.module.css';
-import throttle from 'lodash.throttle';
 import {useElementSize, useMergedRef} from '@mantine/hooks';
-import {useScrollbarSize} from '../../../common/components/Scrollbar.jsx';
+import classNames from 'classnames';
+import throttle from 'lodash.throttle';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useScrollbarSize} from '@/common/components/Scrollbar';
+import styles from './VirtualizedList.module.css';
 
-function VirtualizedList(
-  {
-    className,
-    totalRows,
-    rowHeight,
-    renderRow,
-    stickyRows,
-    onHeaderChange = () => {},
-    bottomGuardHeight = 0,
-    topGuardHeight = 0,
-    overscanCount = 10,
-    ...props
-  },
-  forwardedRef
-) {
+function VirtualizedList({
+  className,
+  totalRows,
+  rowHeight,
+  renderRow,
+  stickyRows,
+  onHeaderChange = () => {},
+  bottomGuardHeight = 0,
+  topGuardHeight = 0,
+  overscanCount = 10,
+  ref,
+  ...props
+}) {
   const wrapperRef = useRef(null);
   const {ref: sizeRef, height: windowHeight} = useElementSize(null);
-  const mergedRef = useMergedRef(forwardedRef, sizeRef, wrapperRef);
-  const headerIndex = useRef(null);
+  const mergedRef = useMergedRef(ref, sizeRef, wrapperRef);
+  const headerIndexRef = useRef(null);
   useScrollbarSize(wrapperRef);
 
   const listHeight = useMemo(
@@ -76,25 +74,25 @@ function VirtualizedList(
         top = (startIndex - 1) * rowHeight;
       }
 
-      return {rows: rowsVisible, top, headerIndex: stickyRowIndex};
+      return {rows: rowsVisible, top, headerIndexRef: stickyRowIndex};
     },
-    [totalRows, rowHeight, windowHeight, stickyRows, overscanCount, onHeaderChange]
+    [totalRows, rowHeight, windowHeight, stickyRows, overscanCount]
   );
 
-  const [data, setData] = useState(handleViewportUpdate(0));
+  const [data, setData] = useState(() => handleViewportUpdate(0));
 
   const handleScroll = useCallback(() => {
     const currentWrapperRef = wrapperRef.current;
     const scrollTop = currentWrapperRef?.scrollTop ?? 0;
 
-    const {rows, top, headerIndex: newHeaderIndex} = handleViewportUpdate(scrollTop);
+    const {rows, top, headerIndexRef: newHeaderIndex} = handleViewportUpdate(scrollTop);
 
-    if (headerIndex.current != null && headerIndex.current !== newHeaderIndex) {
+    if (headerIndexRef.current != null && headerIndexRef.current !== newHeaderIndex) {
       onHeaderChange(newHeaderIndex);
     }
 
-    headerIndex.current = newHeaderIndex;
-    setData({rows, top, headerIndex: newHeaderIndex});
+    headerIndexRef.current = newHeaderIndex;
+    setData({rows, top, headerIndexRef: newHeaderIndex});
   }, [handleViewportUpdate, onHeaderChange]);
 
   useEffect(() => {
@@ -111,7 +109,7 @@ function VirtualizedList(
 
   const rows = useMemo(
     () => data.rows.map((value) => renderRow({key: `row-${value}`, index: value, style: {height: `${rowHeight}px`}})),
-    [data.rows, renderRow]
+    [data.rows, renderRow, rowHeight]
   );
 
   return (
@@ -126,4 +124,4 @@ function VirtualizedList(
   );
 }
 
-export default React.forwardRef(VirtualizedList);
+export default VirtualizedList;

@@ -1,12 +1,12 @@
-import React, {forwardRef, useContext, useEffect, useRef} from 'react';
-import classNames from 'classnames';
 import {useMergedRef} from '@mantine/hooks';
-import styles from '../styles/Scrollbar.module.css';
+import classNames from 'classnames';
+import React, {use, useEffect, useRef} from 'react';
+import styles from '@/common/styles/Scrollbar.module.css';
 
 export const ScrollbarSizeTargetContext = React.createContext(null);
 
 export function useScrollbarSize(scrollRef, {mirrorPadding = false, className} = {}) {
-  const sizeTargetRef = useContext(ScrollbarSizeTargetContext);
+  const sizeTargetRef = use(ScrollbarSizeTargetContext);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -52,7 +52,7 @@ export function useScrollbarSize(scrollRef, {mirrorPadding = false, className} =
   }, [scrollRef, sizeTargetRef, mirrorPadding, className]);
 }
 
-export const Scrollbar = forwardRef(({children, className, mirrorPadding = false, ...props}, ref) => {
+export const Scrollbar = ({children, className, mirrorPadding = false, ref, ...props}) => {
   const innerRef = useRef(null);
   const mergedRef = useMergedRef(ref, innerRef);
   useScrollbarSize(innerRef, {mirrorPadding, className});
@@ -62,6 +62,6 @@ export const Scrollbar = forwardRef(({children, className, mirrorPadding = false
       {children}
     </div>
   );
-});
+};
 
 export default Scrollbar;

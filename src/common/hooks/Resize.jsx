@@ -6,6 +6,7 @@ export default function useResize(callback) {
     function handleResize() {
       requestAnimationFrame(callback);
       // Twitch animates chat moving on zoom changes
+      // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout -- fire-and-forget reflow nudge; listener removed on unmount
       setTimeout(() => requestAnimationFrame(callback), 500);
     }
 
@@ -13,5 +14,6 @@ export default function useResize(callback) {
 
     window.addEventListener('resize', requestResize);
     return () => window.removeEventListener('resize', requestResize);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- resize listener is intentionally bound once on mount
   }, []);
 }

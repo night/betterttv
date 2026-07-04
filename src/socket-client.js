@@ -1,10 +1,10 @@
 import throttle from 'lodash.throttle';
-import {SOCKET_ENDPOINT} from './constants.js';
-import useAuthStore, {getCredentials, setCredentials} from './stores/auth.js';
-import {refreshAndSetCredentials} from './utils/auth.js';
-import debug from './utils/debug.js';
-import SafeEventEmitter from './utils/safe-event-emitter.js';
-import {getCurrentUser} from './utils/user.js';
+import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
+import {refreshAndSetCredentials} from '@/utils/auth';
+import debug from '@/utils/debug';
+import SafeEventEmitter from '@/utils/safe-event-emitter';
+import {getCurrentUser} from '@/utils/user';
+import {SOCKET_ENDPOINT} from './constants';
 
 const CONNECTION_STATES = {
   DISCONNECTED: 0,
@@ -21,6 +21,8 @@ export const EventNames = {
   SETTINGS_UPDATE: 'settings_update',
   AUTHENTICATION_UPDATE: 'authentication_update',
   USER_UPDATE: 'user_update',
+  SESSION_LOCK_UPDATE: 'session_lock_update',
+  SESSION_LOCK_RELEASED: 'session_lock_released',
 };
 
 const WEBSOCKET_ENDPOINT = SOCKET_ENDPOINT ?? 'wss://sockets.betterttv.net/ws';
@@ -32,6 +34,9 @@ let authenticated = false;
 let retryAuthenticationRequest = true;
 
 const joinedChannels = [];
+// session locks this client wants to hold, and the subset the server has granted us
+const desiredSessionLocks = new Set();
+const heldSessionLocks = new Set();
 
 function makeSocketChannel(provider, providerId) {
   return `${provider}:${providerId}`;
@@ -84,8 +89,16 @@ class SocketClient extends SafeEventEmitter {
 
     if (authenticated) {
       retryAuthenticationRequest = true;
+      // session locks live on the (possibly new) authenticated connection, so (re)claim any we want
+      heldSessionLocks.clear();
+      for (const key of desiredSessionLocks) {
+        this.send('acquire_session_lock', {key});
+      }
       return;
     }
+
+    // our locks are gone once we lose authentication
+    heldSessionLocks.clear();
 
     if (data.reason === 'invalid_token') {
       if (!retryAuthenticationRequest) {
@@ -153,13 +166,67 @@ class SocketClient extends SafeEventEmitter {
         handleUserUpdateEvent(evt.data);
       }
 
+      if (evt.name === EventNames.SESSION_LOCK_UPDATE) {
+        this.handleSessionLockUpdate(evt.data);
+      }
+
+      if (evt.name === EventNames.SESSION_LOCK_RELEASED) {
+        this.handleSessionLockReleased(evt.data);
+      }
+
       this.emit(evt.name, evt.data);
     };
+  }
+
+  // result of this session's own acquire/release request
+  handleSessionLockUpdate({key, acquired} = {}) {
+    if (key == null) {
+      return;
+    }
+
+    if (acquired) {
+      heldSessionLocks.add(key);
+    } else {
+      heldSessionLocks.delete(key);
+    }
+  }
+
+  // a holder (on any server) freed this lock; reclaim it if we want it and don't hold it
+  handleSessionLockReleased({key} = {}) {
+    if (key == null || heldSessionLocks.has(key) || !desiredSessionLocks.has(key)) {
+      return;
+    }
+
+    this.send('acquire_session_lock', {key});
+  }
+
+  acquireSessionLock(key) {
+    desiredSessionLocks.add(key);
+    this.send('acquire_session_lock', {key});
+  }
+
+  releaseSessionLock(key) {
+    // gate on desire, not held: an acquire may still be in flight (not yet granted),
+    // and releasing only on `held` would leak that lock on the server if the grant lands
+    // after we give up. the server ignores a release from a non-holder, so this is safe.
+    const wasDesired = desiredSessionLocks.delete(key);
+    heldSessionLocks.delete(key);
+
+    if (wasDesired) {
+      this.send('release_session_lock', {key});
+    }
+  }
+
+  hasSessionLock(key) {
+    return heldSessionLocks.has(key);
   }
 
   reconnect() {
     if (state === CONNECTION_STATES.CONNECTING) return;
     state = CONNECTION_STATES.DISCONNECTED;
+
+    // locks do not survive a dropped connection; we re-acquire after re-authenticating
+    heldSessionLocks.clear();
 
     if (socket) {
       try {

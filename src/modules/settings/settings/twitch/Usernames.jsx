@@ -1,14 +1,14 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, UsernameFlags} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingCheckbox from '../../components/SettingCheckbox.jsx';
-import SettingCheckboxGroup from '../../components/SettingCheckboxGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds, UsernameFlags} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
+import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Usernames'});
 
-function UsernamesModule(props, ref) {
+function UsernamesModule({ref, ...props}) {
   const [usernames, setUsernames] = useStorageState(SettingIds.USERNAMES);
 
   return (
@@ -47,11 +47,11 @@ function UsernamesModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(UsernamesModule), {
+SettingStore.registerSetting(UsernamesModule, {
   settingPanelId: SettingPanelIds.USERNAMES,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['color', 'username', 'accessibility', 'readability'],
 });
 
-export default React.forwardRef(UsernamesModule);
+export default UsernamesModule;

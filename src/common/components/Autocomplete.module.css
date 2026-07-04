@@ -39,6 +39,12 @@
   rotate: 90deg;
 }
 
+.logoIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
 .floatRight {
   margin-left: auto;
 }

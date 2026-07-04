@@ -1,13 +1,13 @@
 import React from 'react';
-import {EmoteMenuTypes, EmoteProviders, SettingIds, ShadowDOMComponentIds} from '../../../constants.js';
-import domObserver from '../../../observers/dom.js';
-import settings from '../../../settings.js';
-import {getCurrentUser} from '../../../utils/user.js';
-import {createYoutubeEmojiNode} from '../../../utils/youtube.js';
-import watcher from '../../../watcher.js';
-import EmoteMenu from '../components/EmoteMenu.jsx';
+import {EmoteMenuTypes, EmoteProviders, SettingIds, ShadowDOMComponentIds} from '@/constants';
+import EmoteMenu from '@/modules/emote_menu/components/EmoteMenu';
+import shadowDOM from '@/modules/shadow_dom/index';
+import domObserver from '@/observers/dom';
+import settings from '@/settings';
+import {getCurrentUser} from '@/utils/user';
+import {createYoutubeEmojiNode} from '@/utils/youtube';
+import watcher from '@/watcher';
 import styles from './EmoteMenu.module.css';
-import shadowDOM from '../../shadow_dom/index.js';
 
 const CHAT_TEXT_AREA = 'div#input[contenteditable]';
 const BOUNDING_QUERY_SELECTOR = '#live-chat-message-input';

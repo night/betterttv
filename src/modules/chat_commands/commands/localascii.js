@@ -1,7 +1,7 @@
-import formatMessage from '../../../i18n/index.js';
-import twitch from '../../../utils/twitch.js';
-import chat from '../../chat/index.js';
-import commandStore, {PermissionLevels} from '../store.js';
+import formatMessage from '@/i18n/index';
+import chat from '@/modules/chat/index';
+import commandStore, {PermissionLevels} from '@/modules/chat_commands/store';
+import twitch from '@/utils/twitch';
 
 commandStore.registerCommand({
   name: 'localascii',

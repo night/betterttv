@@ -1,14 +1,15 @@
-import React from 'react';
-import styles from './SettingGroup.module.css';
 import classNames from 'classnames';
-import Panel from './Panel.jsx';
+import React from 'react';
+import Panel from './Panel';
+import styles from './SettingGroup.module.css';
 
-function SettingGroup({children, name, rightContent, className, ...restProps}, ref) {
+function SettingGroup({children, name, rightContent, className, ref, ...restProps}) {
   return (
     <Panel
       ref={ref}
       title={name}
       rightContent={rightContent}
+      containerClassName={styles.panelContainer}
       className={classNames(styles.settingGroup, className)}
       {...restProps}>
       {children}
@@ -16,4 +17,4 @@ function SettingGroup({children, name, rightContent, className, ...restProps}, r
   );
 }
 
-export default React.forwardRef(SettingGroup);
+export default SettingGroup;

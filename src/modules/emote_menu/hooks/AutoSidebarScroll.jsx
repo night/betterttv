@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '../../../constants.js';
+import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '@/constants';
 
 export default function useAutoSidebarScroll(section, containerRef, categories, windowHeight) {
   useEffect(() => {
@@ -28,5 +28,6 @@ export default function useAutoSidebarScroll(section, containerRef, categories, 
     }
 
     currentRef.scrollTo({top: newTop, left: 0, behavior: 'smooth'});
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- scroll-to-section effect runs on section change only
   }, [section]);
 }

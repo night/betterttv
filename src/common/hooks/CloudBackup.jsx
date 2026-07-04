@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import cloudBackup from '../../modules/cloud_backup';
+import cloudBackup from '@/modules/cloud_backup';
 
 function useCloudBackupSettings() {
   const [settings, setSettings] = useState(() => cloudBackup.settings);

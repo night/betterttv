@@ -1,6 +1,6 @@
-import {SettingDefaultValues} from '../constants.js';
-import settings from '../settings.js';
-import AuthStore from '../stores/auth.js';
+import {SettingDefaultValues} from '@/constants';
+import settings from '@/settings';
+import AuthStore from '@/stores/auth';
 
 export function isUserPro(currentUser) {
   return currentUser != null && currentUser.pro === true;

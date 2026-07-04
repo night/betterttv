@@ -1,7 +1,7 @@
-import React from 'react';
 import {NumberInput} from '@mantine/core';
-import SettingWrapper from './SettingWrapper.jsx';
+import React from 'react';
 import styles from './SettingNumberInput.module.css';
+import SettingWrapper from './SettingWrapper';
 
 function SettingNumberInput({
   name,

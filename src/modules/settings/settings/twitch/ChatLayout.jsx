@@ -1,14 +1,14 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, ChatLayoutTypes} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingRadio from '../../components/SettingRadio.jsx';
-import SettingRadioGroup from '../../components/SettingRadioGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds, ChatLayoutTypes} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingRadio from '@/modules/settings/components/SettingRadio';
+import SettingRadioGroup from '@/modules/settings/components/SettingRadioGroup';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Layout'});
 
-function ChatLayout(props, ref) {
+function ChatLayout({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.CHAT_LAYOUT);
 
   return (
@@ -27,10 +27,10 @@ function ChatLayout(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(ChatLayout), {
+SettingStore.registerSetting(ChatLayout, {
   settingPanelId: SettingPanelIds.CHAT_LAYOUT,
   name: SETTING_NAME,
   keywords: ['chat', 'layout', 'position', 'placement', 'left', 'right'],
 });
 
-export default React.forwardRef(ChatLayout);
+export default ChatLayout;

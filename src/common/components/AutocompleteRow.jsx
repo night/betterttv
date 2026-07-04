@@ -1,9 +1,19 @@
+import {Text, Title} from '@mantine/core';
 import classNames from 'classnames';
 import React from 'react';
-import {Text, Title} from '@mantine/core';
 import styles from './AutocompleteRow.module.css';
 
-function AutocompleteRow({leading = null, title, subtitle, active, selected, onMouseOver, onClick, className}) {
+function AutocompleteRow({
+  leading = null,
+  title,
+  subtitle,
+  active,
+  selected,
+  onMouseOver,
+  onClick,
+  className,
+  subtitleClassName,
+}) {
   return (
     <button
       type="button"
@@ -19,7 +29,7 @@ function AutocompleteRow({leading = null, title, subtitle, active, selected, onM
           {title}
         </Title>
         {subtitle != null && subtitle !== '' ? (
-          <Text c="dimmed" className={styles.subtitle}>
+          <Text c="dimmed" className={classNames(styles.subtitle, subtitleClassName)}>
             {subtitle}
           </Text>
         ) : null}
@@ -28,4 +38,14 @@ function AutocompleteRow({leading = null, title, subtitle, active, selected, onM
   );
 }
 
-export default AutocompleteRow;
+export default React.memo(AutocompleteRow, (prev, next) => {
+  return (
+    prev.title === next.title &&
+    prev.subtitle === next.subtitle &&
+    prev.leading === next.leading &&
+    prev.selected === next.selected &&
+    prev.active === next.active &&
+    prev.className === next.className &&
+    prev.subtitleClassName === next.subtitleClassName
+  );
+});

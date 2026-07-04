@@ -1,8 +1,8 @@
 import cookies from 'cookies-js';
 import gql from 'graphql-tag';
-import {getCurrentChannel, setCurrentChannel} from './channel.js';
-import debug from './debug.js';
-import {getCurrentUser, setCurrentUser} from './user.js';
+import {getCurrentChannel, setCurrentChannel} from './channel';
+import debug from './debug';
+import {getCurrentUser, setCurrentUser} from './user';
 
 const REACT_ROOT = '#root';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
@@ -12,9 +12,8 @@ const VOD_CHAT_LIST = '.chat-shell';
 const PLAYER = 'div[data-a-target="player-overlay-click-handler"],.video-player';
 const CLIPS_BROADCASTER_INFO = '.clips-broadcaster-info';
 const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
-const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
+export const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_WYSIWYG_INPUT_EDITOR = '.chat-wysiwyg-input__editor';
-const COMMUNITY_HIGHLIGHT = '.community-highlight';
 const STREAM_CHAT = '.stream-chat';
 
 const USER_PROFILE_IMAGE_GQL_QUERY = gql`
@@ -303,6 +302,29 @@ export default {
     return node;
   },
 
+  getSlateEmoteMapHook() {
+    let hook;
+
+    try {
+      const node = searchReactParents(
+        getReactInstance(document.querySelector(CHAT_WYSIWYG_INPUT_EDITOR)),
+        (n) => {
+          if (!Array.isArray(n.pendingProps?.emotes)) {
+            return false;
+          }
+
+          const h = n.memoizedState?.next;
+          return h?.queue?.dispatch != null && h.memoizedState != null && !Array.isArray(h.memoizedState);
+        },
+        25
+      );
+
+      hook = node?.memoizedState.next;
+    } catch (_) {}
+
+    return hook;
+  },
+
   getClipsBroadcasterInfo() {
     let broadcaster;
     try {
@@ -472,10 +494,23 @@ export default {
     });
   },
 
-  sendChatMessage(message) {
+  sendChatMessage(message, {replyParentMessage} = {}) {
     const currentChat = this.getCurrentChat();
     if (!currentChat) return;
-    currentChat.props.onSendMessage(message);
+    if (replyParentMessage != null) {
+      currentChat.props.onSendMessage(message, {
+        reply: {
+          parentDeleted: replyParentMessage.deleted ?? false,
+          parentMsgId: replyParentMessage.id,
+          parentMessageBody: replyParentMessage.messageBody,
+          parentUid: replyParentMessage.user?.userID,
+          parentUserLogin: replyParentMessage.user?.userLogin,
+          parentDisplayName: replyParentMessage.user?.userDisplayName,
+        },
+      });
+    } else {
+      currentChat.props.onSendMessage(message);
+    }
   },
 
   getCurrentUserIsModerator() {
@@ -637,21 +672,58 @@ export default {
     return chatInputEditor?.memoizedProps?.value?.editor ?? chatInputEditor?.stateNode?.state?.slateEditor;
   },
 
-  getChatInputValue() {
-    const element = document.querySelector(CHAT_INPUT);
+  getChatInputValue(element = null) {
+    element = element ?? document.querySelector(CHAT_INPUT);
 
-    // deprecated
+    if (element == null) {
+      return null;
+    }
+
+    // Legacy textarea
     const {value: currentValue} = element;
     if (currentValue != null) {
       return currentValue;
     }
 
-    const chatInput = this.getChatInput(element);
-    if (chatInput == null) {
+    // The chat input is a contenteditable Slate editor. Reading its textContent
+    // stays up to date as the user types (the browser mutates the DOM directly),
+    // unlike the React-controlled value which is committed asynchronously and
+    // lags behind fast keystrokes. Slate pads void/empty nodes with U+FEFF
+    // markers, so strip them out.
+    return element.textContent.replace(/\uFEFF/g, '');
+  },
+
+  getChatInputCaretOffset(fullText = null, element = null) {
+    element = element ?? document.querySelector(CHAT_INPUT);
+    if (element == null) {
       return null;
     }
 
-    return chatInput.memoizedProps.value;
+    // Legacy textarea
+    const {value: currentValue, selectionStart} = element;
+    if (currentValue != null && typeof selectionStart === 'number') {
+      return selectionStart;
+    }
+
+    // The chat input is a contenteditable. Measure the caret offset in the same
+    // (textContent) space as getChatInputValue by walking a DOM range from the
+    // start of the input to the caret, so emotes/void nodes count consistently.
+    // Slate keeps the FEFF markers out of its model, but they appear in the DOM,
+    // so strip them just like getChatInputValue does.
+    const selection = element.ownerDocument.getSelection();
+    if (selection != null && selection.rangeCount > 0 && element.contains(selection.focusNode)) {
+      const range = element.ownerDocument.createRange();
+      range.selectNodeContents(element);
+      range.setEnd(selection.focusNode, selection.focusOffset);
+      return range.toString().replace(/\uFEFF/g, '').length;
+    }
+
+    // No live selection (e.g. the input isn't focused); fall back to the end.
+    if (fullText == null) {
+      fullText = this.getChatInputValue(element);
+    }
+
+    return fullText != null ? fullText.length : null;
   },
 
   setChatInputValue(text, shouldFocus = true) {
@@ -761,19 +833,6 @@ export default {
     }
 
     return messages;
-  },
-
-  getCommunityHighlight() {
-    let highlight;
-    try {
-      const node = searchReactParents(
-        getReactInstance(document.querySelector(COMMUNITY_HIGHLIGHT)),
-        (n) => n.memoizedProps?.highlight?.event != null
-      );
-      highlight = node.memoizedProps.highlight;
-    } catch (e) {}
-
-    return highlight;
   },
 
   getSidebarSection(element) {

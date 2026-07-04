@@ -1,14 +1,13 @@
-// eslint-disable-next-line import/no-unresolved
 import pkceChallenge from 'pkce-challenge';
 import {
   exchangeCodeForCredentials as exchangeCodeForCredentialsAction,
   getAuthorizeUrl,
   refreshAccessToken as refreshAccessTokenAction,
   revokeAccessToken as revokeAccessTokenAction,
-} from '../actions/oauth2.js';
-import {OAUTH2_CLIENT_ID, OAUTH2_REDIRECT_URI} from '../constants.js';
-import formatMessage from '../i18n/index.js';
-import Popup from './popup.js';
+} from '@/actions/oauth2';
+import {OAUTH2_CLIENT_ID, OAUTH2_REDIRECT_URI} from '@/constants';
+import formatMessage from '@/i18n/index';
+import Popup from './popup';
 
 const REQUIRED_SCOPES = ['sso'];
 const POPUP_TIMEOUT = 5 * 60 * 1000;
@@ -53,23 +52,33 @@ export async function executeOAuth2AuthorizationFlow({signal} = {}) {
 
   let cleanUpAbortListener = null;
   if (signal != null) {
-    cleanUpAbortListener = signal.addEventListener('abort', () => closePopup());
+    const onAbort = () => closePopup();
+    signal.addEventListener('abort', onAbort);
+    cleanUpAbortListener = () => signal.removeEventListener('abort', onAbort);
   }
 
   return await new Promise((resolve, reject) => {
     let isHandlingMessage = false;
 
     function handleMessage(data) {
-      if (data?.code == null || data?.state == null) {
+      if (data?.state == null) {
         return;
       }
 
       if (data?.state !== state) {
+        isHandlingMessage = true;
+        closePopup();
         return reject(new Error('State mismatch'));
       }
 
       if (typeof data?.error === 'string') {
+        isHandlingMessage = true;
+        closePopup();
         return reject(new Error(data.error_description ?? data.error));
+      }
+
+      if (data?.code == null) {
+        return;
       }
 
       isHandlingMessage = true;

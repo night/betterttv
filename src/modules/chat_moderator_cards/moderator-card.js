@@ -1,11 +1,12 @@
 import gql from 'graphql-tag';
 import {DateTime} from 'luxon';
-import formatMessage from '../../i18n/index.js';
-import {getCurrentChannel} from '../../utils/channel.js';
-import keyCodes from '../../utils/keycodes.js';
-import twitch from '../../utils/twitch.js';
-import {getCurrentUser} from '../../utils/user.js';
-import nicknames from '../chat_nicknames/index.js';
+import formatMessage from '@/i18n/index';
+import nicknames from '@/modules/chat_nicknames/index';
+import {bindTooltip} from '@/modules/tooltip/index';
+import {getCurrentChannel} from '@/utils/channel';
+import keyCodes from '@/utils/keycodes';
+import twitch from '@/utils/twitch';
+import {getCurrentUser} from '@/utils/user';
 
 const Commands = {
   BAN: '/ban',
@@ -89,7 +90,7 @@ const MODERATOR_CARD_ACTIONS_SELECTOR =
 
 function createModeratorActionButton(command, duration, tooltipText, buttonText) {
   const container = document.createElement('div');
-  container.classList.add('bttv-tooltip-wrapper');
+  bindTooltip(container, {content: tooltipText});
 
   const action = document.createElement('div');
   action.classList.add('bttv-moderator-card-action');
@@ -103,11 +104,6 @@ function createModeratorActionButton(command, duration, tooltipText, buttonText)
   actionButton.classList.add('actionText');
   actionButton.innerText = buttonText;
   action.appendChild(actionButton);
-
-  const tooltip = document.createElement('div');
-  tooltip.classList.add('bttv-tooltip', 'bttv-tooltip--up', 'bttv-tooltip--align-center');
-  tooltip.innerText = tooltipText;
-  container.appendChild(tooltip);
 
   return container;
 }

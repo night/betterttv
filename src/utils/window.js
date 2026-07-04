@@ -1,4 +1,4 @@
-import {PlatformTypes, ProviderTypes} from '../constants.js';
+import {PlatformTypes, ProviderTypes} from '@/constants';
 
 let platform;
 let provider;

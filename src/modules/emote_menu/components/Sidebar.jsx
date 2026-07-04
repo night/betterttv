@@ -1,17 +1,16 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus */
-import classNames from 'classnames';
-import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react';
 import {DndContext, PointerSensor, closestCenter, useSensor, useSensors} from '@dnd-kit/core';
 import {restrictToVerticalAxis} from '@dnd-kit/modifiers';
 import {SortableContext, arrayMove, verticalListSortingStrategy, useSortable} from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
-import Emote from '../../../common/components/Emote.jsx';
-import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
-import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '../../../constants.js';
-import emojis from '../../emotes/emojis.js';
-import useAutoSidebarScroll from '../hooks/AutoSidebarScroll.jsx';
-import styles from './Sidebar.module.css';
 import {useElementSize} from '@mantine/hooks';
+import classNames from 'classnames';
+import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react';
+import Emote from '@/common/components/Emote';
+import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
+import {EMOTE_MENU_SIDEBAR_ROW_HEIGHT} from '@/constants';
+import useAutoSidebarScroll from '@/modules/emote_menu/hooks/AutoSidebarScroll';
+import emojis from '@/modules/emotes/emojis';
+import styles from './Sidebar.module.css';
 
 const DEFAULT_EMOJI = '\ud83d\ude03'; // Smiley face
 
@@ -29,7 +28,7 @@ function Sidebar({section, onClick, categories, className}) {
   const containerRef = useRef(null);
   const [hovering, setHovering] = useState(false);
   const [emojiButtonHidden, setEmojiButtonHidden] = useState(false);
-  const hoverEmojiCount = useRef(0);
+  const hoverEmojiCountRef = useRef(0);
   const middleCategories = categories.middle;
 
   const bottomDepth = useMemo(
@@ -82,11 +81,13 @@ function Sidebar({section, onClick, categories, className}) {
       return;
     }
 
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- deriving button visibility from measured layout
     setEmojiButtonHidden(isHidden);
   }
 
   useEffect(() => {
     handleScroll();
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- intentionally re-runs only when bottomDepth changes
   }, [bottomDepth]);
 
   function createCategories(arr) {
@@ -108,9 +109,9 @@ function Sidebar({section, onClick, categories, className}) {
     let code = DEFAULT_EMOJI;
 
     if (hovering) {
-      const count = hoverEmojiCount.current;
+      const count = hoverEmojiCountRef.current;
       code = HOVER_EMOJI[count % HOVER_EMOJI.length];
-      hoverEmojiCount.current = count + 1;
+      hoverEmojiCountRef.current = count + 1;
     }
 
     return emojis.getEligibleEmote(code);

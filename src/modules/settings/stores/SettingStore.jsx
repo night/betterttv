@@ -1,5 +1,5 @@
 import React from 'react';
-import {isStandaloneWindow} from '../../../utils/window';
+import {isStandaloneWindow} from '@/utils/window';
 
 export const SettingPanelIds = {
   EMOTES: 'emotes',
@@ -28,6 +28,8 @@ export const SettingPanelIds = {
   ANON_CHAT: 'anonChat',
   AUTO_PLAY: 'autoPlay',
   AUTO_CLAIM: 'autoClaim',
+  CHATBOTS: 'chatbots',
+  SELF_BOT: 'selfBot',
 };
 
 class SettingStore {
@@ -58,7 +60,7 @@ class SettingStore {
       settingPanelId,
       keywords,
       supportsStandaloneWindow,
-      render: ({...props}) => <Component {...props} key={settingPanelId} />,
+      render: ({...props}) => <Component key={settingPanelId} {...props} />,
     };
   }
 

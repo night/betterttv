@@ -1,6 +1,6 @@
-import formatMessage from '../../i18n/index.js';
-import Emote from '../../modules/emotes/emote.js';
-import emoteMenuViewStore from '../stores/emote-menu-view-store.js';
+import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
+import formatMessage from '@/i18n/index';
+import Emote from '@/modules/emotes/emote';
 
 function serializeProvider({providerId, global = true}) {
   const provider = emoteMenuViewStore.getRegisteredProvider(providerId);

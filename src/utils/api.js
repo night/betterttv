@@ -1,7 +1,7 @@
-import {API_ENDPOINT as API_ENDPOINT_CONSTANT, API_VERSION as API_VERSION_CONSTANT} from '../constants.js';
-import {getCredentials, setCredentials} from '../stores/auth.js';
-import {refreshAndSetCredentials} from './auth.js';
-import HTTPError from './http-error.js';
+import {API_ENDPOINT as API_ENDPOINT_CONSTANT, API_VERSION as API_VERSION_CONSTANT} from '@/constants';
+import {getCredentials, setCredentials} from '@/stores/auth';
+import {refreshAndSetCredentials} from './auth';
+import HTTPError from './http-error';
 
 const API_ENDPOINT = API_ENDPOINT_CONSTANT ?? 'https://api.betterttv.net/';
 const API_VERSION = API_VERSION_CONSTANT ?? '3';
@@ -11,7 +11,7 @@ async function request(method, path, options = {}) {
 
   let url = null;
   if (version != null) {
-    url = new URL(`${API_VERSION}/${path}`, API_ENDPOINT);
+    url = new URL(`${version}/${path}`, API_ENDPOINT);
   } else {
     url = new URL(path, API_ENDPOINT);
   }

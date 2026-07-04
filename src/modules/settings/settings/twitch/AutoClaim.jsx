@@ -1,15 +1,15 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, AutoClaimFlags, ChannelPointsFlags} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import {hasFlag, setFlag} from '../../../../utils/flags.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingCheckbox from '../../components/SettingCheckbox.jsx';
-import SettingGroup from '../../components/SettingGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds, AutoClaimFlags, ChannelPointsFlags} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import {hasFlag, setFlag} from '@/utils/flags';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Claim'});
 
-function AutoClaim(props, ref) {
+function AutoClaim({ref, ...props}) {
   const [autoClaim, setAutoClaim] = useStorageState(SettingIds.AUTO_CLAIM);
   const [channelPoints, setChannelPoints] = useStorageState(SettingIds.CHANNEL_POINTS);
 
@@ -35,11 +35,11 @@ function AutoClaim(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(AutoClaim), {
+SettingStore.registerSetting(AutoClaim, {
   settingPanelId: SettingPanelIds.AUTO_CLAIM,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['auto', 'claim', 'drops', 'moments', 'points'],
 });
 
-export default React.forwardRef(AutoClaim);
+export default AutoClaim;

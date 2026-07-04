@@ -1,14 +1,14 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingSwitch from '../../components/SettingSwitch.jsx';
-import SettingGroup from '../../components/SettingGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Player'});
 
-function Player(props, ref) {
+function Player({ref, ...props}) {
   const [clickToPlay, setClickToPlay] = useStorageState(SettingIds.CLICK_TO_PLAY);
   const [muteInvisiblePlayer, setMuteInvisiblePlayer] = useStorageState(SettingIds.MUTE_INVISIBLE_PLAYER);
   const [playerExtensions, setPlayerExtensions] = useStorageState(SettingIds.PLAYER_EXTENSIONS);
@@ -55,7 +55,7 @@ function Player(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(Player), {
+SettingStore.registerSetting(Player, {
   settingPanelId: SettingPanelIds.PLAYER,
   name: SETTING_NAME,
   keywords: [
@@ -77,4 +77,4 @@ SettingStore.registerSetting(React.forwardRef(Player), {
   ],
 });
 
-export default React.forwardRef(Player);
+export default Player;

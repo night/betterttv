@@ -1,15 +1,15 @@
+import {Anchor, Text, Title} from '@mantine/core';
 import React, {useEffect, useMemo, useState} from 'react';
 import reactStringReplace from 'react-string-replace';
-import {EXT_VER} from '../../../constants.js';
-import formatMessage from '../../../i18n/index.js';
-import api from '../../../utils/api.js';
-import debug from '../../../utils/debug.js';
-import Panel from '../components/Panel.jsx';
 import semver from 'semver';
-import PageLoader from '../components/PageLoader.jsx';
-import {Anchor, Text, Title} from '@mantine/core';
+import {EXT_VER} from '@/constants';
+import formatMessage from '@/i18n/index';
+import PageLoader from '@/modules/settings/components/PageLoader';
+import PageScrollBody from '@/modules/settings/components/PageScrollBody';
+import Panel from '@/modules/settings/components/Panel';
+import api from '@/utils/api';
+import debug from '@/utils/debug';
 import styles from './Changelog.module.css';
-import PageScrollBody from '../components/PageScrollBody.jsx';
 
 function IssueLink({issueNumber}) {
   return (
@@ -75,6 +75,7 @@ function ChangelogEntryList({changelogEntries: rawChangelogEntries}) {
 }
 
 function Changelog() {
+  // eslint-disable-next-line @eslint-react/use-state -- request state is intentionally destructured inline
   const [{loading, changelogEntries}, setRequestState] = useState({
     loading: true,
     changelogEntries: null,

@@ -1,11 +1,11 @@
-import {DeletedMessageTypes, PlatformTypes, SettingIds} from '../../constants.js';
-import formatMessage from '../../i18n/index.js';
-import domObserver from '../../observers/dom.js';
-import settings from '../../settings.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import twitch from '../../utils/twitch.js';
-import watcher from '../../watcher.js';
-import ChatHighlightBlacklistKeywords from '../chat_highlight_blacklist_keywords/index.js';
+import {DeletedMessageTypes, PlatformTypes, SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import ChatHighlightBlacklistKeywords from '@/modules/chat_highlight_blacklist_keywords/index';
+import domObserver from '@/observers/dom';
+import settings from '@/settings';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import twitch from '@/utils/twitch';
+import watcher from '@/watcher';
 
 const CHAT_LINE_SELECTOR = '.chat-line__message';
 const CHAT_LINE_LINK_SELECTOR = 'a.link-fragment';

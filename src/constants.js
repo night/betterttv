@@ -1,4 +1,4 @@
-import {wasSeventvInstalled} from './utils/seventv.js';
+import {wasSeventvInstalled} from '@/utils/seventv';
 
 export const NODE_ENV = process.env.NODE_ENV;
 export const EXT_VER = process.env.EXT_VER;
@@ -19,6 +19,8 @@ export const SettingIds = {
   ANON_CHAT_BLACKLISTED_CHANNELS: 'anonChatBlacklistedChannels',
   AUTO_THEATRE_MODE: 'autoTheatreMode',
   AUTO_JOIN_RAIDS: 'autoJoinRaids',
+  AUTO_JOIN_RAIDS_WHITELISTED_CHANNELS: 'autoJoinRaidsWhitelistedChannels',
+  AUTO_JOIN_RAIDS_BLACKLISTED_CHANNELS: 'autoJoinRaidsBlacklistedChannels',
   AUTO_MOD_VIEW: 'autoModView',
   AUTO_CLAIM: 'autoClaim',
   CHANNEL_POINTS: 'channelPoints',
@@ -29,6 +31,7 @@ export const SettingIds = {
   MAX_PINNED_HIGHLIGHTS: 'maxPinnedHighlights',
   TIMEOUT_HIGHLIGHTS: 'timeoutHighlights',
   HIGHLIGHT_FEEDBACK: 'highlightFeedback',
+  HIGHLIGHT_FIRST_TIME_CHATTERS: 'highlightFirstTimeChatters',
   CHAT_LAYOUT: 'chatLayout',
   TAB_COMPLETION_TOOLTIP: 'tabCompletionTooltip',
   TAB_COMPLETION_EMOTE_PRIORITY: 'tabCompletionEmotePriority',
@@ -59,6 +62,9 @@ export const SettingIds = {
   HYPE_CHAT: 'hypeChat',
   PRIMARY_COLOR: 'primaryColor',
   TEXT_REPLACEMENTS: 'textReplacements',
+  CHATBOT_COMMAND_AUTOCOMPLETE: 'chatbotCommandAutocomplete',
+  SELF_BOT: 'selfBot',
+  SELF_BOT_COMMANDS_LIST: 'selfBotCommandsList',
 };
 
 export const CategoryTypes = {
@@ -150,10 +156,16 @@ export const PageTypes = {
   HIGHLIGHT_KEYWORDS: 4,
   BLACKLIST_KEYWORDS: 5,
   TEXT_REPLACEMENTS: 6,
+  SELF_BOT_COMMANDS: 7,
 };
 
 export const PageDecendants = {
-  [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS, PageTypes.TEXT_REPLACEMENTS],
+  [PageTypes.SETTINGS]: [
+    PageTypes.HIGHLIGHT_KEYWORDS,
+    PageTypes.BLACKLIST_KEYWORDS,
+    PageTypes.TEXT_REPLACEMENTS,
+    PageTypes.SELF_BOT_COMMANDS,
+  ],
 };
 
 export const NavigationModeTypes = {
@@ -219,6 +231,12 @@ export const EmoteMenuTips = {
 
 export const SettingsPromotions = {
   THEME_CUSTOMIZE: 'settingsPromotionDismissedThemeCustomize',
+  CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
+  SELF_BOT: 'settingsPromotionDismissedSelfBot',
+};
+
+export const SettingsPrompts = {
+  SIGN_IN: 'settingsSignInPromptSeen',
 };
 
 /** Default Mantine `theme.primaryColor` key when unset or invalid. */
@@ -230,6 +248,8 @@ export const SettingDefaultValues = {
   [SettingIds.ANON_CHAT_BLACKLISTED_CHANNELS]: [],
   [SettingIds.AUTO_THEATRE_MODE]: false,
   [SettingIds.AUTO_JOIN_RAIDS]: true,
+  [SettingIds.AUTO_JOIN_RAIDS_WHITELISTED_CHANNELS]: [],
+  [SettingIds.AUTO_JOIN_RAIDS_BLACKLISTED_CHANNELS]: [],
   [SettingIds.AUTO_MOD_VIEW]: false,
   [SettingIds.SPLIT_CHAT]: false,
   [SettingIds.DELETED_MESSAGES]: DeletedMessageTypes.DEFAULT,
@@ -238,6 +258,7 @@ export const SettingDefaultValues = {
   [SettingIds.MAX_PINNED_HIGHLIGHTS]: 10,
   [SettingIds.TIMEOUT_HIGHLIGHTS]: true,
   [SettingIds.HIGHLIGHT_FEEDBACK]: false,
+  [SettingIds.HIGHLIGHT_FIRST_TIME_CHATTERS]: false,
   [SettingIds.CHAT_LAYOUT]: ChatLayoutTypes.RIGHT,
   [SettingIds.TAB_COMPLETION_TOOLTIP]: false,
   [SettingIds.TAB_COMPLETION_EMOTE_PRIORITY]: false,
@@ -296,6 +317,9 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTE_MENU_WIDTH]: 498,
   [SettingIds.HYPE_CHAT]: true,
   [SettingIds.PRIMARY_COLOR]: null,
+  [SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE]: true,
+  [SettingIds.SELF_BOT]: false,
+  [SettingIds.SELF_BOT_COMMANDS_LIST]: {},
 };
 
 export const FlagSettings = [
@@ -336,6 +360,8 @@ export const ShadowDOMComponentIds = {
   SETTINGS_MENU: 'settings-menu',
   EMOTE_AUTOCOMPLETE: 'emote-autocomplete',
   EMOTE_MENU: 'emote-menu',
+  COMMAND_AUTOCOMPLETE: 'command-autocomplete',
+  TOOLTIP_CONTROLLER: 'tooltip-controller',
 };
 
 export const DEFAULT_HIGHLIGHT_COLOR = '#ff0000';
@@ -353,4 +379,44 @@ export const ExternalLinks = {
   PRIVACY: 'https://betterttv.com/privacy',
   DEVELOPER_API: 'https://betterttv.com/developers/api',
   PRO: 'https://betterttv.com/dashboard/pro',
+};
+
+export const CommandProviders = {
+  NIGHTBOT: 'nightbot',
+  FOSSABOT: 'fossabot',
+  MOOBOT: 'moobot',
+  STREAMELEMENTS: 'streamelements',
+};
+
+export const UserLevels = {
+  EVERYONE: 'everyone',
+  SUBSCRIBER: 'subscriber',
+  REGULAR: 'regular',
+  TWITCH_VIP: 'twitch_vip',
+  MODERATOR: 'moderator',
+  OWNER: 'owner',
+};
+
+export const UserLevelHierarchy = {
+  [UserLevels.EVERYONE]: 0,
+  [UserLevels.SUBSCRIBER]: 1,
+  [UserLevels.REGULAR]: 2,
+  [UserLevels.TWITCH_VIP]: 3,
+  [UserLevels.MODERATOR]: 4,
+  [UserLevels.OWNER]: 5,
+};
+
+export const COMMAND_PREFIX = '!';
+
+export const ProviderSupportedByCommandProvider = {
+  [CommandProviders.NIGHTBOT]: [ProviderTypes.TWITCH, ProviderTypes.YOUTUBE],
+  [CommandProviders.FOSSABOT]: [ProviderTypes.TWITCH],
+  [CommandProviders.MOOBOT]: [ProviderTypes.TWITCH],
+  [CommandProviders.STREAMELEMENTS]: [ProviderTypes.TWITCH],
+};
+
+export const CommandAutocompleteArgumentTypes = {
+  WORD: 'word',
+  PHRASE: 'phrase',
+  USER: 'user',
 };

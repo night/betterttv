@@ -1,45 +1,20 @@
-import {ChatFlags, PlatformTypes, SettingIds} from '../../constants.js';
-import domObserver from '../../observers/dom.js';
-import settings from '../../settings.js';
-import {hasFlag} from '../../utils/flags.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import twitch from '../../utils/twitch.js';
-import watcher from '../../watcher.js';
-
-let removeCommunityHighlightsListener;
+import {ChatFlags, PlatformTypes, SettingIds} from '@/constants';
+import settings from '@/settings';
+import {hasFlag} from '@/utils/flags';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import styles from './styles.module.css';
 
 class HideCommunityHighlightsModule {
   constructor() {
-    settings.on(`changed.${SettingIds.CHAT}`, this.toggleCommunityHighlights);
-    watcher.on('load', this.toggleCommunityHighlights);
+    settings.on(`changed.${SettingIds.CHAT}`, () => this.load());
+    this.load();
   }
 
-  toggleCommunityHighlights() {
-    if (!hasFlag(settings.get(SettingIds.CHAT), ChatFlags.COMMUNITY_HIGHLIGHTS)) {
-      if (removeCommunityHighlightsListener) return;
-
-      removeCommunityHighlightsListener = domObserver.on('.community-highlight-stack__card', (node, isConnected) => {
-        if (!isConnected) return;
-
-        const communityHighlight = twitch.getCommunityHighlight();
-        if (
-          communityHighlight?.event?.type === 'poll' ||
-          node.querySelector('button[data-test-selector="community-prediction-highlight-header__action-button"]') !=
-            null
-        ) {
-          return;
-        }
-
-        node.classList.add('bttv-hide-community-highlights');
-      });
-      return;
-    }
-
-    if (!removeCommunityHighlightsListener) return;
-
-    removeCommunityHighlightsListener();
-    removeCommunityHighlightsListener = undefined;
-    document.querySelector('.community-highlight-stack__card')?.classList.remove('bttv-hide-community-highlights');
+  load() {
+    document.body.classList.toggle(
+      styles.hideCommunityHighlights,
+      !hasFlag(settings.get(SettingIds.CHAT), ChatFlags.COMMUNITY_HIGHLIGHTS)
+    );
   }
 }
 

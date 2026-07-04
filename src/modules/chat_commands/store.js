@@ -1,5 +1,6 @@
-import twitch from '../../utils/twitch.js';
-import watcher from '../../watcher.js';
+import formatMessage from '@/i18n/index';
+import twitch from '@/utils/twitch';
+import watcher from '@/watcher';
 
 export const PermissionLevels = {
   VIEWER: 0,
@@ -7,6 +8,15 @@ export const PermissionLevels = {
   MODERATOR: 2,
   BROADCASTER: 3,
 };
+
+const ADDED_BY_BTTV_SUFFIX = formatMessage({defaultMessage: '(Added by BetterTTV)'});
+
+function buildInjectedDescription(description) {
+  if (description == null) {
+    return ADDED_BY_BTTV_SUFFIX;
+  }
+  return `${description} ${ADDED_BY_BTTV_SUFFIX}`;
+}
 
 class CommandStore {
   constructor() {
@@ -25,12 +35,14 @@ class CommandStore {
   }
 
   registerCommand(command) {
-    this.commands.push(command);
+    const injectedCommand = {...command, description: buildInjectedDescription(command.description)};
+    this.commands.push(injectedCommand);
+
     const twitchCommandStore = twitch.getChatCommandStore();
     if (twitchCommandStore == null) {
       return;
     }
-    twitchCommandStore.addCommand(command);
+    twitchCommandStore.addCommand(injectedCommand);
   }
 }
 

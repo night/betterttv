@@ -1,8 +1,10 @@
-import React from 'react';
 import {Anchor, Text} from '@mantine/core';
-import {EXT_VER, ExternalLinks} from '../../../constants.js';
-import formatMessage from '../../../i18n/index.js';
+import React from 'react';
+import {EXT_VER, ExternalLinks} from '@/constants';
+import formatMessage from '@/i18n/index';
 import styles from './Footer.module.css';
+
+const CURRENT_YEAR = new Date().getFullYear();
 
 const FOOTER_EXPLORE_LINKS = [
   {href: ExternalLinks.WEBSITE, label: formatMessage({defaultMessage: 'Website'})},
@@ -56,7 +58,7 @@ function Footer() {
         <Text c="dimmed">
           {formatMessage(
             {defaultMessage: 'Copyright © {year} NightDev, LLC. All Rights Reserved.'},
-            {year: new Date().getFullYear()}
+            {year: CURRENT_YEAR}
           )}
         </Text>
         <Text c="dimmed" className={styles.version} order={4}>

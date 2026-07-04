@@ -1,6 +1,6 @@
 import React from 'react';
-import AutocompleteRow from '../../../common/components/AutocompleteRow.jsx';
-import Emote from '../../../common/components/Emote.jsx';
+import AutocompleteRow from '@/common/components/AutocompleteRow';
+import Emote from '@/common/components/Emote';
 import styles from './EmoteRow.module.css';
 
 function EmoteRow({item: emote, active, selected, onMouseOver, onClick}) {
@@ -13,8 +13,11 @@ function EmoteRow({item: emote, active, selected, onMouseOver, onClick}) {
       selected={selected}
       onMouseOver={onMouseOver}
       onClick={onClick}
+      subtitleClassName={styles.subtitle}
     />
   );
 }
 
-export default EmoteRow;
+export default React.memo(EmoteRow, (prev, next) => {
+  return prev.item === next.item && prev.selected === next.selected && prev.active === next.active;
+});

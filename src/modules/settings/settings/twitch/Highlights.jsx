@@ -1,24 +1,27 @@
-import React, {useContext} from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {DeletedMessageTypes, PageTypes, SettingIds} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingSwitch from '../../components/SettingSwitch.jsx';
-import SettingGroup from '../../components/SettingGroup.jsx';
-import SettingNumberInput from '../../components/SettingNumberInput.jsx';
 import {Button} from '@mantine/core';
-import SettingWrapper from '../../components/SettingWrapper.jsx';
-import {PageContext} from '../../contexts/PageContext.jsx';
+import React, {use} from 'react';
+import useStorageState from '@/common/hooks/StorageState';
+import {DeletedMessageTypes, PageTypes, SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingNumberInput from '@/modules/settings/components/SettingNumberInput';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Highlights'});
 
-function Highlights(props, ref) {
-  const {setPage} = useContext(PageContext);
+function Highlights({ref, ...props}) {
+  const {setPage} = use(PageContext);
   const [value, setValue] = useStorageState(SettingIds.PINNED_HIGHLIGHTS);
   const [deletedMessages, setDeletedMessages] = useStorageState(SettingIds.DELETED_MESSAGES);
   const [maxPinnedHighlights, setMaxPinnedHighlights] = useStorageState(SettingIds.MAX_PINNED_HIGHLIGHTS);
   const [timeoutHighlightsValue, setTimeoutHighlightsValue] = useStorageState(SettingIds.TIMEOUT_HIGHLIGHTS);
   const [highlightFeedback, setHighlightFeedback] = useStorageState(SettingIds.HIGHLIGHT_FEEDBACK);
+  const [highlightFirstTimeChatters, setHighlightFirstTimeChatters] = useStorageState(
+    SettingIds.HIGHLIGHT_FIRST_TIME_CHATTERS
+  );
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
@@ -63,6 +66,15 @@ function Highlights(props, ref) {
       />
       <SettingSwitch
         reverse
+        name={formatMessage({defaultMessage: 'Highlight First-Time Chatters'})}
+        description={formatMessage({
+          defaultMessage: 'Highlight messages from viewers chatting in the channel for the first time.',
+        })}
+        value={highlightFirstTimeChatters}
+        onChange={setHighlightFirstTimeChatters}
+      />
+      <SettingSwitch
+        reverse
         name={formatMessage({defaultMessage: 'Highlight Deleted Messages'})}
         description={formatMessage({defaultMessage: 'Highlight and prevent deletion of messages.'})}
         value={deletedMessages === DeletedMessageTypes.HIGHLIGHT}
@@ -72,11 +84,11 @@ function Highlights(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(Highlights), {
+SettingStore.registerSetting(Highlights, {
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['pinned', 'highlights', 'highlight', 'feedback', 'keywords'],
+  keywords: ['pinned', 'highlights', 'highlight', 'feedback', 'keywords', 'first', 'chatter', 'first-time'],
 });
 
-export default React.forwardRef(Highlights);
+export default Highlights;

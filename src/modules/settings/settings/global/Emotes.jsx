@@ -1,15 +1,15 @@
-import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, EmoteTypeFlags} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import {hasFlag} from '../../../../utils/flags.js';
-import globalEmotes from '../../../emotes/global-emotes.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingCheckbox from '../../components/SettingCheckbox.jsx';
-import SettingCheckboxGroup from '../../components/SettingCheckboxGroup.jsx';
-import styles from './Emotes.module.css';
 import {Anchor, Kbd, Text} from '@mantine/core';
-import {openConfirmModal, openModal} from '../../../../common/utils/modal.js';
+import React from 'react';
+import useStorageState from '@/common/hooks/StorageState';
+import {openConfirmModal, openModal} from '@/common/utils/modal';
+import {SettingIds, EmoteTypeFlags} from '@/constants';
+import formatMessage from '@/i18n/index';
+import globalEmotes from '@/modules/emotes/global-emotes';
+import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
+import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import {hasFlag} from '@/utils/flags';
+import styles from './Emotes.module.css';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emotes'});
 
@@ -72,7 +72,7 @@ function openEmoteModifiersModal() {
   });
 }
 
-function EmotesModule(props, ref) {
+function EmotesModule({ref, ...props}) {
   const [emotes, setEmotes] = useStorageState(SettingIds.EMOTES);
 
   function handleEmoteModifiersChange(newFlags) {
@@ -166,11 +166,11 @@ function EmotesModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(EmotesModule), {
+SettingStore.registerSetting(EmotesModule, {
   settingPanelId: SettingPanelIds.EMOTES,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['bttv', 'ffz', '7tv', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
 });
 
-export default React.forwardRef(EmotesModule);
+export default EmotesModule;

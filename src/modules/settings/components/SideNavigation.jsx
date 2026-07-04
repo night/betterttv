@@ -1,16 +1,16 @@
-import React, {useCallback, useContext} from 'react';
-import {useShallow} from 'zustand/react/shallow';
-import styles from './SideNavigation.module.css';
-import AnimatedLogo from './AnimatedLogo.jsx';
-import {ActionIcon, Avatar, Button, Overlay, Tooltip, useMantineTheme} from '@mantine/core';
 import {faArrowLeft, faCog, faScroll, faUser, faUserGear} from '@fortawesome/free-solid-svg-icons';
-import {PageTypes} from '../../../constants.js';
+import {ActionIcon, Avatar, Button, Overlay, Tooltip, useMantineTheme} from '@mantine/core';
 import classNames from 'classnames';
-import formatMessage from '../../../i18n/index.js';
-import {PageContext} from '../contexts/PageContext.jsx';
-import usePortalRef from '../../../common/hooks/PortalRef.jsx';
-import useAuthStore from '../../../stores/auth.js';
-import Icon from '../../../common/components/Icon.jsx';
+import React, {useCallback, use} from 'react';
+import {useShallow} from 'zustand/react/shallow';
+import Icon from '@/common/components/Icon';
+import usePortalRef from '@/common/hooks/PortalRef';
+import {PageDecendants, PageTypes} from '@/constants';
+import formatMessage from '@/i18n/index';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import useAuthStore from '@/stores/auth';
+import AnimatedLogo from './AnimatedLogo';
+import styles from './SideNavigation.module.css';
 
 function CloseMenuButton({onClick, className}) {
   return (
@@ -99,7 +99,7 @@ function UserSettingsNavigationButton({active, ...props}) {
 }
 
 function SideNavigation({open, setOpen}) {
-  const {page, setPage} = useContext(PageContext);
+  const {page, setPage} = use(PageContext);
   const close = useCallback(() => setOpen(false), [setOpen]);
 
   return (
@@ -111,12 +111,7 @@ function SideNavigation({open, setOpen}) {
         </div>
         <NavigationButton
           className={styles.topNavigationButton}
-          active={
-            page === PageTypes.SETTINGS ||
-            page === PageTypes.HIGHLIGHT_KEYWORDS ||
-            page === PageTypes.BLACKLIST_KEYWORDS ||
-            page === PageTypes.TEXT_REPLACEMENTS
-          }
+          active={page === PageTypes.SETTINGS || PageDecendants[PageTypes.SETTINGS].includes(page)}
           value={PageTypes.SETTINGS}
           setPage={setPage}
           label={formatMessage({defaultMessage: 'Settings'})}>

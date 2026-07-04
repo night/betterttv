@@ -1,6 +1,6 @@
-import formatMessage from '../../../i18n/index.js';
-import twitch from '../../../utils/twitch.js';
-import commandStore, {PermissionLevels} from '../store.js';
+import formatMessage from '@/i18n/index';
+import commandStore, {PermissionLevels} from '@/modules/chat_commands/store';
+import twitch from '@/utils/twitch';
 
 const command = {
   commandArgs: [
@@ -8,7 +8,7 @@ const command = {
     {name: 'reason', isRequired: false},
   ],
   description: formatMessage({defaultMessage: `Usage: "/purge '<'login'>' [reason]" - Purges a user's chat`}),
-  handler: async (username, reason) => twitch.sendChatMessage(`/timeout ${username} 1 ${reason}`),
+  handler: (username, reason) => twitch.sendChatMessage(`/timeout ${username} 1 ${reason ?? ''}`.trimEnd()),
   permissionLevel: PermissionLevels.MODERATOR,
 };
 

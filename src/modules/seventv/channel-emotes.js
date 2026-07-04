@@ -1,12 +1,12 @@
 import ReconnectingEventSource from 'reconnecting-eventsource';
-import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '../../constants.js';
-import formatMessage from '../../i18n/index.js';
-import settings from '../../settings.js';
-import {getCurrentChannel} from '../../utils/channel.js';
-import {hasFlag} from '../../utils/flags.js';
-import watcher from '../../watcher.js';
-import AbstractEmotes from '../emotes/abstract-emotes.js';
-import {createEmote, isOverlay} from './utils.js';
+import {EmoteCategories, EmoteProviders, EmoteTypeFlags, SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import AbstractEmotes from '@/modules/emotes/abstract-emotes';
+import settings from '@/settings';
+import {getCurrentChannel} from '@/utils/channel';
+import {hasFlag} from '@/utils/flags';
+import watcher from '@/watcher';
+import {createEmote, isOverlay} from './utils';
 
 const category = {
   id: EmoteCategories.SEVENTV_CHANNEL,

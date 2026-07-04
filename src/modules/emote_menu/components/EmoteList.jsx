@@ -1,204 +1,201 @@
+import {Text} from '@mantine/core';
+import {useElementSize, useMergedRef} from '@mantine/hooks';
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
-import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '../../../constants.js';
-import useGridKeyboardNavigation from '../hooks/GridKeyboardNavigation.jsx';
-import {EmoteRow, HeaderRow} from './EmoteListRow.jsx';
-import Icons from './Icons.jsx';
-import VirtualizedList from './VirtualizedList.jsx';
-import Preview from './Preview.jsx';
-import {useElementSize, useMergedRef} from '@mantine/hooks';
-import {Text} from '@mantine/core';
+import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
+import scrollbarStyles from '@/common/styles/Scrollbar.module.css';
+import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '@/constants';
+import useGridKeyboardNavigation from '@/modules/emote_menu/hooks/GridKeyboardNavigation';
+import {getRowColumnCounts} from '@/modules/emote_menu/utils/emote-list-grid';
 import styles from './EmoteList.module.css';
-import scrollbarStyles from '../../../common/styles/Scrollbar.module.css';
-import {getRowColumnCounts} from '../utils/emote-list-grid.js';
-import emoteMenuViewStore from '../../../common/stores/emote-menu-view-store.js';
+import {EmoteRow, HeaderRow} from './EmoteListRow';
+import Icons from './Icons';
+import Preview from './Preview';
+import VirtualizedList from './VirtualizedList';
 
 const GUARD_HEIGHT = 8;
 
-const EmptySearchState = React.forwardRef((props, ref) => {
+const EmptySearchState = ({ref, ...props}) => {
   return (
     <div className={styles.empty} {...props} ref={ref}>
       <div className={styles.emptyIcon}>{Icons.HEART_BROKEN}</div>
       <Text c="dimmed">No results...</Text>
     </div>
   );
-});
+};
 
-const BrowseEmotes = React.forwardRef(
-  ({emoteListRows, onClick, onSection, setCoords, coords, className, headerRows}, ref) => {
-    const renderRow = useCallback(
-      ({index: y, ...props}) => {
-        const row = emoteListRows[y];
+const BrowseEmotes = ({emoteListRows, onClick, onSection, setCoords, coords, className, headerRows, ref}) => {
+  const renderRow = useCallback(
+    ({index: y, ...props}) => {
+      const row = emoteListRows[y];
 
-        if (row == null) {
-          return null;
-        }
+      if (row == null) {
+        return null;
+      }
 
-        if (!Array.isArray(row)) {
-          return <HeaderRow row={row} {...props} />;
-        }
+      if (!Array.isArray(row)) {
+        return <HeaderRow row={row} {...props} />;
+      }
 
-        return <EmoteRow row={row} rowIndex={y} coords={coords} onClick={onClick} onMouseOver={setCoords} {...props} />;
-      },
-      [coords, emoteListRows]
-    );
+      return <EmoteRow row={row} rowIndex={y} coords={coords} onClick={onClick} onMouseOver={setCoords} {...props} />;
+    },
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- onClick/setCoords props are stable
+    [coords, emoteListRows]
+  );
 
-    const handleHeaderChange = useCallback(
-      (rowIndex) => {
-        const header = emoteListRows[rowIndex];
-        if (header == null) {
-          return;
-        }
-        onSection(header.id);
-      },
-      [onSection, emoteListRows]
-    );
+  const handleHeaderChange = useCallback(
+    (rowIndex) => {
+      const header = emoteListRows[rowIndex];
+      if (header == null) {
+        return;
+      }
+      onSection(header.id);
+    },
+    [onSection, emoteListRows]
+  );
 
-    if (emoteListRows.length === 0) {
-      return <EmptySearchState ref={ref} />;
+  if (emoteListRows.length === 0) {
+    return <EmptySearchState ref={ref} />;
+  }
+
+  return (
+    <VirtualizedList
+      ref={ref}
+      bottomGuardHeight={GUARD_HEIGHT}
+      stickyRows={headerRows}
+      rowHeight={EMOTE_MENU_GRID_ROW_HEIGHT}
+      totalRows={emoteListRows.length}
+      renderRow={renderRow}
+      className={classNames(styles.emotesContainer, className, scrollbarStyles.scroll)}
+      onHeaderChange={handleHeaderChange}
+    />
+  );
+};
+
+const EmoteList = ({
+  data,
+  onClick,
+  selected,
+  section,
+  onSection,
+  setKeyPressCallback,
+  className,
+  coords,
+  setCoords,
+  setNavigationMode,
+  navigationMode,
+  ref,
+}) => {
+  const {rows, totalCols} = data;
+  const listViewportRef = useRef(null);
+  const {ref: listSizeRef, height, width} = useElementSize();
+  const mergedRef = useMergedRef(ref, listSizeRef, listViewportRef);
+  const rowColumnCounts = useMemo(() => getRowColumnCounts(rows), [rows]);
+  const handleMouseMove = useCallback(() => setNavigationMode(NavigationModeTypes.MOUSE), [setNavigationMode]);
+  const navigationModeRef = useRef(navigationMode);
+
+  useEffect(() => {
+    navigationModeRef.current = navigationMode;
+  }, [navigationMode]);
+
+  const headerRows = useMemo(() => {
+    return rows
+      .map((row, index) => ({isHeader: !Array.isArray(row), index}))
+      .filter((row) => row.isHeader)
+      .map((row) => row.index);
+  }, [rows]);
+
+  useEffect(() => {
+    const currentRef = listViewportRef.current;
+    if (currentRef == null) {
+      return;
     }
 
-    return (
-      <VirtualizedList
-        ref={ref}
-        bottomGuardHeight={GUARD_HEIGHT}
-        stickyRows={headerRows}
-        rowHeight={EMOTE_MENU_GRID_ROW_HEIGHT}
-        totalRows={emoteListRows.length}
-        renderRow={renderRow}
-        className={classNames(styles.emotesContainer, className, scrollbarStyles.scroll)}
-        onHeaderChange={handleHeaderChange}
-      />
-    );
-  }
-);
+    const clientWidth = currentRef.clientWidth;
+    const frameId = requestAnimationFrame(() => {
+      emoteMenuViewStore.updateTotalColumns(clientWidth);
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, [listViewportRef, width]);
 
-const EmoteList = React.forwardRef(
-  (
-    {
-      data,
-      onClick,
-      selected,
-      section,
-      onSection,
-      setKeyPressCallback,
-      className,
-      coords,
-      setCoords,
-      setNavigationMode,
-      navigationMode,
-    },
-    ref
-  ) => {
-    const {rows, totalCols} = data;
-    const listViewportRef = useRef(null);
-    const {ref: listSizeRef, height, width} = useElementSize();
-    const mergedRef = useMergedRef(ref, listSizeRef, listViewportRef);
-    const rowColumnCounts = useMemo(() => getRowColumnCounts(rows), [rows]);
-    const handleMouseMove = useCallback(() => setNavigationMode(NavigationModeTypes.MOUSE), [setNavigationMode]);
-    const navigationModeRef = useRef(navigationMode);
-
-    useEffect(() => {
-      navigationModeRef.current = navigationMode;
-    }, [navigationMode]);
-
-    const headerRows = useMemo(() => {
-      return rows
-        .map((row, index) => ({isHeader: !Array.isArray(row), index}))
-        .filter((row) => row.isHeader)
-        .map((row) => row.index);
-    }, [rows]);
-
-    useEffect(() => {
-      const currentRef = listViewportRef.current;
-      if (currentRef == null) {
+  const updateScrollPositionByCoords = useCallback(
+    (newCoords) => {
+      const currentRef = ref.current;
+      if (navigationModeRef.current !== NavigationModeTypes.ARROW_KEYS || currentRef == null) {
         return;
       }
 
-      const clientWidth = currentRef.clientWidth;
-      const frameId = requestAnimationFrame(() => {
-        emoteMenuViewStore.updateTotalColumns(clientWidth);
-      });
-      return () => cancelAnimationFrame(frameId);
-    }, [listViewportRef, width]);
+      const depth = newCoords.y * EMOTE_MENU_GRID_ROW_HEIGHT;
+      const {scrollTop} = currentRef;
 
-    const updateScrollPositionByCoords = useCallback(
-      (newCoords) => {
-        const currentRef = ref.current;
-        if (navigationModeRef.current !== NavigationModeTypes.ARROW_KEYS || currentRef == null) {
-          return;
-        }
+      let isPreceededByHeader = false;
 
-        const depth = newCoords.y * EMOTE_MENU_GRID_ROW_HEIGHT;
-        const {scrollTop} = currentRef;
+      if (headerRows.length > 0) {
+        const firstHeaderRowY = headerRows[0] * EMOTE_MENU_GRID_ROW_HEIGHT;
+        isPreceededByHeader = firstHeaderRowY < depth;
+      }
 
-        let isPreceededByHeader = false;
+      if (depth < scrollTop + EMOTE_MENU_GRID_ROW_HEIGHT) {
+        currentRef.scrollTo(0, isPreceededByHeader ? depth - EMOTE_MENU_GRID_ROW_HEIGHT : depth);
+      }
 
-        if (headerRows.length > 0) {
-          const firstHeaderRowY = headerRows[0] * EMOTE_MENU_GRID_ROW_HEIGHT;
-          isPreceededByHeader = firstHeaderRowY < depth;
-        }
+      if (depth + EMOTE_MENU_GRID_ROW_HEIGHT >= scrollTop + height) {
+        currentRef.scrollTo(0, depth + EMOTE_MENU_GRID_ROW_HEIGHT - height);
+      }
+    },
+    [height, headerRows, ref]
+  );
 
-        if (depth < scrollTop + EMOTE_MENU_GRID_ROW_HEIGHT) {
-          currentRef.scrollTo(0, isPreceededByHeader ? depth - EMOTE_MENU_GRID_ROW_HEIGHT : depth);
-        }
+  const handleCoordsChangeByKeyboard = useCallback(
+    (newCoords) => {
+      setNavigationMode(NavigationModeTypes.ARROW_KEYS);
+      setCoords(newCoords);
+      updateScrollPositionByCoords(newCoords);
+    },
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- setCoords prop is stable
+    [updateScrollPositionByCoords, setNavigationMode]
+  );
 
-        if (depth + EMOTE_MENU_GRID_ROW_HEIGHT >= scrollTop + height) {
-          currentRef.scrollTo(0, depth + EMOTE_MENU_GRID_ROW_HEIGHT - height);
-        }
-      },
-      [height, headerRows]
-    );
+  const handleCoordsChangeByMouse = useCallback(
+    (newCoords) => {
+      if (navigationModeRef.current !== NavigationModeTypes.MOUSE) {
+        return;
+      }
 
-    const handleCoordsChangeByKeyboard = useCallback(
-      (newCoords) => {
-        setNavigationMode(NavigationModeTypes.ARROW_KEYS);
-        setCoords(newCoords);
-        updateScrollPositionByCoords(newCoords);
-      },
-      [updateScrollPositionByCoords, setNavigationMode]
-    );
+      setCoords(newCoords);
+    },
+    [setCoords]
+  );
 
-    const handleCoordsChangeByMouse = useCallback(
-      (newCoords) => {
-        if (navigationModeRef.current !== NavigationModeTypes.MOUSE) {
-          return;
-        }
+  const {handleKeyPress} = useGridKeyboardNavigation({
+    coords,
+    setCoords: handleCoordsChangeByKeyboard,
+    rowColumnCounts,
+    maxColumnCount: totalCols,
+  });
 
-        setCoords(newCoords);
-      },
-      [setCoords]
-    );
+  useEffect(() => {
+    setKeyPressCallback(handleKeyPress);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- setKeyPressCallback prop is stable
+  }, [handleKeyPress]);
 
-    const {handleKeyPress} = useGridKeyboardNavigation({
-      coords,
-      setCoords: handleCoordsChangeByKeyboard,
-      rowColumnCounts,
-      maxColumnCount: totalCols,
-    });
-
-    useEffect(() => {
-      setKeyPressCallback(handleKeyPress);
-    }, [handleKeyPress]);
-
-    return (
-      <div className={classNames(styles.emoteListRoot, className)} onMouseMove={handleMouseMove}>
-        <BrowseEmotes
-          key={data.search}
-          ref={mergedRef}
-          section={section}
-          onSection={onSection}
-          onClick={onClick}
-          emoteListRows={rows}
-          coords={coords}
-          setCoords={handleCoordsChangeByMouse}
-          headerRows={headerRows}
-        />
-        <Preview emote={selected} />
-      </div>
-    );
-  }
-);
+  return (
+    <div className={classNames(styles.emoteListRoot, className)} onMouseMove={handleMouseMove}>
+      <BrowseEmotes
+        key={data.search}
+        ref={mergedRef}
+        section={section}
+        onSection={onSection}
+        onClick={onClick}
+        emoteListRows={rows}
+        coords={coords}
+        setCoords={handleCoordsChangeByMouse}
+        headerRows={headerRows}
+      />
+      <Preview emote={selected} />
+    </div>
+  );
+};
 
 export default React.memo(EmoteList, (prevProps, nextProps) => {
   return (

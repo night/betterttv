@@ -1,8 +1,8 @@
 import React from 'react';
-import useStorageState from '../../../common/hooks/StorageState.jsx';
-import {SettingIds} from '../../../constants.js';
-import SettingKeywords from '../components/SettingKeywords.jsx';
-import PageScrollBody from '../components/PageScrollBody.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds} from '@/constants';
+import PageScrollBody from '@/modules/settings/components/PageScrollBody';
+import SettingKeywords from '@/modules/settings/components/SettingKeywords';
 
 function BlacklistKeywords() {
   const [value, setValue] = useStorageState(SettingIds.BLACKLIST_KEYWORDS);

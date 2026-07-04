@@ -1,7 +1,9 @@
+import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Avatar,
   Button,
+  Kbd,
   NativeSelect,
   Pill,
   Table,
@@ -14,18 +16,79 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
-import styles from './SettingKeywords.module.css';
-import {KeywordTypes} from '../../../utils/keywords.js';
-import formatMessage from '../../../i18n/index.js';
-import ColorPicker from './ColorPicker.jsx';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
-import Panel from './Panel.jsx';
-import Icon from '../../../common/components/Icon.jsx';
-import usePortalRef from '../../../common/hooks/PortalRef.jsx';
-import useCurrentChannel from '../../../common/hooks/CurrentChannel.jsx';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
+import Icon from '@/common/components/Icon';
+import useCurrentChannel from '@/common/hooks/CurrentChannel';
+import usePortalRef from '@/common/hooks/PortalRef';
+import tableStyles from '@/common/styles/SettingEntryTable.module.css';
+import {openModal} from '@/common/utils/modal';
+import formatMessage from '@/i18n/index';
+import {KeywordTypes} from '@/utils/keywords';
+import ColorPicker from './ColorPicker';
+import Panel from './Panel';
+import styles from './SettingKeywords.module.css';
+
+const REGEX_EXAMPLES = [
+  {pattern: '~/(cat|dog)s?/i', description: formatMessage({defaultMessage: 'Matches cat, dogs, and similar'})},
+  {pattern: '~/\\bgg\\b/i', description: formatMessage({defaultMessage: 'Matches "gg" on its own, not "eggs"'})},
+  {
+    pattern: '~/!(give|raffle)/i',
+    description: formatMessage({defaultMessage: 'Matches the !give and !raffle commands'}),
+  },
+  {pattern: '~/[A-Z]{5,}/', description: formatMessage({defaultMessage: 'Matches 5 or more capitals in a row'})},
+];
+
+function RegexGuideModalBody() {
+  return (
+    <div className={styles.regexModalBody}>
+      <Text size="md" c="dimmed">
+        {formatMessage(
+          {
+            defaultMessage:
+              'Wrap a pattern in {syntax} to match with a regular expression instead of plain text, with optional flags such as {flag} for case-insensitivity.',
+          },
+          {syntax: <Kbd>~/ /</Kbd>, flag: <Kbd>i</Kbd>}
+        )}
+      </Text>
+      <div className={styles.regexTableWrapper}>
+        <Table withColumnBorders className={styles.regexTable}>
+          <TableThead>
+            <TableTr>
+              <TableTh>{formatMessage({defaultMessage: 'Pattern'})}</TableTh>
+              <TableTh>{formatMessage({defaultMessage: 'Matches'})}</TableTh>
+            </TableTr>
+          </TableThead>
+          <TableTbody>
+            {REGEX_EXAMPLES.map(({pattern, description}) => (
+              <TableTr key={pattern}>
+                <TableTd>
+                  <Kbd size="lg">{pattern}</Kbd>
+                </TableTd>
+                <TableTd>
+                  <Text size="md" c="dimmed">
+                    {description}
+                  </Text>
+                </TableTd>
+              </TableTr>
+            ))}
+          </TableTbody>
+        </Table>
+      </div>
+      <Text size="md" c="dimmed">
+        {formatMessage({defaultMessage: 'It works for the Message, Username, and Badge targets.'})}
+      </Text>
+    </div>
+  );
+}
+
+function openRegexGuideModal() {
+  return openModal({
+    title: formatMessage({defaultMessage: 'Advanced Keywords'}),
+    children: <RegexGuideModalBody />,
+  });
+}
 
 function KeywordRow({
   id,
@@ -48,7 +111,7 @@ function KeywordRow({
   return (
     <TableTr {...props}>
       {colorColumn != null ? (
-        <TableTd className={styles.colorDataCell}>
+        <TableTd className={classNames(tableStyles.dataCell, tableStyles.colorColumn)}>
           <ColorPicker
             size="sm"
             variant="transparent"
@@ -60,10 +123,10 @@ function KeywordRow({
           />
         </TableTd>
       ) : null}
-      <TableTd className={styles.targetDataCell}>
+      <TableTd className={classNames(tableStyles.dataCell, tableStyles.selectColumn)}>
         <NativeSelect
           variant="unstyled"
-          classNames={{input: styles.targetSelectInput}}
+          classNames={{input: tableStyles.selectInput}}
           value={data.type}
           data={[
             {label: formatMessage({defaultMessage: 'Message'}), value: KeywordTypes.MESSAGE},
@@ -74,13 +137,13 @@ function KeywordRow({
           onChange={({target: {value}}) => onUpdate({type: parseInt(value, 10)})}
         />
       </TableTd>
-      <TableTd className={styles.keywordDataCell}>
+      <TableTd className={tableStyles.dataCell}>
         <TextInput
           variant="unstyled"
           classNames={{
-            input: styles.keywordInput,
-            root: styles.keywordRoot,
-            wrapper: styles.keywordWrapper,
+            input: tableStyles.textInput,
+            root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
+            wrapper: tableStyles.textInputWrapper,
           }}
           ref={keywordInputRef}
           defaultValue={data.keyword}
@@ -124,13 +187,13 @@ function KeywordRow({
           )}
         </button>
       </TableTd>
-      <TableTd className={styles.actionsDataCell}>
+      <TableTd className={classNames(tableStyles.dataCell, tableStyles.actionsColumn)}>
         <ActionIcon
           color="gray"
           variant="transparent"
-          className={styles.actionIcon}
+          className={tableStyles.actionIcon}
           size="sm"
-          classNames={{icon: styles.actionIconIcon}}
+          classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
           <Icon icon={faTrash} />
         </ActionIcon>
@@ -155,14 +218,26 @@ function KeywordsTable({
   onPaste,
 }) {
   return (
-    <Table withColumnBorders className={styles.table} onPaste={onPaste}>
+    <Table withColumnBorders className={tableStyles.table} onPaste={onPaste}>
       <TableThead>
         <TableTr>
-          {showColorColumn ? <TableTh className={styles.colorColumn} /> : null}
+          {showColorColumn ? <TableTh className={tableStyles.colorColumn} /> : null}
           <TableTh className={styles.targetColumn}>{formatMessage({defaultMessage: 'Target'})}</TableTh>
-          <TableTh className={styles.keywordColumn}>{formatMessage({defaultMessage: 'Keyword'})}</TableTh>
+          <TableTh className={styles.keywordColumn}>
+            <div className={styles.keywordHeader}>
+              {formatMessage({defaultMessage: 'Keyword'})}
+              <ActionIcon
+                size="sm"
+                variant="transparent"
+                className={styles.infoButton}
+                aria-label={formatMessage({defaultMessage: 'Advanced keywords'})}
+                onClick={openRegexGuideModal}>
+                <Icon icon={faCircleInfo} />
+              </ActionIcon>
+            </div>
+          </TableTh>
           <TableTh className={styles.channelsColumn}>{formatMessage({defaultMessage: 'Channels'})}</TableTh>
-          <TableTh className={styles.actionsColumn} />
+          <TableTh className={tableStyles.actionsColumn} />
         </TableTr>
       </TableThead>
       <TableTbody>
@@ -295,7 +370,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
         />
       }
       rightContent={
-        <Button size="lg" className={styles.newEntryButton} onClick={newEntryHandler}>
+        <Button size="lg" className={tableStyles.newEntryButton} onClick={newEntryHandler}>
           {formatMessage({defaultMessage: 'New Entry'})}
         </Button>
       }
@@ -316,7 +391,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
           {formatMessage({defaultMessage: 'No keywords match your search.'})}
         </Text>
       ) : (
-        <Text className={styles.noKeywordsText} c="dimmed">
+        <Text className={tableStyles.emptyText} c="dimmed">
           {formatMessage({defaultMessage: 'No keywords found, start by adding a new entry.'})}
         </Text>
       )}

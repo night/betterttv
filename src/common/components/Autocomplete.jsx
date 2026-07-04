@@ -1,18 +1,18 @@
-import React, {useEffect, useState, useCallback, useRef} from 'react';
-import keyCodes from '../../utils/keycodes.js';
-import styles from './Autocomplete.module.css';
-import {useDisclosure} from '@mantine/hooks';
-import {autoUpdate, offset as floatingOffset, size, useDismiss, useFloating} from '@floating-ui/react';
-import {useInteractions} from '@floating-ui/react';
-import classNames from 'classnames';
-import useDomObserver from '../hooks/DomObserver.jsx';
-import formatMessage from '../../i18n/index.js';
-import Icon from './Icon.jsx';
+import {autoUpdate, offset as floatingOffset, size, useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 import {faArrowDown, faArrowTurnDown, faArrowUp} from '@fortawesome/free-solid-svg-icons';
 import {Kbd, Text} from '@mantine/core';
-import Scrollbar from './Scrollbar.jsx';
+import {useDisclosure} from '@mantine/hooks';
+import classNames from 'classnames';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
+import useDomObserver from '@/common/hooks/DomObserver';
+import formatMessage from '@/i18n/index';
+import keyCodes from '@/utils/keycodes';
+import styles from './Autocomplete.module.css';
+import Icon from './Icon';
+import LogoIcon from './LogoIcon';
+import Scrollbar from './Scrollbar';
 
-const MAX_ITEMS_SHOWN = 12;
+const MAX_ITEMS_SHOWN = 8;
 const MAX_WIDTH = 540;
 
 const NavigationModeTypes = {
@@ -40,18 +40,58 @@ function travelDown(currentSelection, rowCount) {
   return newSelection;
 }
 
+// Returns the index of the whitespace-delimited word the caret sits in, where
+// word 0 is the input itself (e.g. the command name). Callers that render
+// arguments map argument N to word index N + 1.
+function getFocusedWordIndex(value, caretPosition) {
+  if (value == null || caretPosition == null) {
+    return 0;
+  }
+
+  const beforeCaret = value.slice(0, caretPosition);
+  return Math.max(0, beforeCaret.split(/\s+/).length - 1);
+}
+
+function stopEvent(event) {
+  event.preventDefault();
+  event.stopPropagation();
+}
+
+const AutocompleteListRow = React.memo(function AutocompleteListRow({
+  item,
+  renderRow,
+  isSelected,
+  isActive,
+  focusedWordIndex,
+  handleCompleteResultItem,
+  onHover,
+}) {
+  return renderRow({
+    item,
+    onClick: () => handleCompleteResultItem(item),
+    selected: isSelected,
+    active: isActive,
+    focusedWordIndex,
+    onMouseOver: () => onHover(item),
+  });
+});
+
 function Autocomplete({
   chatInputQuerySelector,
+  handleCompleteResult,
   onComplete,
   getChatInputPartialInput,
+  getChatInputCaretPosition,
   renderRow,
   computeItems,
   getItemKey,
   fullWidthOnSmallScreens = true,
   offset = 24,
   showKeyboardNavigationTips = true,
+  getCompletionLength = null,
+  onAppendSpace = null,
 }) {
-  const navigationMode = useRef(NavigationModeTypes.ARROW_KEYS);
+  const navigationModeRef = useRef(NavigationModeTypes.ARROW_KEYS);
   const [partialInput, setPartialInput] = useState('');
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(0);
@@ -60,12 +100,16 @@ function Autocomplete({
   const [opened, {open, close}] = useDisclosure(false);
   const chatInputElement = useDomObserver(chatInputQuerySelector);
   const itemsBodyRef = useRef(null);
-  const pendingComplete = useRef(null);
+  const pendingCompleteRef = useRef(false);
   const lastValueRef = useRef(null);
+  const openedRef = useRef(false);
+  const updateAutocompleteSuggestionsRef = useRef(null);
+  const updateAutocompleteSuggestionsRequestIdRef = useRef(0);
   const [pendingCompleteIndex, setPendingCompleteIndex] = useState(null);
+  const [focusedWordIndex, setFocusedWordIndex] = useState(0);
 
   const handleMouseMove = useCallback(() => {
-    navigationMode.current = NavigationModeTypes.MOUSE;
+    navigationModeRef.current = NavigationModeTypes.MOUSE;
   }, []);
 
   const handleSelectedChange = useCallback((newSelected, forceScroll = false) => {
@@ -73,7 +117,7 @@ function Autocomplete({
 
     selectedRef.current = newSelected;
 
-    if (navigationMode.current === NavigationModeTypes.MOUSE && !forceScroll) {
+    if (navigationModeRef.current === NavigationModeTypes.MOUSE && !forceScroll) {
       return;
     }
 
@@ -91,37 +135,65 @@ function Autocomplete({
     }
   }, []);
 
+  const handleClose = useCallback(() => {
+    close();
+    openedRef.current = false;
+  }, [close]);
+
   const handleOpen = useCallback(() => {
     open();
-    navigationMode.current = NavigationModeTypes.ARROW_KEYS;
+    openedRef.current = true;
+    navigationModeRef.current = NavigationModeTypes.ARROW_KEYS;
   }, [open]);
 
-  const updateAutocompleteSuggestions = useCallback(() => {
-    const value = getChatInputPartialInput();
+  const updateAutocompleteSuggestions = useCallback(
+    async (newValue = null, newCaretPosition = null) => {
+      const value = newValue ?? getChatInputPartialInput();
+      const caretPosition = newCaretPosition ?? getChatInputCaretPosition?.();
 
-    if (value === lastValueRef.current) {
-      return;
-    }
+      // Track which argument the caret sits in even when the text itself hasn't
+      // changed (e.g. the user moved the caret between arguments), so the row can
+      // highlight the focused argument. The expensive item recompute below is
+      // still skipped when only the caret moved.
+      setFocusedWordIndex(getFocusedWordIndex(value, caretPosition));
 
-    lastValueRef.current = value;
+      if (value === lastValueRef.current) {
+        return;
+      }
 
-    if (value == null) {
-      itemsRef.current = [];
-    } else {
-      itemsRef.current = computeItems(value).slice(0, MAX_ITEMS_SHOWN);
-    }
+      lastValueRef.current = value;
 
-    setItems(itemsRef.current);
-    setPartialInput(value ?? '');
-    handleSelectedChange(0, true);
+      const requestId = ++updateAutocompleteSuggestionsRequestIdRef.current;
 
-    itemsRef.current.length > 0 ? handleOpen() : close();
-  }, [getChatInputPartialInput, computeItems, handleOpen]);
+      if (value == null) {
+        itemsRef.current = [];
+        setPartialInput('');
+      } else {
+        setPartialInput(value);
+        itemsRef.current = (await computeItems(value)).slice(0, MAX_ITEMS_SHOWN);
+      }
+
+      if (requestId !== updateAutocompleteSuggestionsRequestIdRef.current) {
+        return;
+      }
+
+      setItems(itemsRef.current);
+      handleSelectedChange(0, true);
+
+      itemsRef.current.length > 0 ? handleOpen() : handleClose();
+    },
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- handleClose is stable for this memoized callback
+    [getChatInputPartialInput, getChatInputCaretPosition, computeItems, handleOpen, close, handleSelectedChange]
+  );
+
+  useEffect(() => {
+    updateAutocompleteSuggestionsRef.current = updateAutocompleteSuggestions;
+  }, [updateAutocompleteSuggestions]);
 
   const {refs, floatingStyles, context} = useFloating({
     strategy: 'fixed',
     open: opened,
-    onOpenChange: (isOpen) => (isOpen ? open() : close()),
+    onOpenChange: (isOpen) => (isOpen ? handleOpen() : handleClose()),
     placement: 'top-start',
     middleware: [
       floatingOffset({mainAxis: offset}),
@@ -148,10 +220,37 @@ function Autocomplete({
 
   const handleComplete = useCallback(
     (item) => {
-      onComplete(item);
-      close();
+      const completeResult = (handleCompleteResult ?? onComplete)?.(item);
+
+      // Completers may return {newValue, shouldClose}. When the completion still
+      // leaves arguments to fill (shouldClose === false), recompute against the
+      // new value so the menu stays open. A void return (legacy onComplete) or
+      // shouldClose closes the menu, as before.
+      if (completeResult?.shouldClose === false && completeResult.newValue != null) {
+        updateAutocompleteSuggestionsRef.current(completeResult.newValue, completeResult.newValue.length);
+        return;
+      }
+
+      lastValueRef.current = null;
+      handleClose();
     },
-    [onComplete, close]
+    [handleCompleteResult, onComplete, handleClose]
+  );
+
+  const onHover = useCallback(
+    (item) => {
+      if (navigationModeRef.current !== NavigationModeTypes.MOUSE) {
+        return;
+      }
+
+      const index = itemsRef.current.indexOf(item);
+      if (index === -1) {
+        return;
+      }
+
+      handleSelectedChange(index);
+    },
+    [handleSelectedChange]
   );
 
   useEffect(() => {
@@ -159,53 +258,74 @@ function Autocomplete({
       return;
     }
 
-    function keyupCallback() {
-      updateAutocompleteSuggestions();
+    let pendingPromise = null;
 
-      if (!pendingComplete.current) {
+    async function keyupCallback() {
+      if (!pendingCompleteRef.current) {
+        pendingPromise = await updateAutocompleteSuggestionsRef.current();
         return;
       }
 
-      pendingComplete.current = false;
+      pendingCompleteRef.current = false;
       setPendingCompleteIndex(null);
       handleComplete(itemsRef.current[selectedRef.current]);
     }
 
-    function keydownCallback(event) {
-      if (!opened) {
+    async function keydownCallback(event) {
+      if (pendingPromise != null) {
+        await Promise.allSettled([pendingPromise]);
+      }
+
+      if (!openedRef.current) {
         return;
       }
 
-      navigationMode.current = NavigationModeTypes.ARROW_KEYS;
+      navigationModeRef.current = NavigationModeTypes.ARROW_KEYS;
 
       switch (event.key) {
         case keyCodes.Enter:
-        case keyCodes.Tab:
-          event.preventDefault();
-          event.stopPropagation();
-          pendingComplete.current = true;
+        case keyCodes.Tab: {
+          // Only capture Enter/Tab while the caret is within the command name
+          // (which may be multiple words, e.g. "!commands add"). Past it the user
+          // is typing an argument, so let Enter send and Tab add a space.
+          const selectedItem = itemsRef.current[selectedRef.current];
+          const completionLength = getCompletionLength?.(selectedItem);
+          const caretPosition = getChatInputCaretPosition?.();
+          const caretPastCommandName =
+            completionLength != null && caretPosition != null && caretPosition > completionLength;
+
+          if (caretPastCommandName && event.key === keyCodes.Enter) {
+            handleClose();
+            break;
+          }
+
+          if (caretPastCommandName && event.key === keyCodes.Tab) {
+            stopEvent(event);
+            onAppendSpace?.(selectedItem, caretPosition);
+            break;
+          }
+
+          stopEvent(event);
+          pendingCompleteRef.current = true;
           setPendingCompleteIndex(selectedRef.current);
           break;
+        }
         case keyCodes.End:
           event.preventDefault();
-          handleSelectedChange(itemsRef.current.length);
+          handleSelectedChange(itemsRef.current.length - 1);
           break;
         case keyCodes.Home:
           event.preventDefault();
           handleSelectedChange(0);
           break;
         case keyCodes.ArrowUp:
-          event.preventDefault();
-          event.stopPropagation();
+          stopEvent(event);
           handleSelectedChange(travelUp(selectedRef.current, itemsRef.current.length));
           break;
         case keyCodes.ArrowDown:
-          event.preventDefault();
-          event.stopPropagation();
+          stopEvent(event);
           handleSelectedChange(travelDown(selectedRef.current, itemsRef.current.length));
           break;
-        default:
-          handleSelectedChange(0);
       }
     }
 
@@ -218,7 +338,8 @@ function Autocomplete({
       chatInputElement.removeEventListener('keydown', keydownCallback, true);
       chatInputElement.removeEventListener('keyup', keyupCallback, true);
     };
-  }, [chatInputElement, updateAutocompleteSuggestions, opened, refs]);
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- effect re-binds only when the chat input element changes
+  }, [chatInputElement, refs]);
 
   return (
     <div
@@ -228,6 +349,7 @@ function Autocomplete({
       onMouseMove={handleMouseMove}
       {...getFloatingProps()}>
       <div className={styles.autocompleteHeader}>
+        <LogoIcon className={styles.logoIcon} />
         <Text truncate>
           {formatMessage(
             {defaultMessage: 'Results for <bold>{query}</bold>'},
@@ -239,23 +361,16 @@ function Autocomplete({
       </div>
       <Scrollbar ref={itemsBodyRef} className={styles.autocompleteBody}>
         {items.map((item, index) => (
-          <React.Fragment key={getItemKey(item)}>
-            {renderRow({
-              item,
-              onClick: () => handleComplete(item),
-              selected: selected === index,
-              active: pendingCompleteIndex === index,
-              onMouseOver: () => {
-                // We do this to prevent onMouseOver from triggering when
-                // matches is changing, and the mouse is left over an item that's not index 0
-                if (navigationMode.current !== NavigationModeTypes.MOUSE) {
-                  return;
-                }
-
-                handleSelectedChange(index);
-              },
-            })}
-          </React.Fragment>
+          <AutocompleteListRow
+            key={getItemKey(item)}
+            item={item}
+            renderRow={renderRow}
+            isSelected={selected === index}
+            isActive={pendingCompleteIndex === index}
+            focusedWordIndex={focusedWordIndex}
+            handleCompleteResultItem={handleComplete}
+            onHover={onHover}
+          />
         ))}
       </Scrollbar>
       {showKeyboardNavigationTips ? (

@@ -1,5 +1,5 @@
-import {API_ENDPOINT} from '../constants.js';
-import api from '../utils/api.js';
+import {API_ENDPOINT} from '@/constants';
+import api from '@/utils/api';
 
 export async function getMe() {
   return api.get('oauth2/me', {version: null});

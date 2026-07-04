@@ -1,15 +1,15 @@
 import React from 'react';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingGroup from '../../components/SettingGroup.jsx';
-import SettingPrimaryColorRadio from '../../components/SettingPrimaryColorRadio.jsx';
-import formatMessage from '../../../../i18n/index.js';
-import {SettingDefaultValues, SettingIds} from '../../../../constants.js';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import useProRequiredState from '../../../../common/hooks/ProRequiredState.jsx';
+import useProRequiredState from '@/common/hooks/ProRequiredState';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingDefaultValues, SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingPrimaryColorRadio from '@/modules/settings/components/SettingPrimaryColorRadio';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Theme'});
 
-function Theme(props, ref) {
+function Theme({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.PRIMARY_COLOR);
 
   const [normalizedValue, setNormalizedValue] = useProRequiredState({
@@ -22,7 +22,6 @@ function Theme(props, ref) {
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingPrimaryColorRadio
         showProBadge
-        showBetaBadge
         value={normalizedValue}
         onChange={setNormalizedValue}
         name={formatMessage({defaultMessage: 'Accent Color'})}
@@ -32,11 +31,11 @@ function Theme(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(Theme), {
+SettingStore.registerSetting(Theme, {
   settingPanelId: SettingPanelIds.THEME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['primary', 'color', 'theme', 'accent'],
 });
 
-export default React.forwardRef(Theme);
+export default Theme;

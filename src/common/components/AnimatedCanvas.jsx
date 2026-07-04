@@ -10,6 +10,7 @@ const FRAME_INTERVAL = 1000 / FRAME_RATE;
 
 export default function AnimatedCanvas({width = CANVAS_WIDTH, height = CANVAS_HEIGHT, className, ...props}) {
   const ref = useRef(null);
+  // eslint-disable-next-line @eslint-react/purity -- random seed for a mutable animation-time ref
   const timeRef = React.useRef(Math.random() * 1000);
   const documentState = useDocumentVisibility();
   const isVisible = useInView(ref);
@@ -48,13 +49,13 @@ export default function AnimatedCanvas({width = CANVAS_WIDTH, height = CANVAS_HE
           const distSq = dx * dx + dy * dy;
 
           const red = Math.floor(200 + 127 * Math.sin((x2 - y2) / 300 + t));
-          const green = Math.floor(32 + 120 * Math.sin((x2 * cosT + y2 * sinT) / 300));
+          const green = Math.floor(0 + 120 * Math.sin((x2 * cosT + y2 * sinT) / 300));
           const blue = Math.floor(192 + 63 * Math.sin(5 * innerSin + distSq / 1100));
 
           imageData.data[index] = red; // Red channel
           imageData.data[index + 1] = green; // Green channel
           imageData.data[index + 2] = blue; // Blue channel
-          imageData.data[index + 3] = 196; // Alpha channel
+          imageData.data[index + 3] = 255; // Alpha channel
         }
       }
 
@@ -63,8 +64,13 @@ export default function AnimatedCanvas({width = CANVAS_WIDTH, height = CANVAS_HE
     }
 
     const requestDrawAnimatedImage = () => window.requestAnimationFrame(drawAnimatedImage);
-    const interval = setInterval(() => requestDrawAnimatedImage(), FRAME_INTERVAL);
-    return () => clearInterval(interval);
+    let requestId = requestDrawAnimatedImage();
+    const interval = setInterval(() => (requestId = requestDrawAnimatedImage()), FRAME_INTERVAL);
+
+    return () => {
+      clearInterval(interval);
+      window.cancelAnimationFrame(requestId);
+    };
   }, [documentState, isVisible, ref]);
 
   return <canvas width={width} height={height} ref={ref} className={className} {...props} />;

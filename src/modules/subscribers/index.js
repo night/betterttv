@@ -1,6 +1,6 @@
-import socketClient, {EventNames} from '../../socket-client.js';
-import {getCurrentChannel} from '../../utils/channel.js';
-import twitch from '../../utils/twitch.js';
+import socketClient, {EventNames} from '@/socket-client';
+import {getCurrentChannel} from '@/utils/channel';
+import twitch from '@/utils/twitch';
 
 const users = new Map();
 

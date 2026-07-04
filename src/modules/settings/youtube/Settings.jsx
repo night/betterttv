@@ -1,12 +1,13 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import domObserver from '../../../observers/dom.js';
-import {getElementData} from '../../../utils/youtube.js';
-import SettingsModal from '../components/SettingsModal.jsx';
-import DropdownButton from './DropdownButton.jsx';
+import {ShadowDOMComponentIds} from '@/constants';
+import SettingsModal from '@/modules/settings/components/SettingsModal';
+import shadowDOM from '@/modules/shadow_dom';
+import domObserver from '@/observers/dom';
+import {importAll} from '@/utils/modules';
+import {getElementData} from '@/utils/youtube';
+import DropdownButton from './DropdownButton';
 import './Settings.module.css';
-import {ShadowDOMComponentIds} from '../../../constants.js';
-import shadowDOM from '../../shadow_dom';
 
 const CHAT_SETTINGS_DROPDOWN_CONTAINER_SELECTOR = 'tp-yt-iron-dropdown';
 const CHAT_SETTINGS_DROPDOWN_ITEMS_SELECTOR = 'tp-yt-paper-listbox';
@@ -44,10 +45,8 @@ export default class SettingsModule {
   }
 
   async load() {
-    // eslint-disable-next-line import/no-unresolved
-    await import('../settings/global/*.jsx');
-    // eslint-disable-next-line import/no-unresolved
-    await import('../settings/youtube/*.jsx');
+    await importAll(import.meta.glob('../settings/global/*.jsx'));
+    await importAll(import.meta.glob('../settings/youtube/*.jsx'));
     this.renderSettings();
   }
 

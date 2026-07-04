@@ -1,11 +1,11 @@
-import React from 'react';
 import {Checkbox} from '@mantine/core';
+import React from 'react';
 import styles from './SettingCheckbox.module.css';
-import SettingWrapper from './SettingWrapper.jsx';
+import SettingWrapper from './SettingWrapper';
 
-function SettingCheckbox({name, description, value, onChange, ...props}) {
+function SettingCheckbox({name, description, value, onChange, showProBadge = false, showBetaBadge = false, ...props}) {
   return (
-    <SettingWrapper name={name} description={description}>
+    <SettingWrapper name={name} description={description} showProBadge={showProBadge} showBetaBadge={showBetaBadge}>
       <Checkbox
         {...props}
         value={String(value)}

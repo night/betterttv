@@ -1,0 +1,41 @@
+.tooltip {
+  --tooltip-bg: light-dark(black, white);
+  padding-inline: 8px;
+  padding-block: 4px;
+  font-weight: 600;
+  line-height: 1.4;
+  font-size: 1.4rem;
+  border-radius: 0.4rem;
+  background-color: var(--tooltip-bg);
+  box-shadow: var(--mantine-shadow-lg);
+  color: light-dark(white, black);
+  text-align: center;
+  z-index: 2000;
+  pointer-events: none;
+  user-select: none;
+  white-space: pre;
+  box-sizing: border-box;
+  overflow: visible;
+  isolation: isolate;
+  transition-property: transform;
+  transition-timing-function: ease;
+}
+
+main[data-platform='youtube'] .tooltip {
+  --tooltip-bg: #616161e9;
+  border-radius: 4px;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1;
+  padding: 8px;
+  font-weight: unset;
+  color: #ffffff;
+}
+
+main[data-platform='youtube'] .arrow {
+  display: none;
+}
+
+.arrow {
+  pointer-events: none;
+}

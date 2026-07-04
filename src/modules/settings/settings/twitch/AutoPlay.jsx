@@ -1,14 +1,14 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, AutoPlayFlags} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingCheckbox from '../../components/SettingCheckbox.jsx';
-import SettingCheckboxGroup from '../../components/SettingCheckboxGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds, AutoPlayFlags} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
+import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Play'});
 
-function AutoplayModule(props, ref) {
+function AutoplayModule({ref, ...props}) {
   const [autoplay, setAutoplay] = useStorageState(SettingIds.AUTO_PLAY);
 
   return (
@@ -42,10 +42,10 @@ function AutoplayModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(AutoplayModule), {
+SettingStore.registerSetting(AutoplayModule, {
   settingPanelId: SettingPanelIds.AUTO_PLAY,
   name: SETTING_NAME,
   keywords: ['auto', 'play'],
 });
 
-export default React.forwardRef(AutoplayModule);
+export default AutoplayModule;

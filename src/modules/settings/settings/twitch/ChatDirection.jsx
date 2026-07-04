@@ -1,14 +1,14 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingGroup from '../../components/SettingGroup.jsx';
-import SettingSwitch from '../../components/SettingSwitch.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Direction'});
 
-function ChatDirection(props, ref) {
+function ChatDirection({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.REVERSE_CHAT_DIRECTION);
 
   return (
@@ -23,11 +23,11 @@ function ChatDirection(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(ChatDirection), {
+SettingStore.registerSetting(ChatDirection, {
   settingPanelId: SettingPanelIds.CHAT_DIRECTION,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['chat', 'direction', 'up', 'down', 'reverse'],
 });
 
-export default React.forwardRef(ChatDirection);
+export default ChatDirection;

@@ -1,9 +1,9 @@
+import {Title} from '@mantine/core';
+import classNames from 'classnames';
 import React from 'react';
 import styles from './Panel.module.css';
-import classNames from 'classnames';
-import {Title} from '@mantine/core';
 
-function Panel({title, rightContent, children, className, containerClassName, style, ...restProps}, ref) {
+function Panel({title, rightContent, children, className, containerClassName, style, ref, ...restProps}) {
   const hasHeader = title != null || rightContent != null;
 
   return (
@@ -21,4 +21,4 @@ function Panel({title, rightContent, children, className, containerClassName, st
   );
 }
 
-export default React.forwardRef(Panel);
+export default Panel;

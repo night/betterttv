@@ -1,14 +1,14 @@
 import React from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {SettingIds, SidebarFlags} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingCheckbox from '../../components/SettingCheckbox.jsx';
-import SettingCheckboxGroup from '../../components/SettingCheckboxGroup.jsx';
+import useStorageState from '@/common/hooks/StorageState';
+import {SettingIds, SidebarFlags} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
+import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Sidebar'});
 
-function SidebarComponent(props, ref) {
+function SidebarComponent({ref, ...props}) {
   const [sidebar, setSidebar] = useStorageState(SettingIds.SIDEBAR);
 
   return (
@@ -60,7 +60,7 @@ function SidebarComponent(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(SidebarComponent), {
+SettingStore.registerSetting(SidebarComponent, {
   settingPanelId: SettingPanelIds.SIDEBAR,
   name: SETTING_NAME,
   keywords: [
@@ -77,4 +77,4 @@ SettingStore.registerSetting(React.forwardRef(SidebarComponent), {
   ],
 });
 
-export default React.forwardRef(SidebarComponent);
+export default SidebarComponent;

@@ -1,28 +1,29 @@
-import React, {useState} from 'react';
-import useStorageState from '../../../common/hooks/StorageState.jsx';
-import {EmoteMenuTips, EmoteMenuTypes, PlatformTypes, SettingIds} from '../../../constants.js';
-import {SettingPanelIds} from '../../settings/stores/SettingStore.jsx';
-import formatMessage from '../../../i18n/index.js';
-import storage from '../../../storage.js';
-import {getPlatform, isMac} from '../../../utils/window.js';
-import emoteMenuStore from '../stores/emote-menu-store.js';
-import Icons from './Icons.jsx';
-import styles from './Tip.module.css';
 import {Anchor, CloseButton, Kbd} from '@mantine/core';
 import classNames from 'classnames';
-import settings from '../../settings/index.js';
+import React, {useState} from 'react';
+import useStorageState from '@/common/hooks/StorageState';
+import {EmoteMenuTips, EmoteMenuTypes, PlatformTypes, SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import emoteMenuStore from '@/modules/emote_menu/stores/emote-menu-store';
+import settings from '@/modules/settings/index';
+import {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import storage from '@/storage';
+import {getPlatform, isMac} from '@/utils/window';
+import Icons from './Icons';
+import styles from './Tip.module.css';
 
 const tips = {};
 for (const tipStorageKey of Object.values(EmoteMenuTips)) {
   tips[tipStorageKey] = storage.get(tipStorageKey) || false;
 }
 
-function getTipToDisplay(onClose) {
+function useTipToDisplay(onClose) {
   const [emoteMenuValue, setEmoteMenuValue] = useStorageState(SettingIds.EMOTE_MENU);
 
   const replaceDefaultEmoteMenu = () => {
     markTipAsSeen(EmoteMenuTips.EMOTE_MENU_REPLACE_DEFAULT);
     setEmoteMenuValue(EmoteMenuTypes.ENABLED);
+    onClose();
   };
 
   const customizeAccentColor = () => {
@@ -116,7 +117,8 @@ export function markTipAsSeen(tipStorageKey) {
 }
 
 function Tip({className, onClose, ...props}) {
-  const [[tipStorageKey, tipDisplayText], setTipToDisplay] = useState(getTipToDisplay(onClose));
+  // eslint-disable-next-line @eslint-react/use-state -- value is intentionally destructured into a tuple
+  const [[tipStorageKey, tipDisplayText], setTipToDisplay] = useState(useTipToDisplay(onClose));
 
   const handleClose = () => {
     markTipAsSeen(tipStorageKey);

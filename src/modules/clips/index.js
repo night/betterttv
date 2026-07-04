@@ -1,8 +1,8 @@
-import {PlatformTypes} from '../../constants.js';
-import colors from '../../utils/colors.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
-import watcher from '../../watcher.js';
-import chat from '../chat/index.js';
+import {PlatformTypes} from '@/constants';
+import chat from '@/modules/chat/index';
+import colors from '@/utils/colors';
+import {loadModuleForPlatforms} from '@/utils/modules';
+import watcher from '@/watcher';
 
 const CHAT_MESSAGE_SELECTOR = 'span[data-a-target="chat-message-text"]';
 const CHAT_USERNAME_SELECTOR = 'a[href$="/clips"] span';

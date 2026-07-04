@@ -1,22 +1,27 @@
 import React from 'react';
-import {ChatLayoutTypes, EmoteMenuTypes, SettingIds, ShadowDOMComponentIds} from '../../../constants.js';
-import domObserver from '../../../observers/dom.js';
-import settings from '../../../settings.js';
-import twitch from '../../../utils/twitch.js';
-import {getCurrentUser} from '../../../utils/user.js';
-import watcher from '../../../watcher.js';
+import iconButtonStyles from '@/common/styles/IconButton.module.css';
+import {ChatLayoutTypes, EmoteMenuTypes, SettingIds, ShadowDOMComponentIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import EmoteMenu from '@/modules/emote_menu/components/EmoteMenu';
+import shadowDOM from '@/modules/shadow_dom/index';
+import {bindTooltip} from '@/modules/tooltip/index';
+import domObserver from '@/observers/dom';
+import settings from '@/settings';
+import twitch from '@/utils/twitch';
+import {getCurrentUser} from '@/utils/user';
+import {isStandaloneWindow} from '@/utils/window';
+import watcher from '@/watcher';
 import styles from './EmoteMenu.module.css';
-import EmoteMenu from '../components/EmoteMenu.jsx';
-import shadowDOM from '../../shadow_dom/index.js';
-import {isStandaloneWindow} from '../../../utils/window.js';
 
 const CHAT_TEXT_AREA = '.chat-input__textarea, textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_INPUT = '.chat-input';
 
 // For legacy button
 const LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-legacy-emote-picker-button-container';
-const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR =
-  '.chat-input div[data-test-selector="chat-input-buttons-container"] div:has(button[data-a-target="chat-settings"])';
+const CHAT_INPUT_BUTTONS_CONTAINER_SELECTOR = '.chat-input div[data-test-selector="chat-input-buttons-container"]';
+const CHAT_SETTINGS_BUTTON_SELECTOR = 'button[data-a-target="chat-settings"]';
+const CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR = `div:has(${CHAT_SETTINGS_BUTTON_SELECTOR})`;
+const CHAT_SEND_BUTTON_SELECTOR = 'button[data-a-target="chat-send-button"]';
 
 const BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID = 'bttv-emote-picker-button-container';
 const EMOTE_PICKER_BUTTON_SELECTOR = 'button[data-a-target="emote-picker-button"]';
@@ -77,33 +82,43 @@ function loadLegacyButton() {
     return;
   }
 
-  const chatSettingsContainer = document.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
-  if (chatSettingsContainer == null) {
+  const buttonsContainer = document.querySelector(CHAT_INPUT_BUTTONS_CONTAINER_SELECTOR);
+  if (buttonsContainer == null) {
     return;
-  }
-
-  const chatInput = document.querySelector(CHAT_INPUT);
-  if (chatInput != null) {
-    chatInput.classList.add(styles.hideShieldModeButton);
   }
 
   const buttonContainer = document.createElement('div');
   buttonContainer.setAttribute('id', LEGACY_BTTV_EMOTE_PICKER_BUTTON_CONTAINER_ID);
 
-  const chatSettingsButtonContainer = chatSettingsContainer.querySelector(
-    'div:has(button[data-a-target="chat-settings"])'
-  );
+  const chatSettingsButtonContainer = buttonsContainer.querySelector(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR);
 
-  if (chatSettingsButtonContainer == null) {
-    return;
+  if (chatSettingsButtonContainer != null) {
+    // Regular chat: place the button alongside the chat settings button.
+    chatSettingsButtonContainer.after(buttonContainer);
+  } else {
+    // Moderator view doesn't expose a chat settings button, so place the button next to the
+    // send button instead.
+    const chatSendButton = buttonsContainer.querySelector(CHAT_SEND_BUTTON_SELECTOR);
+    const chatSendButtonContainer = [...buttonsContainer.children].find((child) => child.contains(chatSendButton));
+    if (chatSendButtonContainer == null) {
+      return;
+    }
+    buttonsContainer.insertBefore(buttonContainer, chatSendButtonContainer);
   }
 
-  chatSettingsButtonContainer.after(buttonContainer);
+  // In regular chat the moderator shield mode button shares the row with the chat settings
+  // button, leaving no room for the emote menu button, so hide it. Moderator view has no chat
+  // settings button and enough room, so the shield mode button stays visible there.
+  const chatInput = document.querySelector(CHAT_INPUT);
+  if (chatInput != null && chatSettingsButtonContainer != null) {
+    chatInput.classList.add(styles.hideShieldModeButton);
+  }
 
   const button = document.createElement('button');
-  button.classList.add(styles.button);
+  button.classList.add(iconButtonStyles.button);
   buttonContainer.appendChild(button);
   button.addEventListener('click', () => handleOpen?.());
+  bindTooltip(button, {content: formatMessage({defaultMessage: 'Emote Menu'})});
 }
 
 function unloadButton(container, chatInput) {
@@ -158,7 +173,7 @@ function loadButton() {
   chatInputIcons.appendChild(buttonContainer);
 
   const button = document.createElement('button');
-  button.classList.add(styles.button);
+  button.classList.add(iconButtonStyles.button);
   buttonContainer.appendChild(button);
   button.addEventListener('click', () => handleOpen?.());
 }
@@ -196,7 +211,7 @@ function loadEmoteMenu(onMount, onError) {
 
 class EmoteMenuModule {
   constructor() {
-    domObserver.on(CHAT_SETTINGS_BUTTON_CONTAINER_SELECTOR, (node, isConnected) => {
+    domObserver.on(CHAT_INPUT_BUTTONS_CONTAINER_SELECTOR, (node, isConnected) => {
       if (!isConnected) {
         return;
       }

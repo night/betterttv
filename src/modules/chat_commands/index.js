@@ -1,10 +1,9 @@
-import {PlatformTypes} from '../../constants.js';
-import {loadModuleForPlatforms} from '../../utils/modules.js';
+import {PlatformTypes} from '@/constants';
+import {importAll, loadModuleForPlatforms} from '@/utils/modules';
 
 export default loadModuleForPlatforms([
   PlatformTypes.TWITCH,
   async () => {
-    // eslint-disable-next-line import/no-unresolved
-    await import('./commands/*.js');
+    await importAll(import.meta.glob('./commands/*.js'));
   },
 ]);

@@ -1,18 +1,18 @@
-import React, {useContext} from 'react';
-import useStorageState from '../../../../common/hooks/StorageState.jsx';
-import {ChatFlags, PageTypes, SettingIds} from '../../../../constants.js';
-import formatMessage from '../../../../i18n/index.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingCheckbox from '../../components/SettingCheckbox.jsx';
-import SettingCheckboxGroup from '../../components/SettingCheckboxGroup.jsx';
-import SettingWrapper from '../../components/SettingWrapper.jsx';
-import {PageContext} from '../../contexts/PageContext.jsx';
 import {Button} from '@mantine/core';
+import React, {use} from 'react';
+import useStorageState from '@/common/hooks/StorageState';
+import {ChatFlags, PageTypes, SettingIds} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
+import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat'});
 
-function ChatModule(props, ref) {
-  const {setPage} = useContext(PageContext);
+function ChatModule({ref, ...props}) {
+  const {setPage} = use(PageContext);
   const [chat, setChat] = useStorageState(SettingIds.CHAT);
 
   return (
@@ -78,11 +78,11 @@ function ChatModule(props, ref) {
   );
 }
 
-SettingStore.registerSetting(React.forwardRef(ChatModule), {
+SettingStore.registerSetting(ChatModule, {
   settingPanelId: SettingPanelIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
   keywords: ['bits', 'highlights', 'community', 'chat', 'replies', 'clips', 'subs', 'subscriptions', 'text', 'replacements'],
 });
 
-export default React.forwardRef(ChatModule);
+export default ChatModule;

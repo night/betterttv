@@ -1,7 +1,7 @@
 import React from 'react';
-import SettingWrapper from './SettingWrapper.jsx';
-import ColorPicker from './ColorPicker.jsx';
+import ColorPicker from './ColorPicker';
 import styles from './SettingColorPicker.module.css';
+import SettingWrapper from './SettingWrapper';
 
 function SettingColorPicker({name, description, value, defaultValue, onChange, ...props}) {
   return (

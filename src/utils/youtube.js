@@ -1,4 +1,4 @@
-import {createSrc, createSrcSet} from './image.js';
+import {createSrc, createSrcSet} from './image';
 
 export function findFocusedWord(value, selectionStart = 0) {
   const subString = value.substring(0, selectionStart);
@@ -38,32 +38,16 @@ export function getYoutubeChatInputPartialCommand(commandPrefix = '!') {
     return null;
   }
 
-  const caret = getCaretOffsetInContentEditable(element);
-  if (caret == null) {
-    return null;
-  }
-
   const value = element.innerText;
   if (value == null) {
     return null;
   }
 
-  const {value: focusedWord} = findFocusedWord(value, caret);
-  const firstWord = value.split(' ')[0].trim();
-
-  if (caret > firstWord.length) {
+  if (!value.startsWith(commandPrefix)) {
     return null;
   }
 
-  if (firstWord !== focusedWord) {
-    return null;
-  }
-
-  if (!focusedWord.startsWith(commandPrefix)) {
-    return null;
-  }
-
-  return focusedWord;
+  return value;
 }
 
 export function setYoutubeChatInputValue(text, shouldFocus = true) {

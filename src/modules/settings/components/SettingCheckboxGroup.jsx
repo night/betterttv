@@ -1,9 +1,9 @@
-import React from 'react';
 import {CheckboxGroup} from '@mantine/core';
-import {hasFlag} from '../../../utils/flags.js';
-import SettingGroup from './SettingGroup.jsx';
+import React from 'react';
+import {hasFlag} from '@/utils/flags';
+import SettingGroup from './SettingGroup';
 
-function SettingCheckboxGroup({name, value, onChange, flags, disabled, children}, ref) {
+function SettingCheckboxGroup({name, value, onChange, flags, disabled, children, ref}) {
   const groupValue = flags.filter((flag) => hasFlag(value, flag)).map(String);
 
   function handleChange(stringArray) {
@@ -20,4 +20,4 @@ function SettingCheckboxGroup({name, value, onChange, flags, disabled, children}
   );
 }
 
-export default React.forwardRef(SettingCheckboxGroup);
+export default SettingCheckboxGroup;

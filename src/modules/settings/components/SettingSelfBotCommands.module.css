@@ -1,0 +1,50 @@
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.limitPill {
+  box-shadow: var(--mantine-shadow-xs);
+  font-weight: 500;
+}
+
+.searchInputRoot {
+  width: 100%;
+  max-width: 240px;
+}
+
+.searchInput {
+  height: 32px;
+}
+
+.userLevelColumn {
+  width: 128px;
+}
+
+td.userLevelColumn {
+  width: 128px;
+  min-width: 128px;
+  max-width: 128px;
+}
+
+.commandColumn {
+  width: 128px;
+}
+
+td.commandColumn {
+  width: 128px;
+  min-width: 128px;
+  max-width: 160px;
+}
+
+.commandRoot {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.responseRoot {
+  min-width: 0;
+  width: 100%;
+}

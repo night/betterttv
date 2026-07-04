@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
-import SettingGroup from '../../components/SettingGroup.jsx';
-import formatMessage from '../../../../i18n/index.js';
-import extension from '../../../../utils/extension.js';
-import SettingStore, {SettingPanelIds} from '../../stores/SettingStore.jsx';
-import SettingSwitch from '../../components/SettingSwitch.jsx';
+import formatMessage from '@/i18n/index';
+import SettingGroup from '@/modules/settings/components/SettingGroup';
+import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import extension from '@/utils/extension';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'YouTube (beta)'});
 const browser = window.chrome || window.browser;
@@ -59,7 +59,7 @@ function requestYouTubePermission() {
   sendExtensionCommand({type: 'REQUEST_YOUTUBE_PERMISSION'});
 }
 
-function YouTube(props, ref) {
+function YouTube({ref, ...props}) {
   const [loading, setLoading] = React.useState(true);
   const [value, setValue] = React.useState(false);
 
@@ -111,16 +111,14 @@ function maybeRegisterComponent() {
     return null;
   }
 
-  const YouTubeForwardRef = React.forwardRef(YouTube);
-
-  SettingStore.registerSetting(YouTubeForwardRef, {
+  SettingStore.registerSetting(YouTube, {
     settingPanelId: SettingPanelIds.YOUTUBE,
     name: SETTING_NAME,
     supportsStandaloneWindow: true,
     keywords: ['youtube'],
   });
 
-  return YouTubeForwardRef;
+  return YouTube;
 }
 
 export default maybeRegisterComponent();
