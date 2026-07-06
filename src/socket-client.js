@@ -67,13 +67,13 @@ function handleUserUpdateEvent(newUser) {
 }
 
 function shouldRequestAuthentication() {
+  if (settings.get(SettingIds.SELF_BOT) === true) {
+    return true;
+  }
+
   const {user} = useAuthStore.getState();
   if (!isUserPro(user)) {
     return false;
-  }
-
-  if (settings.get(SettingIds.SELF_BOT) === true) {
-    return true;
   }
 
   const cloudBackupSettings = storage.get(CLOUD_BACKUP_SETTINGS_STORAGE_KEY);
