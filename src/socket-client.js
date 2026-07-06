@@ -124,11 +124,6 @@ class SocketClient extends SafeEventEmitter {
   async handleAuthenticationUpdate(data) {
     authenticated = data.authenticated === true;
 
-    if (authenticated && !shouldRequestAuthentication()) {
-      this.send('authentication_logout');
-      return;
-    }
-
     if (authenticated) {
       retryAuthenticationRequest = true;
       // session locks live on the (possibly new) authenticated connection, so (re)claim any we want
@@ -150,10 +145,6 @@ class SocketClient extends SafeEventEmitter {
 
       retryAuthenticationRequest = false;
       await refreshAndSetCredentials();
-    }
-
-    if (data.reason === 'logged_out') {
-      this.handleAuthenticationRequest();
     }
   }
 
