@@ -1,7 +1,7 @@
 import {faClose, faPaintBrush, faRobot} from '@fortawesome/free-solid-svg-icons';
 import {ActionIcon, Button, Image, Title} from '@mantine/core';
 import classNames from 'classnames';
-import React, {use, useState} from 'react';
+import React, {use, useEffect, useRef, useState} from 'react';
 import AnimatedCanvas from '@/common/components/AnimatedCanvas';
 import Icon from '@/common/components/Icon';
 import NightbotLogoIcon from '@/common/components/NightbotLogoIcon';
@@ -56,12 +56,35 @@ function getPromotionToDisplay() {
 function Promotion() {
   const {handleGotoSettingPanel} = use(PageContext);
   const [activePromotion, setActivePromotion] = useState(getPromotionToDisplay);
+  const panelRef = useRef(null);
+  const storageKey = activePromotion?.storageKey;
+
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (storageKey == null || panel == null) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+        promotionStore.markPromotionSeen(storageKey);
+        observer.disconnect();
+      },
+      {threshold: 0.5}
+    );
+    observer.observe(panel);
+
+    return () => observer.disconnect();
+  }, [storageKey]);
 
   if (activePromotion == null) {
     return null;
   }
 
-  const {storageKey, settingPanelId, icon, title} = activePromotion;
+  const {settingPanelId, icon, title} = activePromotion;
 
   const advance = () => {
     setActivePromotion(getPromotionToDisplay());
@@ -79,7 +102,7 @@ function Promotion() {
   };
 
   return (
-    <Panel className={styles.promotion} containerClassName={styles.panelContainer}>
+    <Panel ref={panelRef} className={styles.promotion} containerClassName={styles.panelContainer}>
       <AnimatedCanvas className={styles.canvas} />
       <div className={styles.content}>
         {icon}
