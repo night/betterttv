@@ -2,9 +2,12 @@ import throttle from 'lodash.throttle';
 import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
 import {refreshAndSetCredentials} from '@/utils/auth';
 import debug from '@/utils/debug';
+import {isUserPro} from '@/utils/pro';
 import SafeEventEmitter from '@/utils/safe-event-emitter';
 import {getCurrentUser} from '@/utils/user';
-import {SOCKET_ENDPOINT} from './constants';
+import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY, SettingIds, SOCKET_ENDPOINT} from './constants';
+import settings from './settings';
+import storage from './storage';
 
 const CONNECTION_STATES = {
   DISCONNECTED: 0,
@@ -63,6 +66,20 @@ function handleUserUpdateEvent(newUser) {
   useAuthStore.setState({user: newUser});
 }
 
+function shouldRequestAuthentication() {
+  const {user} = useAuthStore.getState();
+  if (!isUserPro(user)) {
+    return false;
+  }
+
+  if (settings.get(SettingIds.SELF_BOT) === true) {
+    return true;
+  }
+
+  const cloudBackupSettings = storage.get(CLOUD_BACKUP_SETTINGS_STORAGE_KEY);
+  return cloudBackupSettings != null && cloudBackupSettings.enabled === true;
+}
+
 class SocketClient extends SafeEventEmitter {
   constructor() {
     super();
@@ -74,6 +91,25 @@ class SocketClient extends SafeEventEmitter {
       () => this.handleAuthenticationRequest()
     );
 
+    useAuthStore.subscribe(
+      (state) => isUserPro(state.user),
+      () => this.handleAuthenticationRequest()
+    );
+
+    settings.on(`changed.${SettingIds.SELF_BOT}`, () => this.handleAuthenticationRequest());
+
+    import('@/modules/cloud_backup').then(({default: cloudBackup}) => {
+      let cloudBackupEnabled = cloudBackup.settings.enabled === true;
+      cloudBackup.on('changed', (newSettings) => {
+        const enabled = newSettings.enabled === true;
+        if (enabled === cloudBackupEnabled) {
+          return;
+        }
+        cloudBackupEnabled = enabled;
+        this.handleAuthenticationRequest();
+      });
+    });
+
     this.broadcastMe = throttle(this.broadcastMe.bind(this), 1000, {leading: false});
   }
 
@@ -84,7 +120,7 @@ class SocketClient extends SafeEventEmitter {
 
     const {accessToken} = getCredentials();
 
-    if (accessToken == null) {
+    if (accessToken == null || !shouldRequestAuthentication()) {
       this.send('authentication_logout');
     } else {
       this.send('authentication_request', {token: accessToken});
