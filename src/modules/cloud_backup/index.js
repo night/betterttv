@@ -41,13 +41,13 @@ class CloudBackup extends SafeEventEmitter {
   updateBackupSettings(newSettings) {
     newSettings = {...this.settings, ...newSettings};
 
-    const enabledChanged = newSettings.enabled != null && newSettings.enabled !== this.settings.enabled;
+    const previousEnabled = this.settings.enabled;
 
     this.settings = newSettings;
     this.emit('changed', this.settings);
     storage.set(CLOUD_BACKUP_SETTINGS_STORAGE_KEY, this.settings);
 
-    if (enabledChanged) {
+    if (newSettings.enabled != null && newSettings.enabled !== previousEnabled) {
       this.load(newSettings);
       socketClient.handleAuthenticationRequest();
     }
