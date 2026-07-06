@@ -67,6 +67,11 @@ function handleUserUpdateEvent(newUser) {
 }
 
 function shouldRequestAuthentication() {
+  const {accessToken} = getCredentials();
+  if (accessToken == null) {
+    return false;
+  }
+
   if (settings.get(SettingIds.SELF_BOT) === true) {
     return true;
   }
@@ -106,17 +111,24 @@ class SocketClient extends SafeEventEmitter {
       return;
     }
 
-    const {accessToken} = getCredentials();
-
-    if (accessToken == null || !shouldRequestAuthentication()) {
-      this.send('authentication_logout');
-    } else {
+    if (shouldRequestAuthentication()) {
+      const {accessToken} = getCredentials();
       this.send('authentication_request', {token: accessToken});
+      return;
+    }
+
+    if (authenticated) {
+      this.send('authentication_logout');
     }
   }
 
   async handleAuthenticationUpdate(data) {
     authenticated = data.authenticated === true;
+
+    if (authenticated && !shouldRequestAuthentication()) {
+      this.send('authentication_logout');
+      return;
+    }
 
     if (authenticated) {
       retryAuthenticationRequest = true;
