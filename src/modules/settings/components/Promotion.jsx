@@ -1,6 +1,7 @@
 import {faClose, faPaintBrush, faRobot} from '@fortawesome/free-solid-svg-icons';
 import {ActionIcon, Button, Image, Title} from '@mantine/core';
 import classNames from 'classnames';
+import {useInView} from 'framer-motion';
 import React, {use, useEffect, useRef, useState} from 'react';
 import AnimatedCanvas from '@/common/components/AnimatedCanvas';
 import Icon from '@/common/components/Icon';
@@ -58,27 +59,15 @@ function Promotion() {
   const [activePromotion, setActivePromotion] = useState(getPromotionToDisplay);
   const panelRef = useRef(null);
   const storageKey = activePromotion?.storageKey;
+  const isInView = useInView(panelRef, {once: true, amount: 0.5});
 
   useEffect(() => {
-    const panel = panelRef.current;
-    if (storageKey == null || panel == null) {
-      return undefined;
+    if (storageKey == null || !isInView) {
+      return;
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) {
-          return;
-        }
-        promotionStore.markPromotionSeen(storageKey);
-        observer.disconnect();
-      },
-      {threshold: 0.5}
-    );
-    observer.observe(panel);
-
-    return () => observer.disconnect();
-  }, [storageKey]);
+    promotionStore.markPromotionSeen(storageKey);
+  }, [isInView, storageKey]);
 
   if (activePromotion == null) {
     return null;
