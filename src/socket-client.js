@@ -98,18 +98,6 @@ class SocketClient extends SafeEventEmitter {
 
     settings.on(`changed.${SettingIds.SELF_BOT}`, () => this.handleAuthenticationRequest());
 
-    import('@/modules/cloud_backup').then(({default: cloudBackup}) => {
-      let cloudBackupEnabled = cloudBackup.settings.enabled === true;
-      cloudBackup.on('changed', (newSettings) => {
-        const enabled = newSettings.enabled === true;
-        if (enabled === cloudBackupEnabled) {
-          return;
-        }
-        cloudBackupEnabled = enabled;
-        this.handleAuthenticationRequest();
-      });
-    });
-
     this.broadcastMe = throttle(this.broadcastMe.bind(this), 1000, {leading: false});
   }
 
