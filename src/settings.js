@@ -82,6 +82,10 @@ class Settings extends SafeEventEmitter {
       storageValue = [storageValue, oldChangedBits | getChangedFlags(oldFlags, storageValue)];
     }
 
+    if (FlagSettings.includes(id)) {
+      [value] = storageValue;
+    }
+
     // temp values return the new value during page sessions and persist the prior stored value
     if (temporary === true) {
       storageValue = new TempValue(storageValue, settings[id]);
