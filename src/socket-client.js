@@ -111,13 +111,12 @@ class SocketClient extends SafeEventEmitter {
       return;
     }
 
-    if (shouldRequestAuthentication()) {
+    const shouldRequest = shouldRequestAuthentication();
+
+    if (shouldRequest && !authenticated) {
       const {accessToken} = getCredentials();
       this.send('authentication_request', {token: accessToken});
-      return;
-    }
-
-    if (authenticated) {
+    } else if (!shouldRequest && authenticated) {
       this.send('authentication_logout');
     }
   }
@@ -151,6 +150,10 @@ class SocketClient extends SafeEventEmitter {
 
       retryAuthenticationRequest = false;
       await refreshAndSetCredentials();
+    }
+
+    if (data.reason === 'logged_out') {
+      this.handleAuthenticationRequest();
     }
   }
 
@@ -280,6 +283,8 @@ class SocketClient extends SafeEventEmitter {
   reconnect() {
     if (state === CONNECTION_STATES.CONNECTING) return;
     state = CONNECTION_STATES.DISCONNECTED;
+
+    authenticated = false;
 
     // locks do not survive a dropped connection; we re-acquire after re-authenticating
     resetSessionLockConnectionState();
