@@ -2,9 +2,12 @@ import throttle from 'lodash.throttle';
 import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
 import {refreshAndSetCredentials} from '@/utils/auth';
 import debug from '@/utils/debug';
+import {isUserPro} from '@/utils/pro';
 import SafeEventEmitter from '@/utils/safe-event-emitter';
 import {getCurrentUser} from '@/utils/user';
-import {SOCKET_ENDPOINT} from './constants';
+import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY, SettingIds, SOCKET_ENDPOINT} from './constants';
+import settings from './settings';
+import storage from './storage';
 
 const CONNECTION_STATES = {
   DISCONNECTED: 0,
@@ -63,6 +66,25 @@ function handleUserUpdateEvent(newUser) {
   useAuthStore.setState({user: newUser});
 }
 
+function shouldRequestAuthentication() {
+  const {accessToken} = getCredentials();
+  if (accessToken == null) {
+    return false;
+  }
+
+  if (settings.get(SettingIds.SELF_BOT) === true) {
+    return true;
+  }
+
+  const {user} = useAuthStore.getState();
+  if (!isUserPro(user)) {
+    return false;
+  }
+
+  const cloudBackupSettings = storage.get(CLOUD_BACKUP_SETTINGS_STORAGE_KEY);
+  return cloudBackupSettings != null && cloudBackupSettings.enabled === true;
+}
+
 class SocketClient extends SafeEventEmitter {
   constructor() {
     super();
@@ -74,6 +96,13 @@ class SocketClient extends SafeEventEmitter {
       () => this.handleAuthenticationRequest()
     );
 
+    useAuthStore.subscribe(
+      (state) => isUserPro(state.user),
+      () => this.handleAuthenticationRequest()
+    );
+
+    settings.on(`changed.${SettingIds.SELF_BOT}`, () => this.handleAuthenticationRequest());
+
     this.broadcastMe = throttle(this.broadcastMe.bind(this), 1000, {leading: false});
   }
 
@@ -82,12 +111,13 @@ class SocketClient extends SafeEventEmitter {
       return;
     }
 
-    const {accessToken} = getCredentials();
+    const shouldRequest = shouldRequestAuthentication();
 
-    if (accessToken == null) {
-      this.send('authentication_logout');
-    } else {
+    if (shouldRequest && !authenticated) {
+      const {accessToken} = getCredentials();
       this.send('authentication_request', {token: accessToken});
+    } else if (!shouldRequest && authenticated) {
+      this.send('authentication_logout');
     }
   }
 
@@ -244,6 +274,8 @@ class SocketClient extends SafeEventEmitter {
   reconnect() {
     if (state === CONNECTION_STATES.CONNECTING) return;
     state = CONNECTION_STATES.DISCONNECTED;
+
+    authenticated = false;
 
     // locks do not survive a dropped connection; we re-acquire after re-authenticating
     resetSessionLockConnectionState();
