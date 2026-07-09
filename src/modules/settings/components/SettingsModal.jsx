@@ -145,7 +145,7 @@ function HeaderTransition({children, className}) {
 
 function SettingsModal({setHandleOpen}) {
   const {width} = useViewportSize();
-  const [page, setPage] = useState(PageTypes.SETTINGS);
+  const [page, setPage] = useState(PageTypes.USER_SETTINGS);
   const [isInteractive, setIsInteractive] = useState(false);
   const [open, modalHandlers] = useDisclosure(false);
   const [sidenavOpen, setSidenavOpen] = useState(false);

@@ -1,5 +1,6 @@
 import cookies from 'cookies-js';
 import gql from 'graphql-tag';
+import watcher from '@/watcher';
 import {getCurrentChannel, setCurrentChannel} from './channel';
 import debug from './debug';
 import {getCurrentUser, setCurrentUser} from './user';
@@ -15,6 +16,7 @@ const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 export const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_WYSIWYG_INPUT_EDITOR = '.chat-wysiwyg-input__editor';
 const STREAM_CHAT = '.stream-chat';
+const CHAT_BADGE_CAROUSEL = 'div[data-a-target="chat-badge-carousel"]';
 
 const USER_PROFILE_IMAGE_GQL_QUERY = gql`
   query BTTVGetUserProfilePicture($userId: ID!) {
@@ -112,6 +114,7 @@ if (userCookie) {
       name: login,
       displayName,
     });
+    watcher.emit('load.user');
   } catch (_) {}
 }
 
@@ -157,6 +160,19 @@ export default {
   async getGlobalBadges() {
     const {data} = await this.graphqlQuery(GLOBAL_BADGES_GQL_QUERY);
     return data.badges.filter((badge) => badge != null);
+  },
+
+  getCurrentUserChatColor() {
+    let chatColor = null;
+    try {
+      const node = searchReactParents(
+        getReactInstance(document.querySelector(CHAT_BADGE_CAROUSEL)),
+        (n) => n.memoizedProps?.data?.currentUser?.chatColor != null
+      );
+      chatColor = node.memoizedProps.data.currentUser.chatColor;
+    } catch (_) {}
+
+    return chatColor;
   },
 
   updateCurrentChannel() {

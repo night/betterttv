@@ -1,0 +1,65 @@
+.username,
+.flareUsername,
+.glowUsername,
+.flavorUsername {
+  font-weight: 700;
+  height: 100%;
+  width: 100%;
+  padding: 16px;
+  text-align: center;
+}
+
+/* pinned so the checked card's color (used by its check icon) doesn't tint the plain username */
+.username {
+  color: var(--mantine-color-text);
+}
+
+.glowUsername {
+  color: var(--mantine-color-pink-5);
+}
+
+.flareUsername {
+  --flare-mix: 10%;
+
+  color: light-dark(var(--mantine-color-yellow-7), var(--mantine-color-yellow-5));
+  text-shadow: 0 0 16px color-mix(in srgb, var(--mantine-color-dark-9) 20%, transparent);
+}
+
+.usernameCard {
+  padding: 0;
+  background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
+}
+
+.usernameCard:active {
+  background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8));
+}
+
+.usernameCard[data-checked='true'] {
+  background: var(--mantine-primary-color-light-hover);
+}
+
+.usernameEffectRequirement {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.cards {
+  padding: 0 var(--setting-panel-padding, 20px) var(--setting-panel-padding, 20px);
+}
+
+.usernamePreview .previewUsername {
+  font-size: 24px;
+}
+
+.usernamePreview {
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--mantine-radius-lg);
+  border: 1px solid var(--mantine-color-default-border);
+  background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
+}

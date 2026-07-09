@@ -1,0 +1,104 @@
+.glow {
+  text-shadow: 0 0 20px color-mix(in srgb, currentColor 80%, transparent);
+}
+
+/* the sweep runs during the first half of the timeline and holds for the second, so each loop
+   is a sweep followed by an equal pause */
+@keyframes flareSweep {
+  0% {
+    background-position:
+      200% center,
+      center;
+  }
+  50%,
+  100% {
+    background-position:
+      -200% center,
+      center;
+  }
+}
+
+/* the glint is a separate no-repeat layer over a solid base, so it sits fully off-canvas while
+   the animation holds between sweeps */
+.flare {
+  --flare-duration: 8s;
+  --flare-angle: 75deg;
+  --flare-mix: 20%;
+
+  display: inline;
+
+  background-image:
+    linear-gradient(
+      var(--flare-angle),
+      transparent 40%,
+      color-mix(in srgb, currentColor var(--flare-mix), white) 50%,
+      transparent 60%
+    ),
+    linear-gradient(currentColor, currentColor);
+
+  background-size:
+    200% 100%,
+    100% 100%;
+  background-repeat: no-repeat;
+  background-position:
+    200% center,
+    center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: flareSweep var(--flare-duration) linear infinite;
+}
+
+@keyframes effectSweep {
+  0% {
+    background-position: 0px 0px;
+  }
+  100% {
+    background-position: -96px -96px;
+  }
+}
+
+.iridescence,
+.supernova,
+.glacier,
+.intergalactic,
+.midas {
+  --effect-duration: 16s;
+  --background-size: 96px 96px;
+
+  position: relative;
+  display: inline;
+  background-size: var(--background-size);
+  background-position: center;
+  background-repeat: repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: effectSweep var(--effect-duration) linear infinite;
+}
+
+.supernova {
+  background-image: url(assets/username_effects/supernova.png);
+  filter: url(#stroke-text-svg-filter-supernova);
+}
+
+.glacier {
+  background-image: url(assets/username_effects/glacier.png);
+  filter: url(#stroke-text-svg-filter-glacier);
+}
+
+.intergalactic {
+  background-image: url(assets/username_effects/intergalactic.png);
+  filter: url(#stroke-text-svg-filter-intergalactic);
+}
+
+.midas {
+  background-image: url(assets/username_effects/midas.png);
+  filter: url(#stroke-text-svg-filter-midas);
+}
+
+.iridescence {
+  background-image: url(assets/username_effects/iridescence.png);
+  filter: url(#stroke-text-svg-filter-iridescence);
+}

@@ -1,5 +1,8 @@
+import {QueryClientProvider} from '@tanstack/react-query';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import queryClient from '@/common/query-client';
+import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
 import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
 import settings from '@/settings';
 import useAuthStore from '@/stores/auth';
@@ -102,11 +105,13 @@ function addStyleSheet() {
 
 function update() {
   root.render(
-    <ThemeProvider getRootElement={() => mantineRoot} withGlobalClasses={false} withCssVariables={false}>
-      {Object.entries(components).map(([id, component]) => (
-        <React.Fragment key={id}>{component}</React.Fragment>
-      ))}
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider getRootElement={() => mantineRoot} withGlobalClasses={false} withCssVariables={false}>
+        {Object.entries(components).map(([id, component]) => (
+          <React.Fragment key={id}>{component}</React.Fragment>
+        ))}
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 
@@ -130,6 +135,10 @@ mountNode.style.display = 'none';
 mountNode.setAttribute('data-platform', getProvider());
 mountNode.appendChild(mantineRoot);
 shadowRoot.appendChild(mountNode);
+
+// Username effect styles reference SVG filters by id; filter references only resolve within the
+// same tree scope, so the shadow root needs its own copy for settings previews to render them.
+injectUsernameEffectFilters(shadowRoot);
 
 document.documentElement.appendChild(host);
 

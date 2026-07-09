@@ -11,3 +11,11 @@ export async function getUserSubscriptionBadgeEligibility(userId) {
 export async function updateUserSubscriptionBadge(userId, badgeId, {signal} = {}) {
   return api.patch(`users/${userId}/subscription_badge`, {body: {badgeId}, signal});
 }
+
+export async function updateUserUsernameEffect(userId, effect, {signal} = {}) {
+  return api.patch(`users/${userId}/username_effect`, {body: {effect}, signal});
+}
+
+export async function getUserUsernameEffectEligibility(userId) {
+  return api.get(`users/${userId}/username_effect/eligibility`);
+}
