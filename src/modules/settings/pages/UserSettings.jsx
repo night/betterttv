@@ -15,6 +15,7 @@ import ResetSetting from '@/modules/settings/components/ResetSetting';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import SubscriptionBadgeSetting from '@/modules/settings/components/SubscriptionBadgeSetting';
 import storage from '@/storage';
 import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
 import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
@@ -154,6 +155,7 @@ function UserSettings() {
         />
       </SettingGroup>
       <SettingGroup name={formatMessage({defaultMessage: 'Account'})}>
+        <SubscriptionBadgeSetting />
         <SignInButton />
       </SettingGroup>
       <Footer />
