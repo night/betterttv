@@ -1,6 +1,6 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
 import {useDebouncedCallback} from '@mantine/hooks';
 import isEqual from 'lodash.isequal';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import Sentry from '@/utils/sentry';
 
 // Optimistic local state mirrored from a remote `value`. Updates flip the local value
