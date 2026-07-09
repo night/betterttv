@@ -5,7 +5,7 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['**/build', '**/node_modules', '**/.claude'],
+    ignores: ['**/build', '**/node_modules'],
   },
   importX.flatConfigs.recommended,
   eslintReact.configs.recommended,
