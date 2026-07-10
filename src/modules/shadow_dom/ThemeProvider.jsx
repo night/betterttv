@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Autocomplete,
   Avatar,
   Badge,
   Button,
@@ -16,6 +17,7 @@ import {
   Pill,
   Radio,
   Switch,
+  TagsInput,
   mergeMantineTheme,
   Loader,
 } from '@mantine/core';
@@ -30,6 +32,7 @@ import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
 import badgeStyles from '@/modules/shadow_dom/styles/badge.module.css';
 import buttonStyles from '@/modules/shadow_dom/styles/button.module.css';
 import checkboxStyles from '@/modules/shadow_dom/styles/checkbox.module.css';
+import comboboxStyles from '@/modules/shadow_dom/styles/combobox.module.css';
 import inputStyles from '@/modules/shadow_dom/styles/input.module.css';
 import kbdStyles from '@/modules/shadow_dom/styles/kbd.module.css';
 import pillStyles from '@/modules/shadow_dom/styles/pill.module.css';
@@ -119,6 +122,14 @@ const mantineTheme = createTheme({
     Checkbox: Checkbox.extend({classNames: checkboxStyles}),
     Radio: Radio.extend({classNames: radioStyles}),
     Input: Input.extend({classNames: inputStyles}),
+    Autocomplete: Autocomplete.extend({
+      classNames: comboboxStyles,
+      defaultProps: {scrollAreaProps: {classNames: {content: comboboxStyles.scrollAreaContent}}},
+    }),
+    TagsInput: TagsInput.extend({
+      classNames: comboboxStyles,
+      defaultProps: {scrollAreaProps: {classNames: {content: comboboxStyles.scrollAreaContent}}},
+    }),
     Button: Button.extend({
       classNames: buttonStyles,
       defaultProps: {variant: 'elevated', color: 'dark'},

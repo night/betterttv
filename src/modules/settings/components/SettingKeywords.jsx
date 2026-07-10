@@ -1,6 +1,7 @@
 import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
+  Autocomplete,
   Avatar,
   Button,
   Kbd,
@@ -20,6 +21,7 @@ import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import Icon from '@/common/components/Icon';
+import useBadgeOptions from '@/common/hooks/BadgeOptions';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
 import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
@@ -29,6 +31,9 @@ import {KeywordTypes} from '@/utils/keywords';
 import ColorPicker from './ColorPicker';
 import Panel from './Panel';
 import styles from './SettingKeywords.module.css';
+
+const MAX_BADGE_SUGGESTIONS = 25;
+const BADGE_SUGGESTIONS_MAX_DROPDOWN_HEIGHT = 220;
 
 const REGEX_EXAMPLES = [
   {pattern: '~/(cat|dog)s?/i', description: formatMessage({defaultMessage: 'Matches cat, dogs, and similar'})},
@@ -90,6 +95,15 @@ function openRegexGuideModal() {
   });
 }
 
+function renderBadgeOption({option}) {
+  return (
+    <div className={styles.badgeOption}>
+      <img src={option.imageURL} alt="" className={styles.badgeOptionImage} />
+      <Text size="md">{option.title}</Text>
+    </div>
+  );
+}
+
 function KeywordRow({
   id,
   data,
@@ -107,6 +121,9 @@ function KeywordRow({
   const [opened, {open, close}] = useDisclosure(false);
   const channels = data?.channels ?? [];
   const focusRef = useFocusTrap(opened);
+
+  const isBadgeKeyword = data.type === KeywordTypes.BADGE;
+  const badgeOptions = useBadgeOptions(isBadgeKeyword);
 
   return (
     <TableTr {...props}>
@@ -138,17 +155,37 @@ function KeywordRow({
         />
       </TableTd>
       <TableTd className={tableStyles.dataCell}>
-        <TextInput
-          variant="unstyled"
-          classNames={{
-            input: tableStyles.textInput,
-            root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
-            wrapper: tableStyles.textInputWrapper,
-          }}
-          ref={keywordInputRef}
-          defaultValue={data.keyword}
-          onBlur={({target: {value}}) => onUpdate({keyword: value})}
-        />
+        {isBadgeKeyword ? (
+          <Autocomplete
+            variant="unstyled"
+            classNames={{
+              input: tableStyles.textInput,
+              root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
+              wrapper: tableStyles.textInputWrapper,
+            }}
+            ref={keywordInputRef}
+            defaultValue={data.keyword}
+            data={badgeOptions}
+            limit={MAX_BADGE_SUGGESTIONS}
+            maxDropdownHeight={BADGE_SUGGESTIONS_MAX_DROPDOWN_HEIGHT}
+            renderOption={renderBadgeOption}
+            comboboxProps={{radius: 'lg', size: 'md', portalProps: {target: portalRef.current}}}
+            onBlur={({target: {value}}) => onUpdate({keyword: value})}
+            onOptionSubmit={(keyword) => onUpdate({keyword})}
+          />
+        ) : (
+          <TextInput
+            variant="unstyled"
+            classNames={{
+              input: tableStyles.textInput,
+              root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
+              wrapper: tableStyles.textInputWrapper,
+            }}
+            ref={keywordInputRef}
+            defaultValue={data.keyword}
+            onBlur={({target: {value}}) => onUpdate({keyword: value})}
+          />
+        )}
       </TableTd>
       <TableTd className={styles.channelsDataCell}>
         <div className={classNames(styles.channelsInputContainer, {[styles.channelsInputHidden]: !opened})}>
@@ -167,7 +204,7 @@ function KeywordRow({
                 <Text size="md">{currentChannel?.displayName}</Text>
               </div>
             )}
-            classNames={{input: styles.channelsInput, pill: styles.channelsPill}}
+            classNames={{root: styles.channelsInputRoot, input: styles.channelsInput, pill: styles.channelsPill}}
             comboboxProps={{radius: 'lg', size: 'md', portalProps: {target: portalRef.current}}}
             data={currentChannel ? [currentChannel.displayName] : []}
           />

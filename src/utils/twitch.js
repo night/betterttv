@@ -25,6 +25,16 @@ const USER_PROFILE_IMAGE_GQL_QUERY = gql`
   }
 `;
 
+const GLOBAL_BADGES_GQL_QUERY = gql`
+  query BTTVGetGlobalBadges {
+    badges {
+      id
+      title
+      imageURL(size: DOUBLE)
+    }
+  }
+`;
+
 let TMIActionTypes;
 let twitchWebpackRequire;
 
@@ -142,6 +152,11 @@ export default {
     profilePicturesByUserId[userId] = profilePicture;
 
     return profilePicture;
+  },
+
+  async getGlobalBadges() {
+    const {data} = await this.graphqlQuery(GLOBAL_BADGES_GQL_QUERY);
+    return data.badges.filter((badge) => badge != null);
   },
 
   updateCurrentChannel() {

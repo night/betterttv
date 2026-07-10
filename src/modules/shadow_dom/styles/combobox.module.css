@@ -1,0 +1,28 @@
+.dropdown {
+  --combobox-padding: 4px;
+
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.option {
+  border-radius: 8px;
+  transition: background-color 100ms ease;
+}
+
+.option:hover:not([data-combobox-disabled]),
+.option[data-combobox-selected] {
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
+  color: inherit;
+}
+
+.option:active:not([data-combobox-disabled]) {
+  background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-9));
+}
+
+.scrollAreaContent {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
