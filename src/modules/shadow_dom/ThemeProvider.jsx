@@ -23,7 +23,6 @@ import {
 } from '@mantine/core';
 import {useMounted} from '@mantine/hooks';
 import {ModalsProvider} from '@mantine/modals';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import React, {useMemo, useRef} from 'react';
 import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '@/common/components/LoaderIcon';
 import {PortalContext} from '@/common/contexts/PortalContext';
@@ -204,8 +203,6 @@ export const mantineVariablesResolver = (theme, primaryColor) => {
 
 export const theme = mergeMantineTheme(DEFAULT_THEME, mantineTheme);
 
-const queryClient = new QueryClient();
-
 function ThemeProvider({children, ...props}) {
   const [dark] = useStorageState(SettingIds.DARKENED_MODE);
   const [primaryColor] = useStorageState(SettingIds.PRIMARY_COLOR);
@@ -227,28 +224,26 @@ function ThemeProvider({children, ...props}) {
 
   return (
     <PortalContext value={portalRef}>
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider
-          forceColorScheme={dark ? 'dark' : 'light'}
-          classNamesPrefix="bttv-mantine-"
-          theme={modifiedTheme}
-          withCssVariables={false}
-          withGlobalClasses={false}
-          {...props}>
-          <div ref={portalRef} id="bttv-shadow-dom-portal" />
-          {/* portalRef.current is not available during the initial render */}
-          {isMounted ? (
-            /* withinPortal:false must be the provider-level default, not just per-modal. The manager
-            renders a single persistent Modal whose per-modal props only apply while a modal is open,
-            so without this the closed Modal falls back to withinPortal:true (portaled) and the first
-            open flips it to inline — remounting the Transition already-open and skipping the enter
-            animation. Keeping it false in both states avoids that remount. */
-            <ModalsProvider modalProps={{withinPortal: false, portalProps: {target: portalRef.current}}}>
-              {children}
-            </ModalsProvider>
-          ) : null}
-        </MantineProvider>
-      </QueryClientProvider>
+      <MantineProvider
+        forceColorScheme={dark ? 'dark' : 'light'}
+        classNamesPrefix="bttv-mantine-"
+        theme={modifiedTheme}
+        withCssVariables={false}
+        withGlobalClasses={false}
+        {...props}>
+        <div ref={portalRef} id="bttv-shadow-dom-portal" />
+        {/* portalRef.current is not available during the initial render */}
+        {isMounted ? (
+          /* withinPortal:false must be the provider-level default, not just per-modal. The manager
+          renders a single persistent Modal whose per-modal props only apply while a modal is open,
+          so without this the closed Modal falls back to withinPortal:true (portaled) and the first
+          open flips it to inline — remounting the Transition already-open and skipping the enter
+          animation. Keeping it false in both states avoids that remount. */
+          <ModalsProvider modalProps={{withinPortal: false, portalProps: {target: portalRef.current}}}>
+            {children}
+          </ModalsProvider>
+        ) : null}
+      </MantineProvider>
     </PortalContext>
   );
 }

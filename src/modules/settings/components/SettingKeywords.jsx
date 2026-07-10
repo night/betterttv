@@ -18,9 +18,8 @@ import {
   TextInput,
 } from '@mantine/core';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
-import {useQuery} from '@tanstack/react-query';
 import classNames from 'classnames';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Icon from '@/common/components/Icon';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
 import usePortalRef from '@/common/hooks/PortalRef';
@@ -103,18 +102,58 @@ function badgeKeyword(title) {
 }
 
 function buildBadgeOptions(globalBadges) {
-  const badgeOptions = new Map();
+  const seenTitles = new Set();
+  const badgeOptions = [];
+
   for (const badge of globalBadges) {
-    const keyword = badgeKeyword(badge.title);
-    if (badgeOptions.has(keyword)) {
+    if (seenTitles.has(badge.title)) {
       continue;
     }
 
+    seenTitles.add(badge.title);
+    const keyword = badgeKeyword(badge.title);
     // label is required; mantine strips custom option props (title, imageURL) without it
-    badgeOptions.set(keyword, {value: keyword, label: keyword, title: badge.title, imageURL: badge.imageURL});
+    badgeOptions.push({value: keyword, label: keyword, title: badge.title, imageURL: badge.imageURL});
   }
 
-  return [...badgeOptions.values()].sort((optionA, optionB) => optionA.title.localeCompare(optionB.title));
+  return badgeOptions.sort((optionA, optionB) => optionA.title.localeCompare(optionB.title));
+}
+
+let badgeOptionsPromise = null;
+
+function useBadgeOptions(enabled) {
+  const [badgeOptions, setBadgeOptions] = useState([]);
+
+  useEffect(() => {
+    if (!enabled) {
+      return undefined;
+    }
+
+    if (badgeOptionsPromise == null) {
+      badgeOptionsPromise = twitch
+        .getGlobalBadges()
+        .then(buildBadgeOptions)
+        .catch(() => {
+          badgeOptionsPromise = null;
+          return [];
+        });
+    }
+
+    let mounted = true;
+    badgeOptionsPromise.then((options) => {
+      if (!mounted) {
+        return;
+      }
+
+      setBadgeOptions(options);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [enabled]);
+
+  return badgeOptions;
 }
 
 function renderBadgeOption({option}) {
@@ -145,12 +184,7 @@ function KeywordRow({
   const focusRef = useFocusTrap(opened);
 
   const isBadgeKeyword = data.type === KeywordTypes.BADGE;
-  const {data: badgeOptions = []} = useQuery({
-    queryKey: ['twitchGlobalBadges'],
-    queryFn: async () => buildBadgeOptions(await twitch.getGlobalBadges()),
-    enabled: isBadgeKeyword,
-    staleTime: Infinity,
-  });
+  const badgeOptions = useBadgeOptions(isBadgeKeyword);
 
   return (
     <TableTr {...props}>
