@@ -1,17 +1,17 @@
 import {faQuestion, faRepeat} from '@fortawesome/free-solid-svg-icons';
 import {Skeleton} from '@mantine/core';
-import {useQuery} from '@tanstack/react-query';
 import classNames from 'classnames';
 import {DateTime} from 'luxon';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import {updateSubscriptionBadge} from '@/actions/account';
-import {getUserSubscriptionBadgeEligibility, updateUserSubscriptionBadge} from '@/actions/users';
+import {updateUserSubscriptionBadge} from '@/actions/users';
 import Icon from '@/common/components/Icon';
 import useDebouncedRemoteState from '@/common/hooks/DebouncedRemoteState';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import formatMessage from '@/i18n';
 import useAuthStore from '@/stores/auth';
+import useSubscriptionBadgeEligibilityStore, {fetchEligibility} from '@/stores/subscription-badge-eligibility';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import SettingSwitch from './SettingSwitch';
@@ -49,15 +49,13 @@ function BadgeImage({src}) {
 function SubscriptionBadgeSetting() {
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
 
-  const {data: eligibility, refetch: refetchEligibility} = useQuery({
-    queryKey: ['subscription-badge-eligibility', user?.id],
-    queryFn: () => getUserSubscriptionBadgeEligibility(user.id),
-    enabled: user != null,
-    staleTime: 1000 * 60 * 5,
-  });
+  const {eligibleBadges, nextBadgeUnlocksAt} = useSubscriptionBadgeEligibilityStore(
+    useShallow((state) => ({eligibleBadges: state.eligibleBadges, nextBadgeUnlocksAt: state.nextBadgeUnlocksAt}))
+  );
 
-  const eligibleBadges = eligibility?.eligibleBadges;
-  const nextBadgeUnlocksAt = eligibility?.nextBadgeUnlocksAt;
+  useEffect(() => {
+    fetchEligibility();
+  }, [user]);
 
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -76,14 +74,14 @@ function SubscriptionBadgeSetting() {
 
       if (nowMillis >= unlocksAtMillis) {
         clearInterval(interval);
-        refetchEligibility();
+        fetchEligibility({force: true});
       }
     }, 1000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [nextBadgeUnlocksAt, refetchEligibility]);
+  }, [nextBadgeUnlocksAt]);
 
   const [badge, setBadge] = useDebouncedRemoteState({
     value: user?.subscriptionBadge === true,
