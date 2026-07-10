@@ -3,7 +3,7 @@
 }
 
 .badgeCard:active:not(.nextBadgeCard) {
-  background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8));
+  background: var(--mantine-primary-color-light-active);
 }
 
 .badgeCard[data-checked='true'] {
