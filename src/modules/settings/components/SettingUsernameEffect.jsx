@@ -1,9 +1,8 @@
 import {Text} from '@mantine/core';
-import {useQuery} from '@tanstack/react-query';
 import classNames from 'classnames';
 import React, {useCallback, useMemo} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import {getUserUsernameEffectEligibility, updateUserUsernameEffect} from '../../../actions/users';
+import {updateUserUsernameEffect} from '../../../actions/users';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useDebouncedRemoteState from '../../../common/hooks/DebouncedRemoteState';
 import useStorageState from '../../../common/hooks/StorageState';
@@ -13,6 +12,9 @@ import {SettingIds, UsernameEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
 import socketClient from '../../../socket-client';
 import useAuthStore from '../../../stores/auth';
+import useUsernameEffectEligibilityStore, {
+  waitForUsernameEffectEligibility,
+} from '../../../stores/username-effect-eligibility';
 import {getCurrentChannel} from '../../../utils/channel';
 import twitch from '../../../utils/twitch';
 import {getCurrentUser} from '../../../utils/user';
@@ -116,12 +118,7 @@ function SettingUsernameEffect() {
   const currentUser = useCurrentUser();
   const [usernameEffectsEnabled, setUsernameEffectsEnabled] = useStorageState(SettingIds.USERNAME_EFFECTS);
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
-  const {data: eligibility} = useQuery({
-    queryKey: ['username-effect-eligibility', user?.id],
-    queryFn: () => getUserUsernameEffectEligibility(user.id),
-    enabled: user != null,
-    staleTime: 1000 * 60 * 5,
-  });
+  const eligibility = useUsernameEffectEligibilityStore((state) => state.eligibility);
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
 
   const [value, setValue] = useDebouncedRemoteState({
@@ -146,7 +143,7 @@ function SettingUsernameEffect() {
   );
 
   const handleChange = useCallback(
-    (newValue) => {
+    async (newValue) => {
       const currentUser = getCurrentUser();
       const {user: currentAuthUser} = useAuthStore.getState();
 
@@ -160,23 +157,25 @@ function SettingUsernameEffect() {
         return;
       }
 
-      if (newValue !== NONE && (eligibility == null || eligibility[newValue] !== true)) {
-        openUsernameEffectSubscriptionUpgradeModal(() => handleChange(newValue), {
-          value: newValue,
-          displayName: currentUser.displayName,
-          chatColor,
-        });
-
-        return;
-      }
-
       if (newValue !== NONE) {
+        const currentEligibility = await waitForUsernameEffectEligibility();
+
+        if (currentEligibility?.[newValue] !== true) {
+          openUsernameEffectSubscriptionUpgradeModal(() => handleChange(newValue), {
+            value: newValue,
+            displayName: currentUser.displayName,
+            chatColor,
+          });
+
+          return;
+        }
+
         setUsernameEffectsEnabled(true);
       }
 
       setValue(newValue);
     },
-    [eligibility, setValue, setUsernameEffectsEnabled, chatColor]
+    [setValue, setUsernameEffectsEnabled, chatColor]
   );
 
   return (

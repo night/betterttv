@@ -3,13 +3,14 @@ import {modals} from '@mantine/modals';
 import React from 'react';
 import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
-import useAuthStore from '@/stores/auth';
+import useAuthStore, {refreshCurrentUser} from '@/stores/auth';
 import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
 import {isUserPro} from '@/utils/pro';
 import styles from './Modal.module.css';
 
 const DEFAULT_LOADING_TIMEOUT = 500;
 const DEFAULT_SUCCESS_TIMEOUT = 1000;
+const UPGRADE_USER_POLL_INTERVAL = 5000;
 
 const DEFAULT_CONFIRM_PROPS = {
   size: 'lg',
@@ -166,7 +167,13 @@ export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
       // TODO: Make this open in a popup
       window.open(ExternalLinks.PRO, '_blank');
 
+      // free users' sockets are unauthenticated and don't receive user_update events,
+      // so poll while the modal is open to observe the free -> paid upgrade
+      const userPollInterval = setInterval(() => refreshCurrentUser().catch(() => {}), UPGRADE_USER_POLL_INTERVAL);
+      signal.addEventListener('abort', () => clearInterval(userPollInterval));
+
       function handleUserUpdated() {
+        clearInterval(userPollInterval);
         unsubscribeUserUpdated?.();
         unsubscribeUserUpdated = null;
 
