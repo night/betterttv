@@ -101,6 +101,49 @@ function badgeKeyword(title) {
   return `~/^${escapeRegExp(title)}$/`;
 }
 
+function buildBadgeOptions(globalBadges) {
+  const badgeOptions = new Map();
+  for (const badge of globalBadges) {
+    const keyword = badgeKeyword(badge.title);
+    if (badgeOptions.has(keyword)) {
+      continue;
+    }
+
+    // label is required; mantine strips custom option props (title, imageURL) without it
+    badgeOptions.set(keyword, {value: keyword, label: keyword, title: badge.title, imageURL: badge.imageURL});
+  }
+
+  return [...badgeOptions.values()].sort((optionA, optionB) => optionA.title.localeCompare(optionB.title));
+}
+
+function filterBadgeOptions({options, search, limit}) {
+  const query = search.trim().toLowerCase();
+  const filtered = [];
+
+  for (const option of options) {
+    if (filtered.length >= limit) {
+      break;
+    }
+
+    if (option.value !== search && !option.title.toLowerCase().includes(query)) {
+      continue;
+    }
+
+    filtered.push(option);
+  }
+
+  return filtered;
+}
+
+function renderBadgeOption({option}) {
+  return (
+    <div className={styles.badgeOption}>
+      <img src={option.imageURL} alt="" className={styles.badgeOptionImage} />
+      <Text size="md">{option.title}</Text>
+    </div>
+  );
+}
+
 function KeywordRow({
   id,
   data,
@@ -120,74 +163,12 @@ function KeywordRow({
   const focusRef = useFocusTrap(opened);
 
   const isBadgeKeyword = data.type === KeywordTypes.BADGE;
-  const {data: globalBadges = []} = useQuery({
+  const {data: badgeOptions = []} = useQuery({
     queryKey: ['twitchGlobalBadges'],
-    queryFn: () => twitch.getGlobalBadges(),
+    queryFn: async () => buildBadgeOptions(await twitch.getGlobalBadges()),
     enabled: isBadgeKeyword,
     staleTime: Infinity,
   });
-
-  const badgesByKeyword = useMemo(() => {
-    const badges = new Map();
-    for (const badge of globalBadges) {
-      const keyword = badgeKeyword(badge.title);
-      if (badges.has(keyword)) {
-        continue;
-      }
-
-      badges.set(keyword, badge);
-    }
-
-    return badges;
-  }, [globalBadges]);
-
-  const badgeOptions = useMemo(
-    () =>
-      [...badgesByKeyword.entries()]
-        .sort(([, badgeA], [, badgeB]) => badgeA.title.localeCompare(badgeB.title))
-        .map(([keyword]) => keyword),
-    [badgesByKeyword]
-  );
-
-  const filterBadgeOptions = useCallback(
-    ({options, search, limit}) => {
-      const query = search.trim().toLowerCase();
-      const filtered = [];
-
-      for (const option of options) {
-        if (filtered.length >= limit) {
-          break;
-        }
-
-        const badge = badgesByKeyword.get(option.value);
-        if (badge == null) {
-          continue;
-        }
-
-        if (option.value !== search && !badge.title.toLowerCase().includes(query)) {
-          continue;
-        }
-
-        filtered.push(option);
-      }
-
-      return filtered;
-    },
-    [badgesByKeyword]
-  );
-
-  const renderBadgeOption = useCallback(
-    ({option}) => {
-      const badge = badgesByKeyword.get(option.value);
-      return (
-        <div className={styles.badgeOption}>
-          <img src={badge?.imageURL} alt="" className={styles.badgeOptionImage} />
-          <Text size="md">{badge?.title}</Text>
-        </div>
-      );
-    },
-    [badgesByKeyword]
-  );
 
   return (
     <TableTr {...props}>
