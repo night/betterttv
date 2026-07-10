@@ -26,6 +26,7 @@ import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openModal} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
+import debug from '@/utils/debug';
 import {KeywordTypes} from '@/utils/keywords';
 import twitch from '@/utils/twitch';
 import ColorPicker from './ColorPicker';
@@ -105,21 +106,34 @@ function buildBadgeOptions(globalBadges) {
   const seenTitles = new Set();
   const badgeOptions = [];
 
-  for (const badge of globalBadges) {
-    if (seenTitles.has(badge.title)) {
+  for (const {title, imageURL} of globalBadges) {
+    if (seenTitles.has(title)) {
       continue;
     }
 
-    seenTitles.add(badge.title);
-    const keyword = badgeKeyword(badge.title);
+    seenTitles.add(title);
+    const keyword = badgeKeyword(title);
     // label is required; mantine strips custom option props (title, imageURL) without it
-    badgeOptions.push({value: keyword, label: keyword, title: badge.title, imageURL: badge.imageURL});
+    badgeOptions.push({value: keyword, label: keyword, title, imageURL});
   }
 
-  return badgeOptions.sort((optionA, optionB) => optionA.title.localeCompare(optionB.title));
+  return badgeOptions.sort((a, b) => a.title.localeCompare(b.title));
 }
 
 let badgeOptionsPromise = null;
+
+async function fetchBadgeOptions() {
+  let globalBadges;
+  try {
+    globalBadges = await twitch.getGlobalBadges();
+  } catch (e) {
+    debug.log('failed to fetch twitch global badges', e);
+    badgeOptionsPromise = null;
+    return [];
+  }
+
+  return buildBadgeOptions(globalBadges);
+}
 
 function useBadgeOptions(enabled) {
   const [badgeOptions, setBadgeOptions] = useState([]);
@@ -130,13 +144,7 @@ function useBadgeOptions(enabled) {
     }
 
     if (badgeOptionsPromise == null) {
-      badgeOptionsPromise = twitch
-        .getGlobalBadges()
-        .then(buildBadgeOptions)
-        .catch(() => {
-          badgeOptionsPromise = null;
-          return [];
-        });
+      badgeOptionsPromise = fetchBadgeOptions();
     }
 
     let mounted = true;
