@@ -1,0 +1,57 @@
+.tooltip {
+  font-size: var(--mantine-font-size-md);
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-radius: var(--mantine-radius-lg);
+  transition:
+    outline 100ms ease-in-out,
+    background 120ms ease,
+    border-color 120ms ease;
+  border: 1px solid var(--mantine-color-default-border);
+  background: var(--mantine-color-body);
+}
+
+.card[data-checked='true'] {
+  color: var(--mantine-primary-color-3);
+  border: 1px solid var(--mantine-color-body-secondary);
+  outline: 2px solid var(--mantine-primary-color-3);
+}
+
+.iconIndicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  color: currentColor;
+  scale: 0;
+  width: 20px;
+  height: 20px;
+  transition: all 100ms ease-in-out;
+}
+
+.card[data-checked='true'] .checkIcon {
+  opacity: 1;
+  scale: 1;
+}
+
+.lockIcon {
+  color: var(--mantine-color-dimmed);
+  width: 12px;
+  height: 12px;
+  top: 12px;
+  right: 12px;
+  overflow: visible;
+}
+
+.card[data-locked='true']:not([data-checked='true']) .lockIcon {
+  opacity: 1;
+  scale: 1;
+}

@@ -1,0 +1,14 @@
+.radioGroup {
+  min-width: 100%;
+}
+
+.radioCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+/* Cap at 4 per row: each column is at least a quarter of the row (minus the 3 gaps), so no more than 4 fit. */
+.radioCardsCapped {
+  grid-template-columns: repeat(auto-fit, minmax(max(80px, (100% - 30px) / 4), 1fr));
+}

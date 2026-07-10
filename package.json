@@ -31,6 +31,7 @@
     "@mantine/hooks": "^9.4.0",
     "@mantine/modals": "^9.4.0",
     "@sentry/browser": "10.63.0",
+    "@tanstack/react-query": "^5.101.2",
     "@twemoji/api": "17.0.3",
     "classnames": "2.5.1",
     "cookies-js": "1.2.3",

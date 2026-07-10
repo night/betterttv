@@ -1,5 +1,46 @@
+.badgeCard {
+  background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
+}
+
+.badgeCard:active:not(.nextBadgeCard) {
+  background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8));
+}
+
+.badgeCard[data-checked='true'] {
+  background: var(--mantine-primary-color-light-hover);
+}
+
+.latestBadgeIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.nextBadgeCard {
+  cursor: not-allowed;
+}
+
+.nextBadgePlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+}
+
+.nextBadgeIcon {
+  width: 16px;
+  height: 16px;
+}
+
 .badge {
-  width: 18px;
-  height: 18px;
-  border-radius: var(--mantine-radius-sm);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--mantine-radius-md);
+}
+
+.badgeLoading {
+  display: none;
+}
+
+.countdownTooltip {
+  font-family: var(--mantine-font-family-monospace);
 }
