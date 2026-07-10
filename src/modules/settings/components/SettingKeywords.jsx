@@ -120,6 +120,7 @@ function buildBadgeOptions(globalBadges) {
   return badgeOptions.sort((a, b) => a.title.localeCompare(b.title));
 }
 
+let cachedBadgeOptions = null;
 let badgeOptionsPromise = null;
 
 async function fetchBadgeOptions() {
@@ -132,14 +133,15 @@ async function fetchBadgeOptions() {
     return [];
   }
 
-  return buildBadgeOptions(globalBadges);
+  cachedBadgeOptions = buildBadgeOptions(globalBadges);
+  return cachedBadgeOptions;
 }
 
 function useBadgeOptions(enabled) {
   const [badgeOptions, setBadgeOptions] = useState([]);
 
   useEffect(() => {
-    if (!enabled) {
+    if (!enabled || cachedBadgeOptions != null) {
       return undefined;
     }
 
@@ -161,7 +163,7 @@ function useBadgeOptions(enabled) {
     };
   }, [enabled]);
 
-  return badgeOptions;
+  return cachedBadgeOptions ?? badgeOptions;
 }
 
 function renderBadgeOption({option}) {
