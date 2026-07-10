@@ -28,7 +28,6 @@ import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openModal} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
 import {KeywordTypes} from '@/utils/keywords';
-import {escapeRegExp} from '@/utils/regex';
 import twitch from '@/utils/twitch';
 import ColorPicker from './ColorPicker';
 import Panel from './Panel';
@@ -97,8 +96,10 @@ function openRegexGuideModal() {
   });
 }
 
+// escapes only true regex metacharacters, unlike escapeRegExp, so the
+// keyword stays substring-matchable by mantine's built-in option filter
 function badgeKeyword(title) {
-  return `~/^${escapeRegExp(title)}$/`;
+  return `~/^${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$/`;
 }
 
 function buildBadgeOptions(globalBadges) {
@@ -114,25 +115,6 @@ function buildBadgeOptions(globalBadges) {
   }
 
   return [...badgeOptions.values()].sort((optionA, optionB) => optionA.title.localeCompare(optionB.title));
-}
-
-function filterBadgeOptions({options, search, limit}) {
-  const query = search.trim().toLowerCase();
-  const filtered = [];
-
-  for (const option of options) {
-    if (filtered.length >= limit) {
-      break;
-    }
-
-    if (option.value !== search && !option.title.toLowerCase().includes(query)) {
-      continue;
-    }
-
-    filtered.push(option);
-  }
-
-  return filtered;
 }
 
 function renderBadgeOption({option}) {
@@ -211,7 +193,6 @@ function KeywordRow({
             ref={keywordInputRef}
             defaultValue={data.keyword}
             data={badgeOptions}
-            filter={filterBadgeOptions}
             limit={MAX_BADGE_SUGGESTIONS}
             maxDropdownHeight={BADGE_SUGGESTIONS_MAX_DROPDOWN_HEIGHT}
             renderOption={renderBadgeOption}
