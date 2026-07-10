@@ -4,7 +4,7 @@ import {SettingIds, AutoClaimFlags, ChannelPointsFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import {hasFlag, setFlag} from '@/utils/flags';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Claim'});
@@ -37,9 +37,9 @@ function AutoClaim({ref, ...props}) {
 
 SettingStore.registerSetting(AutoClaim, {
   settingPanelId: SettingPanelIds.AUTO_CLAIM,
+  settingCategoryId: SettingCategoryIds.CHANNEL,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['auto', 'claim', 'drops', 'moments', 'points'],
 });
 
 export default AutoClaim;

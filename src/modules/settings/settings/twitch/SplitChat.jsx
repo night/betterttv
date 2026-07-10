@@ -5,7 +5,7 @@ import formatMessage from '@/i18n/index';
 import SettingColorPicker from '@/modules/settings/components/SettingColorPicker';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import SplitChatModule from '@/modules/split_chat/index';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Split Chat'});
@@ -50,9 +50,9 @@ function SplitChat({ref, ...props}) {
 
 SettingStore.registerSetting(SplitChat, {
   settingPanelId: SettingPanelIds.SPLIT_CHAT,
+  settingCategoryId: SettingCategoryIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['split', 'chat'],
 });
 
 export default SplitChat;

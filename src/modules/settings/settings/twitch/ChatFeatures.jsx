@@ -4,11 +4,11 @@ import {SettingIds, ChatFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
-const SETTING_NAME = formatMessage({defaultMessage: 'Chat'});
+const SETTING_NAME = formatMessage({defaultMessage: 'Chat Features'});
 
-function ChatModule({ref, ...props}) {
+function ChatFeatures({ref, ...props}) {
   const [chat, setChat] = useStorageState(SettingIds.CHAT);
 
   return (
@@ -64,11 +64,11 @@ function ChatModule({ref, ...props}) {
   );
 }
 
-SettingStore.registerSetting(ChatModule, {
+SettingStore.registerSetting(ChatFeatures, {
   settingPanelId: SettingPanelIds.CHAT,
+  settingCategoryId: SettingCategoryIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['bits', 'highlights', 'community', 'chat', 'replies', 'clips', 'subs', 'subscriptions'],
 });
 
-export default ChatModule;
+export default ChatFeatures;

@@ -4,7 +4,7 @@ import {SettingIds, UsernameFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Usernames'});
 
@@ -49,9 +49,9 @@ function UsernamesModule({ref, ...props}) {
 
 SettingStore.registerSetting(UsernamesModule, {
   settingPanelId: SettingPanelIds.USERNAMES,
+  settingCategoryId: SettingCategoryIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['color', 'username', 'accessibility', 'readability'],
 });
 
 export default UsernamesModule;

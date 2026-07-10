@@ -1,88 +1,104 @@
-import {faArrowLeft, faCog, faScroll, faUser, faUserGear} from '@fortawesome/free-solid-svg-icons';
-import {ActionIcon, Avatar, Button, Overlay, Tooltip, useMantineTheme} from '@mantine/core';
+import {faArrowRight as faPanelLeftClose, faScroll, faUserGear} from '@fortawesome/free-solid-svg-icons';
+import {ActionIcon, Avatar, Badge, Button, Overlay, useMantineTheme} from '@mantine/core';
 import classNames from 'classnames';
-import React, {useCallback, use} from 'react';
+import React, {use, useCallback, useEffect, useMemo, useRef} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
-import usePortalRef from '@/common/hooks/PortalRef';
+import Scrollbar from '@/common/components/Scrollbar';
+import UsernameEffectText from '@/common/components/UsernameEffectText';
 import {PageDecendants, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
+import {groupSettingsByCategory} from '@/modules/settings/setting-categories';
+import {useUnseenSettingPanelIds} from '@/modules/settings/stores/promotion-store';
+import SettingStore, {PageSettingPanelIds} from '@/modules/settings/stores/setting-store';
+import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
 import useAuthStore from '@/stores/auth';
+import {isUserPro} from '@/utils/pro';
 import AnimatedLogo from './AnimatedLogo';
 import styles from './SideNavigation.module.css';
 
+// Tag the nav buttons so the active one can be found and scrolled into view.
+const PANEL_ID_ATTRIBUTE = 'data-panel-id';
+const CATEGORY_ID_ATTRIBUTE = 'data-category-id';
+
 function CloseMenuButton({onClick, className}) {
   return (
-    <ActionIcon radius="lg" variant="subtle" size="xl" onClick={onClick} aria-label="Back" className={className}>
-      <Icon icon={faArrowLeft} />
+    <ActionIcon
+      radius="lg"
+      variant="subtle"
+      size="xl"
+      onClick={onClick}
+      aria-label={formatMessage({defaultMessage: 'Close'})}
+      className={className}>
+      <Icon icon={faPanelLeftClose} className={styles.closeButtonIcon} />
     </ActionIcon>
   );
 }
 
-function NavigationButton({children, value, setPage, active, label, className, buttonProps, iconButtonProps}) {
-  const portalRef = usePortalRef();
+function NavigationButton({children, onClick, active, label, className, rightSection, buttonProps, variant = 'light'}) {
   const {primaryColor} = useMantineTheme();
   const activeColor = active ? primaryColor : undefined;
 
-  const onClick = useCallback(() => {
-    setPage(value);
-  }, [setPage, value]);
-
   return (
-    <React.Fragment>
-      <Tooltip
-        arrowSize={8}
-        radius="md"
-        openDelay={200}
-        withArrow
-        portalProps={{target: portalRef.current}}
-        shadow="md"
-        label={label}
-        classNames={{tooltip: styles.tooltip}}
-        position="right"
-        hidden={active}
-        data-active={active}>
-        <ActionIcon
-          radius={0}
-          size="xl"
-          variant="light"
-          color={activeColor}
-          onClick={onClick}
-          className={classNames(styles.navigationIconButton, className)}
-          data-active={active}
-          {...iconButtonProps}>
-          {children}
-        </ActionIcon>
-      </Tooltip>
-      <Button
-        variant="light"
-        size="lg"
-        radius="lg"
-        onClick={onClick}
-        color={activeColor}
-        className={classNames(styles.navigationButton, className)}
-        classNames={{section: styles.navigationSection}}
-        leftSection={children}
-        data-active={active}
-        {...buttonProps}>
-        {label}
-      </Button>
-    </React.Fragment>
+    <Button
+      variant={variant}
+      size="lg"
+      radius="lg"
+      onClick={onClick}
+      color={activeColor}
+      className={classNames(styles.navigationButton, className)}
+      classNames={{section: styles.navigationSection, label: styles.navigationLabel}}
+      leftSection={children}
+      rightSection={rightSection}
+      data-active={active}
+      {...buttonProps}>
+      {label}
+    </Button>
   );
 }
 
-function UserSettingsNavigationButton({active, ...props}) {
+// Memoized so a scroll-spy active-panel change only re-renders the buttons whose active
+// state actually flips, not the entire settings list. setting/onClick are stable references.
+const SettingNavigationButton = React.memo(function SettingNavigationButton({setting, active, hasPromotion, onClick}) {
+  const handleClick = useCallback(() => onClick(setting.settingPanelId), [onClick, setting.settingPanelId]);
+
+  return (
+    <NavigationButton
+      variant="transparent"
+      className={styles.settingNavigationButton}
+      active={active}
+      onClick={handleClick}
+      label={setting.name}
+      rightSection={hasPromotion ? <span className={styles.promotionDot} /> : undefined}
+      buttonProps={{[PANEL_ID_ATTRIBUTE]: setting.settingPanelId}}
+    />
+  );
+});
+
+function UserSettingsNavigationButton({active, onClick}) {
   const currentUser = useAuthStore(useShallow((state) => state.user));
   const {primaryColor} = useMantineTheme();
   const activeColor = active ? primaryColor : undefined;
   return (
     <NavigationButton
       active={active}
-      value={PageTypes.USER_SETTINGS}
-      className={classNames(styles.userSettingsButton)}
-      label={currentUser?.displayName ?? formatMessage({defaultMessage: 'User Settings'})}
-      {...props}>
+      onClick={onClick}
+      className={styles.userSettingsNavigationButton}
+      label={
+        currentUser?.displayName != null ? (
+          <UsernameEffectText effect={currentUser.usernameEffect}>{currentUser.displayName}</UsernameEffectText>
+        ) : (
+          formatMessage({defaultMessage: 'User Settings'})
+        )
+      }
+      rightSection={
+        isUserPro(currentUser) ? (
+          <Badge color="indigo" variant="elevated" size="lg">
+            {formatMessage({defaultMessage: 'Pro'})}
+          </Badge>
+        ) : null
+      }>
       {currentUser != null ? (
         <Avatar
           color={activeColor}
@@ -99,8 +115,62 @@ function UserSettingsNavigationButton({active, ...props}) {
 }
 
 function SideNavigation({open, setOpen}) {
-  const {page, setPage} = use(PageContext);
+  const {page, setPage, handleGotoSettingPanel} = use(PageContext);
+  const activePanelId = useSettingsNavigationStore((state) => state.activePanelId);
   const close = useCallback(() => setOpen(false), [setOpen]);
+  const containerRef = useRef(null);
+  const isSettingsPage = page === PageTypes.SETTINGS || PageDecendants[PageTypes.SETTINGS]?.includes(page);
+
+  const categorizedGroups = useMemo(() => groupSettingsByCategory(SettingStore.getSupportedSettings()), []);
+
+  const unseenPanelIds = useUnseenSettingPanelIds();
+
+  const resolvedActivePanelId = PageSettingPanelIds[page] ?? activePanelId;
+
+  // Accordion: the open category follows the scroll — whichever category holds the active (in
+  // view) panel is expanded and the rest stay collapsed. Clicking a category navigates to its
+  // first panel, which in turn makes it the open one, so a re-click never collapses it.
+  const openCategoryId = useMemo(() => {
+    if (!isSettingsPage || resolvedActivePanelId == null) {
+      return null;
+    }
+
+    const activeGroup = categorizedGroups.find((group) =>
+      group.settings.some((setting) => setting.settingPanelId === resolvedActivePanelId)
+    );
+    return activeGroup?.id ?? null;
+  }, [isSettingsPage, resolvedActivePanelId, categorizedGroups]);
+
+  // Keep the active item scrolled into view within the scrollable settings list. 'nearest' makes it
+  // a no-op while the item is already visible, so smooth scrolling only kicks in when the active
+  // entry actually moves out of view; scroll-margin (CSS) keeps a gap. A collapsed category's
+  // setting buttons aren't mounted, so fall back to its category row.
+  useEffect(() => {
+    if (!isSettingsPage || resolvedActivePanelId == null) {
+      return;
+    }
+
+    const button =
+      containerRef.current?.querySelector(`[${PANEL_ID_ATTRIBUTE}="${resolvedActivePanelId}"]`) ??
+      containerRef.current?.querySelector(`[${CATEGORY_ID_ATTRIBUTE}="${openCategoryId}"]`);
+    button?.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+  }, [resolvedActivePanelId, isSettingsPage, openCategoryId]);
+
+  const handleNavigate = useCallback(
+    (nextPage) => {
+      setPage(nextPage);
+      close();
+    },
+    [setPage, close]
+  );
+
+  const handleGotoSetting = useCallback(
+    (settingPanelId) => {
+      handleGotoSettingPanel(settingPanelId);
+      close();
+    },
+    [handleGotoSettingPanel, close]
+  );
 
   return (
     <React.Fragment>
@@ -109,23 +179,55 @@ function SideNavigation({open, setOpen}) {
           <AnimatedLogo className={styles.logo} />
           <CloseMenuButton onClick={close} className={styles.closeButton} />
         </div>
-        <NavigationButton
-          className={styles.topNavigationButton}
-          active={page === PageTypes.SETTINGS || PageDecendants[PageTypes.SETTINGS].includes(page)}
-          value={PageTypes.SETTINGS}
-          setPage={setPage}
-          label={formatMessage({defaultMessage: 'Settings'})}>
-          <Icon icon={faCog} className={styles.navigationIcon} />
-        </NavigationButton>
-        <NavigationButton
-          className={styles.topNavigationButton}
-          active={page === PageTypes.CHANGELOG}
-          value={PageTypes.CHANGELOG}
-          setPage={setPage}
-          label={formatMessage({defaultMessage: 'Changelog'})}>
-          <Icon icon={faScroll} className={styles.navigationIcon} />
-        </NavigationButton>
-        <UserSettingsNavigationButton setPage={setPage} active={page === PageTypes.USER_SETTINGS} />
+        <Scrollbar mirrorPadding className={styles.settingsScrollArea} ref={containerRef}>
+          {categorizedGroups.map((group) => {
+            const isOpen = group.id === openCategoryId;
+            // While a category is collapsed its settings' dots are hidden with them, so the category
+            // row carries a dot of its own.
+            const hasPromotion =
+              !isOpen && group.settings.some((setting) => unseenPanelIds.has(setting.settingPanelId));
+            return (
+              <React.Fragment key={group.id}>
+                <NavigationButton
+                  className={styles.categoryButton}
+                  active={isOpen}
+                  onClick={() => handleGotoSettingPanel(group.settings[0].settingPanelId)}
+                  label={group.label}
+                  rightSection={hasPromotion ? <span className={styles.promotionDot} /> : undefined}
+                  buttonProps={{[CATEGORY_ID_ATTRIBUTE]: group.id}}>
+                  <Icon icon={group.icon} className={styles.navigationIcon} />
+                </NavigationButton>
+                {isOpen ? (
+                  <div className={styles.categorySettings}>
+                    {group.settings.map((setting) => (
+                      <SettingNavigationButton
+                        key={setting.settingPanelId}
+                        setting={setting}
+                        active={isSettingsPage && resolvedActivePanelId === setting.settingPanelId}
+                        hasPromotion={unseenPanelIds.has(setting.settingPanelId)}
+                        onClick={handleGotoSetting}
+                      />
+                    ))}
+                  </div>
+                ) : null}
+              </React.Fragment>
+            );
+          })}
+        </Scrollbar>
+        <div className={styles.userSettingsContainer}>
+          <NavigationButton
+            variant="transparent"
+            className={styles.settingNavigationButton}
+            active={page === PageTypes.CHANGELOG}
+            onClick={() => handleNavigate(PageTypes.CHANGELOG)}
+            label={formatMessage({defaultMessage: 'Changelog'})}>
+            <Icon icon={faScroll} className={styles.navigationIcon} />
+          </NavigationButton>
+          <UserSettingsNavigationButton
+            active={page === PageTypes.USER_SETTINGS}
+            onClick={() => handleNavigate(PageTypes.USER_SETTINGS)}
+          />
+        </div>
       </div>
       <Overlay onClick={close} className={classNames(styles.overlay, {[styles.overlayOpen]: open})} />
     </React.Fragment>

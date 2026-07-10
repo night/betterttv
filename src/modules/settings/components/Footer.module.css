@@ -7,7 +7,6 @@
   width: 100%;
   padding: 24px;
   border-top: 1px solid var(--mantine-color-default-border);
-  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
 }
 
 .column {
@@ -31,5 +30,4 @@
   justify-content: space-between;
   padding: 24px;
   border-top: 1px solid var(--mantine-color-default-border);
-  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
 }

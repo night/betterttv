@@ -6,7 +6,7 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingNumberInput from '@/modules/settings/components/SettingNumberInput';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Menu'});
 
@@ -45,9 +45,9 @@ function EmoteMenu({ref, ...props}) {
 
 SettingStore.registerSetting(EmoteMenu, {
   settingPanelId: SettingPanelIds.EMOTE_MENU,
+  settingCategoryId: SettingCategoryIds.EMOTES,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['emotes', 'popup'],
 });
 
 export default EmoteMenu;

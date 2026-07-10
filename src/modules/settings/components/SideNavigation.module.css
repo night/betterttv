@@ -2,84 +2,252 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--mantine-color-default-border);
-  background-color: var(--mantine-color-body);
+  background-color: var(--sidebar-bg);
   overflow: hidden;
   z-index: 1;
+  /* subtle inset shadow on the right edge, as if the page is casting onto the sidebar.
+     Mirrors --mantine-shadow-xs (same blur radii + opacities) reoriented as a right-edge inset,
+     since the xs token itself is a downward drop shadow and can't be used inset directly. */
+  box-shadow:
+    inset -3px 0 3px -3px rgba(0, 0, 0, 0.05),
+    inset -2px 0 2px -2px rgba(0, 0, 0, 0.1);
 }
 
-.navigationIconButton,
-.logo {
-  width: 56px;
-  height: 56px;
+/* only the settings list scrolls; the logo and user-settings sections stay fixed */
+.settingsScrollArea {
+  flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  /* equal padding on all sides of the scrollable list */
+  padding: var(--sidenav-h-padding);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.userSettingsButton {
-  height: 56px;
-  border: 1px solid var(--button-hover);
-  display: grid;
-  place-items: center;
+.logo {
+  padding: 0px !important;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .avatar {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 
 .avatarImage {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 
 .navigationIcon {
-  width: 20px;
-  height: 20px;
-}
-
-.navigationIconButton,
-.navigationButton {
-  transition-property: color, background-color;
-  transition-duration: 100ms;
-  transition-timing-function: ease-in-out;
-}
-
-.navigationIconButton[data-active='false']:not(:hover),
-.topNavigationButton[data-active='false']:not(:hover) {
-  background: transparent;
-}
-
-.navigationButton {
-  font-weight: 500;
-  height: 56px;
-  padding-left: 16px;
-  padding-right: 16px;
-  --button-justify: left;
-
-  .navigationIcon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .navigationSection {
-    margin-right: var(--mantine-spacing-lg);
-  }
-}
-
-.avatarFallbackIcon {
   width: 16px;
   height: 16px;
 }
 
-.userSettingsButton {
-  margin-top: auto;
+.navigationButton {
+  font-weight: 500;
+  height: 48px;
+  /* hold the button's height instead of letting the flex column squash it to its min-content */
+  flex-shrink: 0;
+  padding-left: 16px;
+  padding-right: 16px;
+  --button-justify: left;
+  position: relative;
+  border: 1px solid transparent;
 }
 
-.tooltip {
-  font-size: var(--mantine-font-size-md);
+/* the scroll list scrolls rather than squashing its rows (category buttons and collapse wrappers) */
+.settingsScrollArea > * {
+  flex-shrink: 0;
+}
+
+.navigationButton[data-active='false']:not(:hover) {
+  background: transparent;
+}
+
+/* disable Mantine's press-down (translateY) when the button is clicked */
+.navigationButton:active {
+  transform: none;
+}
+
+/* press feedback: veil an inactive button slightly darker while it's held. A translucent black
+   overlay darkens the whole button (background + text) regardless of theme or base color.
+   inset: -1px covers the 1px border too, so no un-darkened ring shows around the edge. Reserved for
+   the pill-backed category rows — setting entries (transparent variant) stay flat when pressed, and
+   the user-settings card provides its own press feedback (see below). */
+.navigationButton[data-active='false']:not(.settingNavigationButton):not(.userSettingsNavigationButton):active::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background-color: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.navigationButton[data-active='true']:not(.settingNavigationButton):not(.userSettingsNavigationButton) {
+  border-color: var(--mantine-color-nav-active-border);
+  box-shadow: var(--mantine-shadow-xs);
+}
+
+/* top-level nav items for each individual setting (also used by the Changelog button). These use
+   Mantine's transparent variant, so there's no background fill in any state (rest, hover, or
+   active) — hovering only undims the label (see the hover rule below), Discord-style, and the
+   pill treatment stays exclusive to the category rows. */
+.settingNavigationButton {
+  height: 40px;
+  font-weight: 400;
+  /* match the list's top/bottom padding when scrolled into view */
+  scroll-margin-top: var(--sidenav-h-padding);
+  scroll-margin-bottom: var(--sidenav-h-padding);
+}
+
+/* dot on the right of a setting (or its collapsed category) with an unseen promotion */
+.promotionDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: light-dark(var(--mantine-color-red-5), var(--mantine-color-red-6));
+}
+
+/* category header: reuses the settings button component, styled as a dimmed, uppercase section
+   header. Clickable to collapse/expand its settings (keeps the button's hover/press feedback). */
+.categoryButton {
+  height: 40px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mantine-color-dimmed);
+  /* match the list's top/bottom padding when scrolled into view */
+  scroll-margin-top: var(--sidenav-h-padding);
+  scroll-margin-bottom: var(--sidenav-h-padding);
+}
+
+/* undim the label when a nav button is hovered. the extra :hover qualifier outweighs
+   .navigationButton[data-active='false'] .navigationLabel, which otherwise keeps it dimmed */
+.navigationButton[data-active='false']:hover .navigationLabel {
+  color: var(--mantine-color-text);
+}
+
+/* let Mantine's active (primary) color through the dimmed header color above */
+.categoryButton[data-active='true'] {
+  color: var(--button-color);
+}
+
+/* wraps a category's settings inside the Mantine <Collapse> so they keep stacking full-width */
+.categorySettings {
+  display: flex;
+  flex-direction: column;
+}
+
+.navigationLabel {
+  /* Mantine's label is display:flex, where text-overflow:ellipsis has no effect; make it a block
+     (content height, vertically centered by the button's inner) so a long label truncates. */
+  display: block;
+  height: auto;
+  /* Mantine trims the text box to the baseline; with overflow:hidden that clips descenders (the
+     tail of "g"/"p"), so disable the trim and use normal line-height to give them room. */
+  line-height: normal;
+  text-box-trim: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* allow the label to shrink below its content width so it can ellipsis instead of overflowing
+     (e.g. a long username running into the Pro badge) */
+  min-width: 0;
+}
+
+.navigationButton[data-active='false'] .navigationLabel {
+  color: var(--mantine-color-dimmed);
+}
+
+/* the user-settings card shows the display name at full strength, not dimmed like the other rows */
+.userSettingsNavigationButton[data-active='false'] .navigationLabel {
+  color: var(--mantine-color-text);
+}
+
+/* the display name carries a username effect (e.g. glow's shadow) that extends past the text box,
+   so let it spill instead of clipping — the name is short enough to not need ellipsis truncation */
+.userSettingsNavigationButton .navigationLabel {
+  overflow: visible;
+}
+
+.navigationSection {
+  margin-right: var(--mantine-spacing-md);
+  /* keep the avatar/badge at full size; only the label shrinks to truncate */
+  flex-shrink: 0;
+}
+
+/* push a right-side section (e.g. the Pro badge) to the button's far edge, keeping a gap from
+   the label (so a truncated label's ellipsis doesn't touch it) */
+.navigationSection[data-position='right'] {
+  margin-left: auto;
+  margin-right: 0;
+  padding-left: var(--mantine-spacing-xs);
+}
+
+/* fixed above the scrollable settings list; spans the full sidebar width (the container has no
+   horizontal padding of its own) so its bottom-border divider reaches edge to edge. The left
+   padding optically lines the logo up with the nav icons below it. */
+.logoContainer {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  flex-shrink: 0;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+/* fixed below the scrollable settings list; spans the full sidebar width so its top-border
+   divider reaches edge to edge, with horizontal padding matching the list above */
+.userSettingsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+  padding-left: var(--sidenav-h-padding);
+  padding-right: var(--sidenav-h-padding);
+  border-top: 1px solid var(--mantine-color-default-border);
+}
+
+/* the user-settings card mirrors the radio card's rest→hover→press feedback (see
+   SettingRadioCard.module.css), but on a raised surface scale so it reads lighter than the
+   body-colored sidebar it sits on (a plain body rest would blend in). The active accent border is
+   ours, not the card's. */
+.userSettingsNavigationButton {
+  border: 1px solid var(--mantine-color-body-raised-border);
+  box-shadow: var(--mantine-shadow-xs);
+  transition: background 120ms ease;
+  font-weight: 600;
+}
+
+.userSettingsNavigationButton[data-active='false']:not(:hover) {
+  background: var(--mantine-color-body-raised);
+}
+
+.userSettingsNavigationButton[data-active='false']:hover {
+  background: var(--mantine-color-body-raised-hover);
+}
+
+.userSettingsNavigationButton[data-active='false']:active {
+  background: var(--mantine-color-body-raised-active);
+}
+
+.userSettingsNavigationButton[data-active='true'] {
+  border-color: var(--mantine-color-nav-active-border);
+  background: var(--mantine-primary-color-light);
+}
+
+.userSettingsNavigationButton[data-active='true']:hover {
+  background: var(--mantine-primary-color-light-hover);
+}
+
+.userSettingsNavigationButton[data-active='true']:active {
+  background: var(--mantine-primary-color-light-active);
 }
 
 .overlay {
@@ -88,8 +256,26 @@
   transition: opacity 0.2s ease-in-out;
 }
 
-.logoContainer {
-  border-bottom: 1px solid var(--mantine-color-default-border);
+.closeButtonIcon {
+  width: 24px;
+  height: 24px;
+  transform: rotate(180deg);
+  color: var(--mantine-color-dimmed);
+}
+
+@media (min-width: 800px) {
+  .closeButton {
+    display: none;
+  }
+
+  .sidenavContainer {
+    --sidenav-h-padding: 8px;
+    width: 220px;
+  }
+
+  .userSettingsContainer {
+    padding-bottom: 8px;
+  }
 }
 
 @media (max-width: 800px) {
@@ -99,9 +285,9 @@
     top: 0;
     left: 0;
     bottom: 0;
+    --sidenav-h-padding: 16px;
     max-width: min(300px, 100%);
     width: 100%;
-    padding: 16px;
     transform: translateX(-100%);
     transition: transform 0.2s ease-in-out;
   }
@@ -111,22 +297,8 @@
     pointer-events: auto;
   }
 
-  .navigationIconButton {
-    display: none;
-  }
-
   .open {
     transform: translateX(0);
-  }
-
-  .logoContainer {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    height: auto;
-    border-bottom: none;
   }
 
   .closeButton,
@@ -136,6 +308,8 @@
   }
 
   .closeButton {
+    /* pin the close arrow to the right edge of the logo container */
+    margin-left: auto;
     padding: 8px;
   }
 
@@ -143,22 +317,7 @@
     padding: 4px !important;
   }
 
-  .userSettingsButton {
-    height: 56px;
-    place-items: flex-start;
-  }
-
-  .topNavigationButton {
-    height: 48px;
-  }
-}
-
-@media (min-width: 800px) {
-  .closeButton {
-    display: none;
-  }
-
-  .navigationButton {
-    display: none;
+  .userSettingsContainer {
+    padding-bottom: 16px;
   }
 }

@@ -10,7 +10,7 @@ import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import useAuthStore from '@/stores/auth';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Self Bot'});
@@ -61,7 +61,7 @@ function SelfBot({ref, ...props}) {
       <SettingSwitch
         name={formatMessage({defaultMessage: 'Self Bot'})}
         description={formatMessage({defaultMessage: 'Automatically send and reply to messages on your own channel.'})}
-        showBetaBadge
+        showNewBadge
         value={displayEnabled}
         onChange={handleEnabledChange}
       />
@@ -88,9 +88,9 @@ function SelfBot({ref, ...props}) {
 
 SettingStore.registerSetting(SelfBot, {
   settingPanelId: SettingPanelIds.SELF_BOT,
+  settingCategoryId: SettingCategoryIds.BOTS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['self', 'bot', 'commands', 'reply', 'automatic', 'timers'],
 });
 
 export default SelfBot;

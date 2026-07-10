@@ -48,7 +48,7 @@ function SettingPrimaryColorRadio({
   description,
   colors = PRIMARY_COLOR_PALETTE,
   showProBadge = false,
-  showBetaBadge = false,
+  showNewBadge = false,
 }) {
   const normalizedValue = useMemo(() => normalizePrimaryColor(value, colors), [value, colors]);
   const colorLabels = useMemo(() => buildPrimaryColorLabels(colors), [colors]);
@@ -62,7 +62,7 @@ function SettingPrimaryColorRadio({
       description={description}
       controlClassName={groupStyles.radioGroup}
       showProBadge={showProBadge}
-      showBetaBadge={showBetaBadge}>
+      showNewBadge={showNewBadge}>
       <SettingRadioCardGroup value={normalizedValue} onChange={handleChange}>
         {colors.map((color) => (
           <SettingRadioCard
