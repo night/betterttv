@@ -1,17 +1,26 @@
 import {create} from 'zustand';
+import {persist} from 'zustand/middleware';
 import {getUserSubscriptionBadgeEligibility} from '@/actions/users';
 import useAuthStore from './auth';
 
-const useSubscriptionBadgeEligibilityStore = create(() => ({
-  eligibleBadges: null,
-  nextBadgeUnlocksAt: null,
-}));
+const STORAGE_ID = 'bttvPrivate_subscriptionBadgeEligibility';
+
+const useSubscriptionBadgeEligibilityStore = create(
+  persist(
+    () => ({
+      userId: null,
+      eligibleBadges: null,
+      nextBadgeUnlocksAt: null,
+    }),
+    {name: STORAGE_ID}
+  )
+);
 
 let lastFetch = null;
 
 function clearEligibility() {
   lastFetch = null;
-  useSubscriptionBadgeEligibilityStore.setState({eligibleBadges: null, nextBadgeUnlocksAt: null});
+  useSubscriptionBadgeEligibilityStore.setState({userId: null, eligibleBadges: null, nextBadgeUnlocksAt: null});
 }
 
 export async function fetchEligibility({force = false} = {}) {
@@ -43,6 +52,7 @@ export async function fetchEligibility({force = false} = {}) {
   }
 
   useSubscriptionBadgeEligibilityStore.setState({
+    userId: user.id,
     eligibleBadges: eligibility.eligibleBadges,
     nextBadgeUnlocksAt: eligibility.nextBadgeUnlocksAt,
   });

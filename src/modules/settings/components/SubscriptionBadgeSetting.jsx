@@ -49,8 +49,12 @@ function BadgeImage({src}) {
 function SubscriptionBadgeSetting() {
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
 
+  // persisted eligibility may belong to a previous session's account; only use it for the current user
   const {eligibleBadges, nextBadgeUnlocksAt} = useSubscriptionBadgeEligibilityStore(
-    useShallow((state) => ({eligibleBadges: state.eligibleBadges, nextBadgeUnlocksAt: state.nextBadgeUnlocksAt}))
+    useShallow((state) => ({
+      eligibleBadges: user != null && state.userId === user.id ? state.eligibleBadges : null,
+      nextBadgeUnlocksAt: user != null && state.userId === user.id ? state.nextBadgeUnlocksAt : null,
+    }))
   );
 
   useEffect(() => {
