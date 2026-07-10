@@ -18,17 +18,18 @@ import {
   TextInput,
 } from '@mantine/core';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
+import {useQuery} from '@tanstack/react-query';
 import classNames from 'classnames';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import Icon from '@/common/components/Icon';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
-import useGlobalBadges from '@/common/hooks/GlobalBadges';
 import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openModal} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
 import {KeywordTypes} from '@/utils/keywords';
 import {escapeRegExp} from '@/utils/regex';
+import twitch from '@/utils/twitch';
 import ColorPicker from './ColorPicker';
 import Panel from './Panel';
 import styles from './SettingKeywords.module.css';
@@ -119,7 +120,12 @@ function KeywordRow({
   const focusRef = useFocusTrap(opened);
 
   const isBadgeKeyword = data.type === KeywordTypes.BADGE;
-  const globalBadges = useGlobalBadges(isBadgeKeyword);
+  const {data: globalBadges = []} = useQuery({
+    queryKey: ['twitchGlobalBadges'],
+    queryFn: () => twitch.getGlobalBadges(),
+    enabled: isBadgeKeyword,
+    staleTime: Infinity,
+  });
 
   const badgesByKeyword = useMemo(() => {
     const badges = new Map();

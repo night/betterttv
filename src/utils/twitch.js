@@ -101,7 +101,6 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 
 let chatClient;
 const profilePicturesByUserId = {};
-let globalBadgesPromise = null;
 
 const userCookie = cookies.get('twilight-user');
 if (userCookie) {
@@ -155,20 +154,9 @@ export default {
     return profilePicture;
   },
 
-  getGlobalBadges() {
-    if (globalBadgesPromise != null) {
-      return globalBadgesPromise;
-    }
-
-    globalBadgesPromise = this.graphqlQuery(GLOBAL_BADGES_GQL_QUERY)
-      .then(({data}) => data.badges.filter((badge) => badge != null))
-      .catch((e) => {
-        debug.log('failed to fetch twitch global badges', e);
-        globalBadgesPromise = null;
-        return [];
-      });
-
-    return globalBadgesPromise;
+  async getGlobalBadges() {
+    const {data} = await this.graphqlQuery(GLOBAL_BADGES_GQL_QUERY);
+    return data.badges.filter((badge) => badge != null);
   },
 
   updateCurrentChannel() {
