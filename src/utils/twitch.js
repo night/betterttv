@@ -25,6 +25,16 @@ const USER_PROFILE_IMAGE_GQL_QUERY = gql`
   }
 `;
 
+const GLOBAL_BADGES_GQL_QUERY = gql`
+  query BTTVGetGlobalBadges {
+    badges {
+      id
+      title
+      imageURL(size: DOUBLE)
+    }
+  }
+`;
+
 let TMIActionTypes;
 let twitchWebpackRequire;
 
@@ -91,6 +101,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 
 let chatClient;
 const profilePicturesByUserId = {};
+let globalBadgesPromise = null;
 
 const userCookie = cookies.get('twilight-user');
 if (userCookie) {
@@ -142,6 +153,22 @@ export default {
     profilePicturesByUserId[userId] = profilePicture;
 
     return profilePicture;
+  },
+
+  getGlobalBadges() {
+    if (globalBadgesPromise != null) {
+      return globalBadgesPromise;
+    }
+
+    globalBadgesPromise = this.graphqlQuery(GLOBAL_BADGES_GQL_QUERY)
+      .then(({data}) => data.badges.filter((badge) => badge != null))
+      .catch((e) => {
+        debug.log('failed to fetch twitch global badges', e);
+        globalBadgesPromise = null;
+        return [];
+      });
+
+    return globalBadgesPromise;
   },
 
   updateCurrentChannel() {

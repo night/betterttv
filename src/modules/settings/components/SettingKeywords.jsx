@@ -1,6 +1,7 @@
 import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
+  Autocomplete,
   Avatar,
   Button,
   Kbd,
@@ -21,14 +22,19 @@ import classNames from 'classnames';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import Icon from '@/common/components/Icon';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
+import useGlobalBadges from '@/common/hooks/GlobalBadges';
 import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openModal} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
 import {KeywordTypes} from '@/utils/keywords';
+import {escapeRegExp} from '@/utils/regex';
 import ColorPicker from './ColorPicker';
 import Panel from './Panel';
 import styles from './SettingKeywords.module.css';
+
+const MAX_BADGE_SUGGESTIONS = 25;
+const BADGE_SUGGESTIONS_MAX_DROPDOWN_HEIGHT = 220;
 
 const REGEX_EXAMPLES = [
   {pattern: '~/(cat|dog)s?/i', description: formatMessage({defaultMessage: 'Matches cat, dogs, and similar'})},
@@ -90,6 +96,10 @@ function openRegexGuideModal() {
   });
 }
 
+function badgeKeyword(title) {
+  return `~/^${escapeRegExp(title)}$/`;
+}
+
 function KeywordRow({
   id,
   data,
@@ -107,6 +117,71 @@ function KeywordRow({
   const [opened, {open, close}] = useDisclosure(false);
   const channels = data?.channels ?? [];
   const focusRef = useFocusTrap(opened);
+
+  const isBadgeKeyword = data.type === KeywordTypes.BADGE;
+  const globalBadges = useGlobalBadges(isBadgeKeyword);
+
+  const badgesByKeyword = useMemo(() => {
+    const badges = new Map();
+    for (const badge of globalBadges) {
+      const keyword = badgeKeyword(badge.title);
+      if (badges.has(keyword)) {
+        continue;
+      }
+
+      badges.set(keyword, badge);
+    }
+
+    return badges;
+  }, [globalBadges]);
+
+  const badgeOptions = useMemo(
+    () =>
+      [...badgesByKeyword.entries()]
+        .sort(([, badgeA], [, badgeB]) => badgeA.title.localeCompare(badgeB.title))
+        .map(([keyword]) => keyword),
+    [badgesByKeyword]
+  );
+
+  const filterBadgeOptions = useCallback(
+    ({options, search, limit}) => {
+      const query = search.trim().toLowerCase();
+      const filtered = [];
+
+      for (const option of options) {
+        if (filtered.length >= limit) {
+          break;
+        }
+
+        const badge = badgesByKeyword.get(option.value);
+        if (badge == null) {
+          continue;
+        }
+
+        if (option.value !== search && !badge.title.toLowerCase().includes(query)) {
+          continue;
+        }
+
+        filtered.push(option);
+      }
+
+      return filtered;
+    },
+    [badgesByKeyword]
+  );
+
+  const renderBadgeOption = useCallback(
+    ({option}) => {
+      const badge = badgesByKeyword.get(option.value);
+      return (
+        <div className={styles.badgeOption}>
+          <img src={badge?.imageURL} alt="" className={styles.badgeOptionImage} />
+          <Text size="md">{badge?.title}</Text>
+        </div>
+      );
+    },
+    [badgesByKeyword]
+  );
 
   return (
     <TableTr {...props}>
@@ -138,17 +213,38 @@ function KeywordRow({
         />
       </TableTd>
       <TableTd className={tableStyles.dataCell}>
-        <TextInput
-          variant="unstyled"
-          classNames={{
-            input: tableStyles.textInput,
-            root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
-            wrapper: tableStyles.textInputWrapper,
-          }}
-          ref={keywordInputRef}
-          defaultValue={data.keyword}
-          onBlur={({target: {value}}) => onUpdate({keyword: value})}
-        />
+        {isBadgeKeyword ? (
+          <Autocomplete
+            variant="unstyled"
+            classNames={{
+              input: tableStyles.textInput,
+              root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
+              wrapper: tableStyles.textInputWrapper,
+            }}
+            ref={keywordInputRef}
+            defaultValue={data.keyword}
+            data={badgeOptions}
+            filter={filterBadgeOptions}
+            limit={MAX_BADGE_SUGGESTIONS}
+            maxDropdownHeight={BADGE_SUGGESTIONS_MAX_DROPDOWN_HEIGHT}
+            renderOption={renderBadgeOption}
+            comboboxProps={{radius: 'lg', size: 'md', portalProps: {target: portalRef.current}}}
+            onBlur={({target: {value}}) => onUpdate({keyword: value})}
+            onOptionSubmit={(keyword) => onUpdate({keyword})}
+          />
+        ) : (
+          <TextInput
+            variant="unstyled"
+            classNames={{
+              input: tableStyles.textInput,
+              root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
+              wrapper: tableStyles.textInputWrapper,
+            }}
+            ref={keywordInputRef}
+            defaultValue={data.keyword}
+            onBlur={({target: {value}}) => onUpdate({keyword: value})}
+          />
+        )}
       </TableTd>
       <TableTd className={styles.channelsDataCell}>
         <div className={classNames(styles.channelsInputContainer, {[styles.channelsInputHidden]: !opened})}>
@@ -167,7 +263,7 @@ function KeywordRow({
                 <Text size="md">{currentChannel?.displayName}</Text>
               </div>
             )}
-            classNames={{input: styles.channelsInput, pill: styles.channelsPill}}
+            classNames={{root: styles.channelsInputRoot, input: styles.channelsInput, pill: styles.channelsPill}}
             comboboxProps={{radius: 'lg', size: 'md', portalProps: {target: portalRef.current}}}
             data={currentChannel ? [currentChannel.displayName] : []}
           />

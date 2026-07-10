@@ -1,0 +1,17 @@
+.dropdown {
+  --combobox-padding: 4px;
+
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.option {
+  border-radius: 8px;
+}
+
+.scrollAreaContent {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
