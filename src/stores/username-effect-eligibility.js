@@ -16,29 +16,17 @@ const useUsernameEffectEligibilityStore = create(
 );
 
 let lastFetch = null;
+let inFlight = null;
 
 function clearEligibility() {
   lastFetch = null;
   useUsernameEffectEligibilityStore.setState({userId: null, eligibility: null});
 }
 
-export async function fetchEligibility({force = false} = {}) {
-  const {user} = useAuthStore.getState();
-
-  if (user == null) {
-    return;
-  }
-
-  if (!force && lastFetch != null && lastFetch.userId === user.id) {
-    return;
-  }
-
-  const currentFetch = {userId: user.id};
-  lastFetch = currentFetch;
-
+async function requestEligibility(userId, currentFetch) {
   let eligibility;
   try {
-    eligibility = await getUserUsernameEffectEligibility(user.id);
+    eligibility = await getUserUsernameEffectEligibility(userId);
   } catch (_) {
     if (lastFetch === currentFetch) {
       lastFetch = null;
@@ -50,7 +38,39 @@ export async function fetchEligibility({force = false} = {}) {
     return;
   }
 
-  useUsernameEffectEligibilityStore.setState({userId: user.id, eligibility});
+  useUsernameEffectEligibilityStore.setState({userId, eligibility});
+}
+
+export function fetchEligibility({force = false} = {}) {
+  const {user} = useAuthStore.getState();
+
+  if (user == null) {
+    return Promise.resolve();
+  }
+
+  // single-flight: a forced refetch (e.g. the selection gate after a free -> paid upgrade)
+  // coalesces onto the subscription's in-flight fetch rather than racing a second request
+  // whose failure could discard the first one's successful result
+  if (inFlight != null && inFlight.userId === user.id) {
+    return inFlight.promise;
+  }
+
+  if (!force && lastFetch != null && lastFetch.userId === user.id) {
+    return Promise.resolve();
+  }
+
+  const currentFetch = {userId: user.id};
+  lastFetch = currentFetch;
+
+  const record = {userId: user.id, promise: requestEligibility(user.id, currentFetch)};
+  inFlight = record;
+  record.promise.finally(() => {
+    if (inFlight === record) {
+      inFlight = null;
+    }
+  });
+
+  return record.promise;
 }
 
 // persisted eligibility may belong to a previous session's account; only expose it for the current user
