@@ -1,6 +1,6 @@
 import {Text} from '@mantine/core';
 import classNames from 'classnames';
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import {updateUserUsernameEffect} from '../../../actions/users';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
@@ -13,7 +13,8 @@ import formatMessage from '../../../i18n/index';
 import socketClient from '../../../socket-client';
 import useAuthStore from '../../../stores/auth';
 import useUsernameEffectEligibilityStore, {
-  waitForUsernameEffectEligibility,
+  fetchEligibility,
+  getEligibility,
 } from '../../../stores/username-effect-eligibility';
 import {getCurrentChannel} from '../../../utils/channel';
 import twitch from '../../../utils/twitch';
@@ -118,8 +119,15 @@ function SettingUsernameEffect() {
   const currentUser = useCurrentUser();
   const [usernameEffectsEnabled, setUsernameEffectsEnabled] = useStorageState(SettingIds.USERNAME_EFFECTS);
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
-  const eligibility = useUsernameEffectEligibilityStore((state) => state.eligibility);
+  // persisted eligibility may belong to a previous session's account; only use it for the current user
+  const eligibility = useUsernameEffectEligibilityStore((state) =>
+    user != null && state.userId === user.id ? state.eligibility : null
+  );
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
+
+  useEffect(() => {
+    fetchEligibility();
+  }, [user]);
 
   const [value, setValue] = useDebouncedRemoteState({
     value: user?.usernameEffect ?? NONE,
@@ -158,9 +166,12 @@ function SettingUsernameEffect() {
       }
 
       if (newValue !== NONE) {
-        const currentEligibility = await waitForUsernameEffectEligibility();
+        // the cached eligibility may predate a free -> paid upgrade, so refetch before gating
+        if (getEligibility()?.[newValue] !== true) {
+          await fetchEligibility({force: true});
+        }
 
-        if (currentEligibility?.[newValue] !== true) {
+        if (getEligibility()?.[newValue] !== true) {
           openUsernameEffectSubscriptionUpgradeModal(() => handleChange(newValue), {
             value: newValue,
             displayName: currentUser.displayName,

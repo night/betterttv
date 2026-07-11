@@ -1,65 +1,93 @@
 import {create} from 'zustand';
 import {persist} from 'zustand/middleware';
 import {getUserUsernameEffectEligibility} from '@/actions/users';
-import useAuthStore, {getCredentials} from '@/stores/auth';
+import useAuthStore from './auth';
 
 const STORAGE_ID = 'bttvPrivate_usernameEffectEligibility';
 
 const useUsernameEffectEligibilityStore = create(
   persist(
     () => ({
+      userId: null,
       eligibility: null,
     }),
     {name: STORAGE_ID}
   )
 );
 
-function eligibilityInputsEqual(a, b) {
-  return a?.id === b?.id && (a?.pro ?? false) === (b?.pro ?? false);
+let lastFetch = null;
+
+function clearEligibility() {
+  lastFetch = null;
+  useUsernameEffectEligibilityStore.setState({userId: null, eligibility: null});
 }
 
-let pendingSync = null;
+export async function fetchEligibility({force = false} = {}) {
+  const {user} = useAuthStore.getState();
 
-async function syncUsernameEffectEligibility(user) {
   if (user == null) {
-    // a null user with credentials is still resolving at boot, so keep the persisted
-    // eligibility until the refetch lands; only a sign-out clears it
-    if (getCredentials().accessToken == null) {
-      useUsernameEffectEligibilityStore.setState({eligibility: null});
-    }
     return;
   }
+
+  if (!force && lastFetch != null && lastFetch.userId === user.id) {
+    return;
+  }
+
+  const currentFetch = {userId: user.id};
+  lastFetch = currentFetch;
 
   let eligibility;
   try {
     eligibility = await getUserUsernameEffectEligibility(user.id);
-  } catch {
+  } catch (_) {
+    if (lastFetch === currentFetch) {
+      lastFetch = null;
+    }
     return;
   }
 
-  if (!eligibilityInputsEqual(useAuthStore.getState().user, user)) {
+  if (lastFetch !== currentFetch) {
     return;
   }
 
-  useUsernameEffectEligibilityStore.setState({eligibility});
+  useUsernameEffectEligibilityStore.setState({userId: user.id, eligibility});
 }
 
-// eligibility depends on who is signed in and their pro status, so a free -> paid upgrade
-// (or account switch) refetches; anything else on the user can change without a refetch.
+// persisted eligibility may belong to a previous session's account; only expose it for the current user
+export function getEligibility() {
+  const {user} = useAuthStore.getState();
+  const {userId, eligibility} = useUsernameEffectEligibilityStore.getState();
+
+  if (user == null || userId !== user.id) {
+    return null;
+  }
+
+  return eligibility;
+}
+
 useAuthStore.subscribe(
   (state) => state.user,
-  (user) => {
-    pendingSync = syncUsernameEffectEligibility(user);
-  },
-  {
-    equalityFn: eligibilityInputsEqual,
-    fireImmediately: true,
+  (user, prevUser) => {
+    if (user == null) {
+      clearEligibility();
+      return;
+    }
+
+    // stay lazy until something has fetched (settings may never be opened)
+    if (lastFetch == null) {
+      return;
+    }
+
+    if (user.id === prevUser?.id && user.pro === prevUser?.pro) {
+      return;
+    }
+
+    if (user.id !== prevUser?.id) {
+      clearEligibility();
+    }
+
+    fetchEligibility({force: true});
   }
 );
-
-export async function waitForUsernameEffectEligibility() {
-  await pendingSync;
-  return useUsernameEffectEligibilityStore.getState().eligibility;
-}
 
 export default useUsernameEffectEligibilityStore;
