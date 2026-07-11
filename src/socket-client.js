@@ -35,6 +35,7 @@ let state = CONNECTION_STATES.DISCONNECTED;
 let attempts = 1;
 let authenticated = false;
 let retryAuthenticationRequest = true;
+let authenticationHolds = 0;
 
 const joinedChannels = [];
 // session locks this client wants to hold, and the subset the server has granted us
@@ -70,6 +71,10 @@ function shouldRequestAuthentication() {
   const {accessToken} = getCredentials();
   if (accessToken == null) {
     return false;
+  }
+
+  if (authenticationHolds > 0) {
+    return true;
   }
 
   if (settings.get(SettingIds.SELF_BOT) === true) {
@@ -119,6 +124,20 @@ class SocketClient extends SafeEventEmitter {
     } else if (!shouldRequest && authenticated) {
       this.send('authentication_logout');
     }
+  }
+
+  acquireAuthenticationHold() {
+    authenticationHolds++;
+    this.handleAuthenticationRequest();
+  }
+
+  releaseAuthenticationHold() {
+    if (authenticationHolds === 0) {
+      return;
+    }
+
+    authenticationHolds--;
+    this.handleAuthenticationRequest();
   }
 
   async handleAuthenticationUpdate(data) {

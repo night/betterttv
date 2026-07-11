@@ -3,6 +3,7 @@ import {modals} from '@mantine/modals';
 import React from 'react';
 import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
+import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
 import {isUserPro} from '@/utils/pro';
@@ -159,6 +160,8 @@ export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
 
   let unsubscribeUserUpdated = null;
 
+  socketClient.acquireAuthenticationHold();
+
   function onConfirm() {
     return new Promise((resolve, reject) => {
       signal.addEventListener('abort', () => reject(new Error('Aborted')));
@@ -188,6 +191,7 @@ export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
     onClose: () => {
       controller.abort();
       unsubscribeUserUpdated?.();
+      socketClient.releaseAuthenticationHold();
     },
     labels: {
       confirm: formatMessage({defaultMessage: 'Upgrade'}),
