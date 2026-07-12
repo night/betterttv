@@ -15,6 +15,7 @@
     outline 100ms ease-in-out,
     background 120ms ease,
     border-color 120ms ease;
+  color: var(--mantine-color-dimmed);
   border: 1px solid var(--mantine-color-default-border);
   background: var(--mantine-color-body);
 }
