@@ -5,7 +5,7 @@ import {getProvider} from '@/utils/window';
 
 const STORAGE_ID = 'bttvPrivate_credentials';
 
-function jsonEqual(a, b) {
+function credentialsEqual(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
@@ -19,7 +19,7 @@ const useAuthStore = create(
           credentials = {accessToken: null, refreshToken: null};
         }
 
-        if (jsonEqual(credentials, get().credentials)) {
+        if (credentialsEqual(credentials, get().credentials)) {
           return;
         }
 
@@ -82,25 +82,6 @@ export async function syncCurrentUserFromCredentials(credentialsParam = null) {
   );
 
   if (!hasConnectedAccount) {
-    return;
-  }
-
-  useAuthStore.setState({user: me});
-}
-
-export async function refreshCurrentUser() {
-  const {user} = useAuthStore.getState();
-
-  if (user == null) {
-    return;
-  }
-
-  const {getMe} = await getActions();
-  const {user: me} = await getMe();
-
-  const {user: currentUser} = useAuthStore.getState();
-
-  if (currentUser == null || currentUser.id !== me.id || jsonEqual(currentUser, me)) {
     return;
   }
 
