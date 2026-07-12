@@ -91,8 +91,12 @@ function SubscriptionBadgeSetting() {
 
   const [badge, setBadge] = useDebouncedRemoteState({
     value: user?.subscriptionBadge === true,
-    onSave: async (value, {signal}) => {
+    onSave: async (value, {signal, isStale}) => {
       await updateSubscriptionBadge(value, {signal});
+      if (isStale()) {
+        return;
+      }
+
       updateUser({...useAuthStore.getState().user, subscriptionBadge: value});
       const currentChannel = getCurrentChannel();
       if (currentChannel == null) {
@@ -111,9 +115,13 @@ function SubscriptionBadgeSetting() {
 
   const [selectedBadgeId, setSelectedBadgeId] = useDebouncedRemoteState({
     value: user?.subscriptionBadgeId ?? LATEST,
-    onSave: async (newValue, {signal}) => {
+    onSave: async (newValue, {signal, isStale}) => {
       const badgeId = newValue === LATEST ? null : newValue;
       await updateUserSubscriptionBadge(useAuthStore.getState().user.id, badgeId, {signal});
+
+      if (isStale()) {
+        return;
+      }
 
       const selectedBadge =
         badgeId != null ? eligibleBadges.find((eligibleBadge) => eligibleBadge.badgeId === badgeId) : eligibleBadges[0];
@@ -137,10 +145,12 @@ function SubscriptionBadgeSetting() {
         return;
       }
 
-      setBadgeEnabled(true);
+      if (!badgeEnabled) {
+        setBadgeEnabled(true);
+      }
       setSelectedBadgeId(newValue);
     },
-    [setBadgeEnabled, setSelectedBadgeId]
+    [badgeEnabled, setBadgeEnabled, setSelectedBadgeId]
   );
 
   const nextBadgeCountdown = nextBadgeUnlocksAt != null ? getUnlockCountdown(nextBadgeUnlocksAt, now) : null;
