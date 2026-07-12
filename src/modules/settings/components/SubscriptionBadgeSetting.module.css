@@ -2,12 +2,24 @@
   background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
 }
 
-.badgeCard:active:not(.nextBadgeCard) {
-  background: var(--mantine-primary-color-light-active);
+.badgeCard:hover:not(.nextBadgeCard):not([data-checked='true']) {
+  background: var(--mantine-color-elevated-hover);
+}
+
+.badgeCard:active:not(.nextBadgeCard):not([data-checked='true']) {
+  background: var(--mantine-color-elevated-active);
 }
 
 .badgeCard[data-checked='true'] {
+  background: var(--mantine-primary-color-light);
+}
+
+.badgeCard[data-checked='true']:hover {
   background: var(--mantine-primary-color-light-hover);
+}
+
+.badgeCard[data-checked='true']:active {
+  background: var(--mantine-primary-color-light-active);
 }
 
 .latestBadgeIcon {
