@@ -10,8 +10,10 @@ import Icon from '@/common/components/Icon';
 import useDebouncedRemoteState from '@/common/hooks/DebouncedRemoteState';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import formatMessage from '@/i18n';
+import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import useSubscriptionBadgeEligibilityStore, {fetchEligibility} from '@/stores/subscription-badge-eligibility';
+import {getCurrentChannel} from '@/utils/channel';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import SettingSwitch from './SettingSwitch';
@@ -92,6 +94,12 @@ function SubscriptionBadgeSetting() {
     onSave: async (value, {signal}) => {
       await updateSubscriptionBadge(value, {signal});
       updateUser({...useAuthStore.getState().user, subscriptionBadge: value});
+      const currentChannel = getCurrentChannel();
+      if (currentChannel == null) {
+        return;
+      }
+
+      socketClient.broadcastMe(currentChannel.provider, currentChannel.id);
     },
   });
 
@@ -116,6 +124,12 @@ function SubscriptionBadgeSetting() {
         subscriptionBadgeId: badgeId,
         subscriptionBadgeUrl: selectedBadge.badgeUrl,
       });
+      const currentChannel = getCurrentChannel();
+      if (currentChannel == null) {
+        return;
+      }
+
+      socketClient.broadcastMe(currentChannel.provider, currentChannel.id);
     },
   });
 
