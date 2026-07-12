@@ -116,9 +116,7 @@ function SubscriptionBadgeSetting() {
       await updateUserSubscriptionBadge(useAuthStore.getState().user.id, badgeId, {signal});
 
       const selectedBadge =
-        badgeId != null
-          ? eligibleBadges.find((eligibleBadge) => eligibleBadge.badgeId === badgeId)
-          : eligibleBadges[eligibleBadges.length - 1];
+        badgeId != null ? eligibleBadges.find((eligibleBadge) => eligibleBadge.badgeId === badgeId) : eligibleBadges[0];
       updateUser({
         ...useAuthStore.getState().user,
         subscriptionBadgeId: badgeId,
