@@ -12,10 +12,7 @@ import {SettingIds, UsernameEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
 import socketClient from '../../../socket-client';
 import useAuthStore from '../../../stores/auth';
-import useUsernameEffectEligibilityStore, {
-  fetchEligibility,
-  getEligibility,
-} from '../../../stores/username-effect-eligibility';
+import useUsernameEffectEligibilityStore, {fetchEligibility} from '../../../stores/username-effect-eligibility';
 import {getCurrentChannel} from '../../../utils/channel';
 import twitch from '../../../utils/twitch';
 import {getCurrentUser} from '../../../utils/user';
@@ -151,7 +148,7 @@ function SettingUsernameEffect() {
   );
 
   const handleChange = useCallback(
-    async (newValue) => {
+    (newValue) => {
       const currentUser = getCurrentUser();
       const {user: currentAuthUser} = useAuthStore.getState();
 
@@ -165,28 +162,23 @@ function SettingUsernameEffect() {
         return;
       }
 
+      if (newValue !== NONE && (eligibility == null || eligibility[newValue] !== true)) {
+        openUsernameEffectSubscriptionUpgradeModal(() => handleChange(newValue), {
+          value: newValue,
+          displayName: currentUser.displayName,
+          chatColor,
+        });
+
+        return;
+      }
+
       if (newValue !== NONE) {
-        // the cached eligibility may predate a free -> paid upgrade, so refetch before gating
-        if (getEligibility()?.[newValue] !== true) {
-          await fetchEligibility({force: true});
-        }
-
-        if (getEligibility()?.[newValue] !== true) {
-          openUsernameEffectSubscriptionUpgradeModal(() => handleChange(newValue), {
-            value: newValue,
-            displayName: currentUser.displayName,
-            chatColor,
-          });
-
-          return;
-        }
-
         setUsernameEffectsEnabled(true);
       }
 
       setValue(newValue);
     },
-    [setValue, setUsernameEffectsEnabled, chatColor]
+    [eligibility, setValue, setUsernameEffectsEnabled, chatColor]
   );
 
   return (
