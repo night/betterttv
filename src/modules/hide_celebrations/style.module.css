@@ -1,0 +1,8 @@
+.hideCelebrations {
+  /* Channel "Celebrations" overlay container rendered over the player */
+  :global(.celebration__overlay),
+  /* Confetti / particle effect canvas used by cheer and celebration effects */
+  :global(.particle-canvas) {
+    display: none !important;
+  }
+}

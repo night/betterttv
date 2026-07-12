@@ -60,6 +60,13 @@ function ChatModule({ref, ...props}) {
           defaultMessage: 'Restore what you previously typed by pressing up/down arrow in chat.',
         })}
       />
+      <SettingCheckbox
+        value={ChatFlags.CELEBRATIONS}
+        name={formatMessage({defaultMessage: 'Celebrations'})}
+        description={formatMessage({
+          defaultMessage: 'Show on-screen celebration and cheer effects, such as confetti and Power-up effects.',
+        })}
+      />
     </SettingCheckboxGroup>
   );
 }
@@ -68,7 +75,19 @@ SettingStore.registerSetting(ChatModule, {
   settingPanelId: SettingPanelIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['bits', 'highlights', 'community', 'chat', 'replies', 'clips', 'subs', 'subscriptions'],
+  keywords: [
+    'bits',
+    'highlights',
+    'community',
+    'chat',
+    'replies',
+    'clips',
+    'subs',
+    'subscriptions',
+    'celebrations',
+    'confetti',
+    'power-ups',
+  ],
 });
 
 export default ChatModule;
