@@ -61,6 +61,7 @@ export const SettingIds = {
   EMOTE_MENU_WIDTH: 'emoteMenuWidth',
   HYPE_CHAT: 'hypeChat',
   PRIMARY_COLOR: 'primaryColor',
+  TEXT_REPLACEMENTS: 'textReplacements',
   CHATBOT_COMMAND_AUTOCOMPLETE: 'chatbotCommandAutocomplete',
   SELF_BOT: 'selfBot',
   SELF_BOT_COMMANDS_LIST: 'selfBotCommandsList',
@@ -154,11 +155,17 @@ export const PageTypes = {
   USER_SETTINGS: 3,
   HIGHLIGHT_KEYWORDS: 4,
   BLACKLIST_KEYWORDS: 5,
-  SELF_BOT_COMMANDS: 6,
+  TEXT_REPLACEMENTS: 6,
+  SELF_BOT_COMMANDS: 7,
 };
 
 export const PageDecendants = {
-  [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS, PageTypes.SELF_BOT_COMMANDS],
+  [PageTypes.SETTINGS]: [
+    PageTypes.HIGHLIGHT_KEYWORDS,
+    PageTypes.BLACKLIST_KEYWORDS,
+    PageTypes.TEXT_REPLACEMENTS,
+    PageTypes.SELF_BOT_COMMANDS,
+  ],
 };
 
 export const NavigationModeTypes = {

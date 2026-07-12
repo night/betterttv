@@ -15,6 +15,7 @@ import HighlightKeywords from '@/modules/settings/pages/HighlightKeywords';
 import SelfBotCommands from '@/modules/settings/pages/SelfBotCommands';
 import Settings from '@/modules/settings/pages/Settings';
 import settingsStyles from '@/modules/settings/pages/Settings.module.css';
+import TextReplacements from '@/modules/settings/pages/TextReplacements';
 import UserSettings from '@/modules/settings/pages/UserSettings';
 import storage from '@/storage';
 import {getCredentials} from '@/stores/auth';
@@ -61,6 +62,8 @@ function Page({page, search, handleSettingRefCallback}) {
       return <HighlightKeywords />;
     case PageTypes.BLACKLIST_KEYWORDS:
       return <BlacklistKeywords />;
+    case PageTypes.TEXT_REPLACEMENTS:
+      return <TextReplacements />;
     case PageTypes.SELF_BOT_COMMANDS:
       return <SelfBotCommands />;
     case PageTypes.SETTINGS:
@@ -258,7 +261,14 @@ function SettingsModal({setHandleOpen}) {
         return <Title order={1}>{formatMessage({defaultMessage: 'Changelog'})}</Title>;
       case PageTypes.HIGHLIGHT_KEYWORDS:
       case PageTypes.BLACKLIST_KEYWORDS:
-      case PageTypes.SELF_BOT_COMMANDS:
+      case PageTypes.TEXT_REPLACEMENTS:
+      case PageTypes.SELF_BOT_COMMANDS: {
+        const PAGE_TITLES = {
+          [PageTypes.HIGHLIGHT_KEYWORDS]: formatMessage({defaultMessage: 'Highlight Keywords'}),
+          [PageTypes.BLACKLIST_KEYWORDS]: formatMessage({defaultMessage: 'Blacklist Keywords'}),
+          [PageTypes.TEXT_REPLACEMENTS]: formatMessage({defaultMessage: 'Text Replacements'}),
+          [PageTypes.SELF_BOT_COMMANDS]: formatMessage({defaultMessage: 'Self Bot Commands'}),
+        };
         return (
           <div className={styles.backHeader}>
             <ActionIcon
@@ -271,15 +281,10 @@ function SettingsModal({setHandleOpen}) {
               aria-label={formatMessage({defaultMessage: 'Back'})}>
               <Icon className={styles.backButtonIcon} icon={faArrowLeft} />
             </ActionIcon>
-            <Title order={1}>
-              {page === PageTypes.HIGHLIGHT_KEYWORDS
-                ? formatMessage({defaultMessage: 'Highlight Keywords'})
-                : page === PageTypes.BLACKLIST_KEYWORDS
-                  ? formatMessage({defaultMessage: 'Blacklist Keywords'})
-                  : formatMessage({defaultMessage: 'Self Bot Commands'})}
-            </Title>
+            <Title order={1}>{PAGE_TITLES[page]}</Title>
           </div>
         );
+      }
       default:
         return null;
     }

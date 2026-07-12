@@ -147,11 +147,29 @@ class ChatTabcompletionModule {
     }
   };
 
+  getTextReplacementMatches(prefix) {
+    const replacements = settings.get(SettingIds.TEXT_REPLACEMENTS);
+    if (replacements == null) return [];
+
+    const seen = new Set();
+    const matches = [];
+    for (const {alias, replacement} of Object.values(replacements)) {
+      if (alias && replacement && normalizedStartsWith(alias, prefix) && !seen.has(replacement)) {
+        seen.add(replacement);
+        matches.push(replacement);
+      }
+    }
+    return matches;
+  }
+
   getSuggestions(prefix, includeUsers = true, includeEmotes = true) {
     let userList = [];
     let emoteList = [];
 
     prefix = prefix.toLowerCase();
+
+    const aliasList = includeEmotes ? this.getTextReplacementMatches(prefix) : [];
+    const aliasReplacementSet = new Set(aliasList);
 
     if (includeEmotes) {
       const emoteSet = new Set();
@@ -163,19 +181,21 @@ class ChatTabcompletionModule {
         if (!normalizedStartsWith(code, prefix)) return;
         emoteSet.add(code);
       });
-      emoteList = Array.from(emoteSet);
+      emoteList = Array.from(emoteSet).filter((code) => !aliasReplacementSet.has(code));
       emoteList.sort((a, b) => a.localeCompare(b));
     }
 
     if (includeUsers) {
-      userList = Array.from(this.userList).filter((word) => normalizedStartsWith(word, prefix));
+      userList = Array.from(this.userList).filter(
+        (word) => normalizedStartsWith(word, prefix) && !aliasReplacementSet.has(word)
+      );
       userList.sort((a, b) => a.localeCompare(b));
     }
 
     if (settings.get(SettingIds.TAB_COMPLETION_EMOTE_PRIORITY) === true) {
-      return [...emoteList, ...userList];
+      return [...aliasList, ...emoteList, ...userList];
     }
-    return [...userList, ...emoteList];
+    return [...aliasList, ...userList, ...emoteList];
   }
 
   getTwitchEmotes() {
