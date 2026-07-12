@@ -268,6 +268,7 @@ export default {
       SUBSCRIPTION: twitchTMIActionTypes.Subscription,
       RESUBSCRIPTION: twitchTMIActionTypes.Resubscription,
       SUBGIFT: twitchTMIActionTypes.SubGift,
+      VIEWER_MILESTONE: twitchTMIActionTypes.ViewerMilestone,
     };
 
     return TMIActionTypes;
