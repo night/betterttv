@@ -10,8 +10,10 @@ import Icon from '@/common/components/Icon';
 import useDebouncedRemoteState from '@/common/hooks/DebouncedRemoteState';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import formatMessage from '@/i18n';
+import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import useSubscriptionBadgeEligibilityStore, {fetchEligibility} from '@/stores/subscription-badge-eligibility';
+import {getCurrentChannel} from '@/utils/channel';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import SettingSwitch from './SettingSwitch';
@@ -89,9 +91,19 @@ function SubscriptionBadgeSetting() {
 
   const [badge, setBadge] = useDebouncedRemoteState({
     value: user?.subscriptionBadge === true,
-    onSave: async (value, {signal}) => {
+    onSave: async (value, {signal, isStale}) => {
       await updateSubscriptionBadge(value, {signal});
+      if (isStale()) {
+        return;
+      }
+
       updateUser({...useAuthStore.getState().user, subscriptionBadge: value});
+      const currentChannel = getCurrentChannel();
+      if (currentChannel == null) {
+        return;
+      }
+
+      socketClient.broadcastMe(currentChannel.provider, currentChannel.id);
     },
   });
 
@@ -103,19 +115,27 @@ function SubscriptionBadgeSetting() {
 
   const [selectedBadgeId, setSelectedBadgeId] = useDebouncedRemoteState({
     value: user?.subscriptionBadgeId ?? LATEST,
-    onSave: async (newValue, {signal}) => {
+    onSave: async (newValue, {signal, isStale}) => {
       const badgeId = newValue === LATEST ? null : newValue;
       await updateUserSubscriptionBadge(useAuthStore.getState().user.id, badgeId, {signal});
 
+      if (isStale()) {
+        return;
+      }
+
       const selectedBadge =
-        badgeId != null
-          ? eligibleBadges.find((eligibleBadge) => eligibleBadge.badgeId === badgeId)
-          : eligibleBadges[eligibleBadges.length - 1];
+        badgeId != null ? eligibleBadges.find((eligibleBadge) => eligibleBadge.badgeId === badgeId) : eligibleBadges[0];
       updateUser({
         ...useAuthStore.getState().user,
         subscriptionBadgeId: badgeId,
         subscriptionBadgeUrl: selectedBadge.badgeUrl,
       });
+      const currentChannel = getCurrentChannel();
+      if (currentChannel == null) {
+        return;
+      }
+
+      socketClient.broadcastMe(currentChannel.provider, currentChannel.id);
     },
   });
 
@@ -125,10 +145,12 @@ function SubscriptionBadgeSetting() {
         return;
       }
 
-      setBadgeEnabled(true);
+      if (!badgeEnabled) {
+        setBadgeEnabled(true);
+      }
       setSelectedBadgeId(newValue);
     },
-    [setBadgeEnabled, setSelectedBadgeId]
+    [badgeEnabled, setBadgeEnabled, setSelectedBadgeId]
   );
 
   const nextBadgeCountdown = nextBadgeUnlocksAt != null ? getUnlockCountdown(nextBadgeUnlocksAt, now) : null;

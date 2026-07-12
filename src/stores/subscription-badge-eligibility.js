@@ -53,7 +53,7 @@ export async function fetchEligibility({force = false} = {}) {
 
   useSubscriptionBadgeEligibilityStore.setState({
     userId: user.id,
-    eligibleBadges: eligibility.eligibleBadges,
+    eligibleBadges: eligibility.eligibleBadges != null ? [...eligibility.eligibleBadges].reverse() : null,
     nextBadgeUnlocksAt: eligibility.nextBadgeUnlocksAt,
   });
 }
