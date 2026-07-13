@@ -57,6 +57,7 @@ export const SettingIds = {
   CHAT: 'chat',
   AUTO_PLAY: 'autoPlay',
   USERNAMES: 'usernames',
+  USERNAME_EFFECTS: 'usernameEffects',
   AUTO_LIVE_CHAT_VIEW: 'autoLiveChatView',
   EMOTE_MENU_WIDTH: 'emoteMenuWidth',
   HYPE_CHAT: 'hypeChat',
@@ -309,6 +310,7 @@ export const SettingDefaultValues = {
   [SettingIds.LIVE_CHAT_VIEW]: false,
   [SettingIds.EMOTE_MENU_WIDTH]: 498,
   [SettingIds.HYPE_CHAT]: true,
+  [SettingIds.USERNAME_EFFECTS]: true,
   [SettingIds.PRIMARY_COLOR]: null,
   [SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE]: true,
   [SettingIds.SELF_BOT]: false,
@@ -412,4 +414,16 @@ export const CommandAutocompleteArgumentTypes = {
   WORD: 'word',
   PHRASE: 'phrase',
   USER: 'user',
+};
+
+// The string values are the API/storage contract — sent to the BetterTTV API, used as eligibility
+// keys, and stored on the user — so they must be kept in sync with the backend (betterttv-private).
+export const UsernameEffects = {
+  GLOW: 'glow',
+  FLARE: 'flare',
+  IRIDESCENCE: 'iridescence',
+  SUPERNOVA: 'supernova',
+  MIDAS: 'midas',
+  GLACIER: 'glacier',
+  INTERGALACTIC: 'intergalactic',
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
 import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
 import settings from '@/settings';
 import useAuthStore from '@/stores/auth';
@@ -130,6 +131,10 @@ mountNode.style.display = 'none';
 mountNode.setAttribute('data-platform', getProvider());
 mountNode.appendChild(mantineRoot);
 shadowRoot.appendChild(mountNode);
+
+// Username effect styles reference SVG filters by id; filter references only resolve within the
+// same tree scope, so the shadow root needs its own copy for settings previews to render them.
+injectUsernameEffectFilters(shadowRoot);
 
 document.documentElement.appendChild(host);
 

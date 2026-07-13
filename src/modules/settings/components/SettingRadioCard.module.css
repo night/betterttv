@@ -20,10 +20,27 @@
   background: var(--mantine-color-body);
 }
 
+.card:hover:not([data-locked='true']):not([data-checked='true']) {
+  background: var(--mantine-color-elevated-hover);
+}
+
+.card:active:not([data-locked='true']):not([data-checked='true']) {
+  background: var(--mantine-color-elevated-active);
+}
+
 .card[data-checked='true'] {
   color: var(--mantine-primary-color-3);
   border: 1px solid var(--mantine-color-body-secondary);
   outline: 2px solid var(--mantine-primary-color-3);
+  background: var(--mantine-primary-color-light);
+}
+
+.card[data-checked='true']:hover {
+  background: var(--mantine-primary-color-light-hover);
+}
+
+.card[data-checked='true']:active {
+  background: var(--mantine-primary-color-light-active);
 }
 
 .iconIndicator {

@@ -14,6 +14,7 @@ import Promotion from '@/modules/settings/components/Promotion';
 import ResetSetting from '@/modules/settings/components/ResetSetting';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import SettingUsernameEffect from '@/modules/settings/components/SettingUsernameEffect';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import SubscriptionBadgeSetting from '@/modules/settings/components/SubscriptionBadgeSetting';
 import storage from '@/storage';
@@ -135,6 +136,9 @@ function UserSettings() {
   return (
     <PageScrollBody>
       <Promotion />
+      <SettingGroup name={formatMessage({defaultMessage: 'Appearance'})}>
+        <SettingUsernameEffect />
+      </SettingGroup>
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />
         <BackupSetting

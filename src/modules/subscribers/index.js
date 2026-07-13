@@ -1,14 +1,16 @@
 import socketClient, {EventNames} from '@/socket-client';
+import useAuthStore from '@/stores/auth';
 import {getCurrentChannel} from '@/utils/channel';
 import twitch from '@/utils/twitch';
+import {getCurrentUser} from '@/utils/user';
 
 const users = new Map();
 
-function updateSubscription({providerId, subscribed, glow, badge}) {
+function updateSubscription({providerId, subscribed, badge, usernameEffect}) {
   users.set(providerId, {
     badge,
     subscribed,
-    glow,
+    usernameEffect,
   });
 }
 
@@ -26,8 +28,15 @@ class SubscribersModule {
     socketClient.on(EventNames.NEW_SUBSCRIBER, (d) => legacyNewSubscriber(d));
   }
 
-  hasGlow(providerId) {
-    return users.get(providerId)?.glow ?? false;
+  getUsernameEffect(providerId) {
+    const platformUser = getCurrentUser();
+    const authUser = useAuthStore.getState().user;
+
+    if (platformUser != null && authUser != null && platformUser.id === providerId) {
+      return authUser.usernameEffect ?? null;
+    }
+
+    return users.get(providerId)?.usernameEffect ?? null;
   }
 
   hasLegacySubscription(providerId) {

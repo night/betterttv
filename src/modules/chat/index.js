@@ -1,5 +1,7 @@
 import {getCachedBadges} from '@/actions/badges';
-import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes} from '@/constants';
+import effects from '@/common/styles/UsernameEffects.module.css';
+import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
+import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes, UsernameEffects} from '@/constants';
 import formatMessage from '@/i18n/index';
 import nicknames from '@/modules/chat_nicknames/index';
 import emotes from '@/modules/emotes/index';
@@ -117,6 +119,7 @@ export function getMessagePartsFromMessageElement(message) {
 class ChatModule {
   constructor() {
     watcher.on('load', () => this.loadEmoteMouseHandler());
+    watcher.on('load', () => injectUsernameEffectFilters());
     settings.on(`changed.${SettingIds.EMOTES}`, () => this.loadEmoteMouseHandler());
     watcher.on('chat.message', (element, message) => this.messageParser(element, message));
     watcher.on('chat.seventv_message', (element, userId) => this.seventvMessageParser(element, userId));
@@ -410,6 +413,30 @@ class ChatModule {
     this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts);
   }
 
+  applyUsernameEffect(fromNode, userId) {
+    const usernameEffect = subscribers.getUsernameEffect(userId);
+    if (usernameEffect == null) {
+      return;
+    }
+
+    // glow marks BetterTTV's most dedicated supporters, so it shows even with username effects disabled
+    if (usernameEffect === UsernameEffects.GLOW && settings.get(SettingIds.DARKENED_MODE) === true) {
+      fromNode.classList.add(effects.glow);
+      return;
+    }
+
+    if (settings.get(SettingIds.USERNAME_EFFECTS) !== true) {
+      return;
+    }
+
+    const effectClassName = effects[usernameEffect];
+    if (effectClassName == null) {
+      return;
+    }
+
+    fromNode.classList.add(effectClassName);
+  }
+
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
     if (element.__bttvParsed) return;
 
@@ -428,10 +455,7 @@ class ChatModule {
       color = fromNode.style.color;
     }
 
-    if (subscribers.hasGlow(user.id) && settings.get(SettingIds.DARKENED_MODE) === true) {
-      const rgbColor = colors.getRgb(color);
-      fromNode.style.textShadow = `0 0 20px rgba(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}, 0.8)`;
-    }
+    this.applyUsernameEffect(fromNode, user.id);
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
       element
