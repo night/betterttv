@@ -84,10 +84,6 @@
   background: var(--mantine-color-orange-7);
 }
 
-.swatch[data-bttv-color='custom'] {
-  background: var(--bttv-custom-color, var(--mantine-color-indigo-6));
-}
-
 .proBadge {
   position: absolute;
   top: 8px;

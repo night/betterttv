@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
+import React, {useCallback, useMemo, useState} from 'react';
+import useProRequiredState from '@/common/hooks/ProRequiredState';
 import {DEFAULT_PRIMARY_COLOR} from '@/constants';
 import formatMessage from '@/i18n/index';
 import useAuthStore from '@/stores/auth';
@@ -60,42 +60,25 @@ function SettingPrimaryColorRadio({
   showBetaBadge = false,
 }) {
   const isPro = useAuthStore((state) => isUserPro(state.user));
-  const customActive = isCustomPrimaryColor(value);
 
-  const [customDraft, setCustomDraft] = useState(customActive ? value : DEFAULT_CUSTOM_PRIMARY_COLOR);
-
-  useEffect(() => {
-    if (customActive) {
-      // eslint-disable-next-line @eslint-react/set-state-in-effect -- sync the draft when the stored color changes externally
-      setCustomDraft(value);
-    }
-  }, [customActive, value]);
+  const [customDraft, setCustomDraft] = useState(() =>
+    isCustomPrimaryColor(value) ? value : DEFAULT_CUSTOM_PRIMARY_COLOR
+  );
 
   const normalizedValue = useMemo(() => normalizePrimaryColor(value, colors), [value, colors]);
   const colorLabels = useMemo(() => buildPrimaryColorLabels(colors), [colors]);
 
-  const requirePro = useCallback((apply) => {
-    const {user} = useAuthStore.getState();
-    if (user == null) {
-      openSignInModal({}, apply);
-      return;
-    }
-    if (!isUserPro(user)) {
-      openSubscriptionUpgradeModal({}, apply);
-      return;
-    }
-    apply();
-  }, []);
+  const [, updateCustomColor] = useProRequiredState({setValue: onChange});
 
   const handleChange = useCallback(
     (next) => {
       if (next === CUSTOM_PRIMARY_COLOR_KEY) {
-        requirePro(() => onChange(customDraft));
+        updateCustomColor(customDraft);
         return;
       }
       onChange(next === PRIMARY_COLOR_RADIO_DEFAULT ? null : next);
     },
-    [onChange, customDraft, requirePro]
+    [onChange, customDraft, updateCustomColor]
   );
 
   const handleCustomColorChange = useCallback((next) => {
