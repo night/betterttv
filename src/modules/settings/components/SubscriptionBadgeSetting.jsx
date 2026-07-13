@@ -1,4 +1,4 @@
-import {faQuestion, faRepeat} from '@fortawesome/free-solid-svg-icons';
+import {faQuestion, faRepeat, faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Skeleton} from '@mantine/core';
 import classNames from 'classnames';
 import {DateTime} from 'luxon';
@@ -14,13 +14,16 @@ import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import useSubscriptionBadgeEligibilityStore, {fetchEligibility} from '@/stores/subscription-badge-eligibility';
 import {getCurrentChannel} from '@/utils/channel';
+import {isUserPro} from '@/utils/pro';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import SettingSwitch from './SettingSwitch';
+import SettingWrapper from './SettingWrapper';
 import styles from './SubscriptionBadgeSetting.module.css';
 
 const LATEST = 'latest';
 const NEXT = 'next';
+const DISABLED = 'disabled';
 
 // padded so the refetch at zero can't catch the api before it considers the badge unlocked
 const UNLOCK_COUNTDOWN_BUFFER = {minutes: 1};
@@ -145,6 +148,11 @@ function SubscriptionBadgeSetting() {
         return;
       }
 
+      if (newValue === DISABLED) {
+        setBadgeEnabled(false);
+        return;
+      }
+
       if (!badgeEnabled) {
         setBadgeEnabled(true);
       }
@@ -155,8 +163,11 @@ function SubscriptionBadgeSetting() {
 
   const nextBadgeCountdown = nextBadgeUnlocksAt != null ? getUnlockCountdown(nextBadgeUnlocksAt, now) : null;
 
+  const isPro = isUserPro(user);
+
   const badgeLabel = formatMessage({defaultMessage: 'BetterTTV Pro Badge'});
   const latestBadgeLabel = formatMessage({defaultMessage: 'Use latest badge'});
+  const disableBadgeLabel = formatMessage({defaultMessage: 'Disable badge'});
   const nextBadgeLabel =
     nextBadgeUnlocksAt != null
       ? formatMessage(
@@ -167,25 +178,47 @@ function SubscriptionBadgeSetting() {
 
   return (
     <React.Fragment>
-      <SettingSwitch
-        showProBadge
-        showNewBadge
-        name={formatMessage({defaultMessage: 'Subscriber Badge'})}
-        description={formatMessage({
-          defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
-        })}
-        value={badgeEnabled}
-        onChange={setBadgeEnabled}
-      />
+      {isPro ? (
+        <SettingWrapper
+          reverse
+          showProBadge
+          showNewBadge
+          name={formatMessage({defaultMessage: 'Subscriber Badge'})}
+          description={formatMessage({
+            defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
+          })}
+        />
+      ) : (
+        <SettingSwitch
+          showProBadge
+          showNewBadge
+          name={formatMessage({defaultMessage: 'Subscriber Badge'})}
+          description={formatMessage({
+            defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
+          })}
+          value={badgeEnabled}
+          onChange={setBadgeEnabled}
+        />
+      )}
       {eligibleBadges != null && eligibleBadges.length > 0 ? (
-        <SettingRadioCardGroup value={selectedBadgeId} onChange={handleBadgeChange}>
+        <SettingRadioCardGroup value={isPro && !badgeEnabled ? DISABLED : selectedBadgeId} onChange={handleBadgeChange}>
+          {isPro ? (
+            <SettingRadioCard
+              value={DISABLED}
+              className={styles.badgeCard}
+              tooltip={disableBadgeLabel}
+              ariaLabel={disableBadgeLabel}
+              withIndicators={false}>
+              <Icon icon={faXmark} className={styles.cardIcon} />
+            </SettingRadioCard>
+          ) : null}
           <SettingRadioCard
             value={LATEST}
             className={styles.badgeCard}
             tooltip={latestBadgeLabel}
             ariaLabel={latestBadgeLabel}
             withIndicators={false}>
-            <Icon icon={faRepeat} className={styles.latestBadgeIcon} />
+            <Icon icon={faRepeat} className={styles.cardIcon} />
           </SettingRadioCard>
           {eligibleBadges.map(({badgeId, badgeUrl}) => (
             <SettingRadioCard
