@@ -2,12 +2,9 @@ import throttle from 'lodash.throttle';
 import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
 import {refreshAndSetCredentials} from '@/utils/auth';
 import debug from '@/utils/debug';
-import {isUserPro} from '@/utils/pro';
 import SafeEventEmitter from '@/utils/safe-event-emitter';
 import {getCurrentUser} from '@/utils/user';
-import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY, SettingIds, SOCKET_ENDPOINT} from './constants';
-import settings from './settings';
-import storage from './storage';
+import {SOCKET_ENDPOINT} from './constants';
 
 const CONNECTION_STATES = {
   DISCONNECTED: 0,
@@ -35,7 +32,7 @@ let state = CONNECTION_STATES.DISCONNECTED;
 let attempts = 1;
 let authenticated = false;
 let retryAuthenticationRequest = true;
-let authenticationHolds = 0;
+let authenticationDesired = false;
 
 const joinedChannels = [];
 // session locks this client wants to hold, and the subset the server has granted us
@@ -60,34 +57,11 @@ export function deserializeSocketChannel(channel) {
 function handleUserUpdateEvent(newUser) {
   const {user} = useAuthStore.getState();
 
-  if (user.id !== newUser.id) {
+  if (user == null || user.id !== newUser.id) {
     return;
   }
 
   useAuthStore.setState({user: newUser});
-}
-
-function shouldRequestAuthentication() {
-  const {accessToken} = getCredentials();
-  if (accessToken == null) {
-    return false;
-  }
-
-  if (authenticationHolds > 0) {
-    return true;
-  }
-
-  if (settings.get(SettingIds.SELF_BOT) === true) {
-    return true;
-  }
-
-  const {user} = useAuthStore.getState();
-  if (!isUserPro(user)) {
-    return false;
-  }
-
-  const cloudBackupSettings = storage.get(CLOUD_BACKUP_SETTINGS_STORAGE_KEY);
-  return cloudBackupSettings != null && cloudBackupSettings.enabled === true;
 }
 
 class SocketClient extends SafeEventEmitter {
@@ -101,13 +75,6 @@ class SocketClient extends SafeEventEmitter {
       () => this.handleAuthenticationRequest()
     );
 
-    useAuthStore.subscribe(
-      (state) => isUserPro(state.user),
-      () => this.handleAuthenticationRequest()
-    );
-
-    settings.on(`changed.${SettingIds.SELF_BOT}`, () => this.handleAuthenticationRequest());
-
     this.broadcastMe = throttle(this.broadcastMe.bind(this), 1000, {leading: false});
   }
 
@@ -116,27 +83,20 @@ class SocketClient extends SafeEventEmitter {
       return;
     }
 
-    const shouldRequest = shouldRequestAuthentication();
-
-    if (shouldRequest && !authenticated) {
-      const {accessToken} = getCredentials();
-      this.send('authentication_request', {token: accessToken});
-    } else if (!shouldRequest && authenticated) {
-      this.send('authentication_logout');
-    }
-  }
-
-  acquireAuthenticationHold() {
-    authenticationHolds++;
-    this.handleAuthenticationRequest();
-  }
-
-  releaseAuthenticationHold() {
-    if (authenticationHolds === 0) {
+    if (!authenticationDesired || authenticated) {
       return;
     }
 
-    authenticationHolds--;
+    const {accessToken} = getCredentials();
+    if (accessToken == null) {
+      return;
+    }
+
+    this.send('authentication_request', {token: accessToken});
+  }
+
+  ensureAuthentication() {
+    authenticationDesired = true;
     this.handleAuthenticationRequest();
   }
 

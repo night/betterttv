@@ -49,7 +49,6 @@ class CloudBackup extends SafeEventEmitter {
 
     if (newSettings.enabled != null && newSettings.enabled !== previousEnabled) {
       this.load(newSettings);
-      socketClient.handleAuthenticationRequest();
     }
   }
 
@@ -74,6 +73,8 @@ class CloudBackup extends SafeEventEmitter {
     if (!enabled) {
       return;
     }
+
+    socketClient.ensureAuthentication();
 
     if (unlistenSettingsChange == null) {
       unlistenSettingsChange = settings.on('changed', this.handleInternalSettingsChange.bind(this));

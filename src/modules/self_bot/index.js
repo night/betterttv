@@ -31,6 +31,7 @@ function isSelfBotActive() {
 // so another session can take over
 function updateSessionLock() {
   if (isSelfBotActive()) {
+    socketClient.ensureAuthentication();
     socketClient.acquireSessionLock(SELF_BOT_SESSION_LOCK);
   } else {
     socketClient.releaseSessionLock(SELF_BOT_SESSION_LOCK);

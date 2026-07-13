@@ -160,7 +160,7 @@ export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
 
   let unsubscribeUserUpdated = null;
 
-  socketClient.acquireAuthenticationHold();
+  socketClient.ensureAuthentication();
 
   function onConfirm() {
     return new Promise((resolve, reject) => {
@@ -191,7 +191,6 @@ export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
     onClose: () => {
       controller.abort();
       unsubscribeUserUpdated?.();
-      socketClient.releaseAuthenticationHold();
     },
     labels: {
       confirm: formatMessage({defaultMessage: 'Upgrade'}),
