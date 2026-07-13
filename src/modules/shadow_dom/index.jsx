@@ -1,11 +1,12 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
+import {SettingIds} from '@/constants';
 import settings from '@/settings';
 import useAuthStore from '@/stores/auth';
 import {variablesToCSS} from '@/utils/css';
 import extension from '@/utils/extension';
-import {getProSettingValue} from '@/utils/pro';
+import {getEffectivePrimaryColor, resolvePrimaryColorTheme} from '@/utils/primary-color';
+import {isUserPro} from '@/utils/pro';
 import {getProvider} from '@/utils/window';
 import ThemeProvider, {mantineVariablesResolver, theme} from './ThemeProvider';
 
@@ -73,8 +74,10 @@ function setAdoptedStyleSheet(cssList) {
 }
 
 function injectMantineVariables() {
-  const primaryColor = getProSettingValue(SettingIds.PRIMARY_COLOR, DEFAULT_PRIMARY_COLOR) ?? DEFAULT_PRIMARY_COLOR;
-  const {variables, dark, light} = mantineVariablesResolver(theme, primaryColor);
+  const isPro = isUserPro(useAuthStore.getState().user);
+  const value = getEffectivePrimaryColor(settings.get(SettingIds.PRIMARY_COLOR), isPro);
+  const resolvedTheme = resolvePrimaryColorTheme(value, theme);
+  const {variables, dark, light} = mantineVariablesResolver(resolvedTheme, resolvedTheme.primaryColor);
 
   const baseCssVariables = variablesToCSS(`.${SCOPE_CLASS}`, {...variables, ...light});
   const darkCssVariables = variablesToCSS(`.${DARK_MODE_CLASS}`, dark);

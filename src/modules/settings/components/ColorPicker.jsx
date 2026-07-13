@@ -7,7 +7,7 @@ import usePortalRef from '@/common/hooks/PortalRef';
 import formatMessage from '@/i18n';
 import styles from './ColorPicker.module.css';
 
-function ColorPicker({value, defaultValue, placeholder, onChange, className, ...props}) {
+function ColorPicker({value, defaultValue, placeholder, onChange, onChangeEnd, className, children, ...props}) {
   const [opened, {open, close}] = useDisclosure(false);
   const displayValue = value ?? defaultValue ?? '#000000';
   const portalRef = usePortalRef();
@@ -23,6 +23,24 @@ function ColorPicker({value, defaultValue, placeholder, onChange, className, ...
 
   const {getReferenceProps, getFloatingProps} = useInteractions([dismiss]);
 
+  const target =
+    children != null ? (
+      <div className={styles.customTarget} onClick={open}>
+        {children}
+      </div>
+    ) : (
+      <ActionIcon
+        variant="default"
+        radius="xl"
+        size="xl"
+        className={classNames(styles.swatchButton, className)}
+        onClick={open}
+        aria-label={formatMessage({defaultMessage: 'Pick Color'})}
+        {...props}>
+        <span className={styles.swatch} style={{backgroundColor: displayValue}} />
+      </ActionIcon>
+    );
+
   return (
     <Popover
       radius="lg"
@@ -35,21 +53,13 @@ function ColorPicker({value, defaultValue, placeholder, onChange, className, ...
       classNames={{dropdown: styles.popoverDropdown, root: styles.popoverRoot}}
       portalProps={{target: portalRef.current}}>
       <Popover.Target ref={refs.reference} {...getReferenceProps()}>
-        <ActionIcon
-          variant="default"
-          radius="xl"
-          size="xl"
-          className={classNames(styles.swatchButton, className)}
-          onClick={open}
-          aria-label={formatMessage({defaultMessage: 'Pick Color'})}
-          {...props}>
-          <span className={styles.swatch} style={{backgroundColor: displayValue}} />
-        </ActionIcon>
+        {target}
       </Popover.Target>
       <Popover.Dropdown ref={refs.floating} {...getFloatingProps()}>
         <MantineColorPicker
           value={displayValue}
           onChange={onChange}
+          onChangeEnd={onChangeEnd}
           format="hex"
           size="lg"
           fullWidth
@@ -59,6 +69,7 @@ function ColorPicker({value, defaultValue, placeholder, onChange, className, ...
           value={displayValue}
           placeholder={placeholder}
           onChange={onChange}
+          onChangeEnd={onChangeEnd}
           format="hex"
           size="xl"
           radius="md"

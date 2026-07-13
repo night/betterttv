@@ -1,11 +1,12 @@
-import {darken, lighten, parseThemeColor} from '@mantine/core';
-import {DEFAULT_PRIMARY_COLOR, PlatformTypes, SettingIds} from '@/constants';
+import {darken, lighten} from '@mantine/core';
+import {PlatformTypes, SettingIds} from '@/constants';
 import {theme} from '@/modules/shadow_dom/ThemeProvider';
 import settings from '@/settings';
 import useAuthStore from '@/stores/auth';
 import {variablesToCSS} from '@/utils/css';
 import {loadModuleForPlatforms} from '@/utils/modules';
-import {getProSettingValue} from '@/utils/pro';
+import {getEffectivePrimaryColor, getPrimaryColorShades} from '@/utils/primary-color';
+import {isUserPro} from '@/utils/pro';
 
 const CSS_VARIABLES_STYLE_ID = 'twitch-purple-css-variables';
 
@@ -22,7 +23,8 @@ class AccentColor {
   }
 
   load() {
-    const value = getProSettingValue(SettingIds.PRIMARY_COLOR, null);
+    const isPro = isUserPro(useAuthStore.getState().user);
+    const value = getEffectivePrimaryColor(settings.get(SettingIds.PRIMARY_COLOR), isPro);
     const cssVariablesStyle = document.getElementById(CSS_VARIABLES_STYLE_ID);
 
     if (value == null) {
@@ -33,8 +35,7 @@ class AccentColor {
       return;
     }
 
-    const themeColor = parseThemeColor({color: value, theme});
-    const baseColors = theme.colors[themeColor.color];
+    const baseColors = getPrimaryColorShades(value, theme);
 
     const twitchPurpleColors = {
       '--color-twitch-purple-1': darken(baseColors[9], 0.4),

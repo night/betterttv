@@ -26,7 +26,6 @@ import {ModalsProvider} from '@mantine/modals';
 import React, {useMemo, useRef} from 'react';
 import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '@/common/components/LoaderIcon';
 import {PortalContext} from '@/common/contexts/PortalContext';
-import useProRequiredState from '@/common/hooks/ProRequiredState';
 import useStorageState from '@/common/hooks/StorageState';
 import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
 import badgeStyles from '@/modules/shadow_dom/styles/badge.module.css';
@@ -38,6 +37,9 @@ import kbdStyles from '@/modules/shadow_dom/styles/kbd.module.css';
 import pillStyles from '@/modules/shadow_dom/styles/pill.module.css';
 import radioStyles from '@/modules/shadow_dom/styles/radio.module.css';
 import switchStyles from '@/modules/shadow_dom/styles/switch.module.css';
+import useAuthStore from '@/stores/auth';
+import {getEffectivePrimaryColor, resolvePrimaryColorTheme} from '@/utils/primary-color';
+import {isUserPro} from '@/utils/pro';
 
 const mantineTheme = createTheme({
   primaryColor: DEFAULT_PRIMARY_COLOR,
@@ -210,21 +212,14 @@ export const theme = mergeMantineTheme(DEFAULT_THEME, mantineTheme);
 function ThemeProvider({children, ...props}) {
   const [dark] = useStorageState(SettingIds.DARKENED_MODE);
   const [primaryColor] = useStorageState(SettingIds.PRIMARY_COLOR);
+  const isPro = useAuthStore((state) => isUserPro(state.user));
   const portalRef = useRef();
   const isMounted = useMounted();
 
-  const [normalizedPrimaryColor] = useProRequiredState({
-    value: primaryColor,
-    defaultValue: DEFAULT_PRIMARY_COLOR,
-  });
-
-  const modifiedTheme = useMemo(() => {
-    if (normalizedPrimaryColor == null) {
-      return {...theme, primaryColor: DEFAULT_PRIMARY_COLOR};
-    }
-
-    return {...theme, primaryColor: normalizedPrimaryColor};
-  }, [normalizedPrimaryColor]);
+  const modifiedTheme = useMemo(
+    () => resolvePrimaryColorTheme(getEffectivePrimaryColor(primaryColor, isPro), theme),
+    [primaryColor, isPro]
+  );
 
   return (
     <PortalContext value={portalRef}>

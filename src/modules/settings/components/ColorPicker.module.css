@@ -2,6 +2,11 @@
   align-self: center;
 }
 
+.customTarget {
+  display: flex;
+  width: 100%;
+}
+
 .swatch {
   display: block;
   width: 100%;

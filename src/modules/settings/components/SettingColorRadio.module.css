@@ -14,6 +14,7 @@
 }
 
 .swatch {
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
@@ -81,6 +82,21 @@
 
 .swatch[data-bttv-color='orange']:active {
   background: var(--mantine-color-orange-7);
+}
+
+.swatch[data-bttv-color='custom'] {
+  background: var(--bttv-custom-color, var(--mantine-color-indigo-6));
+}
+
+.proBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  pointer-events: none;
+}
+
+.swatch[data-checked='true'] .proBadge {
+  display: none;
 }
 
 .label {

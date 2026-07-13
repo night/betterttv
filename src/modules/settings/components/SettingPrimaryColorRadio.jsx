@@ -1,6 +1,15 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
 import {DEFAULT_PRIMARY_COLOR} from '@/constants';
 import formatMessage from '@/i18n/index';
+import useAuthStore from '@/stores/auth';
+import {
+  CUSTOM_PRIMARY_COLOR_KEY,
+  DEFAULT_CUSTOM_PRIMARY_COLOR,
+  isCustomPrimaryColor,
+  normalizeCustomColor,
+} from '@/utils/primary-color';
+import {isUserPro} from '@/utils/pro';
 import SettingColorRadio from './SettingColorRadio';
 
 export const PRIMARY_COLOR_RADIO_DEFAULT = 'default';
@@ -12,11 +21,15 @@ export const PRIMARY_COLOR_PALETTE = [
   'indigo',
   'green',
   'orange',
+  CUSTOM_PRIMARY_COLOR_KEY,
 ];
 
 export function normalizePrimaryColor(value, palette = PRIMARY_COLOR_PALETTE) {
   if (value == null) {
     return PRIMARY_COLOR_RADIO_DEFAULT;
+  }
+  if (isCustomPrimaryColor(value)) {
+    return CUSTOM_PRIMARY_COLOR_KEY;
   }
   if (palette.includes(value)) {
     return value;
@@ -32,6 +45,7 @@ function buildPrimaryColorLabels(colors) {
     indigo: formatMessage({defaultMessage: 'Indigo'}),
     green: formatMessage({defaultMessage: 'Green'}),
     orange: formatMessage({defaultMessage: 'Orange'}),
+    custom: formatMessage({defaultMessage: 'Custom'}),
   };
 
   return Object.fromEntries(colors.map((color) => [color, messages[color] ?? color]));
@@ -43,16 +57,62 @@ function SettingPrimaryColorRadio({
   name,
   description,
   colors = PRIMARY_COLOR_PALETTE,
-  showProBadge = false,
   showBetaBadge = false,
 }) {
+  const isPro = useAuthStore((state) => isUserPro(state.user));
+  const customActive = isCustomPrimaryColor(value);
+
+  const [customDraft, setCustomDraft] = useState(customActive ? value : DEFAULT_CUSTOM_PRIMARY_COLOR);
+
+  useEffect(() => {
+    if (customActive) {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- sync the draft when the stored color changes externally
+      setCustomDraft(value);
+    }
+  }, [customActive, value]);
+
   const normalizedValue = useMemo(() => normalizePrimaryColor(value, colors), [value, colors]);
   const colorLabels = useMemo(() => buildPrimaryColorLabels(colors), [colors]);
-  const handleChange = useCallback((next) => onChange(next === PRIMARY_COLOR_RADIO_DEFAULT ? null : next), [onChange]);
+
+  const requirePro = useCallback((apply) => {
+    const {user} = useAuthStore.getState();
+    if (user == null) {
+      openSignInModal({}, apply);
+      return;
+    }
+    if (!isUserPro(user)) {
+      openSubscriptionUpgradeModal({}, apply);
+      return;
+    }
+    apply();
+  }, []);
+
+  const handleChange = useCallback(
+    (next) => {
+      if (next === CUSTOM_PRIMARY_COLOR_KEY) {
+        requirePro(() => onChange(customDraft));
+        return;
+      }
+      onChange(next === PRIMARY_COLOR_RADIO_DEFAULT ? null : next);
+    },
+    [onChange, customDraft, requirePro]
+  );
+
+  const handleCustomColorChange = useCallback((next) => {
+    setCustomDraft(next);
+  }, []);
+
+  const handleCustomColorCommit = useCallback(
+    (next) => {
+      const normalized = normalizeCustomColor(next);
+      setCustomDraft(normalized);
+      onChange(normalized);
+    },
+    [onChange]
+  );
 
   return (
     <SettingColorRadio
-      showProBadge={showProBadge}
       showBetaBadge={showBetaBadge}
       value={normalizedValue}
       onChange={handleChange}
@@ -60,6 +120,11 @@ function SettingPrimaryColorRadio({
       description={description}
       colors={colors}
       colorLabels={colorLabels}
+      proColor={CUSTOM_PRIMARY_COLOR_KEY}
+      customColor={customDraft}
+      customColorEnabled={isPro}
+      onCustomColorChange={handleCustomColorChange}
+      onCustomColorCommit={handleCustomColorCommit}
     />
   );
 }
