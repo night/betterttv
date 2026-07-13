@@ -1,7 +1,7 @@
 import {getCachedBadges} from '@/actions/badges';
 import effects from '@/common/styles/UsernameEffects.module.css';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
-import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes, UsernameEffects} from '@/constants';
+import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import nicknames from '@/modules/chat_nicknames/index';
 import emotes from '@/modules/emotes/index';
@@ -416,16 +416,6 @@ class ChatModule {
   applyUsernameEffect(fromNode, userId) {
     const usernameEffect = subscribers.getUsernameEffect(userId);
     if (usernameEffect == null) {
-      return;
-    }
-
-    // glow marks BetterTTV's most dedicated supporters, so it shows even with username effects disabled
-    if (usernameEffect === UsernameEffects.GLOW && settings.get(SettingIds.DARKENED_MODE) === true) {
-      fromNode.classList.add(effects.glow);
-      return;
-    }
-
-    if (settings.get(SettingIds.USERNAME_EFFECTS) !== true) {
       return;
     }
 
