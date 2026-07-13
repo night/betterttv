@@ -1,4 +1,4 @@
-import {faCheckCircle, faLock} from '@fortawesome/free-solid-svg-icons';
+import {faCheckCircle} from '@fortawesome/free-solid-svg-icons';
 import {RadioCard, Tooltip} from '@mantine/core';
 import classNames from 'classnames';
 import React from 'react';
@@ -28,10 +28,7 @@ function SettingRadioCard({
       {...radioCardProps}>
       {children}
       {withIndicators ? (
-        <React.Fragment>
-          <Icon icon={faCheckCircle} className={classNames(styles.iconIndicator, styles.checkIcon)} />
-          <Icon icon={faLock} className={classNames(styles.iconIndicator, styles.lockIcon)} />
-        </React.Fragment>
+        <Icon icon={faCheckCircle} className={classNames(styles.iconIndicator, styles.checkIcon)} />
       ) : null}
     </RadioCard>
   );

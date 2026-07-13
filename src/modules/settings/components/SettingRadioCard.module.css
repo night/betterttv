@@ -59,17 +59,3 @@
   opacity: 1;
   scale: 1;
 }
-
-.lockIcon {
-  color: var(--mantine-color-dimmed);
-  width: 12px;
-  height: 12px;
-  top: 12px;
-  right: 12px;
-  overflow: visible;
-}
-
-.card[data-locked='true']:not([data-checked='true']) .lockIcon {
-  opacity: 1;
-  scale: 1;
-}
