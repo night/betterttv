@@ -2,6 +2,8 @@
   font-size: var(--mantine-font-size-md);
 }
 
+/* surface + checked treatment comes from the shared clickable container
+   (see ClickableContainer.module.css); this file keeps the card-only layout */
 .card {
   position: relative;
   width: 100%;
@@ -11,36 +13,11 @@
   justify-content: center;
   padding: 16px;
   border-radius: var(--mantine-radius-lg);
-  transition:
-    outline 100ms ease-in-out,
-    background 120ms ease,
-    border-color 120ms ease;
   color: var(--mantine-color-dimmed);
-  border: 1px solid var(--mantine-color-default-border);
-  background: var(--mantine-color-body);
-}
-
-.card:hover:not([data-locked='true']):not([data-checked='true']) {
-  background: var(--mantine-color-elevated-hover);
-}
-
-.card:active:not([data-locked='true']):not([data-checked='true']) {
-  background: var(--mantine-color-elevated-active);
 }
 
 .card[data-checked='true'] {
   color: var(--mantine-primary-color-3);
-  border: 1px solid var(--mantine-color-body-secondary);
-  outline: 2px solid var(--mantine-primary-color-3);
-  background: var(--mantine-primary-color-light);
-}
-
-.card[data-checked='true']:hover {
-  background: var(--mantine-primary-color-light-hover);
-}
-
-.card[data-checked='true']:active {
-  background: var(--mantine-primary-color-light-active);
 }
 
 .iconIndicator {

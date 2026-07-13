@@ -140,11 +140,6 @@ function SettingUsernameEffect() {
     },
   });
 
-  const getLockedState = useCallback(
-    (usernameEffect) => eligibility == null || !eligibility[usernameEffect],
-    [eligibility]
-  );
-
   const handleChange = useCallback(
     (newValue) => {
       const currentUser = getCurrentUser();
@@ -191,7 +186,8 @@ function SettingUsernameEffect() {
             value={NONE}
             className={styles.usernameCard}
             tooltip={formatMessage({defaultMessage: 'None'})}
-            ariaLabel={formatMessage({defaultMessage: 'None'})}>
+            ariaLabel={formatMessage({defaultMessage: 'None'})}
+            withIndicators={false}>
             <Text truncate size="xl" className={styles.username}>
               {currentUser.displayName}
             </Text>
@@ -199,11 +195,11 @@ function SettingUsernameEffect() {
           {EFFECT_CARDS.map(({value: effectValue, label}) => (
             <SettingRadioCard
               key={effectValue}
-              locked={getLockedState(effectValue)}
               value={effectValue}
               className={styles.usernameCard}
               tooltip={label}
-              ariaLabel={label}>
+              ariaLabel={label}
+              withIndicators={false}>
               <Text
                 truncate
                 size="xl"

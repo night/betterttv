@@ -233,7 +233,6 @@ function SubscriptionBadgeSetting() {
           {nextBadgeUnlocksAt != null ? (
             <SettingRadioCard
               value={NEXT}
-              locked
               withIndicators={false}
               className={classNames(styles.badgeCard, styles.nextBadgeCard)}
               tooltip={

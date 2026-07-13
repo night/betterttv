@@ -1,0 +1,52 @@
+/* Shared clickable surface (setting radio cards, the sidenav user-settings button): a bordered
+   container that steps its background on hover/press and swaps to the sidenav's active treatment
+   (nav-active border + primary-light fill) when checked/active — Mantine radio cards mark selection
+   with data-checked, buttons with data-active, so both are handled. Every color lives in a var so
+   consumers can retune a state without out-specifying these rules (e.g. the accent swatches paint
+   all states with their own color and restore the bold outline; the user-settings button swaps the
+   rest surface to raised tokens). */
+.clickableContainer {
+  border: 1px solid var(--surface-border-color);
+  transition:
+    outline 100ms ease-in-out,
+    background 120ms ease,
+    border-color 120ms ease;
+  --surface-border-color: var(--mantine-color-default-border);
+  --surface-bg: var(--mantine-color-body);
+  --surface-bg-hover: var(--mantine-color-elevated-hover);
+  --surface-bg-active: var(--mantine-color-elevated-active);
+  --checked-outline: none;
+  --checked-border-color: var(--mantine-color-nav-active-border);
+  --checked-bg: var(--mantine-primary-color-light);
+  --checked-bg-hover: var(--mantine-primary-color-light-hover);
+  --checked-bg-active: var(--mantine-primary-color-light-active);
+}
+
+.clickableContainer:not([data-checked='true']):not([data-active='true']) {
+  background: var(--surface-bg);
+}
+
+.clickableContainer:hover:not([data-checked='true']):not([data-active='true']) {
+  background: var(--surface-bg-hover);
+}
+
+.clickableContainer:active:not([data-checked='true']):not([data-active='true']) {
+  background: var(--surface-bg-active);
+}
+
+.clickableContainer[data-checked='true'],
+.clickableContainer[data-active='true'] {
+  border-color: var(--checked-border-color);
+  outline: var(--checked-outline);
+  background: var(--checked-bg);
+}
+
+.clickableContainer[data-checked='true']:hover,
+.clickableContainer[data-active='true']:hover {
+  background: var(--checked-bg-hover);
+}
+
+.clickableContainer[data-checked='true']:active,
+.clickableContainer[data-active='true']:active {
+  background: var(--checked-bg-active);
+}
