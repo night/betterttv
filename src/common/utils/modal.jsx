@@ -3,6 +3,7 @@ import {modals} from '@mantine/modals';
 import React from 'react';
 import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
+import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
 import {isUserPro} from '@/utils/pro';
@@ -158,6 +159,8 @@ export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
   const {signal} = controller;
 
   let unsubscribeUserUpdated = null;
+
+  socketClient.ensureAuthentication();
 
   function onConfirm() {
     return new Promise((resolve, reject) => {
