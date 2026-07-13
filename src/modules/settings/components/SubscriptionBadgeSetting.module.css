@@ -1,8 +1,8 @@
 .badgeCard {
-  background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
+  --surface-bg: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
 }
 
-.latestBadgeIcon {
+.cardIcon {
   width: 24px;
   height: 24px;
 }

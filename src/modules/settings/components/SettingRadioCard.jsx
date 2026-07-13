@@ -1,9 +1,10 @@
-import {faCheckCircle, faLock} from '@fortawesome/free-solid-svg-icons';
+import {faCheckCircle} from '@fortawesome/free-solid-svg-icons';
 import {RadioCard, Tooltip} from '@mantine/core';
 import classNames from 'classnames';
 import React from 'react';
 import Icon from '../../../common/components/Icon';
 import usePortalRef from '../../../common/hooks/PortalRef';
+import clickableStyles from './ClickableContainer.module.css';
 import styles from './SettingRadioCard.module.css';
 
 function SettingRadioCard({
@@ -12,7 +13,6 @@ function SettingRadioCard({
   ariaLabel,
   className,
   radioCardProps = {},
-  locked = false,
   withIndicators = true,
   children,
 }) {
@@ -22,16 +22,12 @@ function SettingRadioCard({
     <RadioCard
       value={value}
       radius="lg"
-      className={classNames(styles.card, className)}
+      className={classNames(clickableStyles.clickableContainer, styles.card, className)}
       aria-label={ariaLabel}
-      data-locked={locked}
       {...radioCardProps}>
       {children}
       {withIndicators ? (
-        <React.Fragment>
-          <Icon icon={faCheckCircle} className={classNames(styles.iconIndicator, styles.checkIcon)} />
-          <Icon icon={faLock} className={classNames(styles.iconIndicator, styles.lockIcon)} />
-        </React.Fragment>
+        <Icon icon={faCheckCircle} className={classNames(styles.iconIndicator, styles.checkIcon)} />
       ) : null}
     </RadioCard>
   );

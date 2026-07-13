@@ -16,6 +16,7 @@ import useSettingsNavigationStore from '@/modules/settings/stores/settings-navig
 import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
 import AnimatedLogo from './AnimatedLogo';
+import clickableStyles from './ClickableContainer.module.css';
 import styles from './SideNavigation.module.css';
 
 // Tag the nav buttons so the active one can be found and scrolled into view.
@@ -84,7 +85,7 @@ function UserSettingsNavigationButton({active, onClick}) {
     <NavigationButton
       active={active}
       onClick={onClick}
-      className={styles.userSettingsNavigationButton}
+      className={classNames(clickableStyles.clickableContainer, styles.userSettingsNavigationButton)}
       label={
         currentUser?.displayName != null ? (
           <UsernameEffectText effect={currentUser.usernameEffect}>{currentUser.displayName}</UsernameEffectText>
@@ -189,7 +190,7 @@ function SideNavigation({open, setOpen}) {
             return (
               <React.Fragment key={group.id}>
                 <NavigationButton
-                  className={styles.categoryButton}
+                  className={classNames(clickableStyles.clickableContainer, styles.categoryButton)}
                   active={isOpen}
                   onClick={() => handleGotoSettingPanel(group.settings[0].settingPanelId)}
                   label={group.label}

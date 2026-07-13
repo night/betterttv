@@ -1,22 +1,25 @@
-/* Each swatch paints its own color. The shared radio card swaps its background to neutral tokens on
-   hover/press and to primary-tint tokens when checked — all of which would override a swatch's
-   color. Point every one of those tokens at the swatch's own color (--swatch-bg, a shade darker on
-   press) so a colored card keeps its color in every state; each swatch just sets the two vars. */
+/* Each swatch paints its own color. The shared clickable container swaps its background between
+   surface tokens on hover/press and checked tokens when checked — all of which would override a
+   swatch's color. Point every one of those tokens at the swatch's own color (--swatch-bg, a shade
+   darker on press) and restore the full-strength checked outline so a colored card keeps its color
+   in every state; each swatch just sets the two vars. */
 .swatch {
   justify-content: flex-end;
-  background: var(--swatch-bg);
-  --mantine-color-elevated-hover: var(--swatch-bg);
-  --mantine-color-elevated-active: var(--swatch-bg-active);
-  --mantine-primary-color-light: var(--swatch-bg);
-  --mantine-primary-color-light-hover: var(--swatch-bg);
-  --mantine-primary-color-light-active: var(--swatch-bg-active);
+  --surface-bg: var(--swatch-bg);
+  --surface-bg-hover: var(--swatch-bg);
+  --surface-bg-active: var(--swatch-bg-active);
+  --checked-outline: 2px solid var(--mantine-primary-color-3);
+  --checked-border-color: var(--mantine-color-body-secondary);
+  --checked-bg: var(--swatch-bg);
+  --checked-bg-hover: var(--swatch-bg);
+  --checked-bg-active: var(--swatch-bg-active);
 }
 
 .swatch[data-bttv-color='default'] {
   --swatch-bg: var(--mantine-color-dark-0);
   --swatch-bg-active: var(--mantine-color-dark-1);
   color: var(--mantine-color-dark-2);
-  outline-color: var(--mantine-color-dark-2);
+  --checked-outline: 2px solid var(--mantine-color-dark-2);
 }
 
 .swatch[data-bttv-color='red'] {

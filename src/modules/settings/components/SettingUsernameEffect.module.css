@@ -9,7 +9,7 @@
   text-align: center;
 }
 
-/* pinned so the checked card's color (used by its check icon) doesn't tint the plain username */
+/* pinned so the checked card's color doesn't tint the plain username */
 .username {
   color: var(--mantine-color-text);
 }
@@ -27,15 +27,7 @@
 
 .usernameCard {
   padding: 0;
-  background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
-}
-
-.usernameCard:active {
-  background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8));
-}
-
-.usernameCard[data-checked='true'] {
-  background: var(--mantine-primary-color-light-hover);
+  --surface-bg: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
 }
 
 .usernameEffectRequirement {

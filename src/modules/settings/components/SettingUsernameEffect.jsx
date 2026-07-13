@@ -5,10 +5,9 @@ import {useShallow} from 'zustand/react/shallow';
 import {updateUserUsernameEffect} from '../../../actions/users';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useDebouncedRemoteState from '../../../common/hooks/DebouncedRemoteState';
-import useStorageState from '../../../common/hooks/StorageState';
 import effects from '../../../common/styles/UsernameEffects.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
-import {SettingIds, UsernameEffects} from '../../../constants';
+import {UsernameEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
 import socketClient from '../../../socket-client';
 import useAuthStore from '../../../stores/auth';
@@ -18,8 +17,8 @@ import twitch from '../../../utils/twitch';
 import {getCurrentUser} from '../../../utils/user';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
-import SettingSwitch from './SettingSwitch';
 import styles from './SettingUsernameEffect.module.css';
+import SettingWrapper from './SettingWrapper';
 
 const NONE = 'none';
 
@@ -114,7 +113,6 @@ function openUsernameEffectSignInModal(callback = () => {}, {value, displayName,
 
 function SettingUsernameEffect() {
   const currentUser = useCurrentUser();
-  const [usernameEffectsEnabled, setUsernameEffectsEnabled] = useStorageState(SettingIds.USERNAME_EFFECTS);
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
   // persisted eligibility may belong to a previous session's account; only use it for the current user
   const eligibility = useUsernameEffectEligibilityStore((state) =>
@@ -142,11 +140,6 @@ function SettingUsernameEffect() {
     },
   });
 
-  const getLockedState = useCallback(
-    (usernameEffect) => eligibility == null || !eligibility[usernameEffect],
-    [eligibility]
-  );
-
   const handleChange = useCallback(
     (newValue) => {
       const currentUser = getCurrentUser();
@@ -172,24 +165,19 @@ function SettingUsernameEffect() {
         return;
       }
 
-      if (newValue !== NONE) {
-        setUsernameEffectsEnabled(true);
-      }
-
       setValue(newValue);
     },
-    [eligibility, setValue, setUsernameEffectsEnabled, chatColor]
+    [eligibility, setValue, chatColor]
   );
 
   return (
     <React.Fragment>
-      <SettingSwitch
+      <SettingWrapper
+        reverse
         name={formatMessage({defaultMessage: 'Username effect'})}
         description={formatMessage({defaultMessage: 'Choose how your username is styled in chat.'})}
         showNewBadge
         showProBadge
-        value={usernameEffectsEnabled}
-        onChange={setUsernameEffectsEnabled}
       />
       <div className={styles.cards}>
         <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
@@ -198,7 +186,8 @@ function SettingUsernameEffect() {
             value={NONE}
             className={styles.usernameCard}
             tooltip={formatMessage({defaultMessage: 'None'})}
-            ariaLabel={formatMessage({defaultMessage: 'None'})}>
+            ariaLabel={formatMessage({defaultMessage: 'None'})}
+            withIndicators={false}>
             <Text truncate size="xl" className={styles.username}>
               {currentUser.displayName}
             </Text>
@@ -206,11 +195,11 @@ function SettingUsernameEffect() {
           {EFFECT_CARDS.map(({value: effectValue, label}) => (
             <SettingRadioCard
               key={effectValue}
-              locked={getLockedState(effectValue)}
               value={effectValue}
               className={styles.usernameCard}
               tooltip={label}
-              ariaLabel={label}>
+              ariaLabel={label}
+              withIndicators={false}>
               <Text
                 truncate
                 size="xl"
