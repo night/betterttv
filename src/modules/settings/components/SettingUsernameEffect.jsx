@@ -186,7 +186,7 @@ function SettingUsernameEffect() {
       <SettingSwitch
         name={formatMessage({defaultMessage: 'Username effect'})}
         description={formatMessage({defaultMessage: 'Choose how your username is styled in chat.'})}
-        showBetaBadge
+        showNewBadge
         showProBadge
         value={usernameEffectsEnabled}
         onChange={setUsernameEffectsEnabled}

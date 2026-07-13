@@ -9,14 +9,12 @@ import {EXT_VER, SettingsPrompts} from '@/constants';
 import formatMessage from '@/i18n/index';
 import Footer from '@/modules/settings/components/Footer';
 import ImportSetting from '@/modules/settings/components/ImportSetting';
+import PageHeader from '@/modules/settings/components/PageHeader';
 import PageScrollBody from '@/modules/settings/components/PageScrollBody';
-import Promotion from '@/modules/settings/components/Promotion';
 import ResetSetting from '@/modules/settings/components/ResetSetting';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
-import SettingUsernameEffect from '@/modules/settings/components/SettingUsernameEffect';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
-import SubscriptionBadgeSetting from '@/modules/settings/components/SubscriptionBadgeSetting';
 import storage from '@/storage';
 import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
 import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
@@ -62,7 +60,7 @@ function CloudBackupSetting() {
   return (
     <SettingSwitch
       showProBadge
-      showBetaBadge
+      showNewBadge
       name={formatMessage({defaultMessage: 'Cloud Backup'})}
       description={formatMessage({defaultMessage: 'Backup your settings to the cloud.'})}
       value={normalizedCloudBackupSettings.enabled}
@@ -134,11 +132,7 @@ function UserSettings() {
   const [resetting, setResetting] = useState(false);
 
   return (
-    <PageScrollBody>
-      <Promotion />
-      <SettingGroup name={formatMessage({defaultMessage: 'Appearance'})}>
-        <SettingUsernameEffect />
-      </SettingGroup>
+    <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'User Settings'})} />}>
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />
         <BackupSetting
@@ -159,7 +153,6 @@ function UserSettings() {
         />
       </SettingGroup>
       <SettingGroup name={formatMessage({defaultMessage: 'Account'})}>
-        <SubscriptionBadgeSetting />
         <SignInButton />
       </SettingGroup>
       <Footer />

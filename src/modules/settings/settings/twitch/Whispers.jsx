@@ -4,7 +4,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Whispers'});
 
@@ -25,8 +25,8 @@ function DisableWhispers({ref, ...props}) {
 
 SettingStore.registerSetting(DisableWhispers, {
   settingPanelId: SettingPanelIds.WHISPERS,
+  settingCategoryId: SettingCategoryIds.INTERFACE,
   name: SETTING_NAME,
-  keywords: ['whispers', 'direct', 'messages'],
 });
 
 export default DisableWhispers;

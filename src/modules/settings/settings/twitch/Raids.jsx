@@ -5,7 +5,7 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingTagInput from '@/modules/settings/components/SettingTagInput';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Raids'});
 
@@ -45,9 +45,9 @@ function AutoJoinRaids({ref, ...props}) {
 
 SettingStore.registerSetting(AutoJoinRaids, {
   settingPanelId: SettingPanelIds.RAIDS,
+  settingCategoryId: SettingCategoryIds.CHANNEL,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['auto', 'join', 'raids'],
 });
 
 export default AutoJoinRaids;

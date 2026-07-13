@@ -169,6 +169,7 @@ function SubscriptionBadgeSetting() {
     <React.Fragment>
       <SettingSwitch
         showProBadge
+        showNewBadge
         name={formatMessage({defaultMessage: 'Subscriber Badge'})}
         description={formatMessage({
           defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',

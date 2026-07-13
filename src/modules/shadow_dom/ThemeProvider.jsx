@@ -143,7 +143,21 @@ const mantineTheme = createTheme({
       defaultProps: {variant: 'elevated', color: 'dark'},
     }),
     Avatar: Avatar.extend({defaultProps: {color: 'dark'}}),
-    Badge: Badge.extend({classNames: badgeStyles}),
+    Badge: Badge.extend({
+      classNames: badgeStyles,
+      // An elevated surface resolves to the darkest shade in dark mode, which on a badge this small
+      // muddies the color against the dark body. Step it a shade lighter so it stays legible and
+      // reads as its color (e.g. the New badge matching the navigation's promotion dot).
+      vars: (theme, props) => {
+        const base = props.variant === 'elevated' ? theme.colors[props.color] : null;
+
+        if (base == null) {
+          return {root: {}};
+        }
+
+        return {root: {'--badge-bg': `light-dark(${base[5]}, ${base[6]})`}};
+      },
+    }),
     Kbd: Kbd.extend({defaultProps: {size: 'lg'}, classNames: kbdStyles}),
     Loader: Loader.extend({
       defaultProps: {
@@ -176,6 +190,17 @@ const resolver = (theme) => ({
     '--mantine-primary-color-light-active': alpha(theme.colors[theme.primaryColor][theme.primaryShade - 2], 0.3),
     '--mantine-color-elevated-hover': 'var(--mantine-color-dark-6)',
     '--mantine-color-elevated-active': 'var(--mantine-color-dark-5)',
+    // raised card surface (the user-settings card): lighter than the sidebar body so it reads as
+    // raised, then lifts further on hover/press. Mirrors the radio card's rest→hover→press steps,
+    // one elevation level up since the card sits on the body-colored sidebar rather than a darker page.
+    '--mantine-color-body-raised': 'var(--mantine-color-dark-6)',
+    '--mantine-color-body-raised-hover': 'var(--mantine-color-dark-5)',
+    '--mantine-color-body-raised-active': 'var(--mantine-color-dark-4)',
+    // border for the raised user-settings card, lighter than the body so it reads as elevated.
+    '--mantine-color-body-raised-border': 'var(--mantine-color-dark-4)',
+    // faint accent border on an active nav row/card — the primary's light-color (shade 0 in dark)
+    // at low alpha; softened further here than in light mode since it reads stronger on dark.
+    '--mantine-color-nav-active-border': alpha(theme.colors[theme.primaryColor][0], 0.15),
   },
   light: {
     '--mantine-color-text': 'var(--mantine-color-gray-9)',
@@ -187,6 +212,11 @@ const resolver = (theme) => ({
     '--mantine-primary-color-light-active': alpha(theme.colors[theme.primaryColor][theme.primaryShade], 0.18),
     '--mantine-color-elevated-hover': 'var(--mantine-color-gray-1)',
     '--mantine-color-elevated-active': 'var(--mantine-color-gray-2)',
+    '--mantine-color-body-raised': 'var(--mantine-color-white)',
+    '--mantine-color-body-raised-hover': 'var(--mantine-color-gray-1)',
+    '--mantine-color-body-raised-active': 'var(--mantine-color-gray-2)',
+    '--mantine-color-body-raised-border': 'var(--mantine-color-gray-3)',
+    '--mantine-color-nav-active-border': alpha(theme.colors[theme.primaryColor][9], 0.3),
   },
 });
 

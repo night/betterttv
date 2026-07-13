@@ -10,7 +10,7 @@ function SettingWrapper({
   description,
   children,
   showProBadge = false,
-  showBetaBadge = false,
+  showNewBadge = false,
   showComingSoonBadge = false,
   reverse = false,
   wrap = false,
@@ -38,15 +38,15 @@ function SettingWrapper({
                 </Badge>
               </Tooltip>
             ) : null}
-            {showBetaBadge ? (
+            {showNewBadge ? (
               <Tooltip
                 withArrow
                 label={
                   <Text size="md">{formatMessage({defaultMessage: 'This feature is new, and may be changed.'})}</Text>
                 }
                 portalProps={{target: portalRef.current}}>
-                <Badge color="orange" variant="elevated" size="lg">
-                  {formatMessage({defaultMessage: 'Beta'})}
+                <Badge color="red" variant="elevated" size="lg">
+                  {formatMessage({defaultMessage: 'New'})}
                 </Badge>
               </Tooltip>
             ) : null}

@@ -4,7 +4,7 @@ import {SettingIds, ChannelPointsFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Channel Points'});
 
@@ -42,9 +42,9 @@ function ChannelPointsModule({ref, ...props}) {
 
 SettingStore.registerSetting(ChannelPointsModule, {
   settingPanelId: SettingPanelIds.CHANNEL_POINTS,
+  settingCategoryId: SettingCategoryIds.CHANNEL,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['channel', 'points', 'auto', 'claim'],
 });
 
 export default ChannelPointsModule;

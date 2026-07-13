@@ -4,7 +4,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Autocomplete'});
 
@@ -27,9 +27,9 @@ function EmoteAutocomplete({ref, ...props}) {
 
 SettingStore.registerSetting(EmoteAutocomplete, {
   settingPanelId: SettingPanelIds.EMOTE_AUTOCOMPLETE,
+  settingCategoryId: SettingCategoryIds.EMOTES,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['auto', 'autocomplete', 'emote', ':'],
 });
 
 export default EmoteAutocomplete;

@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import extension from '@/utils/extension';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'YouTube (beta)'});
@@ -113,9 +113,9 @@ function maybeRegisterComponent() {
 
   SettingStore.registerSetting(YouTube, {
     settingPanelId: SettingPanelIds.YOUTUBE,
+    settingCategoryId: SettingCategoryIds.INTERFACE,
     name: SETTING_NAME,
     supportsStandaloneWindow: true,
-    keywords: ['youtube'],
   });
 
   return YouTube;

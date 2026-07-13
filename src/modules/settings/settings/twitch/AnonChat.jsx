@@ -5,7 +5,7 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingTagInput from '@/modules/settings/components/SettingTagInput';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Anon Chat'});
 
@@ -45,9 +45,9 @@ function AnonChat({ref, ...props}) {
 
 SettingStore.registerSetting(AnonChat, {
   settingPanelId: SettingPanelIds.ANON_CHAT,
+  settingCategoryId: SettingCategoryIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['anon', 'chat'],
 });
 
 export default AnonChat;

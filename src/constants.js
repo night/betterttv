@@ -224,9 +224,10 @@ export const EmoteMenuTips = {
 };
 
 export const SettingsPromotions = {
-  THEME_CUSTOMIZE: 'settingsPromotionDismissedThemeCustomize',
+  USERNAME_EFFECT: 'settingsPromotionDismissedUsernameEffect',
   CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
   SELF_BOT: 'settingsPromotionDismissedSelfBot',
+  SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
 };
 
 export const SettingsPrompts = {

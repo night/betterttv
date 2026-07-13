@@ -4,7 +4,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Directory'});
 
@@ -25,8 +25,8 @@ function ShowDirectoryLiveTab({ref, ...props}) {
 
 SettingStore.registerSetting(ShowDirectoryLiveTab, {
   settingPanelId: SettingPanelIds.DIRECTORY,
+  settingCategoryId: SettingCategoryIds.INTERFACE,
   name: SETTING_NAME,
-  keywords: ['live', 'tab'],
 });
 
 export default ShowDirectoryLiveTab;

@@ -5,7 +5,7 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Blacklist Keywords'});
 
@@ -28,9 +28,9 @@ function BlacklistKeywords({ref, ...props}) {
 
 SettingStore.registerSetting(BlacklistKeywords, {
   settingPanelId: SettingPanelIds.BLACKLIST_KEYWORDS,
+  settingCategoryId: SettingCategoryIds.MODERATION,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['black', 'list', 'keywords', 'banned', 'remove', 'hide'],
 });
 
 export default BlacklistKeywords;

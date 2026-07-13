@@ -4,7 +4,7 @@ import {SettingIds, SidebarFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Sidebar'});
 
@@ -62,19 +62,8 @@ function SidebarComponent({ref, ...props}) {
 
 SettingStore.registerSetting(SidebarComponent, {
   settingPanelId: SettingPanelIds.SIDEBAR,
+  settingCategoryId: SettingCategoryIds.INTERFACE,
   name: SETTING_NAME,
-  keywords: [
-    'sidebar',
-    'recently',
-    'watched',
-    'recommended',
-    'similar',
-    'offline',
-    'categories',
-    'channels',
-    'expand',
-    'stories',
-  ],
 });
 
 export default SidebarComponent;
