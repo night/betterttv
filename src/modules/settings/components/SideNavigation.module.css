@@ -65,32 +65,9 @@
   flex-shrink: 0;
 }
 
-.navigationButton[data-active='false']:not(:hover) {
-  background: transparent;
-}
-
 /* disable Mantine's press-down (translateY) when the button is clicked */
 .navigationButton:active {
   transform: none;
-}
-
-/* press feedback: veil an inactive button slightly darker while it's held. A translucent black
-   overlay darkens the whole button (background + text) regardless of theme or base color.
-   inset: -1px covers the 1px border too, so no un-darkened ring shows around the edge. Reserved for
-   the pill-backed category rows — setting entries (transparent variant) stay flat when pressed, and
-   the user-settings card provides its own press feedback (see below). */
-.navigationButton[data-active='false']:not(.settingNavigationButton):not(.userSettingsNavigationButton):active::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  background-color: rgba(0, 0, 0, 0.1);
-  pointer-events: none;
-}
-
-.navigationButton[data-active='true']:not(.settingNavigationButton):not(.userSettingsNavigationButton) {
-  border-color: var(--mantine-color-nav-active-border);
-  box-shadow: var(--mantine-shadow-xs);
 }
 
 /* top-level nav items for each individual setting (also used by the Changelog button). These use
@@ -113,8 +90,9 @@
   background-color: light-dark(var(--mantine-color-red-5), var(--mantine-color-red-6));
 }
 
-/* category header: reuses the settings button component, styled as a dimmed, uppercase section
-   header. Clickable to collapse/expand its settings (keeps the button's hover/press feedback). */
+/* category header: reuses the settings button component and the shared clickable container,
+   styled as a dimmed, uppercase section header. Clickable to collapse/expand its settings; sits
+   flat (no background) until hovered, pressed, or active. */
 .categoryButton {
   height: 40px;
   font-size: 11px;
@@ -125,6 +103,14 @@
   /* match the list's top/bottom padding when scrolled into view */
   scroll-margin-top: var(--sidenav-h-padding);
   scroll-margin-bottom: var(--sidenav-h-padding);
+  --surface-bg: transparent;
+  transition: none;
+}
+
+/* animate into hover/press, but snap back to rest and between active states */
+.categoryButton:hover,
+.categoryButton:active {
+  transition: background 120ms ease;
 }
 
 /* undim the label when a nav button is hovered. the extra :hover qualifier outweighs
@@ -136,6 +122,7 @@
 /* let Mantine's active (primary) color through the dimmed header color above */
 .categoryButton[data-active='true'] {
   color: var(--button-color);
+  box-shadow: var(--mantine-shadow-xs);
 }
 
 /* wraps a category's settings inside the Mantine <Collapse> so they keep stacking full-width */
@@ -214,40 +201,16 @@
   border-top: 1px solid var(--mantine-color-default-border);
 }
 
-/* the user-settings card mirrors the radio card's rest→hover→press feedback (see
-   SettingRadioCard.module.css), but on a raised surface scale so it reads lighter than the
-   body-colored sidebar it sits on (a plain body rest would blend in). The active accent border is
-   ours, not the card's. */
+/* the user-settings card reuses the shared clickable container (see ClickableContainer.module.css)
+   on a raised surface scale so it reads lighter than the body-colored sidebar it sits on (a plain
+   body rest would blend in) */
 .userSettingsNavigationButton {
   border: 1px solid var(--mantine-color-body-raised-border);
   box-shadow: var(--mantine-shadow-xs);
-  transition: background 120ms ease;
   font-weight: 600;
-}
-
-.userSettingsNavigationButton[data-active='false']:not(:hover) {
-  background: var(--mantine-color-body-raised);
-}
-
-.userSettingsNavigationButton[data-active='false']:hover {
-  background: var(--mantine-color-body-raised-hover);
-}
-
-.userSettingsNavigationButton[data-active='false']:active {
-  background: var(--mantine-color-body-raised-active);
-}
-
-.userSettingsNavigationButton[data-active='true'] {
-  border-color: var(--mantine-color-nav-active-border);
-  background: var(--mantine-primary-color-light);
-}
-
-.userSettingsNavigationButton[data-active='true']:hover {
-  background: var(--mantine-primary-color-light-hover);
-}
-
-.userSettingsNavigationButton[data-active='true']:active {
-  background: var(--mantine-primary-color-light-active);
+  --surface-bg: var(--mantine-color-body-raised);
+  --surface-bg-hover: var(--mantine-color-body-raised-hover);
+  --surface-bg-active: var(--mantine-color-body-raised-active);
 }
 
 .overlay {
