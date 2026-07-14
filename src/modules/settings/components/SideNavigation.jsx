@@ -4,11 +4,12 @@ import {
   faTriangleExclamation,
   faUserGear,
 } from '@fortawesome/free-solid-svg-icons';
-import {ActionIcon, Avatar, Badge, Button, Overlay, useMantineTheme} from '@mantine/core';
+import {ActionIcon, Avatar, Button, Overlay, useMantineTheme} from '@mantine/core';
 import classNames from 'classnames';
 import React, {use, useCallback, useEffect, useMemo, useRef} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
+import ProBadge from '@/common/components/ProBadge';
 import Scrollbar from '@/common/components/Scrollbar';
 import UsernameEffectText from '@/common/components/UsernameEffectText';
 import useCurrentUser from '@/common/hooks/CurrentUser';
@@ -106,9 +107,7 @@ function UserSettingsNavigationButton({active, onClick}) {
         bttvUser == null ? (
           <Icon icon={faTriangleExclamation} className={styles.warningIcon} />
         ) : isUserPro(bttvUser) ? (
-          <Badge color="indigo" variant="elevated" size="lg">
-            {formatMessage({defaultMessage: 'Pro'})}
-          </Badge>
+          <ProBadge />
         ) : null
       }>
       {avatarSrc != null ? (

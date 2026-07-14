@@ -3,6 +3,7 @@ import {Badge, Text, Title, Tooltip} from '@mantine/core';
 import classNames from 'classnames';
 import React from 'react';
 import Icon from '@/common/components/Icon';
+import ProBadge from '@/common/components/ProBadge';
 import usePortalRef from '@/common/hooks/PortalRef';
 import formatMessage from '@/i18n';
 import styles from './SettingWrapper.module.css';
@@ -36,9 +37,7 @@ function SettingWrapper({
                   </Text>
                 }
                 portalProps={{target: portalRef.current}}>
-                <Badge color="indigo" variant="elevated" size="lg">
-                  {formatMessage({defaultMessage: 'Pro'})}
-                </Badge>
+                <ProBadge />
               </Tooltip>
             ) : null}
             {showNewBadge ? (
