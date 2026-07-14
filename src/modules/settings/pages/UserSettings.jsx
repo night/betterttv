@@ -1,4 +1,4 @@
-import {Button} from '@mantine/core';
+import {Anchor, Button} from '@mantine/core';
 import {saveAs} from 'file-saver';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
@@ -95,9 +95,9 @@ function SignInAlert() {
       message={formatMessage({defaultMessage: 'You are not signed in!'})}
       description={formatMessage({defaultMessage: 'Sign in to access additional features.'})}
       rightContent={
-        <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
+        <Anchor component="button" type="button" underline="always" c="inherit" onClick={signIn} disabled={signingIn}>
           {formatMessage({defaultMessage: 'Sign In'})}
-        </Button>
+        </Anchor>
       }
     />
   );
