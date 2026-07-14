@@ -93,10 +93,10 @@ function SignInAlert() {
   return (
     <Alert
       message={formatMessage({defaultMessage: 'You are not signed in!'})}
-      description={formatMessage({defaultMessage: 'Sign in to access additional features.'})}
+      description={formatMessage({defaultMessage: 'Some features are unavailable until you sign in.'})}
       rightContent={
         <Anchor component="button" type="button" underline="always" c="inherit" onClick={signIn} disabled={signingIn}>
-          {formatMessage({defaultMessage: 'Sign In'})}
+          {formatMessage({defaultMessage: 'Connect Account'})}
         </Anchor>
       }
     />
