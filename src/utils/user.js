@@ -1,5 +1,7 @@
 import watcher from '@/watcher';
 
+const PROFILE_PICTURE_SELECTOR = '[data-a-target="user-menu-toggle"] .tw-image-avatar';
+
 let currentUser;
 
 export function setCurrentUser({provider, id, name, displayName, avatar}) {
@@ -19,5 +21,5 @@ export function getCurrentUser() {
 }
 
 export function getCurrentUserProfilePicture() {
-  return document.querySelector('[data-a-target="user-menu-toggle"] .tw-image-avatar')?.getAttribute('src');
+  return document.querySelector(PROFILE_PICTURE_SELECTOR)?.getAttribute('src');
 }
