@@ -1,6 +1,8 @@
+import {faTriangleExclamation} from '@fortawesome/free-solid-svg-icons';
 import {Badge, Text, Title, Tooltip} from '@mantine/core';
 import classNames from 'classnames';
 import React from 'react';
+import Icon from '@/common/components/Icon';
 import usePortalRef from '@/common/hooks/PortalRef';
 import formatMessage from '@/i18n';
 import styles from './SettingWrapper.module.css';
@@ -12,6 +14,7 @@ function SettingWrapper({
   showProBadge = false,
   showNewBadge = false,
   showComingSoonBadge = false,
+  showWarningIcon = false,
   reverse = false,
   wrap = false,
   controlClassName = '',
@@ -58,6 +61,16 @@ function SettingWrapper({
                 <Badge color="green" variant="elevated" size="lg">
                   {formatMessage({defaultMessage: 'Coming Soon'})}
                 </Badge>
+              </Tooltip>
+            ) : null}
+            {showWarningIcon ? (
+              <Tooltip
+                withArrow
+                label={<Text size="md">{formatMessage({defaultMessage: 'This setting requires your attention'})}</Text>}
+                portalProps={{target: portalRef.current}}>
+                <span className={styles.warningIconContainer}>
+                  <Icon icon={faTriangleExclamation} className={styles.warningIcon} />
+                </span>
               </Tooltip>
             ) : null}
           </Title>
