@@ -22,23 +22,10 @@ function clearEligibility() {
   useUsernameEffectEligibilityStore.setState({userId: null, eligibility: null});
 }
 
-export async function fetchEligibility({force = false} = {}) {
-  const {user} = useAuthStore.getState();
-
-  if (user == null) {
-    return;
-  }
-
-  if (!force && lastFetch != null && lastFetch.userId === user.id) {
-    return;
-  }
-
-  const currentFetch = {userId: user.id};
-  lastFetch = currentFetch;
-
+async function fetchEligibilityForUser(currentFetch, userId) {
   let eligibility;
   try {
-    eligibility = await getUserUsernameEffectEligibility(user.id);
+    eligibility = await getUserUsernameEffectEligibility(userId);
   } catch (_) {
     if (lastFetch === currentFetch) {
       lastFetch = null;
@@ -50,7 +37,25 @@ export async function fetchEligibility({force = false} = {}) {
     return;
   }
 
-  useUsernameEffectEligibilityStore.setState({userId: user.id, eligibility});
+  useUsernameEffectEligibilityStore.setState({userId, eligibility});
+}
+
+export function fetchEligibility({force = false} = {}) {
+  const {user} = useAuthStore.getState();
+
+  if (user == null) {
+    return Promise.resolve();
+  }
+
+  if (!force && lastFetch != null && lastFetch.userId === user.id) {
+    return lastFetch.promise;
+  }
+
+  const currentFetch = {userId: user.id};
+  lastFetch = currentFetch;
+  currentFetch.promise = fetchEligibilityForUser(currentFetch, user.id);
+
+  return currentFetch.promise;
 }
 
 useAuthStore.subscribe(

@@ -120,10 +120,6 @@ function openUsernameEffectSignInModal(callback = () => {}, {value, displayName,
 function SettingUsernameEffect() {
   const currentUser = useCurrentUser();
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
-  // persisted eligibility may belong to a previous session's account; only use it for the current user
-  const eligibility = useUsernameEffectEligibilityStore((state) =>
-    user != null && state.userId === user.id ? state.eligibility : null
-  );
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
 
   useEffect(() => {
@@ -147,11 +143,16 @@ function SettingUsernameEffect() {
   });
 
   const handleChange = useCallback(
-    (newValue) => {
+    async (newValue) => {
       const currentUser = getCurrentUser();
       const {user: currentAuthUser} = useAuthStore.getState();
 
       if (newValue === NONE && currentAuthUser == null) {
+        return;
+      }
+
+      if (newValue === NONE) {
+        setValue(newValue);
         return;
       }
 
@@ -165,7 +166,10 @@ function SettingUsernameEffect() {
         return;
       }
 
-      if (newValue !== NONE && (eligibility == null || eligibility[newValue] !== true)) {
+      await fetchEligibility();
+
+      const {userId, eligibility} = useUsernameEffectEligibilityStore.getState();
+      if (userId !== currentAuthUser.id || eligibility == null || eligibility[newValue] !== true) {
         openUsernameEffectSubscriptionUpgradeModal(() => handleChange(newValue), {
           value: newValue,
           displayName: currentUser.displayName,
@@ -177,7 +181,7 @@ function SettingUsernameEffect() {
 
       setValue(newValue);
     },
-    [eligibility, setValue, chatColor]
+    [setValue, chatColor]
   );
 
   return (
