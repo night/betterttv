@@ -1,8 +1,10 @@
+import {faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Text} from '@mantine/core';
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import {updateUserUsernameEffect} from '../../../actions/users';
+import Icon from '../../../common/components/Icon';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useDebouncedRemoteState from '../../../common/hooks/DebouncedRemoteState';
 import effects from '../../../common/styles/UsernameEffects.module.css';
@@ -13,6 +15,7 @@ import socketClient from '../../../socket-client';
 import useAuthStore from '../../../stores/auth';
 import useUsernameEffectEligibilityStore, {fetchEligibility} from '../../../stores/username-effect-eligibility';
 import {getCurrentChannel} from '../../../utils/channel';
+import {isUserPro} from '../../../utils/pro';
 import twitch from '../../../utils/twitch';
 import {getCurrentUser} from '../../../utils/user';
 import SettingRadioCard from './SettingRadioCard';
@@ -92,10 +95,13 @@ function UsernameEffectRequirementDisplay({value, displayName, chatColor}) {
 }
 
 function openUsernameEffectSubscriptionUpgradeModal(callback = () => {}, {value, displayName, chatColor}) {
+  const upgradeDisabled = isUserPro(useAuthStore.getState().user) && value !== UsernameEffects.IRIDESCENCE;
+
   return openSubscriptionUpgradeModal(
     {
       title: UsernameEffectRequirementDisplayTitleByEffect[value],
       children: <UsernameEffectRequirementDisplay value={value} displayName={displayName} chatColor={chatColor} />,
+      confirmProps: {size: 'lg', variant: 'elevated', color: 'contrast', disabled: upgradeDisabled},
     },
     callback
   );
@@ -114,10 +120,6 @@ function openUsernameEffectSignInModal(callback = () => {}, {value, displayName,
 function SettingUsernameEffect() {
   const currentUser = useCurrentUser();
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
-  // persisted eligibility may belong to a previous session's account; only use it for the current user
-  const eligibility = useUsernameEffectEligibilityStore((state) =>
-    user != null && state.userId === user.id ? state.eligibility : null
-  );
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
 
   useEffect(() => {
@@ -141,9 +143,18 @@ function SettingUsernameEffect() {
   });
 
   const handleChange = useCallback(
-    (newValue) => {
+    async (newValue) => {
       const currentUser = getCurrentUser();
       const {user: currentAuthUser} = useAuthStore.getState();
+
+      if (newValue === NONE && currentAuthUser == null) {
+        return;
+      }
+
+      if (newValue === NONE) {
+        setValue(newValue);
+        return;
+      }
 
       if (currentAuthUser == null) {
         openUsernameEffectSignInModal(() => handleChange(newValue), {
@@ -155,7 +166,10 @@ function SettingUsernameEffect() {
         return;
       }
 
-      if (newValue !== NONE && (eligibility == null || eligibility[newValue] !== true)) {
+      await fetchEligibility();
+
+      const {userId, eligibility} = useUsernameEffectEligibilityStore.getState();
+      if (userId !== currentAuthUser.id || eligibility == null || eligibility[newValue] !== true) {
         openUsernameEffectSubscriptionUpgradeModal(() => handleChange(newValue), {
           value: newValue,
           displayName: currentUser.displayName,
@@ -167,7 +181,7 @@ function SettingUsernameEffect() {
 
       setValue(newValue);
     },
-    [eligibility, setValue, chatColor]
+    [setValue, chatColor]
   );
 
   return (
@@ -185,12 +199,10 @@ function SettingUsernameEffect() {
             key={NONE}
             value={NONE}
             className={styles.usernameCard}
-            tooltip={formatMessage({defaultMessage: 'None'})}
-            ariaLabel={formatMessage({defaultMessage: 'None'})}
+            tooltip={formatMessage({defaultMessage: 'Disable effect'})}
+            ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
             withIndicators={false}>
-            <Text truncate size="xl" className={styles.username}>
-              {currentUser.displayName}
-            </Text>
+            <Icon icon={faXmark} className={styles.cardIcon} />
           </SettingRadioCard>
           {EFFECT_CARDS.map(({value: effectValue, label}) => (
             <SettingRadioCard
