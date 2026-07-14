@@ -45,7 +45,6 @@
     center;
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
   -webkit-text-fill-color: transparent;
   animation: flareSweep var(--flare-duration) linear infinite;
 }
