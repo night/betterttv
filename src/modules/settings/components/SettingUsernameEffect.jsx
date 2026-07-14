@@ -147,6 +147,10 @@ function SettingUsernameEffect() {
       const currentUser = getCurrentUser();
       const {user: currentAuthUser} = useAuthStore.getState();
 
+      if (newValue === NONE && currentAuthUser == null) {
+        return;
+      }
+
       if (currentAuthUser == null) {
         openUsernameEffectSignInModal(() => handleChange(newValue), {
           value: newValue,
