@@ -29,7 +29,7 @@ export default function TooltipController() {
 
   const {refs, floatingStyles, context} = useFloating({
     open,
-    placement: `top-${alignment ?? 'center'}`,
+    placement: alignment == null || alignment === 'center' ? 'top' : `top-${alignment}`,
     strategy: 'fixed',
     elements: {reference: referenceElement},
     whileElementsMounted,
