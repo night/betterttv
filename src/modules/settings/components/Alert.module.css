@@ -1,0 +1,24 @@
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: var(--mantine-color-yellow-light-color);
+  background-color: var(--mantine-color-yellow-light);
+  border-color: var(--mantine-color-yellow-light-hover);
+}
+
+.warningIcon {
+  width: 18px;
+  height: 18px;
+  color: var(--mantine-color-yellow-5);
+  flex-shrink: 0;
+}
+
+.message {
+  font-weight: 600;
+}
+
+.rightContent {
+  margin-left: auto;
+}

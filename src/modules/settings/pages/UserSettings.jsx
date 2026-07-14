@@ -7,6 +7,7 @@ import useProRequiredState from '@/common/hooks/ProRequiredState';
 import {openConfirmModal} from '@/common/utils/modal';
 import {EXT_VER, SettingsPrompts} from '@/constants';
 import formatMessage from '@/i18n/index';
+import Alert from '@/modules/settings/components/Alert';
 import Footer from '@/modules/settings/components/Footer';
 import ImportSetting from '@/modules/settings/components/ImportSetting';
 import PageHeader from '@/modules/settings/components/PageHeader';
@@ -69,16 +70,43 @@ function CloudBackupSetting() {
   );
 }
 
-function SignInButton() {
-  const user = useAuthStore(useShallow((state) => state.user));
+function useSignIn() {
   const [signingIn, setSigningIn] = useState(false);
-  const [, setCloudBackupSettings] = useCloudBackupSettings();
 
   function signIn() {
     setSigningIn(true);
     // TODO: Handle errors, maybe show modal?
     executeOAuth2SignInAndSetCredentials().finally(() => setSigningIn(false));
   }
+
+  return [signingIn, signIn];
+}
+
+function SignInAlert() {
+  const user = useAuthStore(useShallow((state) => state.user));
+  const [signingIn, signIn] = useSignIn();
+
+  if (user != null) {
+    return null;
+  }
+
+  return (
+    <Alert
+      message={formatMessage({defaultMessage: 'You are not signed in!'})}
+      description={formatMessage({defaultMessage: 'Sign in to access additional features.'})}
+      rightContent={
+        <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
+          {formatMessage({defaultMessage: 'Sign In'})}
+        </Button>
+      }
+    />
+  );
+}
+
+function SignInButton() {
+  const user = useAuthStore(useShallow((state) => state.user));
+  const [signingIn, signIn] = useSignIn();
+  const [, setCloudBackupSettings] = useCloudBackupSettings();
 
   async function signOut() {
     const {accessToken} = getCredentials();
@@ -132,6 +160,7 @@ function UserSettings() {
 
   return (
     <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'User Settings'})} />}>
+      <SignInAlert />
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />
         <BackupSetting
