@@ -1,11 +1,18 @@
-import {faArrowRight as faPanelLeftClose, faScroll, faUserGear} from '@fortawesome/free-solid-svg-icons';
-import {ActionIcon, Avatar, Badge, Button, Overlay, useMantineTheme} from '@mantine/core';
+import {
+  faArrowRight as faPanelLeftClose,
+  faScroll,
+  faTriangleExclamation,
+  faUserGear,
+} from '@fortawesome/free-solid-svg-icons';
+import {ActionIcon, Avatar, Button, Overlay, useMantineTheme} from '@mantine/core';
 import classNames from 'classnames';
 import React, {use, useCallback, useEffect, useMemo, useRef} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
+import ProBadge from '@/common/components/ProBadge';
 import Scrollbar from '@/common/components/Scrollbar';
 import UsernameEffectText from '@/common/components/UsernameEffectText';
+import useCurrentUser from '@/common/hooks/CurrentUser';
 import {PageDecendants, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
@@ -15,6 +22,7 @@ import SettingStore, {PageSettingPanelIds} from '@/modules/settings/stores/setti
 import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
 import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
+import {getCurrentUserProfilePicture} from '@/utils/user';
 import AnimatedLogo from './AnimatedLogo';
 import clickableStyles from './ClickableContainer.module.css';
 import styles from './SideNavigation.module.css';
@@ -78,7 +86,9 @@ const SettingNavigationButton = React.memo(function SettingNavigationButton({set
 });
 
 function UserSettingsNavigationButton({active, onClick}) {
-  const currentUser = useAuthStore(useShallow((state) => state.user));
+  const currentUser = useCurrentUser();
+  const bttvUser = useAuthStore(useShallow((state) => state.user));
+  const avatarSrc = bttvUser?.avatar ?? getCurrentUserProfilePicture();
   const {primaryColor} = useMantineTheme();
   const activeColor = active ? primaryColor : undefined;
   return (
@@ -87,23 +97,23 @@ function UserSettingsNavigationButton({active, onClick}) {
       onClick={onClick}
       className={classNames(clickableStyles.clickableContainer, styles.userSettingsNavigationButton)}
       label={
-        currentUser?.displayName != null ? (
-          <UsernameEffectText effect={currentUser.usernameEffect}>{currentUser.displayName}</UsernameEffectText>
+        bttvUser?.displayName != null ? (
+          <UsernameEffectText effect={bttvUser.usernameEffect}>{bttvUser.displayName}</UsernameEffectText>
         ) : (
-          formatMessage({defaultMessage: 'User Settings'})
+          (currentUser?.displayName ?? formatMessage({defaultMessage: 'User Settings'}))
         )
       }
       rightSection={
-        isUserPro(currentUser) ? (
-          <Badge color="indigo" variant="elevated" size="lg">
-            {formatMessage({defaultMessage: 'Pro'})}
-          </Badge>
+        bttvUser == null ? (
+          <Icon icon={faTriangleExclamation} className={styles.warningIcon} />
+        ) : isUserPro(bttvUser) ? (
+          <ProBadge />
         ) : null
       }>
-      {currentUser != null ? (
+      {avatarSrc != null ? (
         <Avatar
           color={activeColor}
-          src={currentUser?.avatar}
+          src={avatarSrc}
           size="md"
           className={styles.avatar}
           classNames={{image: styles.avatarImage}}

@@ -48,6 +48,13 @@
   height: 16px;
 }
 
+/* shown on the User Settings button when no BetterTTV account is linked */
+.warningIcon {
+  width: 18px;
+  height: 18px;
+  color: var(--mantine-color-yellow-5);
+}
+
 .navigationButton {
   font-weight: 500;
   height: 48px;

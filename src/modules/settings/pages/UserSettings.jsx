@@ -1,4 +1,4 @@
-import {Button} from '@mantine/core';
+import {Anchor, Button} from '@mantine/core';
 import {saveAs} from 'file-saver';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
@@ -7,6 +7,7 @@ import useProRequiredState from '@/common/hooks/ProRequiredState';
 import {openConfirmModal} from '@/common/utils/modal';
 import {EXT_VER, SettingsPrompts} from '@/constants';
 import formatMessage from '@/i18n/index';
+import Alert from '@/modules/settings/components/Alert';
 import Footer from '@/modules/settings/components/Footer';
 import ImportSetting from '@/modules/settings/components/ImportSetting';
 import PageHeader from '@/modules/settings/components/PageHeader';
@@ -69,16 +70,43 @@ function CloudBackupSetting() {
   );
 }
 
-function SignInButton() {
-  const user = useAuthStore(useShallow((state) => state.user));
+function useSignIn() {
   const [signingIn, setSigningIn] = useState(false);
-  const [, setCloudBackupSettings] = useCloudBackupSettings();
 
   function signIn() {
     setSigningIn(true);
     // TODO: Handle errors, maybe show modal?
     executeOAuth2SignInAndSetCredentials().finally(() => setSigningIn(false));
   }
+
+  return [signingIn, signIn];
+}
+
+function SignInAlert() {
+  const user = useAuthStore(useShallow((state) => state.user));
+  const [signingIn, signIn] = useSignIn();
+
+  if (user != null) {
+    return null;
+  }
+
+  return (
+    <Alert
+      message={formatMessage({defaultMessage: 'You are not signed in!'})}
+      description={formatMessage({defaultMessage: 'Some features are unavailable until you sign in.'})}
+      rightContent={
+        <Anchor component="button" type="button" underline="always" c="inherit" onClick={signIn} disabled={signingIn}>
+          {formatMessage({defaultMessage: 'Connect Account'})}
+        </Anchor>
+      }
+    />
+  );
+}
+
+function SignInButton() {
+  const user = useAuthStore(useShallow((state) => state.user));
+  const [signingIn, signIn] = useSignIn();
+  const [, setCloudBackupSettings] = useCloudBackupSettings();
 
   async function signOut() {
     const {accessToken} = getCredentials();
@@ -98,7 +126,6 @@ function SignInButton() {
         confirm: formatMessage({defaultMessage: 'Sign Out'}),
         cancel: formatMessage({defaultMessage: 'Cancel'}),
       },
-      confirmProps: {color: 'red', size: 'lg', variant: 'elevated'},
     });
   }
 
@@ -108,7 +135,7 @@ function SignInButton() {
         reverse
         name={formatMessage({defaultMessage: 'Sign In to BetterTTV'})}
         description={formatMessage({defaultMessage: 'Authenticated users gain access to additional features.'})}>
-        <Button size="lg" onClick={signIn} loading={signingIn}>
+        <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
           {formatMessage({defaultMessage: 'Sign In'})}
         </Button>
       </SettingWrapper>
@@ -120,7 +147,7 @@ function SignInButton() {
       reverse
       name={formatMessage({defaultMessage: 'Sign Out'})}
       description={formatMessage({defaultMessage: 'Unlink account from extension.'})}>
-      <Button size="lg" color="red" onClick={handleSignOut}>
+      <Button size="lg" onClick={handleSignOut}>
         {formatMessage({defaultMessage: 'Sign Out'})}
       </Button>
     </SettingWrapper>
@@ -133,6 +160,7 @@ function UserSettings() {
 
   return (
     <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'User Settings'})} />}>
+      <SignInAlert />
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />
         <BackupSetting
