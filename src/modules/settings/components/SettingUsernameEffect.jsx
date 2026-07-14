@@ -1,8 +1,10 @@
+import {faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Text} from '@mantine/core';
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import {updateUserUsernameEffect} from '../../../actions/users';
+import Icon from '../../../common/components/Icon';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useDebouncedRemoteState from '../../../common/hooks/DebouncedRemoteState';
 import effects from '../../../common/styles/UsernameEffects.module.css';
@@ -185,12 +187,10 @@ function SettingUsernameEffect() {
             key={NONE}
             value={NONE}
             className={styles.usernameCard}
-            tooltip={formatMessage({defaultMessage: 'None'})}
-            ariaLabel={formatMessage({defaultMessage: 'None'})}
+            tooltip={formatMessage({defaultMessage: 'Disable effect'})}
+            ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
             withIndicators={false}>
-            <Text truncate size="xl" className={styles.username}>
-              {currentUser.displayName}
-            </Text>
+            <Icon icon={faXmark} className={styles.cardIcon} />
           </SettingRadioCard>
           {EFFECT_CARDS.map(({value: effectValue, label}) => (
             <SettingRadioCard
