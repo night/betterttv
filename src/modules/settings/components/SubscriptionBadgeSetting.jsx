@@ -200,18 +200,16 @@ function SubscriptionBadgeSetting() {
           onChange={setBadgeEnabled}
         />
       )}
-      {eligibleBadges != null && eligibleBadges.length > 0 ? (
-        <SettingRadioCardGroup value={isPro && !badgeEnabled ? DISABLED : selectedBadgeId} onChange={handleBadgeChange}>
-          {isPro ? (
-            <SettingRadioCard
-              value={DISABLED}
-              className={styles.badgeCard}
-              tooltip={disableBadgeLabel}
-              ariaLabel={disableBadgeLabel}
-              withIndicators={false}>
-              <Icon icon={faXmark} className={styles.cardIcon} />
-            </SettingRadioCard>
-          ) : null}
+      {isPro && eligibleBadges != null && eligibleBadges.length > 0 ? (
+        <SettingRadioCardGroup value={!badgeEnabled ? DISABLED : selectedBadgeId} onChange={handleBadgeChange}>
+          <SettingRadioCard
+            value={DISABLED}
+            className={styles.badgeCard}
+            tooltip={disableBadgeLabel}
+            ariaLabel={disableBadgeLabel}
+            withIndicators={false}>
+            <Icon icon={faXmark} className={styles.cardIcon} />
+          </SettingRadioCard>
           <SettingRadioCard
             value={LATEST}
             className={styles.badgeCard}
