@@ -1,5 +1,6 @@
 .alert {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   padding: 12px 20px;
@@ -15,10 +16,23 @@
   flex-shrink: 0;
 }
 
+/* message and description sit inline while they fit, then stack as full-width rows instead of
+   squashing into side-by-side columns; below 200px the action wraps onto its own row */
+.text {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 2px;
+}
+
 .message {
   font-weight: 600;
 }
 
 .rightContent {
   margin-left: auto;
+  white-space: nowrap;
 }

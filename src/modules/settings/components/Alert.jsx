@@ -9,8 +9,10 @@ function Alert({message, description, rightContent}) {
   return (
     <Panel className={styles.alert}>
       <Icon icon={faTriangleExclamation} className={styles.warningIcon} />
-      <Text className={styles.message}>{message}</Text>
-      {description != null ? <Text className={styles.description}>{description}</Text> : null}
+      <div className={styles.text}>
+        <Text className={styles.message}>{message}</Text>
+        {description != null ? <Text className={styles.description}>{description}</Text> : null}
+      </div>
       {rightContent != null ? <div className={styles.rightContent}>{rightContent}</div> : null}
     </Panel>
   );
