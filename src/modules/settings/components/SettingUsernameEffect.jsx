@@ -15,6 +15,7 @@ import socketClient from '../../../socket-client';
 import useAuthStore from '../../../stores/auth';
 import useUsernameEffectEligibilityStore, {fetchEligibility} from '../../../stores/username-effect-eligibility';
 import {getCurrentChannel} from '../../../utils/channel';
+import {isUserPro} from '../../../utils/pro';
 import twitch from '../../../utils/twitch';
 import {getCurrentUser} from '../../../utils/user';
 import SettingRadioCard from './SettingRadioCard';
@@ -94,10 +95,13 @@ function UsernameEffectRequirementDisplay({value, displayName, chatColor}) {
 }
 
 function openUsernameEffectSubscriptionUpgradeModal(callback = () => {}, {value, displayName, chatColor}) {
+  const upgradeDisabled = isUserPro(useAuthStore.getState().user) && value !== UsernameEffects.IRIDESCENCE;
+
   return openSubscriptionUpgradeModal(
     {
       title: UsernameEffectRequirementDisplayTitleByEffect[value],
       children: <UsernameEffectRequirementDisplay value={value} displayName={displayName} chatColor={chatColor} />,
+      confirmProps: {size: 'lg', variant: 'elevated', color: 'contrast', disabled: upgradeDisabled},
     },
     callback
   );
