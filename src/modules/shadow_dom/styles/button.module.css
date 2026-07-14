@@ -16,6 +16,14 @@
       border-bottom-width: 1px;
     }
 
+    &:disabled,
+    &[data-disabled] {
+      opacity: 0.5;
+      background-color: var(--button-bg);
+      border-color: var(--button-bd);
+      color: var(--button-color);
+    }
+
     transition-property: background-color, border-color, border-bottom-width;
     transition-duration: 0.1s;
     transition-timing-function: ease-in-out;
