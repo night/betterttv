@@ -105,13 +105,10 @@ function SignInButton() {
     return (
       <SettingWrapper
         reverse
-        showWarningIcon
-        name={formatMessage({defaultMessage: 'Link Account'})}
-        description={formatMessage({
-          defaultMessage: 'Connect your BetterTTV account to unlock additional features.',
-        })}>
+        name={formatMessage({defaultMessage: 'Sign In to BetterTTV'})}
+        description={formatMessage({defaultMessage: 'Authenticated users gain access to additional features.'})}>
         <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
-          {formatMessage({defaultMessage: 'Connect'})}
+          {formatMessage({defaultMessage: 'Sign In'})}
         </Button>
       </SettingWrapper>
     );
@@ -135,9 +132,6 @@ function UserSettings() {
 
   return (
     <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'User Settings'})} />}>
-      <SettingGroup name={formatMessage({defaultMessage: 'Account'})}>
-        <SignInButton />
-      </SettingGroup>
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />
         <BackupSetting
@@ -156,6 +150,9 @@ function UserSettings() {
           resetting={resetting}
           setResetting={setResetting}
         />
+      </SettingGroup>
+      <SettingGroup name={formatMessage({defaultMessage: 'Account'})}>
+        <SignInButton />
       </SettingGroup>
       <Footer />
     </PageScrollBody>

@@ -34,12 +34,8 @@ function maybePromptSignIn() {
   storage.set(SettingsPrompts.SIGN_IN, true);
 
   openSignInModal({
-    title: formatMessage({defaultMessage: 'Link Your Account'}),
-    description: formatMessage({defaultMessage: 'Connect your BetterTTV account to unlock additional features.'}),
-    labels: {
-      confirm: formatMessage({defaultMessage: 'Connect'}),
-      cancel: formatMessage({defaultMessage: 'Cancel'}),
-    },
+    title: formatMessage({defaultMessage: 'Sign in to BetterTTV'}),
+    description: formatMessage({defaultMessage: 'Authenticate to unlock more features.'}),
   });
 }
 

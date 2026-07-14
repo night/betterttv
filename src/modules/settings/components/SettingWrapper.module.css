@@ -34,17 +34,6 @@
   gap: 8px;
 }
 
-/* shown next to the setting name when it requires the user's attention */
-.warningIconContainer {
-  display: flex;
-}
-
-.warningIcon {
-  width: 18px;
-  height: 18px;
-  color: var(--mantine-color-yellow-5);
-}
-
 .description {
   margin: 0;
 }
