@@ -3,7 +3,7 @@ import {Text} from '@mantine/core';
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import {updateUserUsernameEffect} from '../../../actions/users';
+import {updateUsernameEffect} from '../../../actions/account';
 import Icon from '../../../common/components/Icon';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useDebouncedRemoteState from '../../../common/hooks/DebouncedRemoteState';
@@ -130,7 +130,7 @@ function SettingUsernameEffect() {
     value: user?.usernameEffect ?? NONE,
     onSave: async (newValue, {signal}) => {
       const effect = newValue === NONE ? null : newValue;
-      await updateUserUsernameEffect(useAuthStore.getState().user.id, effect, {signal});
+      await updateUsernameEffect(effect, {signal});
       updateUser({...useAuthStore.getState().user, usernameEffect: effect});
 
       const currentChannel = getCurrentChannel();

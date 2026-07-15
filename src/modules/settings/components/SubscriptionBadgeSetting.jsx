@@ -4,8 +4,7 @@ import classNames from 'classnames';
 import {DateTime} from 'luxon';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import {updateSubscriptionBadge} from '@/actions/account';
-import {updateUserSubscriptionBadge} from '@/actions/users';
+import {updateSubscriptionBadge, updateSubscriptionBadgeId} from '@/actions/account';
 import Icon from '@/common/components/Icon';
 import useDebouncedRemoteState from '@/common/hooks/DebouncedRemoteState';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
@@ -120,7 +119,7 @@ function SubscriptionBadgeSetting() {
     value: user?.subscriptionBadgeId ?? LATEST,
     onSave: async (newValue, {signal, isStale}) => {
       const badgeId = newValue === LATEST ? null : newValue;
-      await updateUserSubscriptionBadge(useAuthStore.getState().user.id, badgeId, {signal});
+      await updateSubscriptionBadgeId(badgeId, {signal});
 
       if (isStale()) {
         return;

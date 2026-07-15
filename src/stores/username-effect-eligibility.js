@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import {persist} from 'zustand/middleware';
-import {getUserUsernameEffectEligibility} from '@/actions/users';
+import {getUsernameEffectEligibility} from '@/actions/account';
 import useAuthStore from './auth';
 
 const STORAGE_ID = 'bttvPrivate_usernameEffectEligibility';
@@ -25,7 +25,7 @@ function clearEligibility() {
 async function fetchEligibilityForUser(currentFetch, userId) {
   let eligibility;
   try {
-    eligibility = await getUserUsernameEffectEligibility(userId);
+    eligibility = await getUsernameEffectEligibility();
   } catch (_) {
     if (lastFetch === currentFetch) {
       lastFetch = null;

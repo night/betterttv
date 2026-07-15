@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import {persist} from 'zustand/middleware';
-import {getUserSubscriptionBadgeEligibility} from '@/actions/users';
+import {getSubscriptionBadgeEligibility} from '@/actions/account';
 import useAuthStore from './auth';
 
 const STORAGE_ID = 'bttvPrivate_subscriptionBadgeEligibility';
@@ -39,7 +39,7 @@ export async function fetchEligibility({force = false} = {}) {
 
   let eligibility;
   try {
-    eligibility = await getUserSubscriptionBadgeEligibility(user.id);
+    eligibility = await getSubscriptionBadgeEligibility();
   } catch (_) {
     if (lastFetch === currentFetch) {
       lastFetch = null;
