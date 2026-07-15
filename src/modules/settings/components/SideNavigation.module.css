@@ -164,10 +164,23 @@
   color: var(--mantine-color-text);
 }
 
-/* the display name carries a username effect (e.g. glow's shadow) that extends past the text box,
-   so let it spill instead of clipping — the name is short enough to not need ellipsis truncation */
+/* the label doesn't truncate itself — the display-name span inside does, so the ellipsis is
+   painted by the element carrying the username effect (matching the radio cards); let the label
+   spill so effect shadows painting into the span's padded overflow box aren't clipped */
 .userSettingsNavigationButton .navigationLabel {
   overflow: visible;
+}
+
+/* the display name carries a username effect (e.g. glow's 20px shadow) that extends past the text
+   box; pad the overflow box (offset by negative margins, so layout is unchanged) to give the
+   effect room to paint while a long name still truncates with an ellipsis */
+.displayName {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 20px;
+  margin: -20px;
 }
 
 .navigationSection {
