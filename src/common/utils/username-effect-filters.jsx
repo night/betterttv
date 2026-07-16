@@ -1,3 +1,6 @@
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+
 const FILTERS_CONTAINER_ID = 'bttv-username-effect-filters';
 
 // SVG filters referenced by the username effect styles (`filter: url(#stroke-text-svg-filter-<effect>)`).
@@ -16,30 +19,22 @@ const STROKE_FILTER_COLORS = {
   'stroke-text-svg-filter-midas': '#674911', // from #f7d276 (midas.png)
 };
 
-function strokeFilter(id, color) {
-  return `
-      <filter id="${id}" x="-20%" y="-20%" width="140%" height="150%">
-        <feMorphology in="SourceAlpha" operator="dilate" radius="1" result="dilated" />
-        <feOffset in="dilated" dy="2" result="dilatedBottom" />
-        <feFlood flood-color="${color}" result="outlineColor" />
-        <feComposite in="outlineColor" in2="dilatedBottom" operator="in" result="bottomOutline" />
-        <feComposite in="outlineColor" in2="dilated" operator="in" result="outline" />
-        <feMerge>
-          <feMergeNode in="bottomOutline" />
-          <feMergeNode in="outline" />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>`;
+function StrokeFilter({id, color}) {
+  return (
+    <filter id={id} x="-20%" y="-20%" width="140%" height="150%">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="1" result="dilated" />
+      <feOffset in="dilated" dy="2" result="dilatedBottom" />
+      <feFlood floodColor={color} result="outlineColor" />
+      <feComposite in="outlineColor" in2="dilatedBottom" operator="in" result="bottomOutline" />
+      <feComposite in="outlineColor" in2="dilated" operator="in" result="outline" />
+      <feMerge>
+        <feMergeNode in="bottomOutline" />
+        <feMergeNode in="outline" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  );
 }
-
-const FILTERS_SVG = `
-  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0">
-    <defs>${Object.entries(STROKE_FILTER_COLORS)
-      .map(([id, color]) => strokeFilter(id, color))
-      .join('')}
-    </defs>
-  </svg>
-`;
 
 export default function injectUsernameEffectFilters(root = document.body) {
   if (root == null || root.querySelector(`#${FILTERS_CONTAINER_ID}`) != null) {
@@ -48,7 +43,14 @@ export default function injectUsernameEffectFilters(root = document.body) {
 
   const container = document.createElement('div');
   container.id = FILTERS_CONTAINER_ID;
-  container.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
-  container.innerHTML = FILTERS_SVG;
+  createRoot(container).render(
+    <svg aria-hidden="true" style={{position: 'absolute', width: 0, height: 0}}>
+      <defs>
+        {Object.entries(STROKE_FILTER_COLORS).map(([id, color]) => (
+          <StrokeFilter key={id} id={id} color={color} />
+        ))}
+      </defs>
+    </svg>
+  );
   root.appendChild(container);
 }
