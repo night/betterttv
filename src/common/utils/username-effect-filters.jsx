@@ -43,6 +43,7 @@ export default function injectUsernameEffectFilters(root = document.body) {
 
   const container = document.createElement('div');
   container.id = FILTERS_CONTAINER_ID;
+  container.style.display = 'contents';
   createRoot(container).render(
     <svg aria-hidden="true" style={{position: 'absolute', width: 0, height: 0}}>
       <defs>
