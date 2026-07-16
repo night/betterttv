@@ -155,6 +155,7 @@ export const PageTypes = {
   HIGHLIGHT_KEYWORDS: 4,
   BLACKLIST_KEYWORDS: 5,
   SELF_BOT_COMMANDS: 6,
+  PRO_UPGRADE: 7,
 };
 
 export const PageDecendants = {

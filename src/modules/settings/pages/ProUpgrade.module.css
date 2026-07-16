@@ -1,0 +1,576 @@
+.premiumContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.stickerFilterDefs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.premiumHero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  user-select: none;
+  overflow: hidden;
+}
+
+.premiumBrand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.premiumLogo {
+  width: 44px;
+  height: 44px;
+  color: var(--mantine-color-text);
+}
+
+.premiumWordmark {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--mantine-color-text);
+}
+
+.premiumPill {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--mantine-color-indigo-5), var(--mantine-color-violet-6));
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mantine-color-white);
+}
+
+/* two independent columns — cards stack masonry-style, each keeping its own height instead of
+   stretching to a shared grid row. multicol has no row-gap, so the cards carry a bottom margin
+   and the container swallows the trailing one. */
+.featureColumns {
+  columns: 2;
+  column-gap: 12px;
+  margin: 0 24px -12px;
+}
+
+.featureColumns > * {
+  break-inside: avoid;
+  margin-bottom: 12px;
+}
+
+.showcaseCard {
+  /* the label scrim references this so it always matches the field */
+  --showcase-bg: var(--mantine-color-indigo-9);
+  /* the radius inside the 2px border, for children that need to clip their own content */
+  --showcase-inner-radius: calc(var(--mantine-radius-lg) - 2px);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 2px solid light-dark(var(--mantine-color-indigo-5), var(--mantine-color-indigo-4));
+  border-radius: var(--mantine-radius-lg);
+  box-shadow: var(--mantine-shadow-xs);
+  /* painted on the bordered element itself so it runs flush under the border's rounded corners;
+     a child's clipped corner leaves an antialiased seam of card background showing through */
+  background-color: var(--showcase-bg);
+}
+
+.showcasePreview {
+  position: relative;
+  flex: 1;
+  min-height: 270px;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* out of flow so extra rows overflow the fixed-height preview and clip instead of growing it */
+.showcaseMarqueeStack {
+  position: absolute;
+  top: 50%;
+  left: -10%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 120%;
+  transform: translateY(-50%) rotate(-4deg);
+}
+
+.showcaseMarquee {
+  display: flex;
+  width: max-content;
+}
+
+.showcaseMarqueeGroup {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding-right: 32px;
+}
+
+.showcaseName {
+  display: block;
+  overflow: hidden;
+  max-width: 280px;
+  font-size: 26px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* the mask fades the backdrop blur out toward the top; the label sits in the fully-opaque
+   bottom zone so only the blur fades, not the text */
+.showcaseLabel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 32px 20px 14px;
+  color: var(--mantine-color-white);
+  background: linear-gradient(to top, var(--showcase-bg), transparent);
+}
+
+.showcaseStickersPreview {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  justify-items: center;
+  row-gap: 12px;
+  min-height: 270px;
+  padding: 24px 24px 60px;
+  user-select: none;
+  overflow: hidden;
+  /* a rounded overflow clip doesn't reliably contain filtered children (the sticker outline
+     filter); clip-path does, so round the clip to the card's inner radius here */
+  clip-path: inset(0 round var(--showcase-inner-radius));
+}
+
+/* die-cut sticker: the svg filter dilates the emote's alpha into a single clean white outline
+   (stacked drop-shadows compound the antialiased edge fringe into ragged borders) */
+.showcaseSticker {
+  --sticker-outline: url(#bttv-sticker-outline);
+  display: block;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.showcaseSticker:nth-child(1) {
+  transform: rotate(-6deg);
+  filter: var(--sticker-outline) drop-shadow(4px 6px 6px rgba(0, 0, 0, 0.25));
+}
+
+.showcaseSticker:nth-child(2) {
+  transform: rotate(4deg);
+  filter: var(--sticker-outline) drop-shadow(-3px 5px 5px rgba(0, 0, 0, 0.22));
+}
+
+.showcaseSticker:nth-child(3) {
+  transform: rotate(-3deg);
+  filter: var(--sticker-outline) drop-shadow(5px 4px 7px rgba(0, 0, 0, 0.26));
+}
+
+.showcaseSticker:nth-child(4) {
+  transform: rotate(5deg);
+  filter: var(--sticker-outline) drop-shadow(-4px 5px 5px rgba(0, 0, 0, 0.22));
+}
+
+.showcaseSticker:nth-child(5) {
+  transform: rotate(-7deg);
+  filter: var(--sticker-outline) drop-shadow(5px 7px 8px rgba(0, 0, 0, 0.24));
+}
+
+.showcaseSticker:nth-child(6) {
+  transform: rotate(3deg);
+  filter: var(--sticker-outline) drop-shadow(-3px 4px 5px rgba(0, 0, 0, 0.2));
+}
+
+.showcaseVideoPreview {
+  position: relative;
+  user-select: none;
+}
+
+.showcaseVideo {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* chromium doesn't reliably repaint <video> frames inside a multicol fragment (the playhead
+     advances but the frame sticks); compositing it onto its own layer fixes the invalidation */
+  transform: translateZ(0);
+}
+
+.showcaseAccentPreview {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 270px;
+  padding: 20px 20px 64px;
+  user-select: none;
+  overflow: hidden;
+}
+
+.accentWindow {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+  padding: 10px 12px 14px;
+  border-radius: 12px;
+  background-color: rgba(10, 15, 60, 0.42);
+  box-shadow: inset 0 0 0 1px rgba(206, 216, 255, 0.32);
+}
+
+.accentWindowBar {
+  display: flex;
+  gap: 5px;
+}
+
+.accentWindowDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: rgba(206, 216, 255, 0.28);
+}
+
+.accentWindowBody {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+}
+
+.accentSidenav {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 52px;
+}
+
+.accentNavItem {
+  height: 12px;
+  border-radius: 4px;
+  background-color: rgba(206, 216, 255, 0.18);
+}
+
+.accentNavItemActive {
+  height: 12px;
+  border-radius: 4px;
+  background-color: var(--showcase-accent);
+  transition: background-color 0.4s ease;
+}
+
+.accentSettings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.accentSettingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.accentSettingBar {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background-color: rgba(206, 216, 255, 0.24);
+}
+
+.accentSettingRow:nth-child(2) .accentSettingBar {
+  max-width: 64%;
+}
+
+.accentSettingRow:nth-child(3) .accentSettingBar {
+  max-width: 82%;
+}
+
+.accentSettingRow:nth-child(4) .accentSettingBar {
+  max-width: 70%;
+}
+
+.accentSwitchOn {
+  position: relative;
+  flex-shrink: 0;
+  width: 30px;
+  height: 16px;
+  border-radius: 999px;
+  background-color: var(--showcase-accent);
+  transition: background-color 0.4s ease;
+}
+
+.accentSwitchOn::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--mantine-color-white);
+}
+
+.accentSwitchOff {
+  position: relative;
+  flex-shrink: 0;
+  width: 30px;
+  height: 16px;
+  border-radius: 999px;
+  background-color: rgba(206, 216, 255, 0.2);
+}
+
+.accentSwitchOff::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(219, 226, 255, 0.8);
+}
+
+.accentSwatchRow {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.accentSwatch {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.accentSwatch[data-color='red'] {
+  background-color: var(--mantine-color-red-6);
+}
+
+.accentSwatch[data-color='pink'] {
+  background-color: var(--mantine-color-pink-6);
+}
+
+.accentSwatch[data-color='indigo'] {
+  background-color: var(--mantine-color-indigo-6);
+}
+
+.accentSwatch[data-color='green'] {
+  background-color: var(--mantine-color-green-6);
+}
+
+.accentSwatch[data-color='orange'] {
+  background-color: var(--mantine-color-orange-6);
+}
+
+.accentSwatchRing {
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--mantine-color-white);
+  border-radius: 50%;
+}
+
+.showcaseCloudPreview {
+  position: relative;
+  min-height: 270px;
+  padding: 20px 20px 60px;
+  user-select: none;
+  overflow: hidden;
+}
+
+.cloudIconBob {
+  position: absolute;
+  top: 34px;
+  left: 50%;
+  display: block;
+  width: 52px;
+  margin-left: -26px;
+  z-index: 1;
+}
+
+.cloudIcon {
+  display: block;
+  width: 52px;
+  color: var(--mantine-color-white);
+  filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.45));
+}
+
+.cloudBeamSvg {
+  position: absolute;
+  top: 64px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 64px);
+}
+
+.cloudStreams {
+  position: absolute;
+  top: 74px;
+  left: 50%;
+  width: 220px;
+  height: 130px;
+  margin-left: -110px;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+}
+
+.cloudGlyph {
+  position: absolute;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(219, 226, 255, 0.6);
+  offset-rotate: 0deg;
+}
+
+.cloudGlyphLeft {
+  composes: cloudGlyph;
+  offset-path: path('M 78 130 Q 92 55 97 0');
+}
+
+.cloudGlyphCenter {
+  composes: cloudGlyph;
+  offset-path: path('M 110 130 L 110 0');
+}
+
+.cloudGlyphRight {
+  composes: cloudGlyph;
+  offset-path: path('M 142 130 Q 128 55 123 0');
+}
+
+.cloudStreams span:nth-child(5n + 2) {
+  color: var(--mantine-color-white);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+}
+
+.showcaseEmoteWallPreview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 270px;
+  padding: 24px 20px 64px;
+  user-select: none;
+  overflow: hidden;
+}
+
+.emoteWall {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.emoteWallSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background-color: rgba(10, 15, 60, 0.38);
+  box-shadow: inset 0 0 0 1px rgba(206, 216, 255, 0.28);
+}
+
+.emoteWallEmote {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+
+.emoteWallCounter {
+  grid-row: 2 / 4;
+  grid-column: 2 / 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.emoteWallCount {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--mantine-color-white);
+}
+
+.emoteWallCountLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(219, 226, 255, 0.7);
+}
+
+.featureRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 2px solid light-dark(var(--mantine-color-indigo-5), var(--mantine-color-indigo-4));
+  border-radius: var(--mantine-radius-lg);
+  background-color: var(--mantine-color-indigo-9);
+}
+
+.featureRowIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: rgba(206, 216, 255, 0.16);
+  color: var(--mantine-color-white);
+}
+
+.featureRowName {
+  font-size: var(--mantine-font-size-md);
+  font-weight: 500;
+  color: var(--mantine-color-white);
+}
+
+.premiumActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 24px 24px;
+}
+
+@media (max-width: 800px) {
+  .premiumHero {
+    min-height: 220px;
+  }
+
+  .featureColumns {
+    columns: 1;
+  }
+
+  .featureRow,
+  .showcaseCard {
+    border-radius: var(--mantine-radius-md);
+  }
+
+  .showcaseCard {
+    --showcase-inner-radius: calc(var(--mantine-radius-md) - 2px);
+  }
+}
