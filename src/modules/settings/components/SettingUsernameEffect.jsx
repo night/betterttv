@@ -76,6 +76,11 @@ const UsernameEffectRequirementClassNamesByEffect = {
   [UsernameEffects.INTERGALACTIC]: classNames(styles.flavorUsername, effects.intergalactic),
 };
 
+// The settings menu is reachable while logged out of Twitch, so previews need a fallback name.
+function getPreviewDisplayName(currentUser, authUser) {
+  return currentUser?.displayName ?? authUser?.displayName ?? formatMessage({defaultMessage: 'Username'});
+}
+
 function UsernameEffectRequirementDisplay({value, displayName, chatColor}) {
   return (
     <div className={styles.usernameEffectRequirement}>
@@ -159,7 +164,7 @@ function SettingUsernameEffect() {
       if (currentAuthUser == null) {
         openUsernameEffectSignInModal(() => handleChange(newValue), {
           value: newValue,
-          displayName: currentUser.displayName,
+          displayName: getPreviewDisplayName(currentUser, currentAuthUser),
           chatColor,
         });
 
@@ -172,7 +177,7 @@ function SettingUsernameEffect() {
       if (userId !== currentAuthUser.id || eligibility == null || eligibility[newValue] !== true) {
         openUsernameEffectSubscriptionUpgradeModal(() => handleChange(newValue), {
           value: newValue,
-          displayName: currentUser.displayName,
+          displayName: getPreviewDisplayName(currentUser, currentAuthUser),
           chatColor,
         });
 
@@ -217,7 +222,7 @@ function SettingUsernameEffect() {
                 size="xl"
                 style={getChatColorStyle(effectValue, chatColor)}
                 className={UsernameEffectRequirementClassNamesByEffect[effectValue]}>
-                {currentUser.displayName}
+                {getPreviewDisplayName(currentUser, user)}
               </Text>
             </SettingRadioCard>
           ))}
