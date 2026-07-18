@@ -1,5 +1,7 @@
 .contained {
   content-visibility: auto;
+  /* approximate single-line message height; only used as the placeholder for lines that have
+     never rendered — once painted, the browser remembers each line's real height instead */
   contain-intrinsic-size: auto 28px;
 }
 
