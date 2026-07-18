@@ -1,3 +1,8 @@
+.contained {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 28px;
+}
+
 .glow {
   text-shadow: 0 0 20px color-mix(in srgb, currentColor 80%, transparent);
 }

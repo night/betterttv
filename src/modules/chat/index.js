@@ -413,7 +413,7 @@ class ChatModule {
     this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts);
   }
 
-  applyUsernameEffect(fromNode, userId) {
+  applyUsernameEffect(element, fromNode, userId) {
     const usernameEffect = subscribers.getUsernameEffect(userId);
     if (usernameEffect == null) {
       return;
@@ -425,6 +425,7 @@ class ChatModule {
     }
 
     fromNode.classList.add(effectClassName);
+    element.classList.add(effects.contained);
   }
 
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
@@ -445,7 +446,7 @@ class ChatModule {
       color = fromNode.style.color;
     }
 
-    this.applyUsernameEffect(fromNode, user.id);
+    this.applyUsernameEffect(element, fromNode, user.id);
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
       element
