@@ -1,3 +1,8 @@
+.chat-line__message {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 28px;
+}
+
 .bttv-chat-badge {
   width: 18px;
   height: 18px;
