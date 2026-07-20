@@ -61,11 +61,11 @@
     "> 0.25%, not dead"
   ],
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "5.14.8",
-    "@formatjs/cli": "6.16.13",
-    "@formatjs/unplugin": "^1.2.1",
+    "@eslint-react/eslint-plugin": "5.17.3",
+    "@formatjs/cli": "6.16.14",
+    "@formatjs/unplugin": "^1.2.3",
     "@sentry/vite-plugin": "5.4.0",
-    "autoprefixer": "10.5.2",
+    "autoprefixer": "10.5.4",
     "browserslist-to-esbuild": "2.1.1",
     "emoji-toolkit": "10.0.0",
     "eslint": "10.7.0",
@@ -76,13 +76,13 @@
     "git-rev-sync": "3.0.2",
     "globals": "17.7.0",
     "got": "15.1.0",
-    "postcss": "8.5.19",
+    "postcss": "8.5.20",
     "postcss-hexrgba": "2.1.0",
     "postcss-prefixwrap": "^1.58.0",
     "postcss-preset-env": "^11.3.2",
     "postcss-url": "10.1.4",
     "prettier": "3.9.5",
-    "vite": "8.1.4"
+    "vite": "8.1.5"
   },
   "overrides": {
     "postcss-url": {
