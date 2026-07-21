@@ -1,3 +1,10 @@
+.contained {
+  content-visibility: auto;
+  /* approximate single-line message height; only used as the placeholder for lines that have
+     never rendered — once painted, the browser remembers each line's real height instead */
+  contain-intrinsic-size: auto 28px;
+}
+
 .glow {
   text-shadow: 0 0 20px color-mix(in srgb, currentColor 80%, transparent);
 }
