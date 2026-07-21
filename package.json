@@ -76,12 +76,12 @@
     "git-rev-sync": "3.0.2",
     "globals": "17.7.0",
     "got": "15.1.0",
-    "postcss": "8.5.20",
+    "postcss": "8.5.21",
     "postcss-hexrgba": "2.1.0",
     "postcss-prefixwrap": "^1.58.0",
     "postcss-preset-env": "^11.3.2",
     "postcss-url": "10.1.4",
-    "prettier": "3.9.5",
+    "prettier": "3.9.6",
     "vite": "8.1.5"
   },
   "overrides": {
