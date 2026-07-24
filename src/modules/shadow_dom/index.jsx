@@ -24,6 +24,7 @@ customElements.define(APP_CONTAINER_ID, AppContainer);
 
 const SCOPE_CLASS = 'bttv-mantine-scope';
 const DARK_MODE_CLASS = 'bttv-mantine-theme-dark';
+const REDUCED_USERNAME_EFFECTS_CLASS = 'bttv-reduced-username-effects';
 
 // This module is a singleton, so its state lives in file-scoped globals.
 const components = {};
@@ -65,6 +66,11 @@ function syncHostToFullscreen() {
 function toggleDarkModeClass() {
   const dark = settings.get(SettingIds.DARKENED_MODE) === true;
   mountNode.classList.toggle(DARK_MODE_CLASS, dark);
+}
+
+function toggleReducedUsernameEffectsClass() {
+  const reduced = settings.get(SettingIds.REDUCED_USERNAME_EFFECTS) === true;
+  mountNode.classList.toggle(REDUCED_USERNAME_EFFECTS_CLASS, reduced);
 }
 
 function setAdoptedStyleSheet(cssList) {
@@ -146,7 +152,9 @@ addStyleSheet();
 useAuthStore.subscribe((state) => state.user?.pro ?? false, injectMantineVariables);
 
 toggleDarkModeClass();
+toggleReducedUsernameEffectsClass();
 settings.on(`changed.${SettingIds.PRIMARY_COLOR}`, injectMantineVariables);
 settings.on(`changed.${SettingIds.DARKENED_MODE}`, toggleDarkModeClass);
+settings.on(`changed.${SettingIds.REDUCED_USERNAME_EFFECTS}`, toggleReducedUsernameEffectsClass);
 
 export default {mount, unmount, isMounted};

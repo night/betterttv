@@ -101,3 +101,12 @@
   background-image: url(assets/username_effects/iridescence.png);
   filter: url(#stroke-text-svg-filter-iridescence);
 }
+
+:global(.bttv-reduced-username-effects) .flare,
+:global(.bttv-reduced-username-effects) .iridescence,
+:global(.bttv-reduced-username-effects) .supernova,
+:global(.bttv-reduced-username-effects) .glacier,
+:global(.bttv-reduced-username-effects) .intergalactic,
+:global(.bttv-reduced-username-effects) .midas {
+  animation: none;
+}
