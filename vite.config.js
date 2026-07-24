@@ -132,6 +132,7 @@ const MIME_TYPES = {
   '.map': 'application/json',
   '.json': 'application/json',
   '.svg': 'image/svg+xml',
+  '.mp4': 'video/mp4',
 };
 
 const RELOAD_PATH = '/__bttv_dev_reload';
@@ -198,8 +199,29 @@ function devWatchServerPlugin() {
         // serve the locally built file if present, otherwise proxy to the production CDN
         fs.readFile(filePath)
           .then((data) => {
-            res.writeHead(200, {'Content-Type': MIME_TYPES[path.extname(filePath)] ?? 'application/octet-stream'});
-            res.end(data);
+            const mime = MIME_TYPES[path.extname(filePath)] ?? 'application/octet-stream';
+            // honor range requests so <video> can seek (chrome needs this to loop playback)
+            const range = /^bytes=(\d+)-(\d*)$/.exec(req.headers.range ?? '');
+            if (range == null) {
+              res.writeHead(200, {'Content-Type': mime, 'Accept-Ranges': 'bytes', 'Content-Length': data.length});
+              res.end(data);
+              return;
+            }
+            const start = Number(range[1]);
+            const end = range[2] === '' ? data.length - 1 : Math.min(Number(range[2]), data.length - 1);
+            if (start >= data.length || start > end) {
+              res.writeHead(416, {'Content-Range': `bytes */${data.length}`});
+              res.end();
+              return;
+            }
+            const chunk = data.subarray(start, end + 1);
+            res.writeHead(206, {
+              'Content-Type': mime,
+              'Accept-Ranges': 'bytes',
+              'Content-Range': `bytes ${start}-${end}/${data.length}`,
+              'Content-Length': chunk.length,
+            });
+            res.end(chunk);
           })
           .catch(() => {
             got
