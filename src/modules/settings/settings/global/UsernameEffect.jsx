@@ -17,7 +17,7 @@ function UsernameEffect({ref, ...props}) {
       <SettingUsernameEffect />
       <SettingSwitch
         name={formatMessage({defaultMessage: 'Reduced Motion'})}
-        description={formatMessage({defaultMessage: 'Show animated username effects in chat as still images.'})}
+        description={formatMessage({defaultMessage: 'Display username effects without animation.'})}
         value={reducedMotion}
         onChange={setReducedMotion}
       />
