@@ -5,3 +5,21 @@ dist
 .vscode
 .idea
 .env
+# OS metadata
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
