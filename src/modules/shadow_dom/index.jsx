@@ -1,5 +1,6 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import effects from '@/common/styles/UsernameEffects.module.css';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
 import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
 import settings from '@/settings';
@@ -24,7 +25,6 @@ customElements.define(APP_CONTAINER_ID, AppContainer);
 
 const SCOPE_CLASS = 'bttv-mantine-scope';
 const DARK_MODE_CLASS = 'bttv-mantine-theme-dark';
-const REDUCED_USERNAME_EFFECTS_CLASS = 'bttv-reduced-username-effects';
 
 // This module is a singleton, so its state lives in file-scoped globals.
 const components = {};
@@ -70,7 +70,7 @@ function toggleDarkModeClass() {
 
 function toggleReducedUsernameEffectsClass() {
   const reduced = settings.get(SettingIds.REDUCED_USERNAME_EFFECTS) === true;
-  mountNode.classList.toggle(REDUCED_USERNAME_EFFECTS_CLASS, reduced);
+  mountNode.classList.toggle(effects.reducedMotion, reduced);
 }
 
 function setAdoptedStyleSheet(cssList) {

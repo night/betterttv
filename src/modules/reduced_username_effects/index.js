@@ -1,3 +1,4 @@
+import effects from '@/common/styles/UsernameEffects.module.css';
 import {PlatformTypes, SettingIds} from '@/constants';
 import settings from '@/settings';
 import {loadModuleForPlatforms} from '@/utils/modules';
@@ -10,7 +11,7 @@ class ReducedUsernameEffectsModule {
   }
 
   load() {
-    document.body.classList.toggle('bttv-reduced-username-effects', settings.get(SettingIds.REDUCED_USERNAME_EFFECTS));
+    document.body.classList.toggle(effects.reducedMotion, settings.get(SettingIds.REDUCED_USERNAME_EFFECTS));
   }
 }
 

@@ -102,11 +102,11 @@
   filter: url(#stroke-text-svg-filter-iridescence);
 }
 
-:global(.bttv-reduced-username-effects) .flare,
-:global(.bttv-reduced-username-effects) .iridescence,
-:global(.bttv-reduced-username-effects) .supernova,
-:global(.bttv-reduced-username-effects) .glacier,
-:global(.bttv-reduced-username-effects) .intergalactic,
-:global(.bttv-reduced-username-effects) .midas {
+.reducedMotion .flare,
+.reducedMotion .iridescence,
+.reducedMotion .supernova,
+.reducedMotion .glacier,
+.reducedMotion .intergalactic,
+.reducedMotion .midas {
   animation: none;
 }
