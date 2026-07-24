@@ -241,6 +241,7 @@ class ChatHighlightBlacklistKeywordsModule {
     watcher.on('load.chat', () => this.loadChat());
     watcher.on('load.vod', () => this.loadChat());
     watcher.on('chat.message', (message, messageObj) => this.onMessage(message, messageObj, false));
+    watcher.on('chat.seventv_message', (message, messageObj) => this.onMessage(message, messageObj, false));
     watcher.on('chat.notice_message', (message, messageObj) => this.onMessage(message, messageObj, true));
     watcher.on('vod.message', (message) => this.onVODMessage(message));
     settings.on(`changed.${SettingIds.BLACKLIST_KEYWORDS}`, computeBlacklistKeywords);
