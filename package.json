@@ -85,10 +85,7 @@
     "vite": "8.1.5"
   },
   "overrides": {
-    "postcss-url": {
-      "minimatch": "^3.1.5"
-    },
-    "brace-expansion@<1.1.16": "^1.1.16",
+    "minimatch@<10.0.3": "^10.2.5",
     "brace-expansion@>=5.0.0 <5.0.8": "^5.0.8",
     "uuid@<11.1.1": "^11.1.1"
   }
