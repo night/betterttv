@@ -61,9 +61,9 @@
     "> 0.25%, not dead"
   ],
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "5.18.0",
-    "@formatjs/cli": "6.16.14",
-    "@formatjs/unplugin": "^1.2.3",
+    "@eslint-react/eslint-plugin": "5.18.1",
+    "@formatjs/cli": "6.16.15",
+    "@formatjs/unplugin": "^1.2.4",
     "@sentry/vite-plugin": "5.4.0",
     "autoprefixer": "10.5.4",
     "browserslist-to-esbuild": "2.1.1",
@@ -76,13 +76,13 @@
     "git-rev-sync": "3.0.2",
     "globals": "17.8.0",
     "got": "15.1.0",
-    "postcss": "8.5.24",
+    "postcss": "8.5.25",
     "postcss-hexrgba": "2.1.0",
     "postcss-prefixwrap": "^1.58.0",
     "postcss-preset-env": "^11.3.2",
     "postcss-url": "10.1.4",
     "prettier": "3.9.6",
-    "vite": "8.1.5"
+    "vite": "8.2.0"
   },
   "overrides": {
     "minimatch@<10.0.3": "^10.2.5",
