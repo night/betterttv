@@ -101,3 +101,12 @@
   background-image: url(assets/username_effects/iridescence.png);
   filter: url(#stroke-text-svg-filter-iridescence);
 }
+
+.reducedMotion .flare,
+.reducedMotion .iridescence,
+.reducedMotion .supernova,
+.reducedMotion .glacier,
+.reducedMotion .intergalactic,
+.reducedMotion .midas {
+  animation: none;
+}
