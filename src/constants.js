@@ -64,7 +64,7 @@ export const SettingIds = {
   CHATBOT_COMMAND_AUTOCOMPLETE: 'chatbotCommandAutocomplete',
   SELF_BOT: 'selfBot',
   SELF_BOT_COMMANDS_LIST: 'selfBotCommandsList',
-  REDUCED_USERNAME_EFFECTS: 'reducedUsernameEffects',
+  REDUCED_MOTION: 'reducedMotion',
 };
 
 export const CategoryTypes = {
@@ -315,7 +315,7 @@ export const SettingDefaultValues = {
   [SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE]: true,
   [SettingIds.SELF_BOT]: false,
   [SettingIds.SELF_BOT_COMMANDS_LIST]: {},
-  [SettingIds.REDUCED_USERNAME_EFFECTS]: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  [SettingIds.REDUCED_MOTION]: false,
 };
 
 export const FlagSettings = [
