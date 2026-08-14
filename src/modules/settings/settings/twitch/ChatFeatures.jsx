@@ -54,6 +54,13 @@ function ChatFeatures({ref, ...props}) {
         })}
       />
       <SettingCheckbox
+        value={ChatFlags.WATCH_STREAKS}
+        name={formatMessage({defaultMessage: 'Watch Streaks'})}
+        description={formatMessage({
+          defaultMessage: 'Show watch streaks in chat and on followed channels in the sidebar.',
+        })}
+      />
+      <SettingCheckbox
         value={ChatFlags.CHAT_MESSAGE_HISTORY}
         name={formatMessage({defaultMessage: 'Message History'})}
         description={formatMessage({
