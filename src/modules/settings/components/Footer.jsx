@@ -1,7 +1,9 @@
-import {Anchor, Text} from '@mantine/core';
-import React from 'react';
-import {EXT_VER, ExternalLinks} from '@/constants';
+import {Anchor, Text, Tooltip} from '@mantine/core';
+import React, {use} from 'react';
+import usePortalRef from '@/common/hooks/PortalRef';
+import {EXT_VER, ExternalLinks, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
 import styles from './Footer.module.css';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -47,6 +49,9 @@ function LinkColumn({title, links}) {
 }
 
 function Footer() {
+  const {setPage} = use(PageContext);
+  const portalRef = usePortalRef();
+
   return (
     <div className={styles.root}>
       <div className={styles.columns}>
@@ -61,9 +66,17 @@ function Footer() {
             {year: CURRENT_YEAR}
           )}
         </Text>
-        <Text c="dimmed" className={styles.version} order={4}>
-          {VERSION_TEXT}
-        </Text>
+        <Tooltip
+          openDelay={200}
+          withArrow
+          arrowSize={8}
+          radius="md"
+          label={<Text size="md">{formatMessage({defaultMessage: 'Read Changelog'})}</Text>}
+          portalProps={{target: portalRef.current}}>
+          <Anchor component="button" type="button" c="dimmed" onClick={() => setPage(PageTypes.CHANGELOG)}>
+            {VERSION_TEXT}
+          </Anchor>
+        </Tooltip>
       </div>
     </div>
   );
