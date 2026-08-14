@@ -26,8 +26,8 @@ function AutoJoinRaids({ref, ...props}) {
       <SettingTagInput
         name={
           value
-            ? formatMessage({defaultMessage: 'Whitelist Channels'})
-            : formatMessage({defaultMessage: 'Blacklist Channels'})
+            ? formatMessage({defaultMessage: 'Blacklist Channels'})
+            : formatMessage({defaultMessage: 'Whitelist Channels'})
         }
         description={
           value
