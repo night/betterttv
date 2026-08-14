@@ -43,10 +43,20 @@ class SevenTVChannelEmotes extends AbstractEmotes {
     if (!currentChannel) return;
 
     fetch(
-      `https://7tv.io/v3/users/${encodeURIComponent(currentChannel.provider)}/${encodeURIComponent(currentChannel.id)}`
+      `https://7tv.io/v3/users/${encodeURIComponent(currentChannel.provider)}/${encodeURIComponent(currentChannel.id)}`,
+      {headers: {'X-7tv-Missing-EmoteSet-Aware': '1'}}
     )
       .then((response) => response.json())
-      .then(({emote_set: emoteSet}) => {
+      .then(({emote_set_id: emoteSetId}) => {
+        if (emoteSetId == null) {
+          return null;
+        }
+
+        return fetch(`https://7tv.io/v3/emote-sets/${encodeURIComponent(emoteSetId)}`).then((response) =>
+          response.json()
+        );
+      })
+      .then((emoteSet) => {
         const {emotes} = emoteSet ?? {};
         if (emotes == null) {
           return;
