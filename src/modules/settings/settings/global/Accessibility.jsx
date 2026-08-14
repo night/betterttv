@@ -28,7 +28,7 @@ function Accessibility({ref, ...props}) {
 
 SettingStore.registerSetting(Accessibility, {
   settingPanelId: SettingPanelIds.ACCESSIBILITY,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.INTERFACE,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });
