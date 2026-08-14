@@ -36,6 +36,16 @@ class AccentColor {
     const themeColor = parseThemeColor({color: value, theme});
     const baseColors = theme.colors[themeColor.color];
 
+    // Legacy Pro accent colors were stored as arbitrary hex values, which have no palette in
+    // theme.colors — treat them like an unset accent rather than crashing.
+    if (baseColors == null) {
+      if (cssVariablesStyle != null) {
+        cssVariablesStyle.remove();
+      }
+
+      return;
+    }
+
     const twitchPurpleColors = {
       '--color-twitch-purple-1': darken(baseColors[9], 0.4),
       '--color-twitch-purple-2': darken(baseColors[9], 0.3),

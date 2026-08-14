@@ -220,10 +220,21 @@ const resolver = (theme) => ({
   },
 });
 
-export const mantineVariablesResolver = (theme, primaryColor) => {
-  if (primaryColor != null) {
-    theme.primaryColor = primaryColor;
+// Legacy Pro accent colors were stored as arbitrary hex values (and can still arrive via cloud
+// backup sync), but Mantine only accepts keys of theme.colors as primaryColor — fall back to the
+// default for anything else so an invalid stored value can't crash the UI.
+export function normalizeThemePrimaryColor(primaryColor) {
+  if (primaryColor == null || theme.colors[primaryColor] == null) {
+    return DEFAULT_PRIMARY_COLOR;
   }
+
+  return primaryColor;
+}
+
+export const mantineVariablesResolver = (baseTheme, primaryColor) => {
+  // Copy rather than mutate: baseTheme is the shared module-level theme, and writing an
+  // unvalidated primaryColor to it would poison every other consumer.
+  const theme = {...baseTheme, primaryColor: normalizeThemePrimaryColor(primaryColor ?? baseTheme.primaryColor)};
 
   const {variables: defaultVariables, dark: defaultDark, light: defaultLight} = v8CssVariablesResolver(theme);
   const {variables, dark, light} = resolver(theme);
@@ -248,13 +259,10 @@ function ThemeProvider({children, ...props}) {
     defaultValue: DEFAULT_PRIMARY_COLOR,
   });
 
-  const modifiedTheme = useMemo(() => {
-    if (normalizedPrimaryColor == null) {
-      return {...theme, primaryColor: DEFAULT_PRIMARY_COLOR};
-    }
-
-    return {...theme, primaryColor: normalizedPrimaryColor};
-  }, [normalizedPrimaryColor]);
+  const modifiedTheme = useMemo(
+    () => ({...theme, primaryColor: normalizeThemePrimaryColor(normalizedPrimaryColor)}),
+    [normalizedPrimaryColor]
+  );
 
   return (
     <PortalContext value={portalRef}>
