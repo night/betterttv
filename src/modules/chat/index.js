@@ -1,7 +1,9 @@
+import throttle from 'lodash.throttle';
 import {getCachedBadges} from '@/actions/badges';
 import clickableStyles from '@/common/styles/Clickable.module.css';
 import effects from '@/common/styles/UsernameEffects.module.css';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
+import runUsernameHoverEffectAnimation from '@/common/utils/username-hover-effect-animations';
 import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import nicknames from '@/modules/chat_nicknames/index';
@@ -25,6 +27,23 @@ const EMOTE_SELECTOR =
   '.bttv-animated-static-emote, .chat-line__message, .vod-message, .pinned-chat__message, .thread-message__message';
 const EMOTE_HOVER_SELECTOR =
   '.bttv-animated-static-emote:hover, .chat-line__message:hover, .vod-message:hover, .pinned-chat__message:hover, .thread-message__message:hover';
+
+const USERNAME_HOVER_EFFECT_COOLDOWN_MS = 3000;
+
+// leading + trailing: the first hover runs now, and whichever username the cursor still rests on when the window ends runs then
+const runThrottledUsernameHoverEffect = throttle(
+  function runUsernameHoverEffect(fromNode, userId) {
+    const ran =
+      fromNode.matches(':hover') &&
+      runUsernameHoverEffectAnimation(fromNode, subscribers.getUsernameHoverEffect(userId));
+    // a bailed hover gives its window back
+    if (!ran) {
+      runThrottledUsernameHoverEffect.cancel();
+    }
+  },
+  USERNAME_HOVER_EFFECT_COOLDOWN_MS,
+  {leading: true, trailing: true}
+);
 
 const EMOTE_MODIFIERS = {
   'w!': 'bttv-emote-modifier-wide',
@@ -424,18 +443,21 @@ class ChatModule {
     this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts);
   }
 
-  applyUsernameEffect(fromNode, userId) {
+  applyUsernameEffect(element, fromNode, userId) {
     const usernameEffect = subscribers.getUsernameEffect(userId);
-    if (usernameEffect == null) {
-      return;
+    if (usernameEffect != null) {
+      const effectClassName = effects[usernameEffect];
+      if (effectClassName != null) {
+        fromNode.classList.add(effectClassName);
+      }
     }
 
-    const effectClassName = effects[usernameEffect];
-    if (effectClassName == null) {
-      return;
-    }
-
-    fromNode.classList.add(effectClassName);
+    // messages parse once (__bttvParsed), so this is a single listener per username. it binds
+    // unconditionally and reads the effect at hover time, so a lookup_user that lands after the
+    // message rendered still animates it, and switching effects applies to bound names
+    fromNode.addEventListener('mouseenter', function handleUsernameHoverEffectEnter() {
+      runThrottledUsernameHoverEffect(fromNode, userId);
+    });
   }
 
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
@@ -456,7 +478,7 @@ class ChatModule {
       color = fromNode.style.color;
     }
 
-    this.applyUsernameEffect(fromNode, user.id);
+    this.applyUsernameEffect(element, fromNode, user.id);
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
       element

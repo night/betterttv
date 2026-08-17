@@ -1,5 +1,7 @@
+/* a drop-shadow (not text-shadow) so the hover overlay's filter takeover reproduces the halo exactly.
+   half the radius of the text-shadow it replaces: drop-shadow's blur is the gaussian sigma, text-shadow's is twice it */
 .glow {
-  text-shadow: 0 0 20px color-mix(in srgb, currentColor 80%, transparent);
+  filter: drop-shadow(0 0 10px color-mix(in srgb, currentColor 80%, transparent));
 }
 
 /* the sweep runs during the first half of the timeline and holds for the second, so each loop
@@ -109,4 +111,120 @@
 .reducedMotion .intergalactic,
 .reducedMotion .midas {
   animation: none;
+}
+
+/* Username hover effects: the engine (common/utils/username-hover-effect-animations.js) feeds
+   measured numbers through the --bttv-cell-* properties; declarations and timing live here. */
+/* the host's filter moves to the overlay for the run: chromium drops descendant clips inside filtered inline elements.
+   a visibility:hidden host is not hit-testable, so the visible overlay takes the hits and they bubble through it */
+.textAnimHost {
+  position: relative;
+  visibility: hidden;
+  filter: none;
+}
+
+.textAnimOverlay {
+  --bttv-hover-effect-duration: 0.4s;
+  --bttv-hover-effect-stagger: 35ms;
+
+  position: absolute;
+  inset: 0;
+  visibility: visible;
+}
+
+/* one character per cell at its measured slot, snapped to whole pixels so composited layers never
+   resample. the correction residuals move the cell, not the copies inside it, so the clip window
+   travels with the glyph instead of shaving it */
+.textAnimCell {
+  position: absolute;
+  left: calc(var(--bttv-cell-x) + var(--bttv-cell-dx, 0px));
+  top: calc(var(--bttv-cell-y) + var(--bttv-cell-dy, 0px));
+  width: var(--bttv-cell-width);
+  height: var(--bttv-cell-height);
+  /* the measured slot height keeps the overlay baseline exactly on the original text's */
+  line-height: var(--bttv-cell-height);
+}
+
+/* only flip clips; clip-path backs up overflow because composited children escape overflow clips under svg filters in chromium */
+.textAnimCell.flipCell {
+  overflow: hidden;
+  clip-path: inset(0);
+}
+
+/* flip rolls each letter up into a rising copy; transform (not top) keeps the ease-out tail subpixel-smooth */
+.textAnimCell > .flipStrip {
+  display: block;
+  position: relative;
+  animation: flipSlide var(--bttv-hover-effect-duration) cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  animation-delay: calc(var(--bttv-cell-index, 0) * var(--bttv-hover-effect-stagger));
+}
+
+/* full-name-width copies keep background geometry identical to the host */
+.textAnimCell > .flipStrip > span,
+.textAnimCell > .staticStrip > span {
+  display: block;
+  width: var(--bttv-name-width);
+  margin-left: calc(var(--bttv-cell-pad) - var(--bttv-cell-char-left));
+  text-indent: var(--bttv-cell-char-left);
+  white-space: nowrap;
+  /* inherited centering (the settings preview cards) would shift a lone character off its slot */
+  text-align: left;
+  /* the overlay's filter renders over the clipped result instead, so it is never cut off */
+  filter: none;
+}
+
+/* the copies are exactly one cell tall, so the incoming glyph lands where the outgoing one sat */
+.textAnimCell > .flipStrip > span {
+  height: var(--bttv-cell-height);
+}
+
+@keyframes flipSlide {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-1 * var(--bttv-cell-height, 0px)));
+  }
+}
+
+/* bounce: each letter scales up slightly and settles back, in order from start to end */
+.textAnimCell.bounceCell {
+  animation: bounceScale var(--bttv-hover-effect-duration) ease-in-out both;
+  animation-delay: calc(var(--bttv-cell-index, 0) * var(--bttv-hover-effect-stagger));
+}
+
+.textAnimCell > .staticStrip {
+  display: block;
+}
+
+@keyframes bounceScale {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(0.97);
+  }
+}
+
+/* wave: each letter hops up and settles with a slight overshoot, like a stadium wave */
+.textAnimCell.waveCell {
+  animation: waveHop var(--bttv-hover-effect-duration) ease-in-out both;
+  animation-delay: calc(var(--bttv-cell-index, 0) * var(--bttv-hover-effect-stagger));
+}
+
+@keyframes waveHop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-18%);
+  }
+  70% {
+    transform: translateY(3%);
+  }
 }

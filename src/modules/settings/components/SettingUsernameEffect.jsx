@@ -1,35 +1,26 @@
 import {faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Text} from '@mantine/core';
 import classNames from 'classnames';
-import React, {useCallback, useEffect, useMemo} from 'react';
-import {useShallow} from 'zustand/react/shallow';
+import React, {useMemo} from 'react';
 import {updateUsernameEffect} from '../../../actions/account';
 import Icon from '../../../common/components/Icon';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
-import useDebouncedRemoteState from '../../../common/hooks/DebouncedRemoteState';
+import useUsernameEffectSetting, {NONE} from '../../../common/hooks/UsernameEffectSetting';
 import effects from '../../../common/styles/UsernameEffects.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
-import {UsernameEffects} from '../../../constants';
+import {CHAT_COLOR_USERNAME_EFFECTS, UsernameEffectFields, UsernameEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
-import socketClient from '../../../socket-client';
 import useAuthStore from '../../../stores/auth';
-import useUsernameEffectEligibilityStore, {fetchEligibility} from '../../../stores/username-effect-eligibility';
-import {getCurrentChannel} from '../../../utils/channel';
 import {isUserPro} from '../../../utils/pro';
 import twitch from '../../../utils/twitch';
-import {getCurrentUser} from '../../../utils/user';
+import {getCurrentUser, getPreviewDisplayName} from '../../../utils/user';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import styles from './SettingUsernameEffect.module.css';
 import SettingWrapper from './SettingWrapper';
 
-const NONE = 'none';
-
-// glow and flare render over the user's own chat color, so their previews use it too
-const CHAT_COLOR_EFFECTS = [UsernameEffects.GLOW, UsernameEffects.FLARE];
-
 function getChatColorStyle(effect, chatColor) {
-  if (!CHAT_COLOR_EFFECTS.includes(effect) || chatColor == null) {
+  if (!CHAT_COLOR_USERNAME_EFFECTS.includes(effect) || chatColor == null) {
     return undefined;
   }
 
@@ -76,11 +67,6 @@ const UsernameEffectRequirementClassNamesByEffect = {
   [UsernameEffects.INTERGALACTIC]: classNames(styles.flavorUsername, effects.intergalactic),
 };
 
-// The settings menu is reachable while logged out of Twitch, so previews need a fallback name.
-function getPreviewDisplayName(currentUser, authUser) {
-  return currentUser?.displayName ?? authUser?.displayName ?? formatMessage({defaultMessage: 'Username'});
-}
-
 function UsernameEffectRequirementDisplay({value, displayName, chatColor}) {
   return (
     <div className={styles.usernameEffectRequirement}>
@@ -99,7 +85,13 @@ function UsernameEffectRequirementDisplay({value, displayName, chatColor}) {
   );
 }
 
-function openUsernameEffectSubscriptionUpgradeModal(callback = () => {}, {value, displayName, chatColor}) {
+function isEligibleForUsernameEffect(eligibility, value) {
+  return eligibility?.usernameEffects?.[value] === true;
+}
+
+function openUsernameEffectSubscriptionUpgradeModal(value, callback) {
+  const displayName = getPreviewDisplayName(getCurrentUser(), useAuthStore.getState().user);
+  const chatColor = twitch.getCurrentUserChatColor();
   const upgradeDisabled = isUserPro(useAuthStore.getState().user) && value !== UsernameEffects.IRIDESCENCE;
 
   return openSubscriptionUpgradeModal(
@@ -112,7 +104,10 @@ function openUsernameEffectSubscriptionUpgradeModal(callback = () => {}, {value,
   );
 }
 
-function openUsernameEffectSignInModal(callback = () => {}, {value, displayName, chatColor}) {
+function openUsernameEffectSignInModal(value, callback) {
+  const displayName = getPreviewDisplayName(getCurrentUser(), useAuthStore.getState().user);
+  const chatColor = twitch.getCurrentUserChatColor();
+
   return openSignInModal(
     {
       title: UsernameEffectRequirementDisplayTitleByEffect[value],
@@ -124,70 +119,16 @@ function openUsernameEffectSignInModal(callback = () => {}, {value, displayName,
 
 function SettingUsernameEffect() {
   const currentUser = useCurrentUser();
-  const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
+  const user = useAuthStore((state) => state.user);
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
 
-  useEffect(() => {
-    fetchEligibility();
-  }, [user]);
-
-  const [value, setValue] = useDebouncedRemoteState({
-    value: user?.usernameEffect ?? NONE,
-    onSave: async (newValue, {signal}) => {
-      const effect = newValue === NONE ? null : newValue;
-      await updateUsernameEffect(effect, {signal});
-      updateUser({...useAuthStore.getState().user, usernameEffect: effect});
-
-      const currentChannel = getCurrentChannel();
-      if (currentChannel == null) {
-        return;
-      }
-
-      socketClient.broadcastMe(currentChannel.provider, currentChannel.id);
-    },
+  const [value, handleChange] = useUsernameEffectSetting({
+    userField: UsernameEffectFields.EFFECT,
+    saveEffect: updateUsernameEffect,
+    isEligible: isEligibleForUsernameEffect,
+    openSignInModal: openUsernameEffectSignInModal,
+    openUpgradeModal: openUsernameEffectSubscriptionUpgradeModal,
   });
-
-  const handleChange = useCallback(
-    async (newValue) => {
-      const currentUser = getCurrentUser();
-      const {user: currentAuthUser} = useAuthStore.getState();
-
-      if (newValue === NONE && currentAuthUser == null) {
-        return;
-      }
-
-      if (newValue === NONE) {
-        setValue(newValue);
-        return;
-      }
-
-      if (currentAuthUser == null) {
-        openUsernameEffectSignInModal(() => handleChange(newValue), {
-          value: newValue,
-          displayName: getPreviewDisplayName(currentUser, currentAuthUser),
-          chatColor,
-        });
-
-        return;
-      }
-
-      await fetchEligibility();
-
-      const {userId, eligibility} = useUsernameEffectEligibilityStore.getState();
-      if (userId !== currentAuthUser.id || eligibility == null || eligibility[newValue] !== true) {
-        openUsernameEffectSubscriptionUpgradeModal(() => handleChange(newValue), {
-          value: newValue,
-          displayName: getPreviewDisplayName(currentUser, currentAuthUser),
-          chatColor,
-        });
-
-        return;
-      }
-
-      setValue(newValue);
-    },
-    [setValue, chatColor]
-  );
 
   return (
     <React.Fragment>

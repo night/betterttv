@@ -13,6 +13,7 @@ import ProBadge from '@/common/components/ProBadge';
 import Scrollbar from '@/common/components/Scrollbar';
 import UsernameEffectText from '@/common/components/UsernameEffectText';
 import useCurrentUser from '@/common/hooks/CurrentUser';
+import runUsernameHoverEffectAnimation from '@/common/utils/username-hover-effect-animations';
 import {PageDecendants, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
@@ -91,14 +92,26 @@ function UserSettingsNavigationButton({active, onClick}) {
   const avatarSrc = bttvUser?.avatar ?? getCurrentUserProfilePicture();
   const {primaryColor} = useMantineTheme();
   const activeColor = active ? primaryColor : undefined;
+  const usernameEffectTextRef = useRef(null);
+  const usernameHoverEffect = bttvUser?.usernameHoverEffect ?? null;
+
+  // the whole button triggers the hover animation on the name, like a whole message does in chat
+  const handleMouseEnter = useCallback(() => {
+    runUsernameHoverEffectAnimation(usernameEffectTextRef.current, usernameHoverEffect);
+  }, [usernameHoverEffect]);
+
   return (
     <NavigationButton
       active={active}
       onClick={onClick}
       className={classNames(clickableStyles.clickableContainer, styles.userSettingsNavigationButton)}
+      buttonProps={usernameHoverEffect != null ? {onMouseEnter: handleMouseEnter} : undefined}
       label={
         bttvUser?.displayName != null ? (
-          <UsernameEffectText effect={bttvUser.usernameEffect} className={styles.displayName}>
+          <UsernameEffectText
+            ref={usernameEffectTextRef}
+            effect={bttvUser.usernameEffect}
+            className={styles.displayName}>
             {bttvUser.displayName}
           </UsernameEffectText>
         ) : (

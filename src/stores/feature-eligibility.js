@@ -1,17 +1,24 @@
 import {create} from 'zustand';
 import {persist} from 'zustand/middleware';
-import {getUsernameEffectEligibility} from '@/actions/account';
+import {getFeatureEligibility} from '@/actions/account';
 import useAuthStore from './auth';
 
+// the shipped key predates the store widening to every perk; keeping it leaves no litter behind
 const STORAGE_ID = 'bttvPrivate_usernameEffectEligibility';
 
-const useUsernameEffectEligibilityStore = create(
+// eligibility for every subscription perk, fetched lazily, deduped per user, refetched on id/pro changes
+const useFeatureEligibilityStore = create(
   persist(
     () => ({
       userId: null,
       eligibility: null,
     }),
-    {name: STORAGE_ID}
+    {
+      name: STORAGE_ID,
+      // v1 replaced the flat username effect map; older payloads are discarded and refetched
+      version: 1,
+      migrate: () => ({userId: null, eligibility: null}),
+    }
   )
 );
 
@@ -19,13 +26,13 @@ let lastFetch = null;
 
 function clearEligibility() {
   lastFetch = null;
-  useUsernameEffectEligibilityStore.setState({userId: null, eligibility: null});
+  useFeatureEligibilityStore.setState({userId: null, eligibility: null});
 }
 
 async function fetchEligibilityForUser(currentFetch, userId) {
   let eligibility;
   try {
-    eligibility = await getUsernameEffectEligibility();
+    eligibility = await getFeatureEligibility();
   } catch (_) {
     if (lastFetch === currentFetch) {
       lastFetch = null;
@@ -37,7 +44,7 @@ async function fetchEligibilityForUser(currentFetch, userId) {
     return;
   }
 
-  useUsernameEffectEligibilityStore.setState({userId, eligibility});
+  useFeatureEligibilityStore.setState({userId, eligibility});
 }
 
 export function fetchEligibility({force = false} = {}) {
@@ -83,4 +90,4 @@ useAuthStore.subscribe(
   }
 );
 
-export default useUsernameEffectEligibilityStore;
+export default useFeatureEligibilityStore;
