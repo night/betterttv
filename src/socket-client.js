@@ -18,6 +18,7 @@ export const EventNames = {
   EMOTE_CREATE: 'emote_create',
   EMOTE_DELETE: 'emote_delete',
   EMOTE_UPDATE: 'emote_update',
+  EMOTES_REFRESH: 'emotes_refresh',
   SETTINGS_UPDATE: 'settings_update',
   AUTHENTICATION_UPDATE: 'authentication_update',
   USER_UPDATE: 'user_update',
