@@ -54,7 +54,7 @@
     "reconnecting-eventsource": "1.6.5",
     "safe-regex2": "5.1.1",
     "semver": "7.8.5",
-    "zustand": "^5.0.14"
+    "zustand": "^5.0.15"
   },
   "browserslist": [
     "last 1 version",
