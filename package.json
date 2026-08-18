@@ -67,7 +67,7 @@
     "@sentry/vite-plugin": "5.4.0",
     "autoprefixer": "10.5.4",
     "browserslist-to-esbuild": "2.1.1",
-    "emoji-toolkit": "10.0.0",
+    "emoji-toolkit": "11.0.0",
     "eslint": "10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "4.4.5",
