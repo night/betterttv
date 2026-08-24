@@ -2,6 +2,8 @@
   .pinned-cheer,
   .pinned-cheer-v2,
   button[data-a-target='bits-button'],
+  /* the button's wrapper goes too, otherwise Twitch's notification dot is left floating */
+  div:has(> div > button[data-a-target='bits-button']),
   div:has(> div > button.tw-interactable > div.channel-leaderboard-header-rotating__users),
   div:has(> div > div > div.channel-leaderboard-header-rotating__users),
   div[data-test-selector='last-x-events'],
