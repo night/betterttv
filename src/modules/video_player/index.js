@@ -56,8 +56,14 @@ function createPictureInPictureButton(toggled) {
 let removeRecommendationWatcher;
 
 function watchPlayerRecommendationVodsAutoplay() {
+  // this runs on every player load, so drop the previous watcher before arming another one.
+  // otherwise they stack up and re-enabling the setting only removes the most recent one.
+  if (removeRecommendationWatcher != null) {
+    removeRecommendationWatcher();
+    removeRecommendationWatcher = null;
+  }
+
   if (hasFlag(settings.get(SettingIds.AUTO_PLAY), AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY)) {
-    if (removeRecommendationWatcher) removeRecommendationWatcher();
     return;
   }
 

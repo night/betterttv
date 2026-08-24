@@ -32,11 +32,12 @@ class DisableHomepageAutoplayModule {
 
     const stopAutoplay = () => {
       setTimeout(() => {
-        if (document.querySelector(FEATURED_VIDEO_SELECTOR) == null) {
-          return;
+        // this listener only removes itself once it fires, so it can outlive the featured video
+        // and end up pausing the player of whatever page was navigated to afterwards
+        if (document.querySelector(FEATURED_VIDEO_SELECTOR) != null) {
+          currentPlayer.pause();
         }
 
-        currentPlayer.pause();
         currentPlayer.setMuted(prevMuted);
       }, 0);
       if (currentPlayer.emitter) {
