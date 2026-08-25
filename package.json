@@ -68,7 +68,7 @@
     "autoprefixer": "10.5.4",
     "browserslist-to-esbuild": "2.1.1",
     "emoji-toolkit": "11.0.0",
-    "eslint": "10.8.1",
+    "eslint": "10.9.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "4.4.5",
     "eslint-plugin-import-x": "4.17.1",
