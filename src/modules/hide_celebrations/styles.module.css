@@ -1,0 +1,11 @@
+.hideCelebrations {
+  :global(.celebration__overlay) {
+    display: none !important;
+  }
+}
+
+.hideCheerEffects {
+  :global(.particle-canvas) {
+    display: none !important;
+  }
+}
