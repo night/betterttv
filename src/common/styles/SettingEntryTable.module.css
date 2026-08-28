@@ -100,3 +100,9 @@ td.colorColumn {
   min-width: 36px;
   max-width: 36px;
 }
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

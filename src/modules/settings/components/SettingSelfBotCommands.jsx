@@ -225,7 +225,7 @@ function SettingSelfBotCommands({value, setValue}) {
         />
       }
       rightContent={
-        <div className={styles.headerActions}>
+        <div className={tableStyles.headerActions}>
           {!isPro ? (
             <Pill size="lg" className={styles.limitPill}>
               {formatMessage(

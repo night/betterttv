@@ -1,0 +1,26 @@
+.intervalColumn {
+  width: 168px;
+}
+
+td.intervalColumn {
+  width: 168px;
+  min-width: 168px;
+  max-width: 168px;
+}
+
+.linesColumn {
+  width: 112px;
+}
+
+td.linesColumn {
+  width: 112px;
+  min-width: 112px;
+  max-width: 112px;
+}
+
+.messageRoot,
+.numberRoot {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
