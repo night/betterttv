@@ -1,6 +1,6 @@
 import {arrow, autoUpdate, flip, FloatingArrow, offset, shift, useFloating} from '@floating-ui/react';
 import classNames from 'classnames';
-import React, {useLayoutEffect, useRef} from 'react';
+import React, {useEffect, useLayoutEffect, useRef} from 'react';
 import useTooltipStore, {closeTooltip, resetTooltip} from './store';
 import styles from './Tooltip.module.css';
 
@@ -26,6 +26,29 @@ export default function TooltipController() {
   useLayoutEffect(() => {
     resetTooltip();
   }, []);
+
+  // A bound element replaced under a stationary pointer fires no mouseleave, and an identical
+  // replacement shifts no layout, so autoUpdate never ticks and the isConnected check above never
+  // gets to run either. Watch where the pointer actually goes instead.
+  useEffect(() => {
+    if (!open || referenceElement == null) {
+      return undefined;
+    }
+
+    // mouseout is no good here: it fires on the element being left, and a detached one no longer
+    // propagates to document. mouseover fires on the element being entered, which always does.
+    function handleMouseOver(event) {
+      if (referenceElement.contains(event.target)) {
+        return;
+      }
+
+      closeTooltip(referenceElement);
+    }
+
+    document.addEventListener('mouseover', handleMouseOver, true);
+
+    return () => document.removeEventListener('mouseover', handleMouseOver, true);
+  }, [open, referenceElement]);
 
   const {refs, floatingStyles, context} = useFloating({
     open,
