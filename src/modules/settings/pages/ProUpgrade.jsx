@@ -1,7 +1,8 @@
-import {faBolt, faCloud, faMedal, faRobot} from '@fortawesome/free-solid-svg-icons';
-import {Button, Text, Title} from '@mantine/core';
-import {animate, motion, useAnimationFrame, useMotionValue, useTransform} from 'framer-motion';
+import {faArrowUpRightFromSquare, faBolt, faCheck, faHeart, faRobot} from '@fortawesome/free-solid-svg-icons';
+import {Anchor, Button, Text, Title} from '@mantine/core';
+import {motion, useAnimationFrame, useMotionValue} from 'framer-motion';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
 import LogoIcon from '@/common/components/LogoIcon';
 import UsernameEffectText from '@/common/components/UsernameEffectText';
@@ -11,7 +12,9 @@ import formatMessage from '@/i18n/index';
 import PageHeader from '@/modules/settings/components/PageHeader';
 import PageScrollBody from '@/modules/settings/components/PageScrollBody';
 import socketClient from '@/socket-client';
+import useAuthStore from '@/stores/auth';
 import cdn from '@/utils/cdn';
+import {isUserPro} from '@/utils/pro';
 import styles from './ProUpgrade.module.css';
 
 const SHOWCASE_EFFECTS = [
@@ -22,7 +25,7 @@ const SHOWCASE_EFFECTS = [
   UsernameEffects.INTERGALACTIC,
 ];
 
-const MARQUEE_SPEED = 15;
+const MARQUEE_SPEED = 9;
 
 const MARQUEE_ROWS = [
   {id: 'row-1', direction: -1},
@@ -41,27 +44,17 @@ const STICKER_EMOTES = [
   {id: '5ffdf28dc96152314ad63960', code: 'DogChamp'},
 ];
 
-const ACCENT_COLORS = ['red', 'pink', 'indigo', 'green', 'orange'];
-
-const EMOTE_WALL_FILL_ORDER = [0, 1, 2, 3, 4, 13, 5, 12, 6, 11, 10, 9, 8, 7];
-
-const EMOTE_WALL_EMOTES = Array.from({length: 14}, (_, slotIndex) => ({
-  ...STICKER_EMOTES[slotIndex % STICKER_EMOTES.length],
-  key: `wall-${slotIndex}`,
-  fillOrder: EMOTE_WALL_FILL_ORDER[slotIndex],
-}));
-
-const EMOTE_WALL_TARGET = 500;
-
 const DATA_STREAM_GLYPHS = ['0', '1', '<', '>', '{', '}', '#', '/', '$', '%', '&', '*'];
 
 const DATA_STREAMS = [
-  {id: 'stream-1', duration: 3.4, glyphClassName: 'cloudGlyphLeft'},
-  {id: 'stream-2', duration: 3.0, glyphClassName: 'cloudGlyphCenter'},
-  {id: 'stream-3', duration: 3.7, glyphClassName: 'cloudGlyphRight'},
+  {id: 'stream-1', duration: 15, glyphClassName: 'cloudGlyphOuterLeft'},
+  {id: 'stream-2', duration: 12.4, glyphClassName: 'cloudGlyphLeft'},
+  {id: 'stream-3', duration: 11, glyphClassName: 'cloudGlyphCenter'},
+  {id: 'stream-4', duration: 13.5, glyphClassName: 'cloudGlyphRight'},
+  {id: 'stream-5', duration: 16, glyphClassName: 'cloudGlyphOuterRight'},
 ];
 
-const DATA_STREAM_SLOTS = Array.from({length: 7}, (_, slotIndex) => `slot-${slotIndex}`);
+const DATA_STREAM_SLOTS = Array.from({length: 12}, (_, slotIndex) => `slot-${slotIndex}`);
 
 function randomGlyphColumn(length) {
   return Array.from({length}, () => DATA_STREAM_GLYPHS[Math.floor(Math.random() * DATA_STREAM_GLYPHS.length)]);
@@ -69,7 +62,6 @@ function randomGlyphColumn(length) {
 
 function handleUpgradeClick() {
   socketClient.ensureAuthentication();
-  window.open(ExternalLinks.PRO, '_blank');
 }
 
 function shuffle(items) {
@@ -147,7 +139,7 @@ function UsernameEffectShowcaseCard() {
           ))}
         </div>
         <Title order={3} className={styles.showcaseLabel}>
-          {formatMessage({defaultMessage: 'Username Effects'})}
+          {formatMessage({defaultMessage: 'Username & Hover Effects'})}
         </Title>
       </div>
     </div>
@@ -162,7 +154,7 @@ function EmoteStickersShowcaseCard() {
           <img key={emote.id} className={styles.showcaseSticker} src={cdn.emoteUrl(emote.id)} alt={emote.code} />
         ))}
         <Title order={3} className={styles.showcaseLabel}>
-          {formatMessage({defaultMessage: 'Personal emotes, you can use anywhere'})}
+          {formatMessage({defaultMessage: 'Up to 500 Channel & 50 Personal Emotes'})}
         </Title>
       </div>
     </div>
@@ -190,65 +182,36 @@ function CommandAutocompleteShowcaseCard() {
 }
 
 function AccentThemeShowcaseCard() {
-  const [accentIndex, setAccentIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAccentIndex((index) => (index + 1) % ACCENT_COLORS.length);
-    }, 1800);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className={styles.showcaseCard}>
-      <div
-        className={styles.showcaseAccentPreview}
-        style={{'--showcase-accent': `var(--mantine-color-${ACCENT_COLORS[accentIndex]}-6)`}}>
-        <div className={styles.accentWindow} aria-hidden="true">
-          <div className={styles.accentWindowBar}>
-            <span className={styles.accentWindowDot} />
-            <span className={styles.accentWindowDot} />
-            <span className={styles.accentWindowDot} />
-          </div>
-          <div className={styles.accentWindowBody}>
-            <div className={styles.accentSidenav}>
-              <span className={styles.accentNavItemActive} />
-              <span className={styles.accentNavItem} />
-              <span className={styles.accentNavItem} />
-              <span className={styles.accentNavItem} />
-            </div>
-            <div className={styles.accentSettings}>
-              <div className={styles.accentSettingRow}>
-                <span className={styles.accentSettingBar} />
-                <span className={styles.accentSwitchOn} />
-              </div>
-              <div className={styles.accentSettingRow}>
-                <span className={styles.accentSettingBar} />
-                <span className={styles.accentSwitchOff} />
-              </div>
-              <div className={styles.accentSettingRow}>
-                <span className={styles.accentSettingBar} />
-                <span className={styles.accentSwitchOn} />
-              </div>
-              <div className={styles.accentSettingRow}>
-                <span className={styles.accentSettingBar} />
-                <span className={styles.accentSwitchOff} />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={styles.accentSwatchRow} aria-hidden="true">
-          {ACCENT_COLORS.map((color, colorIndex) => (
-            <span key={color} className={styles.accentSwatch} data-color={color}>
-              {colorIndex === accentIndex ? (
-                <motion.span
-                  layoutId="bttv-accent-swatch-ring"
-                  className={styles.accentSwatchRing}
-                  transition={{type: 'spring', stiffness: 500, damping: 30}}
-                />
-              ) : null}
+      <div className={styles.showcaseAccentPreview}>
+        {/* a fan of paint-swatch chips, the selected accent raised with the logo and a check —
+            static, physical, in the same object language as the stickers and the server */}
+        <div className={styles.accentFan} aria-hidden="true">
+          <span className={styles.accentFanCard} data-color="red">
+            <span className={styles.accentFanLabel} />
+            <span className={styles.accentFanLabelSmall} />
+          </span>
+          <span className={styles.accentFanCard} data-color="orange">
+            <span className={styles.accentFanLabel} />
+            <span className={styles.accentFanLabelSmall} />
+          </span>
+          <span className={styles.accentFanCard} data-color="green">
+            <span className={styles.accentFanLabel} />
+            <span className={styles.accentFanLabelSmall} />
+          </span>
+          <span className={styles.accentFanCard} data-color="pink">
+            <span className={styles.accentFanLabel} />
+            <span className={styles.accentFanLabelSmall} />
+          </span>
+          <span className={styles.accentFanCard} data-color="indigo">
+            <LogoIcon className={styles.accentFanLogo} />
+            <span className={styles.accentFanLabel} />
+            <span className={styles.accentFanLabelSmall} />
+            <span className={styles.accentFanCheck}>
+              <Icon icon={faCheck} size={11} />
             </span>
-          ))}
+          </span>
         </div>
         <Title order={3} className={styles.showcaseLabel}>
           {formatMessage({defaultMessage: 'Customizable Accent Theme'})}
@@ -258,8 +221,59 @@ function AccentThemeShowcaseCard() {
   );
 }
 
+function CloudGraphic() {
+  return (
+    <svg className={styles.cloudGraphic} viewBox="0 0 300 200" aria-hidden="true">
+      <defs>
+        {/* each layer is blurred BEFORE displacement so the noise tears a soft alpha gradient
+            into vapor instead of chipping a hard edge; low baseFrequency + large scale makes
+            billows, and the geometry oversizes the viewBox so displaced fringes never expose
+            a clipped straight edge */}
+        <filter id="bttv-cloud-back" x="-40%" y="-40%" width="180%" height="180%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="4" seed="11" result="noise" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="soft" />
+          <feDisplacementMap in="soft" in2="noise" scale="110" />
+        </filter>
+        <filter id="bttv-cloud-mid" x="-40%" y="-40%" width="180%" height="180%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="4" result="noise" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="soft" />
+          <feDisplacementMap in="soft" in2="noise" scale="90" />
+        </filter>
+        <filter id="bttv-cloud-front" x="-40%" y="-40%" width="180%" height="180%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.013" numOctaves="2" seed="7" result="noise" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="soft" />
+          <feDisplacementMap in="soft" in2="noise" scale="70" />
+        </filter>
+      </defs>
+      {/* shadowed belly, hangs lowest */}
+      <g filter="url(#bttv-cloud-back)" fill="#b7c4ec" opacity="0.4">
+        <rect x="-80" y="-60" width="460" height="165" />
+        <ellipse cx="60" cy="118" rx="70" ry="28" />
+        <ellipse cx="160" cy="128" rx="80" ry="30" />
+        <ellipse cx="255" cy="118" rx="70" ry="28" />
+      </g>
+      {/* mid tone */}
+      <g filter="url(#bttv-cloud-mid)" fill="#e2e9fc" opacity="0.48">
+        <rect x="-80" y="-60" width="460" height="152" />
+        <ellipse cx="45" cy="103" rx="65" ry="26" />
+        <ellipse cx="150" cy="112" rx="78" ry="30" />
+        <ellipse cx="252" cy="103" rx="66" ry="26" />
+      </g>
+      {/* sunlit crown */}
+      <g filter="url(#bttv-cloud-front)" fill="#ffffff" opacity="0.62">
+        <rect x="-80" y="-60" width="460" height="136" />
+        <ellipse cx="70" cy="88" rx="58" ry="22" />
+        <ellipse cx="165" cy="96" rx="70" ry="26" />
+        <ellipse cx="258" cy="86" rx="55" ry="20" />
+      </g>
+    </svg>
+  );
+}
+
 function CloudBackupShowcaseCard() {
-  const [streamGlyphs, setStreamGlyphs] = useState(() => DATA_STREAMS.map(() => randomGlyphColumn(7)));
+  const [streamGlyphs, setStreamGlyphs] = useState(() =>
+    DATA_STREAMS.map(() => randomGlyphColumn(DATA_STREAM_SLOTS.length))
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -271,7 +285,7 @@ function CloudBackupShowcaseCard() {
           return next;
         })
       );
-    }, 220);
+    }, 350);
     return () => clearInterval(interval);
   }, []);
 
@@ -284,7 +298,7 @@ function CloudBackupShowcaseCard() {
           preserveAspectRatio="none"
           aria-hidden="true"
           animate={{opacity: [0.55, 1, 0.55]}}
-          transition={{duration: 4, repeat: Infinity, ease: 'easeInOut'}}>
+          transition={{duration: 6.5, repeat: Infinity, ease: 'easeInOut'}}>
           <defs>
             <linearGradient id="bttv-cloud-beam-gradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#ffffff" stopOpacity="0.38" />
@@ -295,23 +309,23 @@ function CloudBackupShowcaseCard() {
             </filter>
           </defs>
           <path
-            d="M128 0 C118 80 60 150 0 206 L300 206 C240 150 182 80 172 0 Z"
+            d="M128 0 C122 74 90 132 46 206 L254 206 C210 132 178 74 172 0 Z"
             fill="url(#bttv-cloud-beam-gradient)"
             filter="url(#bttv-cloud-beam-blur)"
           />
           <motion.path
-            d="M138 0 C130 70 100 140 60 206 L92 206 C120 140 142 70 146 0 Z"
+            d="M138 0 C132 74 116 132 84 206 L110 206 C132 132 144 74 148 0 Z"
             fill="url(#bttv-cloud-beam-gradient)"
             filter="url(#bttv-cloud-beam-blur)"
             animate={{opacity: [0.25, 0.7, 0.25]}}
-            transition={{duration: 3.2, repeat: Infinity, ease: 'easeInOut'}}
+            transition={{duration: 5.2, repeat: Infinity, ease: 'easeInOut'}}
           />
           <motion.path
-            d="M162 0 C170 70 200 140 240 206 L208 206 C180 140 158 70 154 0 Z"
+            d="M162 0 C168 74 184 132 216 206 L190 206 C168 132 156 74 152 0 Z"
             fill="url(#bttv-cloud-beam-gradient)"
             filter="url(#bttv-cloud-beam-blur)"
             animate={{opacity: [0.25, 0.7, 0.25]}}
-            transition={{duration: 4.4, delay: 1.1, repeat: Infinity, ease: 'easeInOut'}}
+            transition={{duration: 7, delay: 1.8, repeat: Infinity, ease: 'easeInOut'}}
           />
         </motion.svg>
         <div className={styles.cloudStreams} aria-hidden="true">
@@ -324,7 +338,7 @@ function CloudBackupShowcaseCard() {
                   animate={{offsetDistance: ['0%', '100%']}}
                   transition={{
                     duration: stream.duration,
-                    delay: -((slotIndex * stream.duration) / 7),
+                    delay: -((slotIndex * stream.duration) / DATA_STREAM_SLOTS.length),
                     repeat: Infinity,
                     ease: 'linear',
                   }}>
@@ -337,83 +351,52 @@ function CloudBackupShowcaseCard() {
         <motion.span
           className={styles.cloudIconBob}
           animate={{y: [0, -4, 0]}}
-          transition={{duration: 5, repeat: Infinity, ease: 'easeInOut'}}>
-          <Icon icon={faCloud} size={52} className={styles.cloudIcon} />
+          transition={{duration: 8, repeat: Infinity, ease: 'easeInOut'}}>
+          <CloudGraphic />
         </motion.span>
+        <span className={styles.cloudAppIcon} aria-hidden="true">
+          <span className={styles.cloudAppIconBody}>
+            <span className={styles.cloudAppIconSlab} />
+            <span className={styles.cloudAppIconFace}>
+              <LogoIcon className={styles.cloudAppIconLogo} />
+              <span className={styles.cloudAppIconLed} />
+            </span>
+          </span>
+        </span>
         <Title order={3} className={styles.showcaseLabel}>
-          {formatMessage({defaultMessage: 'Cloud Settings Backups'})}
+          {formatMessage({defaultMessage: 'Cloud Backups'})}
         </Title>
       </div>
     </div>
   );
 }
 
-function ChannelEmotesShowcaseCard() {
-  const [filledCount, setFilledCount] = useState(0);
-  const [wallCycle, setWallCycle] = useState(0);
+// edgeColor is each badge's average art color darkened ~40%, so the extruded lip reads as
+// the badge's own thickness (mirroring the accent chips' color-8 edges)
+const PRO_BADGE_FAN = [
+  {months: 36, fileId: '41927fef-9dbf-4ff1-9de1-9b09095328c6', className: 'badgeFanOuterLeft', edgeColor: '#963c4c'},
+  {months: 12, fileId: '0d008148-5036-43fd-aff6-e838ee7b7f94', className: 'badgeFanLeft', edgeColor: '#946007'},
+  {months: 24, fileId: '70891c2b-eec4-4ce8-86d9-a3de94919b89', className: 'badgeFanCenter', edgeColor: '#444a98'},
+  {months: 84, fileId: '0260f418-9f27-405e-bd03-422b36d818a7', className: 'badgeFanRight', edgeColor: '#367933'},
+  {months: 18, fileId: '14ecc0f1-5df1-40e7-b10f-441cee3c6d1a', className: 'badgeFanOuterRight', edgeColor: '#396588'},
+];
 
-  useEffect(() => {
-    if (filledCount >= EMOTE_WALL_EMOTES.length) {
-      const timeout = setTimeout(() => {
-        setFilledCount(0);
-        setWallCycle((cycle) => cycle + 1);
-      }, 2600);
-      return () => clearTimeout(timeout);
-    }
-
-    const timeout = setTimeout(() => setFilledCount((count) => count + 1), filledCount === 0 ? 700 : 110);
-    return () => clearTimeout(timeout);
-  }, [filledCount]);
-
-  const complete = filledCount >= EMOTE_WALL_EMOTES.length;
-  const targetCount = Math.round((filledCount * EMOTE_WALL_TARGET) / EMOTE_WALL_EMOTES.length);
-  const animatedCount = useMotionValue(0);
-  const roundedCount = useTransform(animatedCount, (value) => Math.round(value));
-
-  useEffect(() => {
-    if (targetCount === 0) {
-      animatedCount.set(0);
-      return undefined;
-    }
-
-    const controls = animate(animatedCount, targetCount, {duration: 0.35, ease: 'easeOut'});
-    return () => controls.stop();
-  }, [animatedCount, targetCount]);
-
+function EvolvingBadgeShowcaseCard() {
   return (
     <div className={styles.showcaseCard}>
-      <div className={styles.showcaseEmoteWallPreview}>
-        <motion.div
-          key={wallCycle}
-          className={styles.emoteWall}
-          initial={{opacity: 0}}
-          animate={{opacity: 1}}
-          transition={{duration: 0.35}}
-          aria-hidden="true">
-          <motion.span
-            className={styles.emoteWallCounter}
-            animate={{scale: complete ? [1, 1.18, 1] : 1}}
-            transition={{duration: 0.45, ease: 'easeOut'}}>
-            <motion.span className={styles.emoteWallCount}>{roundedCount}</motion.span>
-            <span className={styles.emoteWallCountLabel}>{formatMessage({defaultMessage: 'emotes'})}</span>
-          </motion.span>
-          {EMOTE_WALL_EMOTES.map((emote) => (
-            <span key={emote.key} className={styles.emoteWallSlot}>
-              {emote.fillOrder < filledCount ? (
-                <motion.img
-                  className={styles.emoteWallEmote}
-                  src={cdn.emoteUrl(emote.id)}
-                  alt=""
-                  initial={{scale: 0.3, opacity: 0}}
-                  animate={{scale: 1, opacity: 1}}
-                  transition={{type: 'spring', stiffness: 500, damping: 22}}
-                />
-              ) : null}
+      <div className={styles.showcaseBadgePreview}>
+        <div className={styles.badgeFan} aria-hidden="true">
+          {PRO_BADGE_FAN.map((badge) => (
+            <span
+              key={badge.months}
+              className={`${styles.badgeTile} ${styles[badge.className]}`}
+              style={{'--badge-edge': badge.edgeColor}}>
+              <img className={styles.badgeTileImage} src={cdn.url(`badges/pro/${badge.fileId}.png`)} alt="" />
             </span>
           ))}
-        </motion.div>
+        </div>
         <Title order={3} className={styles.showcaseLabel}>
-          {formatMessage({defaultMessage: 'Up to 500 Channel Emotes'})}
+          {formatMessage({defaultMessage: 'Evolving Pro chat badge'})}
         </Title>
       </div>
     </div>
@@ -421,14 +404,48 @@ function ChannelEmotesShowcaseCard() {
 }
 
 function ProUpgrade() {
+  const user = useAuthStore(useShallow((state) => state.user));
+  const isPro = isUserPro(user);
+
   const extraFeatures = [
-    {icon: faMedal, name: formatMessage({defaultMessage: 'Evolving Pro chat badge'})},
     {icon: faBolt, name: formatMessage({defaultMessage: 'Priority emote approval'})},
     {icon: faRobot, name: formatMessage({defaultMessage: 'Unlimited self-bot commands'})},
   ];
 
   return (
-    <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'BetterTTV Pro'})} />}>
+    <PageScrollBody
+      header={
+        <PageHeader
+          breadcrumbs={[
+            {label: formatMessage({defaultMessage: 'BetterTTV Pro'})},
+            {label: formatMessage({defaultMessage: 'Perks'})},
+          ]}
+        />
+      }
+      footer={
+        <div className={styles.premiumActions}>
+          <Text className={styles.premiumThanks}>
+            <Icon icon={faHeart} size={14} className={styles.premiumThanksHeart} />
+            {formatMessage({defaultMessage: 'Thank you for supporting BetterTTV'})}
+          </Text>
+          <Button
+            component={Anchor}
+            href={ExternalLinks.PRO}
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="never"
+            size="lg"
+            radius="xl"
+            variant="elevated"
+            color="contrast"
+            rightSection={<Icon icon={faArrowUpRightFromSquare} size={14} />}
+            onClick={handleUpgradeClick}>
+            {isPro
+              ? formatMessage({defaultMessage: 'Manage Subscription'})
+              : formatMessage({defaultMessage: 'Upgrade to Pro'})}
+          </Button>
+        </div>
+      }>
       <div className={styles.premiumContent}>
         <svg className={styles.stickerFilterDefs} xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
@@ -440,8 +457,18 @@ function ProUpgrade() {
               <feComponentTransfer in="blurred" result="dilated">
                 <feFuncA type="linear" slope="30" intercept="-3" />
               </feComponentTransfer>
-              <feFlood floodColor="#ffffff" result="outlineColor" />
-              <feComposite in="outlineColor" in2="dilated" operator="in" result="outline" />
+              {/* holo foil: pastel rainbow fractal noise (lifted toward white) fills the
+                  outline instead of a flat flood, so the die-cut edge shimmers like foil */}
+              <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="9" result="foilNoise">
+                <animate attributeName="baseFrequency" values="0.045;0.065;0.045" dur="7s" repeatCount="indefinite" />
+              </feTurbulence>
+              <feColorMatrix
+                in="foilNoise"
+                type="matrix"
+                values="1.2 0 0 0 0.25 0 1.2 0 0 0.25 0 0 1.2 0 0.25 0 0 0 0 1"
+                result="foil"
+              />
+              <feComposite in="foil" in2="dilated" operator="in" result="outline" />
               <feMerge>
                 <feMergeNode in="outline" />
                 <feMergeNode in="SourceGraphic" />
@@ -449,20 +476,13 @@ function ProUpgrade() {
             </filter>
           </defs>
         </svg>
-        <div className={styles.premiumHero}>
-          <div className={styles.premiumBrand}>
-            <LogoIcon className={styles.premiumLogo} />
-            <span className={styles.premiumWordmark}>BetterTTV</span>
-            <span className={styles.premiumPill}>{formatMessage({defaultMessage: 'Pro'})}</span>
-          </div>
-        </div>
         <div className={styles.featureColumns}>
           <UsernameEffectShowcaseCard />
-          <AccentThemeShowcaseCard />
           <EmoteStickersShowcaseCard />
-          <CloudBackupShowcaseCard />
           <CommandAutocompleteShowcaseCard />
-          <ChannelEmotesShowcaseCard />
+          <AccentThemeShowcaseCard />
+          <CloudBackupShowcaseCard />
+          <EvolvingBadgeShowcaseCard />
           {extraFeatures.map((feature) => (
             <div key={feature.name} className={styles.featureRow}>
               <div className={styles.featureRowIcon}>
@@ -471,11 +491,6 @@ function ProUpgrade() {
               <Text className={styles.featureRowName}>{feature.name}</Text>
             </div>
           ))}
-        </div>
-        <div className={styles.premiumActions}>
-          <Button size="lg" radius="xl" variant="elevated" color="contrast" onClick={handleUpgradeClick}>
-            {formatMessage({defaultMessage: 'Upgrade to Pro'})}
-          </Button>
         </div>
       </div>
     </PageScrollBody>

@@ -62,7 +62,7 @@
   flex-direction: column;
   gap: 20px;
   /* gap between the header and the first item */
-  padding: 20px 20px 24px;
+  padding: 20px;
   --page-scroll-margin-top: 20px;
 }
 

@@ -12,55 +12,13 @@
   height: 0;
 }
 
-.premiumHero {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 260px;
-  user-select: none;
-  overflow: hidden;
-}
-
-.premiumBrand {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.premiumLogo {
-  width: 44px;
-  height: 44px;
-  color: var(--mantine-color-text);
-}
-
-.premiumWordmark {
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--mantine-color-text);
-}
-
-.premiumPill {
-  padding: 6px 16px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--mantine-color-indigo-5), var(--mantine-color-violet-6));
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mantine-color-white);
-}
-
 /* two independent columns — cards stack masonry-style, each keeping its own height instead of
    stretching to a shared grid row. multicol has no row-gap, so the cards carry a bottom margin
    and the container swallows the trailing one. */
 .featureColumns {
   columns: 2;
   column-gap: 12px;
-  margin: 0 24px -12px;
+  margin: 0 0 -12px;
 }
 
 .featureColumns > * {
@@ -87,8 +45,7 @@
 
 .showcasePreview {
   position: relative;
-  flex: 1;
-  min-height: 270px;
+  height: 230px;
   user-select: none;
   overflow: hidden;
 }
@@ -142,11 +99,12 @@
 .showcaseStickersPreview {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, 56px);
   align-items: center;
+  justify-content: center;
   justify-items: center;
-  row-gap: 12px;
-  min-height: 270px;
+  gap: 12px 20px;
+  height: 230px;
   padding: 24px 24px 60px;
   user-select: none;
   overflow: hidden;
@@ -160,10 +118,10 @@
 .showcaseSticker {
   --sticker-outline: url(#bttv-sticker-outline);
   display: block;
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .showcaseSticker:nth-child(1) {
@@ -198,13 +156,17 @@
 
 .showcaseVideoPreview {
   position: relative;
+  overflow: hidden;
+  height: 230px;
+  padding: 0 0 20px 20px;
   user-select: none;
 }
 
 .showcaseVideo {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   /* chromium doesn't reliably repaint <video> frames inside a multicol fragment (the playhead
      advances but the frame sticks); compositing it onto its own layer fixes the invalidation */
   transform: translateZ(0);
@@ -213,222 +175,317 @@
 .showcaseAccentPreview {
   position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-height: 270px;
-  padding: 20px 20px 64px;
+  align-items: center;
+  justify-content: center;
+  height: 230px;
+  padding: 24px 20px 60px;
   user-select: none;
   overflow: hidden;
 }
 
-.accentWindow {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 10px;
-  padding: 10px 12px 14px;
-  border-radius: 12px;
-  background-color: rgba(10, 15, 60, 0.42);
-  box-shadow: inset 0 0 0 1px rgba(206, 216, 255, 0.32);
+/* fanned deck of paint-swatch chips pivoting from a point below the pane */
+.accentFan {
+  position: relative;
+  width: 220px;
+  height: 160px;
 }
 
-.accentWindowBar {
+.accentFanCard {
+  position: absolute;
+  top: 24px;
+  left: 50%;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   gap: 5px;
+  width: 64px;
+  height: 96px;
+  margin-left: -32px;
+  padding: 9px;
+  border-radius: 10px;
+  transform-origin: 50% 230%;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 2px 0 var(--chip-edge),
+    0 6px 10px rgba(10, 15, 60, 0.2);
 }
 
-.accentWindowDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: rgba(206, 216, 255, 0.28);
+.accentFanCard[data-color='red'] {
+  --chip-edge: var(--mantine-color-red-8);
+  background: linear-gradient(180deg, var(--mantine-color-red-4), var(--mantine-color-red-6));
+  transform: rotate(-32deg);
+  z-index: 1;
 }
 
-.accentWindowBody {
-  display: flex;
-  flex: 1;
-  gap: 12px;
+.accentFanCard[data-color='orange'] {
+  --chip-edge: var(--mantine-color-orange-8);
+  background: linear-gradient(180deg, var(--mantine-color-orange-4), var(--mantine-color-orange-6));
+  transform: rotate(-16deg);
+  z-index: 2;
 }
 
-.accentSidenav {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-  flex-shrink: 0;
-  width: 52px;
+.accentFanCard[data-color='green'] {
+  --chip-edge: var(--mantine-color-green-8);
+  background: linear-gradient(180deg, var(--mantine-color-green-4), var(--mantine-color-green-6));
+  transform: rotate(16deg);
+  z-index: 2;
 }
 
-.accentNavItem {
-  height: 12px;
-  border-radius: 4px;
-  background-color: rgba(206, 216, 255, 0.18);
+.accentFanCard[data-color='pink'] {
+  --chip-edge: var(--mantine-color-pink-8);
+  background: linear-gradient(180deg, var(--mantine-color-pink-4), var(--mantine-color-pink-6));
+  transform: rotate(32deg);
+  z-index: 1;
 }
 
-.accentNavItemActive {
-  height: 12px;
-  border-radius: 4px;
-  background-color: var(--showcase-accent);
-  transition: background-color 0.4s ease;
+/* the chosen accent: front of the fan, raised out of the deck */
+.accentFanCard[data-color='indigo'] {
+  --chip-edge: var(--mantine-color-indigo-8);
+  background: linear-gradient(180deg, var(--mantine-color-indigo-4), var(--mantine-color-indigo-6));
+  transform: translateY(-14px);
+  z-index: 3;
 }
 
-.accentSettings {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 12px;
-  flex: 1;
-  min-width: 0;
+/* abstract printed name lines, like a hardware-store paint chip */
+.accentFanLabel {
+  width: 65%;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.6);
 }
 
-.accentSettingRow {
+.accentFanLabelSmall {
+  width: 40%;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.38);
+}
+
+.accentFanLogo {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.accentFanCheck {
+  position: absolute;
+  top: -8px;
+  right: -8px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.accentSettingBar {
-  flex: 1;
-  height: 8px;
-  border-radius: 4px;
-  background-color: rgba(206, 216, 255, 0.24);
-}
-
-.accentSettingRow:nth-child(2) .accentSettingBar {
-  max-width: 64%;
-}
-
-.accentSettingRow:nth-child(3) .accentSettingBar {
-  max-width: 82%;
-}
-
-.accentSettingRow:nth-child(4) .accentSettingBar {
-  max-width: 70%;
-}
-
-.accentSwitchOn {
-  position: relative;
-  flex-shrink: 0;
-  width: 30px;
-  height: 16px;
-  border-radius: 999px;
-  background-color: var(--showcase-accent);
-  transition: background-color 0.4s ease;
-}
-
-.accentSwitchOn::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--mantine-color-white);
-}
-
-.accentSwitchOff {
-  position: relative;
-  flex-shrink: 0;
-  width: 30px;
-  height: 16px;
-  border-radius: 999px;
-  background-color: rgba(206, 216, 255, 0.2);
-}
-
-.accentSwitchOff::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: rgba(219, 226, 255, 0.8);
-}
-
-.accentSwatchRow {
-  display: flex;
   justify-content: center;
-  gap: 14px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--mantine-color-white);
+  color: var(--mantine-color-indigo-6);
+  box-shadow: 0 3px 8px rgba(10, 15, 60, 0.35);
 }
 
-.accentSwatch {
+.showcaseBadgePreview {
   position: relative;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 230px;
+  padding: 24px 20px 60px;
+  user-select: none;
+  overflow: hidden;
 }
 
-.accentSwatch[data-color='red'] {
-  background-color: var(--mantine-color-red-6);
+/* five badge tiers fanned with the center tier forward, each tile wearing the accent
+   chips' finish: white glint along the top edge, a 2px extruded lip, soft cast shadow.
+   The glint lives on an overlay because inset shadows can't paint over an img. */
+.badgeFan {
+  position: relative;
+  width: 240px;
+  height: 130px;
 }
 
-.accentSwatch[data-color='pink'] {
-  background-color: var(--mantine-color-pink-6);
-}
-
-.accentSwatch[data-color='indigo'] {
-  background-color: var(--mantine-color-indigo-6);
-}
-
-.accentSwatch[data-color='green'] {
-  background-color: var(--mantine-color-green-6);
-}
-
-.accentSwatch[data-color='orange'] {
-  background-color: var(--mantine-color-orange-6);
-}
-
-.accentSwatchRing {
+.badgeTile {
   position: absolute;
-  inset: -4px;
-  border: 2px solid var(--mantine-color-white);
-  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  display: block;
+  border-radius: 16px;
+  box-shadow:
+    0 2px 0 var(--badge-edge),
+    0 6px 10px rgba(10, 15, 60, 0.2);
+}
+
+.badgeTile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.badgeTileImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.badgeFanOuterLeft {
+  z-index: 1;
+  width: 64px;
+  height: 64px;
+  transform: translate(calc(-50% - 88px), calc(-50% + 10px)) rotate(-14deg);
+}
+
+.badgeFanLeft {
+  z-index: 2;
+  width: 70px;
+  height: 70px;
+  transform: translate(calc(-50% - 46px), calc(-50% - 2px)) rotate(-7deg);
+}
+
+.badgeFanCenter {
+  z-index: 3;
+  width: 78px;
+  height: 78px;
+  transform: translate(-50%, calc(-50% - 10px));
+}
+
+.badgeFanRight {
+  z-index: 2;
+  width: 70px;
+  height: 70px;
+  transform: translate(calc(-50% + 46px), calc(-50% - 2px)) rotate(7deg);
+}
+
+.badgeFanOuterRight {
+  z-index: 1;
+  width: 64px;
+  height: 64px;
+  transform: translate(calc(-50% + 88px), calc(-50% + 10px)) rotate(14deg);
 }
 
 .showcaseCloudPreview {
   position: relative;
-  min-height: 270px;
+  height: 230px;
   padding: 20px 20px 60px;
   user-select: none;
   overflow: hidden;
 }
 
+/* oversized and shifted past the pane's top and side edges so the cloud crops into a bank
+   hanging from the top; keep the top overhang bigger than the bob amplitude */
 .cloudIconBob {
   position: absolute;
-  top: 34px;
-  left: 50%;
+  top: -132px;
+  left: -6%;
   display: block;
-  width: 52px;
-  margin-left: -26px;
+  width: 112%;
   z-index: 1;
 }
 
-.cloudIcon {
+.cloudGraphic {
   display: block;
-  width: 52px;
-  color: var(--mantine-color-white);
-  filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.45));
+  width: 100%;
+  filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.22));
+}
+
+/* ios-style app icon floating in the beam beneath the cloud, as the thing being backed up;
+   sits above the glyph streams so they pass behind it. The outer span only positions and bobs
+   (framer-motion owns its transform); the inner face carries the metal and the 3d tilt. */
+.cloudAppIcon {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  z-index: 1;
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin-left: -28px;
+  perspective: 260px;
+}
+
+/* tilted back around its bottom edge so the faceplate looks up toward the cloud; the tilt
+   exposes the slab's underside below the face, selling the extruded-unibody depth */
+.cloudAppIconBody {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: rotateX(22deg);
+  transform-origin: 50% 100%;
+}
+
+/* the aluminum body peeking out beneath the faceplate; only its bottom lip shows, so the
+   gradient runs horizontally — bright center falling to dark corners, like a curved edge */
+.cloudAppIconSlab {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  transform: translateY(6px);
+  background:
+    linear-gradient(180deg, rgba(10, 15, 30, 0) 80%, rgba(10, 15, 30, 0.28) 100%),
+    linear-gradient(90deg, #666d7c 0%, #a3abb9 22%, #c4cad4 50%, #a3abb9 78%, #666d7c 100%);
+}
+
+/* satin unibody aluminum: soft top sheen over near-uniform silver, no brushed grain */
+.cloudAppIconFace {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 90% at 50% 8%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, #f0f2f6 0%, #d3d8df 45%, #c3c9d2 58%, #dbdfe5 100%);
+  /* cast on the top and sides only — the bottom stays clean so the slab lip reads unshadowed */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -1px 0 rgba(20, 26, 40, 0.18),
+    0 -6px 12px rgba(10, 15, 60, 0.1),
+    -6px 0 12px rgba(10, 15, 60, 0.1),
+    6px 0 12px rgba(10, 15, 60, 0.1);
+}
+
+/* engraved into the metal: dark fill with a light catch on the lower edge */
+.cloudAppIconLogo {
+  width: 32px;
+  height: 32px;
+  color: #333a47;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.4));
+}
+
+.cloudAppIconLed {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #baffd1, #35d17b 60%, #1f9e57);
+  box-shadow: 0 0 5px rgba(74, 222, 128, 0.9);
 }
 
 .cloudBeamSvg {
   position: absolute;
-  top: 64px;
+  top: 24px;
   right: 0;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 64px);
+  height: calc(100% - 24px);
 }
 
 .cloudStreams {
   position: absolute;
-  top: 74px;
+  top: 32px;
   left: 50%;
   width: 220px;
-  height: 130px;
+  height: 238px;
   margin-left: -110px;
   overflow: hidden;
   mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
@@ -446,80 +503,36 @@
 
 .cloudGlyphLeft {
   composes: cloudGlyph;
-  offset-path: path('M 78 130 Q 92 55 97 0');
+  offset-path: path('M 62 238 C 85 150 98 80 101 0');
 }
 
 .cloudGlyphCenter {
   composes: cloudGlyph;
-  offset-path: path('M 110 130 L 110 0');
+  offset-path: path('M 110 238 L 110 0');
 }
 
 .cloudGlyphRight {
   composes: cloudGlyph;
-  offset-path: path('M 142 130 Q 128 55 123 0');
+  offset-path: path('M 158 238 C 135 150 122 80 119 0');
+}
+
+.cloudGlyphOuterLeft {
+  composes: cloudGlyph;
+  font-size: 9px;
+  color: rgba(219, 226, 255, 0.4);
+  offset-path: path('M 20 238 C 58 150 86 80 92 0');
+}
+
+.cloudGlyphOuterRight {
+  composes: cloudGlyph;
+  font-size: 9px;
+  color: rgba(219, 226, 255, 0.4);
+  offset-path: path('M 200 238 C 162 150 134 80 128 0');
 }
 
 .cloudStreams span:nth-child(5n + 2) {
   color: var(--mantine-color-white);
   text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
-}
-
-.showcaseEmoteWallPreview {
-  position: relative;
-  display: flex;
-  align-items: center;
-  min-height: 270px;
-  padding: 24px 20px 64px;
-  user-select: none;
-  overflow: hidden;
-}
-
-.emoteWall {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
-  width: 100%;
-}
-
-.emoteWallSlot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1;
-  border-radius: 8px;
-  background-color: rgba(10, 15, 60, 0.38);
-  box-shadow: inset 0 0 0 1px rgba(206, 216, 255, 0.28);
-}
-
-.emoteWallEmote {
-  width: 70%;
-  height: 70%;
-  object-fit: contain;
-}
-
-.emoteWallCounter {
-  grid-row: 2 / 4;
-  grid-column: 2 / 5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-}
-
-.emoteWallCount {
-  font-size: 30px;
-  font-weight: 800;
-  line-height: 1;
-  color: var(--mantine-color-white);
-}
-
-.emoteWallCountLabel {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(219, 226, 255, 0.7);
 }
 
 .featureRow {
@@ -550,17 +563,19 @@
   color: var(--mantine-color-white);
 }
 
+/* rendered as the PageScrollBody footer, below the scroller, so it's always flush with the
+   page bottom while content scrolls behind the border */
 .premiumActions {
   display: flex;
-  justify-content: flex-end;
-  padding: 0 24px 24px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--mantine-color-default-border);
+  background-color: var(--page-bg);
 }
 
 @media (max-width: 800px) {
-  .premiumHero {
-    min-height: 220px;
-  }
-
   .featureColumns {
     columns: 1;
   }
@@ -573,4 +588,16 @@
   .showcaseCard {
     --showcase-inner-radius: calc(var(--mantine-radius-md) - 2px);
   }
+}
+
+.premiumThanks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--mantine-font-size-md);
+  color: var(--mantine-color-dimmed);
+}
+
+.premiumThanksHeart {
+  color: var(--mantine-color-red-6);
 }
