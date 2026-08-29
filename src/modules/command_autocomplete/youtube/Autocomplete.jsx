@@ -9,6 +9,7 @@ import {
   CommandAutocompleteArgumentTypes,
 } from '@/constants';
 import CommandRow from '@/modules/command_autocomplete/components/CommandRow';
+import {getMinimumUserLevel} from '@/modules/command_autocomplete/utils';
 import shadowDom from '@/modules/shadow_dom/index';
 import domObserver from '@/observers/dom';
 import settings from '@/settings';
@@ -231,11 +232,7 @@ class CommandAutocomplete {
 
       // TODO: determine youtube current user level
 
-      if (Array.isArray(command.userLevel)) {
-        return command.userLevel.includes(UserLevels.EVERYONE);
-      }
-
-      return command.userLevel === UserLevels.EVERYONE;
+      return getMinimumUserLevel(command.userLevel) === UserLevels.EVERYONE;
     });
 
     sortedCommandIndex = filteredSuggestions.sort((a, b) => a.name.localeCompare(b.name));

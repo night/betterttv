@@ -1,11 +1,12 @@
-import {faCrown, faGem, faShieldHalved, faStar, faUserCheck} from '@fortawesome/free-solid-svg-icons';
+import {faGem, faShieldHalved, faStar, faUserCheck, faVideo} from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
 import React, {useMemo} from 'react';
 import AutocompleteRow from '@/common/components/AutocompleteRow';
 import Icon from '@/common/components/Icon';
 import NightbotLogoIcon from '@/common/components/NightbotLogoIcon';
-import {CommandProviders, CommandAutocompleteArgumentTypes, UserLevelHierarchy, UserLevels} from '@/constants';
+import {CommandProviders, CommandAutocompleteArgumentTypes, UserLevels} from '@/constants';
 import formatMessage from '@/i18n/index';
+import {getMinimumUserLevel} from '@/modules/command_autocomplete/utils';
 import cdn from '@/utils/cdn';
 import styles from './CommandRow.module.css';
 
@@ -38,40 +39,11 @@ const UserLevelBadges = {
     label: formatMessage({defaultMessage: 'Moderator'}),
   },
   [UserLevels.OWNER]: {
-    icon: faCrown,
+    icon: faVideo,
     className: styles.ownerBadge,
     label: formatMessage({defaultMessage: 'Broadcaster'}),
   },
 };
-
-// Fossabot emits a separate broadcaster role alongside its owner role.
-const UserLevelAliases = {broadcaster: UserLevels.OWNER};
-
-// A command's userLevel is either a minimum level (string) or a set of levels that may use it
-// (array). Reduce both to the lowest level in the hierarchy so the badge reads as "the lowest
-// level that can use this command"; unknown levels are skipped.
-function getMinimumUserLevel(userLevel) {
-  const levels = Array.isArray(userLevel) ? userLevel : [userLevel];
-
-  let minimumLevel = null;
-  for (const level of levels) {
-    if (typeof level !== 'string') {
-      continue;
-    }
-
-    const normalizedLevel = level.toLowerCase();
-    const resolvedLevel = UserLevelAliases[normalizedLevel] ?? normalizedLevel;
-    if (UserLevelHierarchy[resolvedLevel] == null) {
-      continue;
-    }
-
-    if (minimumLevel == null || UserLevelHierarchy[resolvedLevel] < UserLevelHierarchy[minimumLevel]) {
-      minimumLevel = resolvedLevel;
-    }
-  }
-
-  return minimumLevel;
-}
 
 function CommandRow({item, active, selected, focusedWordIndex, onMouseOver, onClick}) {
   const leadingElement = useMemo(() => {
@@ -94,8 +66,8 @@ function CommandRow({item, active, selected, focusedWordIndex, onMouseOver, onCl
     }
 
     return (
-      <span title={badge.label} aria-label={badge.label} className={styles.userLevelBadge}>
-        <Icon icon={badge.icon} size={14} className={badge.className} />
+      <span title={badge.label} aria-label={badge.label} className={classNames(styles.userLevelBadge, badge.className)}>
+        <Icon icon={badge.icon} size={12} />
       </span>
     );
   }, [item.userLevel]);

@@ -21,27 +21,38 @@
 .userLevelBadge {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--mantine-radius-md);
 }
 
-/* Badge colors follow Twitch's chat badges for the closest equivalent role. */
+/* Badge colors follow Twitch's chat badges for the closest equivalent role, in the same
+ * dark-container/light-icon treatment as the Nightbot logo above. */
 .subscriberBadge {
-  color: var(--mantine-color-violet-5);
+  background-color: var(--mantine-color-violet-7);
+  color: var(--mantine-color-violet-1);
 }
 
 .regularBadge {
-  color: var(--mantine-color-blue-5);
+  background-color: var(--mantine-color-blue-7);
+  color: var(--mantine-color-blue-1);
 }
 
 .vipBadge {
-  color: var(--mantine-color-pink-5);
+  background-color: var(--mantine-color-pink-7);
+  color: var(--mantine-color-pink-1);
 }
 
 .moderatorBadge {
-  color: var(--mantine-color-green-5);
+  background-color: var(--mantine-color-green-7);
+  color: var(--mantine-color-green-1);
 }
 
 .ownerBadge {
-  color: var(--mantine-color-red-5);
+  background-color: var(--mantine-color-red-7);
+  color: var(--mantine-color-red-1);
 }
 
 /* Every word is dimmed except the one the caret is currently on. The dimmed
