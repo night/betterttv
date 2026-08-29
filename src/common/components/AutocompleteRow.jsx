@@ -5,6 +5,7 @@ import styles from './AutocompleteRow.module.css';
 
 function AutocompleteRow({
   leading = null,
+  trailing = null,
   title,
   subtitle,
   active,
@@ -34,6 +35,7 @@ function AutocompleteRow({
           </Text>
         ) : null}
       </div>
+      {trailing != null ? <span className={styles.trailing}>{trailing}</span> : null}
     </button>
   );
 }
@@ -43,6 +45,7 @@ export default React.memo(AutocompleteRow, (prev, next) => {
     prev.title === next.title &&
     prev.subtitle === next.subtitle &&
     prev.leading === next.leading &&
+    prev.trailing === next.trailing &&
     prev.selected === next.selected &&
     prev.active === next.active &&
     prev.className === next.className &&

@@ -18,6 +18,32 @@
   object-fit: cover;
 }
 
+.userLevelBadge {
+  display: flex;
+  align-items: center;
+}
+
+/* Badge colors follow Twitch's chat badges for the closest equivalent role. */
+.subscriberBadge {
+  color: var(--mantine-color-violet-5);
+}
+
+.regularBadge {
+  color: var(--mantine-color-blue-5);
+}
+
+.vipBadge {
+  color: var(--mantine-color-pink-5);
+}
+
+.moderatorBadge {
+  color: var(--mantine-color-green-5);
+}
+
+.ownerBadge {
+  color: var(--mantine-color-red-5);
+}
+
 /* Every word is dimmed except the one the caret is currently on. The dimmed
  * (normal-weight) words carry a touch of letter-spacing so they take up roughly
  * the same width as their bold form; the focused word drops the spacing back to
