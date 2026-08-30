@@ -26,11 +26,12 @@ class DisableOfflineChannelAutoplayModule {
     const stopAutoplay = () => {
       setTimeout(() => {
         // this listener only removes itself once it fires, so it can outlive the offline carousel
-        // and end up pausing the player of a live channel navigated to afterwards
-        if (document.querySelector(CAROUSEL_PLAYER_SELECTOR) != null) {
-          currentPlayer.pause();
+        // and pause the player of a live channel navigated to afterwards
+        if (document.querySelector(CAROUSEL_PLAYER_SELECTOR) == null) {
+          return;
         }
 
+        currentPlayer.pause();
         currentPlayer.setMuted(prevMuted);
       }, 0);
       if (currentPlayer.emitter) {
