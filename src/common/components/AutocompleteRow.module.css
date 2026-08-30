@@ -18,6 +18,13 @@
   flex-shrink: 0;
 }
 
+.trailing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .textContainer {
   width: 100%;
   min-width: 0;

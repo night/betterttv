@@ -18,6 +18,43 @@
   object-fit: cover;
 }
 
+.userLevelBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--mantine-radius-md);
+}
+
+/* Badge colors follow Twitch's chat badges for the closest equivalent role, in the same
+ * dark-container/light-icon treatment as the Nightbot logo above. */
+.subscriberBadge {
+  background-color: var(--mantine-color-violet-7);
+  color: var(--mantine-color-violet-1);
+}
+
+.regularBadge {
+  background-color: var(--mantine-color-blue-7);
+  color: var(--mantine-color-blue-1);
+}
+
+.vipBadge {
+  background-color: var(--mantine-color-pink-7);
+  color: var(--mantine-color-pink-1);
+}
+
+.moderatorBadge {
+  background-color: var(--mantine-color-green-7);
+  color: var(--mantine-color-green-1);
+}
+
+.ownerBadge {
+  background-color: var(--mantine-color-red-7);
+  color: var(--mantine-color-red-1);
+}
+
 /* Every word is dimmed except the one the caret is currently on. The dimmed
  * (normal-weight) words carry a touch of letter-spacing so they take up roughly
  * the same width as their bold form; the focused word drops the spacing back to
