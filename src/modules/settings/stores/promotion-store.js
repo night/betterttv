@@ -1,29 +1,11 @@
 import {useState} from 'react';
-import {SettingsPromotions} from '@/constants';
-import {SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import storage from '@/storage';
 import SafeEventEmitter from '@/utils/safe-event-emitter';
 
 // A promotion marks its setting panel with a dot in the settings navigation until the user scrolls
-// the panel into view.
-const PROMOTION_SLOTS = [
-  {
-    storageKey: SettingsPromotions.CHATBOT_COMMAND_AUTOCOMPLETE,
-    settingPanelId: SettingPanelIds.CHATBOTS,
-  },
-  {
-    storageKey: SettingsPromotions.SELF_BOT,
-    settingPanelId: SettingPanelIds.SELF_BOT,
-  },
-  {
-    storageKey: SettingsPromotions.USERNAME_EFFECT,
-    settingPanelId: SettingPanelIds.USERNAME_EFFECT,
-  },
-  {
-    storageKey: SettingsPromotions.SUBSCRIPTION_BADGE,
-    settingPanelId: SettingPanelIds.SUBSCRIPTION_BADGE,
-  },
-];
+// the panel into view. Each slot is {storageKey: SettingsPromotions..., settingPanelId: SettingPanelIds...};
+// empty when nothing is currently promoted.
+const PROMOTION_SLOTS = [];
 
 function isPromotionSlotSeen(storageKey) {
   return storage.get(storageKey) === true;

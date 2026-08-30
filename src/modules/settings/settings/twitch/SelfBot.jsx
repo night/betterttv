@@ -61,7 +61,6 @@ function SelfBot({ref, ...props}) {
       <SettingSwitch
         name={formatMessage({defaultMessage: 'Self Bot'})}
         description={formatMessage({defaultMessage: 'Automatically send and reply to messages on your own channel.'})}
-        showNewBadge
         value={displayEnabled}
         onChange={handleEnabledChange}
       />
