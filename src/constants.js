@@ -225,6 +225,13 @@ export const EmoteMenuTips = {
   EMOTE_MENU_CUSTOMIZE_ACCENT_COLOR: 'emoteMenuTipClosedCustomizeAccentColor',
 };
 
+export const SettingsPromotions = {
+  // USERNAME_EFFECT: 'settingsPromotionDismissedUsernameEffect',
+  // CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
+  // SELF_BOT: 'settingsPromotionDismissedSelfBot',
+  // SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
+};
+
 export const SettingsPrompts = {
   SIGN_IN: 'settingsSignInPromptSeen',
 };
