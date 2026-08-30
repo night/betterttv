@@ -181,7 +181,6 @@ function SubscriptionBadgeSetting() {
         <SettingWrapper
           reverse
           showProBadge
-          showNewBadge
           name={formatMessage({defaultMessage: 'Subscriber Badge'})}
           description={formatMessage({
             defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
@@ -190,7 +189,6 @@ function SubscriptionBadgeSetting() {
       ) : (
         <SettingSwitch
           showProBadge
-          showNewBadge
           name={formatMessage({defaultMessage: 'Subscriber Badge'})}
           description={formatMessage({
             defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',

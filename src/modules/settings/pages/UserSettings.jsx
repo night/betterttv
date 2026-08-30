@@ -61,7 +61,6 @@ function CloudBackupSetting() {
   return (
     <SettingSwitch
       showProBadge
-      showNewBadge
       name={formatMessage({defaultMessage: 'Cloud Backup'})}
       description={formatMessage({defaultMessage: 'Backup your settings to the cloud.'})}
       value={normalizedCloudBackupSettings.enabled}

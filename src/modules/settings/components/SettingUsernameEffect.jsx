@@ -195,7 +195,6 @@ function SettingUsernameEffect() {
         reverse
         name={formatMessage({defaultMessage: 'Username effect'})}
         description={formatMessage({defaultMessage: 'Choose how your username is styled in chat.'})}
-        showNewBadge
         showProBadge
       />
       <div className={styles.cards}>
