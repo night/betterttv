@@ -28,21 +28,14 @@ class PromotionStore extends SafeEventEmitter {
   }
 
   markSettingPanelPromotionSeen(settingPanelId) {
-    // a panel can carry multiple promotion slots; seeing the panel dismisses them all
-    let changed = false;
+    const slot = PROMOTION_SLOTS.find((promotionSlot) => promotionSlot.settingPanelId === settingPanelId);
 
-    for (const slot of PROMOTION_SLOTS) {
-      if (slot.settingPanelId !== settingPanelId || isPromotionSlotSeen(slot.storageKey)) {
-        continue;
-      }
-
-      storage.set(slot.storageKey, true);
-      changed = true;
+    if (slot == null || isPromotionSlotSeen(slot.storageKey)) {
+      return;
     }
 
-    if (changed) {
-      this.emit('changed');
-    }
+    storage.set(slot.storageKey, true);
+    this.emit('changed');
   }
 }
 

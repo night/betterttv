@@ -47,7 +47,7 @@ td.linesColumn {
   max-width: 100%;
 }
 
-.numberRoot input:not(:focus) {
+.formattedNumberRoot input:not(:focus) {
   cursor: pointer;
 }
 

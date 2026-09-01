@@ -160,12 +160,14 @@ function SettingSelfBotCommands({value, setValue}) {
     const commandCount = Object.keys(value ?? {}).length;
 
     if (commandCount >= FREE_COMMAND_LIMIT) {
-      if (bttvUser == null) {
+      const {user} = useAuthStore.getState();
+
+      if (user == null) {
         openSignInModal({}, () => newEntryHandler());
         return;
       }
 
-      if (!isUserPro(bttvUser)) {
+      if (!isUserPro(user)) {
         openSubscriptionUpgradeModal({}, () => newEntryHandler());
         return;
       }
@@ -181,7 +183,7 @@ function SettingSelfBotCommands({value, setValue}) {
     });
 
     pendingCommandFocusRef.current = newEntry.id;
-  }, [setValue, value, bttvUser]);
+  }, [setValue, value]);
 
   const deleteHandler = useCallback(
     (id) => {

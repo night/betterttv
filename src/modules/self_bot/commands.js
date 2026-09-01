@@ -29,11 +29,11 @@ export function computeSelfBotCommands(commandsMap) {
       continue;
     }
 
-    if (command == null || command.trim().length === 0) {
+    if (typeof command !== 'string' || command.trim().length === 0) {
       continue;
     }
 
-    if (response == null || response.trim().length === 0) {
+    if (typeof response !== 'string' || response.trim().length === 0) {
       continue;
     }
 

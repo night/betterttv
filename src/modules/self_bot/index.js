@@ -34,6 +34,15 @@ function recomputeCommands() {
 
 function recomputeTimers() {
   computedTimers = computeSelfBotTimers(settings.get(SettingIds.SELF_BOT_TIMERS_LIST));
+
+  // a disabled, deleted, or invalidated timer loses its anchor, so it waits a
+  // full interval again when it comes back instead of firing immediately
+  const timerIds = new Set(computedTimers.map((timer) => timer.id));
+  for (const id of timerSendAnchors.keys()) {
+    if (!timerIds.has(id)) {
+      timerSendAnchors.delete(id);
+    }
+  }
 }
 
 function isSelfBotActive() {
@@ -63,6 +72,11 @@ function sendDueTimerMessage() {
     return;
   }
 
+  // chat can be unmounted mid-navigation; hold anchors so no interval is lost
+  if (twitch.getCurrentChat() == null) {
+    return;
+  }
+
   const now = Date.now();
 
   let dueTimer = null;
@@ -78,7 +92,8 @@ function sendDueTimerMessage() {
       continue;
     }
 
-    if (now - anchor.time < timer.intervalMinutes * 60 * 1000) {
+    const dueAt = anchor.time + timer.intervalMinutes * 60 * 1000;
+    if (now < dueAt) {
       continue;
     }
 
@@ -90,9 +105,9 @@ function sendDueTimerMessage() {
     }
 
     // send at most one message per tick, most overdue first, to avoid bursts
-    if (dueTime == null || anchor.time < dueTime) {
+    if (dueTime == null || dueAt < dueTime) {
       dueTimer = timer;
-      dueTime = anchor.time;
+      dueTime = dueAt;
     }
   }
 

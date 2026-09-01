@@ -76,7 +76,6 @@ function SelfBot({ref, ...props}) {
         name={formatMessage({defaultMessage: 'Timers'})}
         reverse
         showProBadge
-        showNewBadge
         description={formatMessage({defaultMessage: 'Automatically send messages on an interval.'})}>
         <Button size="lg" onClick={() => setPage(PageTypes.SELF_BOT_TIMERS)}>
           {formatMessage({defaultMessage: 'Edit'})}

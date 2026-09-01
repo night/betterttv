@@ -20,14 +20,16 @@ import ProBadge from '@/common/components/ProBadge';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openModal, openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
-import {TIMER_MAX_INTERVAL_MINUTES, TIMER_MIN_CHAT_LINES, TIMER_MIN_INTERVAL_MINUTES} from '@/modules/self_bot/timers';
+import {
+  DEFAULT_TIMER_INTERVAL_MINUTES,
+  TIMER_MAX_INTERVAL_MINUTES,
+  TIMER_MIN_CHAT_LINES,
+  TIMER_MIN_INTERVAL_MINUTES,
+} from '@/modules/self_bot/timers';
 import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
 import Panel from './Panel';
 import styles from './SettingSelfBotTimers.module.css';
-
-const DEFAULT_TIMER_INTERVAL_MINUTES = 5;
-const DEFAULT_TIMER_CHAT_LINES = 2;
 
 function ChatLinesGuideModalBody() {
   return (
@@ -70,12 +72,12 @@ function formatIntervalDisplay(intervalMinutes) {
 }
 
 function TimerNumberInput({value, min, max = Infinity, onCommit, formatValue, unitLabel}) {
-  const [inputValue, setInputValue] = useState(String(value));
-  const [focused, setFocused] = useState(false);
+  const [draft, setDraft] = useState(null);
+  const focused = draft != null;
 
-  const handleChange = useCallback(({target: {value: newValue}}) => setInputValue(newValue.replace(/\D/g, '')), []);
+  const handleChange = useCallback(({target: {value: newValue}}) => setDraft(newValue.replace(/\D/g, '')), []);
 
-  const handleFocus = useCallback(() => setFocused(true), []);
+  const handleFocus = useCallback(() => setDraft(String(value)), [value]);
 
   const handleKeyDown = useCallback((event) => {
     if (event.key === 'Enter') {
@@ -84,21 +86,29 @@ function TimerNumberInput({value, min, max = Infinity, onCommit, formatValue, un
   }, []);
 
   const handleBlur = useCallback(() => {
-    const parsedNumber = Number.parseInt(inputValue, 10);
-    const newNumber = Number.isNaN(parsedNumber) ? value : Math.min(Math.max(parsedNumber, min), max);
-    setInputValue(String(newNumber));
-    setFocused(false);
-    onCommit(newNumber);
-  }, [inputValue, value, min, max, onCommit]);
+    const parsedNumber = Number.parseInt(draft, 10);
+    setDraft(null);
 
-  const displayValue = !focused && formatValue != null ? formatValue(Number.parseInt(inputValue, 10)) : inputValue;
+    if (Number.isNaN(parsedNumber)) {
+      return;
+    }
+
+    onCommit(Math.min(Math.max(parsedNumber, min), max));
+  }, [draft, min, max, onCommit]);
+
+  let displayValue = draft;
+  if (!focused) {
+    displayValue = formatValue != null ? formatValue(value) : String(value);
+  }
 
   return (
     <TextInput
       variant="unstyled"
       classNames={{
         input: tableStyles.textInput,
-        root: classNames(tableStyles.textInputRoot, styles.numberRoot),
+        root: classNames(tableStyles.textInputRoot, styles.numberRoot, {
+          [styles.formattedNumberRoot]: formatValue != null,
+        }),
         wrapper: tableStyles.textInputWrapper,
       }}
       value={displayValue}
@@ -168,7 +178,7 @@ function TimerRow({id, data, updateHandler, deleteHandler, messageInputRefCallba
       </TableTd>
       <TableTd className={classNames(tableStyles.dataCellMiddle, styles.linesColumn)}>
         <TimerNumberInput
-          value={data.lines ?? DEFAULT_TIMER_CHAT_LINES}
+          value={data.lines ?? TIMER_MIN_CHAT_LINES}
           min={TIMER_MIN_CHAT_LINES}
           onCommit={onLinesCommit}
         />
@@ -194,7 +204,7 @@ function createNewEntry() {
     id: nextId,
     message: '',
     intervalMinutes: DEFAULT_TIMER_INTERVAL_MINUTES,
-    lines: DEFAULT_TIMER_CHAT_LINES,
+    lines: TIMER_MIN_CHAT_LINES,
     enabled: true,
   };
 }
@@ -247,12 +257,14 @@ function SettingSelfBotTimers({value, setValue}) {
   const isPro = isUserPro(bttvUser);
 
   const newEntryHandler = useCallback(() => {
-    if (bttvUser == null) {
+    const {user} = useAuthStore.getState();
+
+    if (user == null) {
       openSignInModal({}, () => newEntryHandler());
       return;
     }
 
-    if (!isUserPro(bttvUser)) {
+    if (!isUserPro(user)) {
       openSubscriptionUpgradeModal({}, () => newEntryHandler());
       return;
     }
@@ -266,7 +278,7 @@ function SettingSelfBotTimers({value, setValue}) {
     });
 
     pendingMessageFocusRef.current = newEntry.id;
-  }, [setValue, bttvUser]);
+  }, [setValue]);
 
   const deleteHandler = useCallback(
     (id) => {
