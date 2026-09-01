@@ -50,7 +50,8 @@ function ChatFeatures({ref, ...props}) {
         value={ChatFlags.COMMUNITY_HIGHLIGHTS}
         name={formatMessage({defaultMessage: 'Community Highlights'})}
         description={formatMessage({
-          defaultMessage: 'Show alerts above chat window for hype trains, drops, pinned messages, etc.',
+          defaultMessage:
+            'Show alerts above chat window for hype trains, polls, predictions, drops, pinned messages, etc.',
         })}
       />
       <SettingCheckbox
