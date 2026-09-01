@@ -13,8 +13,6 @@ import {computeSelfBotTimers} from './timers';
 
 const COMMAND_COOLDOWN_MS = 2000;
 const TIMER_TICK_INTERVAL_MS = 15 * 1000;
-// mirrors nightbot: a timer's chat lines requirement is measured over the last 5 minutes
-const TIMER_CHAT_LINES_WINDOW_MS = 5 * 60 * 1000;
 // only one session per user may hold this lock, ensuring a single session replies
 const SELF_BOT_SESSION_LOCK = 'self_bot';
 
@@ -23,11 +21,11 @@ const commandCooldowns = new Map();
 let loadTime = Date.now();
 
 let computedTimers = [];
-// timer id -> when the timer last completed a check: a send, a skipped
-// (guard-failed) check, or when it was first seen
-const timerLastCheckTimes = new Map();
-// send times of recent non-broadcaster messages, pruned to the window
-const recentChatLineTimes = [];
+// timer id -> {time, lineCount} anchored when the timer last sent, or when it
+// was first seen
+const timerSendAnchors = new Map();
+// external chat lines seen while timers are scheduled
+let chatLineCount = 0;
 let timersTickInterval = null;
 
 function recomputeCommands() {
@@ -66,36 +64,35 @@ function sendDueTimerMessage() {
   }
 
   const now = Date.now();
-  pruneRecentChatLines(now);
 
   let dueTimer = null;
   let dueTime = null;
 
   for (const timer of computedTimers) {
-    const lastCheckTime = timerLastCheckTimes.get(timer.id);
+    const anchor = timerSendAnchors.get(timer.id);
 
     // an unseen timer starts counting from the first tick it is observed on,
     // so activation and mid-run additions both wait a full interval to send
-    if (lastCheckTime == null) {
-      timerLastCheckTimes.set(timer.id, now);
+    if (anchor == null) {
+      timerSendAnchors.set(timer.id, {time: now, lineCount: chatLineCount});
       continue;
     }
 
-    if (now - lastCheckTime < timer.intervalMinutes * 60 * 1000) {
+    if (now - anchor.time < timer.intervalMinutes * 60 * 1000) {
       continue;
     }
 
-    // dead chat guard, nightbot-style: the check runs once per interval, and a
-    // failed check skips this interval entirely rather than retrying early
-    if (recentChatLineTimes.length < timer.lines) {
-      timerLastCheckTimes.set(timer.id, now);
+    // dead chat guard: the required chat lines are counted since the timer
+    // last sent, so a due timer holds until chat catches up rather than
+    // skipping a full interval
+    if (chatLineCount - anchor.lineCount < timer.lines) {
       continue;
     }
 
     // send at most one message per tick, most overdue first, to avoid bursts
-    if (dueTime == null || lastCheckTime < dueTime) {
+    if (dueTime == null || anchor.time < dueTime) {
       dueTimer = timer;
-      dueTime = lastCheckTime;
+      dueTime = anchor.time;
     }
   }
 
@@ -103,14 +100,8 @@ function sendDueTimerMessage() {
     return;
   }
 
-  timerLastCheckTimes.set(dueTimer.id, now);
+  timerSendAnchors.set(dueTimer.id, {time: now, lineCount: chatLineCount});
   twitch.sendChatMessage(dueTimer.message);
-}
-
-function pruneRecentChatLines(now) {
-  while (recentChatLineTimes.length > 0 && now - recentChatLineTimes[0] > TIMER_CHAT_LINES_WINDOW_MS) {
-    recentChatLineTimes.shift();
-  }
 }
 
 // a real viewer message: sent after load, not from a chat bot (Twitch flags
@@ -148,7 +139,7 @@ function countTimerChatLine(messageObj) {
     return;
   }
 
-  recentChatLineTimes.push(Date.now());
+  chatLineCount += 1;
 }
 
 function updateTimersSchedule() {
@@ -160,8 +151,8 @@ function updateTimersSchedule() {
     clearInterval(timersTickInterval);
     timersTickInterval = null;
     // countdowns and chat activity do not survive deactivation
-    timerLastCheckTimes.clear();
-    recentChatLineTimes.length = 0;
+    timerSendAnchors.clear();
+    chatLineCount = 0;
   }
 }
 

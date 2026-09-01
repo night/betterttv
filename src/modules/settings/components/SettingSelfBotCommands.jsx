@@ -2,6 +2,7 @@ import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Button,
+  Checkbox,
   NativeSelect,
   Pill,
   Table,
@@ -31,12 +32,23 @@ const FREE_COMMAND_LIMIT = 5;
 function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCallback, ...props}) {
   const onUpdate = useCallback((newData) => updateHandler(id, newData), [updateHandler, id]);
   const onDelete = useCallback(() => deleteHandler(id), [deleteHandler, id]);
+  const handleEnabledChange = useCallback(({target: {checked}}) => onUpdate({enabled: checked}), [onUpdate]);
   const commandInputRef = useCallback((ref) => commandInputRefCallback(id, ref), [commandInputRefCallback, id]);
 
   const userLevel = data.userLevel ?? SelfBotUserLevels.EVERYONE;
 
   return (
     <TableTr {...props}>
+      <TableTd className={classNames(tableStyles.dataCellMiddle, tableStyles.toggleColumn)}>
+        <label className={tableStyles.toggleCell}>
+          <Checkbox
+            classNames={{root: tableStyles.toggleCheckbox, body: tableStyles.toggleCheckboxBody}}
+            radius="md"
+            checked={data.enabled !== false}
+            onChange={handleEnabledChange}
+          />
+        </label>
+      </TableTd>
       <TableTd className={classNames(tableStyles.dataCellMiddle, styles.commandColumn)}>
         <TextInput
           variant="unstyled"
@@ -48,7 +60,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
           ref={commandInputRef}
           defaultValue={data.command}
           onBlur={({target: {value}}) => onUpdate({command: value})}
-          placeholder={formatMessage({defaultMessage: '!command'})}
+          placeholder={formatMessage({defaultMessage: '!discord'})}
         />
       </TableTd>
       <TableTd className={tableStyles.dataCellMiddle}>
@@ -61,7 +73,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
           }}
           defaultValue={data.response}
           onBlur={({target: {value}}) => onUpdate({response: value})}
-          placeholder={formatMessage({defaultMessage: 'Response message'})}
+          placeholder={formatMessage({defaultMessage: 'Join our discord! discord.gg/nightdev'})}
         />
       </TableTd>
       <TableTd className={classNames(tableStyles.dataCellMiddle, tableStyles.selectColumn, styles.userLevelColumn)}>
@@ -96,7 +108,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
 
 function createNewEntry() {
   const nextId = crypto.randomUUID();
-  return {id: nextId, command: '', response: '', userLevel: SelfBotUserLevels.EVERYONE};
+  return {id: nextId, command: '', response: '', userLevel: SelfBotUserLevels.EVERYONE, enabled: true};
 }
 
 function CommandsTable({entryList, updateHandler, deleteHandler, commandInputRefCallback}) {
@@ -104,6 +116,7 @@ function CommandsTable({entryList, updateHandler, deleteHandler, commandInputRef
     <Table withColumnBorders className={tableStyles.table}>
       <TableThead>
         <TableTr>
+          <TableTh className={tableStyles.toggleColumn} />
           <TableTh className={styles.commandColumn}>{formatMessage({defaultMessage: 'Command'})}</TableTh>
           <TableTh>{formatMessage({defaultMessage: 'Response'})}</TableTh>
           <TableTh className={styles.userLevelColumn}>{formatMessage({defaultMessage: 'User Level'})}</TableTh>

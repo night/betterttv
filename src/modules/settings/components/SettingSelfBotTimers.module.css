@@ -9,13 +9,35 @@ td.intervalColumn {
 }
 
 .linesColumn {
-  width: 112px;
+  width: 136px;
 }
 
 td.linesColumn {
-  width: 112px;
-  min-width: 112px;
-  max-width: 112px;
+  width: 136px;
+  min-width: 136px;
+  max-width: 136px;
+}
+
+.linesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.linesHeader .infoButton {
+  color: var(--mantine-color-dimmed);
+}
+
+.linesHeader .infoButton:hover {
+  color: var(--mantine-color-text);
+}
+
+.chatLinesModalBody {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  row-gap: 16px;
 }
 
 .messageRoot,
@@ -23,4 +45,12 @@ td.linesColumn {
   width: 100%;
   min-width: 0;
   max-width: 100%;
+}
+
+.numberRoot input:not(:focus) {
+  cursor: pointer;
+}
+
+.unitSection {
+  justify-content: flex-end;
 }

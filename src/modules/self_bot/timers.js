@@ -1,4 +1,6 @@
 export const TIMER_MIN_INTERVAL_MINUTES = 1;
+export const TIMER_MAX_INTERVAL_MINUTES = 24 * 60;
+export const TIMER_MIN_CHAT_LINES = 2;
 
 export function computeSelfBotTimers(timersMap) {
   const computed = [];
@@ -7,14 +9,26 @@ export function computeSelfBotTimers(timersMap) {
     return computed;
   }
 
-  for (const {id, message, intervalMinutes, lines} of Object.values(timersMap)) {
+  for (const {id, message, intervalMinutes, lines, enabled} of Object.values(timersMap)) {
+    if (enabled === false) {
+      continue;
+    }
+
     if (id == null || message == null || message.trim().length === 0) {
       continue;
     }
 
     // stored settings are untrusted (cloud backup restores arbitrary JSON); an
     // invalid interval skips the timer rather than firing at a clamped rate
-    if (!Number.isInteger(intervalMinutes) || intervalMinutes < TIMER_MIN_INTERVAL_MINUTES) {
+    if (
+      !Number.isInteger(intervalMinutes) ||
+      intervalMinutes < TIMER_MIN_INTERVAL_MINUTES ||
+      intervalMinutes > TIMER_MAX_INTERVAL_MINUTES
+    ) {
+      continue;
+    }
+
+    if (!Number.isInteger(lines) || lines < TIMER_MIN_CHAT_LINES) {
       continue;
     }
 
@@ -22,7 +36,7 @@ export function computeSelfBotTimers(timersMap) {
       id,
       message: message.trim(),
       intervalMinutes,
-      lines: Number.isInteger(lines) && lines > 0 ? lines : 0,
+      lines,
     });
   }
 

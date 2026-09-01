@@ -24,7 +24,11 @@ export function computeSelfBotCommands(commandsMap) {
     return computed;
   }
 
-  for (const {command, response, userLevel} of Object.values(commandsMap)) {
+  for (const {command, response, userLevel, enabled} of Object.values(commandsMap)) {
+    if (enabled === false) {
+      continue;
+    }
+
     if (command == null || command.trim().length === 0) {
       continue;
     }
