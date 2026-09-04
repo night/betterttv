@@ -198,7 +198,10 @@ function SubscriptionBadgeSetting() {
         />
       )}
       {isPro && eligibleBadges != null && eligibleBadges.length > 0 ? (
-        <SettingRadioCardGroup value={!badgeEnabled ? DISABLED : selectedBadgeId} onChange={handleBadgeChange}>
+        <SettingRadioCardGroup
+          value={!badgeEnabled ? DISABLED : selectedBadgeId}
+          onChange={handleBadgeChange}
+          fixedCardWidth>
           <SettingRadioCard
             value={DISABLED}
             className={styles.badgeCard}
