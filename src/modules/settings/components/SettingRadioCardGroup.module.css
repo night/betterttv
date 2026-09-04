@@ -12,3 +12,8 @@
 .radioCardsCapped {
   grid-template-columns: repeat(auto-fit, minmax(max(80px, (100% - 30px) / 4), 1fr));
 }
+
+/* Fixed width: auto-fill keeps empty tracks, so a handful of cards stay the width they'd have in a full grid instead of stretching to fill the row. */
+.radioCardsFixedWidth {
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+}
