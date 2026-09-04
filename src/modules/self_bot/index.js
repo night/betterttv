@@ -39,9 +39,11 @@ function recomputeTimers() {
   // full interval again when it comes back instead of firing immediately
   const timerIds = new Set(computedTimers.map((timer) => timer.id));
   for (const id of timerSendAnchors.keys()) {
-    if (!timerIds.has(id)) {
-      timerSendAnchors.delete(id);
+    if (timerIds.has(id)) {
+      continue;
     }
+
+    timerSendAnchors.delete(id);
   }
 }
 
@@ -54,12 +56,13 @@ function isSelfBotActive() {
 // claim the lock while we are actively self-botting our own channel, release it otherwise
 // so another session can take over
 function updateSessionLock() {
-  if (isSelfBotActive()) {
-    socketClient.ensureAuthentication();
-    socketClient.acquireSessionLock(SELF_BOT_SESSION_LOCK);
-  } else {
+  if (!isSelfBotActive()) {
     socketClient.releaseSessionLock(SELF_BOT_SESSION_LOCK);
+    return;
   }
+
+  socketClient.ensureAuthentication();
+  socketClient.acquireSessionLock(SELF_BOT_SESSION_LOCK);
 }
 
 function sendDueTimerMessage() {
@@ -162,13 +165,18 @@ function updateTimersSchedule() {
 
   if (shouldRun && timersTickInterval == null) {
     timersTickInterval = setInterval(sendDueTimerMessage, TIMER_TICK_INTERVAL_MS);
-  } else if (!shouldRun && timersTickInterval != null) {
-    clearInterval(timersTickInterval);
-    timersTickInterval = null;
-    // countdowns and chat activity do not survive deactivation
-    timerSendAnchors.clear();
-    chatLineCount = 0;
+    return;
   }
+
+  if (shouldRun || timersTickInterval == null) {
+    return;
+  }
+
+  clearInterval(timersTickInterval);
+  timersTickInterval = null;
+  // countdowns and chat activity do not survive deactivation
+  timerSendAnchors.clear();
+  chatLineCount = 0;
 }
 
 function updateSelfBotState() {

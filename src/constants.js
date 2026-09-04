@@ -237,6 +237,7 @@ export const SettingsPromotions = {
   // CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
   // SELF_BOT: 'settingsPromotionDismissedSelfBot',
   // SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
+  SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
 };
 
 export const SettingsPrompts = {

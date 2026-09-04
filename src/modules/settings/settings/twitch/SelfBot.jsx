@@ -10,6 +10,7 @@ import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
+import {useHasPromotion} from '@/modules/settings/stores/promotion-store';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import useAuthStore from '@/stores/auth';
 
@@ -32,6 +33,7 @@ function openEnableSelfBotModal(setEnabled) {
 
 function SelfBot({ref, ...props}) {
   const {setPage} = use(PageContext);
+  const hasPromotion = useHasPromotion(SettingPanelIds.SELF_BOT);
   const isOnOwnChannel = useIsOnOwnChannel();
   const [enabled, setEnabled] = useStorageState(SettingIds.SELF_BOT);
   const bttvUser = useAuthStore(useShallow((state) => state.user));
@@ -76,6 +78,7 @@ function SelfBot({ref, ...props}) {
         name={formatMessage({defaultMessage: 'Timers'})}
         reverse
         showProBadge
+        showNewBadge={hasPromotion}
         description={formatMessage({defaultMessage: 'Automatically send messages on an interval.'})}>
         <Button size="lg" onClick={() => setPage(PageTypes.SELF_BOT_TIMERS)}>
           {formatMessage({defaultMessage: 'Edit'})}

@@ -3,36 +3,6 @@ export const TIMER_MAX_INTERVAL_MINUTES = 24 * 60;
 export const TIMER_MIN_CHAT_LINES = 2;
 export const DEFAULT_TIMER_INTERVAL_MINUTES = 5;
 
-function clampInteger(value, min, max, fallback) {
-  if (!Number.isInteger(value)) {
-    return fallback;
-  }
-
-  return Math.min(Math.max(value, min), max);
-}
-
-export function repairSelfBotTimerEntry(id, entry) {
-  const message = typeof entry.message === 'string' ? entry.message : '';
-  const intervalMinutes = clampInteger(
-    entry.intervalMinutes,
-    TIMER_MIN_INTERVAL_MINUTES,
-    TIMER_MAX_INTERVAL_MINUTES,
-    DEFAULT_TIMER_INTERVAL_MINUTES
-  );
-  const lines = clampInteger(entry.lines, TIMER_MIN_CHAT_LINES, Infinity, TIMER_MIN_CHAT_LINES);
-
-  if (
-    entry.id === id &&
-    entry.message === message &&
-    entry.intervalMinutes === intervalMinutes &&
-    entry.lines === lines
-  ) {
-    return entry;
-  }
-
-  return {...entry, id, message, intervalMinutes, lines};
-}
-
 export function computeSelfBotTimers(timersMap) {
   const computed = [];
 
