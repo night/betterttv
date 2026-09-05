@@ -1,6 +1,6 @@
 import {
   faArrowRight as faPanelLeftClose,
-  faScroll,
+  faFire,
   faTriangleExclamation,
   faUserGear,
 } from '@fortawesome/free-solid-svg-icons';
@@ -111,7 +111,7 @@ function UserSettingsNavigationButton({active, onClick}) {
         bttvUser == null ? (
           <Icon icon={faTriangleExclamation} className={styles.warningIcon} />
         ) : isUserPro(bttvUser) ? (
-          <ProBadge />
+          <ProBadge clickable={false} />
         ) : null
       }>
       {avatarSrc != null ? (
@@ -131,6 +131,7 @@ function UserSettingsNavigationButton({active, onClick}) {
 
 function SideNavigation({open, setOpen}) {
   const {page, setPage, handleGotoSettingPanel} = use(PageContext);
+  const bttvUser = useAuthStore(useShallow((state) => state.user));
   const activePanelId = useSettingsNavigationStore((state) => state.activePanelId);
   const close = useCallback(() => setOpen(false), [setOpen]);
   const containerRef = useRef(null);
@@ -231,12 +232,15 @@ function SideNavigation({open, setOpen}) {
         </Scrollbar>
         <div className={styles.userSettingsContainer}>
           <NavigationButton
-            variant="transparent"
-            className={styles.settingNavigationButton}
-            active={page === PageTypes.CHANGELOG}
-            onClick={() => handleNavigate(PageTypes.CHANGELOG)}
-            label={formatMessage({defaultMessage: 'Changelog'})}>
-            <Icon icon={faScroll} className={styles.navigationIcon} />
+            className={classNames(clickableStyles.clickableContainer, styles.categoryButton)}
+            active={page === PageTypes.PRO_UPGRADE}
+            onClick={() => handleNavigate(PageTypes.PRO_UPGRADE)}
+            label={
+              isUserPro(bttvUser)
+                ? formatMessage({defaultMessage: 'BetterTTV Pro'})
+                : formatMessage({defaultMessage: 'Upgrade to Pro'})
+            }>
+            <Icon icon={faFire} className={classNames(styles.navigationIcon, styles.fireIcon)} />
           </NavigationButton>
           <UserSettingsNavigationButton
             active={page === PageTypes.USER_SETTINGS}
