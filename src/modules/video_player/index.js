@@ -57,7 +57,15 @@ let removeRecommendationWatcher;
 
 function watchPlayerRecommendationVodsAutoplay() {
   if (hasFlag(settings.get(SettingIds.AUTO_PLAY), AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY)) {
-    if (removeRecommendationWatcher) removeRecommendationWatcher();
+    if (removeRecommendationWatcher != null) {
+      removeRecommendationWatcher();
+      removeRecommendationWatcher = null;
+    }
+    return;
+  }
+
+  // this runs on every player load, so only arm the watcher if one isn't registered already
+  if (removeRecommendationWatcher != null) {
     return;
   }
 

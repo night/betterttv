@@ -5,6 +5,8 @@ import {loadModuleForPlatforms} from '@/utils/modules';
 import twitch from '@/utils/twitch';
 import watcher from '@/watcher';
 
+const CAROUSEL_PLAYER_SELECTOR = '.video-player[data-a-player-type="channel_home_carousel"]';
+
 class DisableOfflineChannelAutoplayModule {
   constructor() {
     watcher.on('load.player', () => this.load());
@@ -13,7 +15,7 @@ class DisableOfflineChannelAutoplayModule {
   load() {
     if (hasFlag(settings.get(SettingIds.AUTO_PLAY), AutoPlayFlags.OFFLINE_CHANNEL_VIDEO)) return;
     const currentPlayer = twitch.getCurrentPlayer();
-    if (!currentPlayer || document.querySelector('.video-player[data-a-player-type="channel_home_carousel"]') == null) {
+    if (!currentPlayer || document.querySelector(CAROUSEL_PLAYER_SELECTOR) == null) {
       return;
     }
 
@@ -23,6 +25,12 @@ class DisableOfflineChannelAutoplayModule {
 
     const stopAutoplay = () => {
       setTimeout(() => {
+        // this listener only removes itself once it fires, so it can outlive the offline carousel
+        // and pause the player of a live channel navigated to afterwards
+        if (document.querySelector(CAROUSEL_PLAYER_SELECTOR) == null) {
+          return;
+        }
+
         currentPlayer.pause();
         currentPlayer.setMuted(prevMuted);
       }, 0);
