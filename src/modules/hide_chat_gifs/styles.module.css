@@ -1,0 +1,20 @@
+/*
+ * GIFs sent by Tier 2/3 subscribers arrive as their own message fragment: a
+ * GIPHY <img> next to a hover overlay holding the "Report GIF" button, both
+ * wrapped in a container div. Hiding only the image would leave that overlay
+ * behind, so hide the container.
+ *
+ * Twitch styles the fragment with CSS modules, so the hashed suffix on every
+ * class changes whenever they rebuild — match the module name instead. The GIF
+ * picker reuses the same `gifImage` name, hence the chat message scoping.
+ */
+.hideChatGifs {
+  :global(.chat-line__message),
+  :global(.vod-message),
+  :global(.pinned-chat__message),
+  :global(.thread-message__message) {
+    div:has(> img[class*='gifImage']) {
+      display: none !important;
+    }
+  }
+}
