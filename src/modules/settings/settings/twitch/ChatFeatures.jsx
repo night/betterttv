@@ -69,6 +69,13 @@ function ChatFeatures({ref, ...props}) {
         })}
       />
       <SettingCheckbox
+        value={ChatFlags.CHAT_GIFS}
+        name={formatMessage({defaultMessage: 'GIFs'})}
+        description={formatMessage({
+          defaultMessage: 'Show GIFs sent by Tier 2 and Tier 3 subscribers in the chat window.',
+        })}
+      />
+      <SettingCheckbox
         value={ChatFlags.AI_STREAM_SUMMARY}
         name={formatMessage({defaultMessage: 'AI Stream Summaries'})}
         description={formatMessage({
