@@ -318,7 +318,7 @@ function EmoteMenu({
         const trimmedSearch = search.trim();
         if (trimmedSearch.length === 0) {
           // clearing the search skips the debounce
-          updateGifResults('');
+          updateGifResults();
         } else {
           updateGifResultsDebounced(trimmedSearch);
         }

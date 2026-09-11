@@ -67,7 +67,7 @@ async function fetchGifsForSearchTerm(currentFetch, searchTerm) {
   useGifPickerStore.setState({gifs, loadingGifs: false});
 }
 
-export function updateGifResults(search) {
+export function updateGifResults(search = '') {
   const {gifContext} = useGifPickerStore.getState();
   if (gifContext == null || !gifContext.canSend || !gifContext.enabled) {
     return Promise.resolve();
