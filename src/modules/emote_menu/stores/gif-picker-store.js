@@ -99,7 +99,10 @@ export function updateGifResultsDebounced(search) {
     return;
   }
 
-  // the loading indicator starts immediately, only the fetch is debounced
+  // the loading indicator starts immediately, only the fetch is debounced.
+  // clearing the token here keeps an in-flight fetch from landing stale
+  // results while the debounce waits
+  lastGifsFetch = null;
   useGifPickerStore.setState({gifs: [], loadingGifs: true});
   fetchGifsForSearchTermDebounced(search);
 }
