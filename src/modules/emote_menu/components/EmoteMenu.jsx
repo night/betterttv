@@ -1,14 +1,18 @@
 import {autoUpdate, offset, useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
-import debounce from 'lodash.debounce';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
 import useEmoteMenuViewStoreUpdated from '@/common/hooks/EmoteMenuViewStore';
 import emoteMenuViewStore, {CategoryPositions} from '@/common/stores/emote-menu-view-store';
 import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuModes, EmoteMenuTips, NavigationModeTypes} from '@/constants';
 import useHorizontalResize from '@/modules/emote_menu/hooks/HorizontalResize';
-import useGifPickerStore, {fetchGifPickerContext, updateGifResults} from '@/modules/emote_menu/stores/gif-picker-store';
+import useGifPickerStore, {
+  cancelGifResultsUpdate,
+  fetchGifPickerContext,
+  updateGifResults,
+  updateGifResultsDebounced,
+} from '@/modules/emote_menu/stores/gif-picker-store';
 import {
   getCoordsOfSelected,
   getFirstCoords,
@@ -23,10 +27,6 @@ import GifPicker from './GifPicker';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Tip, {markTipAsSeen} from './Tip';
-
-const UPDATE_GIF_RESULTS_DEBOUNCE_MS = 300;
-
-const updateGifResultsDebounced = debounce(updateGifResults, UPDATE_GIF_RESULTS_DEBOUNCE_MS);
 
 let keyPressCallback;
 function setKeyPressCallback(newKeyPressCallback) {
@@ -171,7 +171,7 @@ function EmoteMenu({
     }
 
     close();
-    updateGifResultsDebounced.cancel();
+    cancelGifResultsUpdate();
     setMode(EmoteMenuModes.EMOTES);
     setNavigationMode(NavigationModeTypes.ARROW_KEYS);
     updateEmoteListData('');
@@ -282,7 +282,7 @@ function EmoteMenu({
 
   const handleSection = useCallback(
     (eventKey, shouldScroll = true) => {
-      updateGifResultsDebounced.cancel();
+      cancelGifResultsUpdate();
       setMode(EmoteMenuModes.EMOTES);
       const parsedData = updateEmoteListData('');
       setSection(eventKey);
@@ -314,7 +314,6 @@ function EmoteMenu({
         setEmoteListData(newData);
         emoteListDataRef.current = newData;
 
-        updateGifResultsDebounced.cancel();
         const trimmedSearch = search.trim();
         if (trimmedSearch.length === 0) {
           // clearing the search skips the debounce
@@ -341,7 +340,7 @@ function EmoteMenu({
         return;
       }
 
-      updateGifResultsDebounced.cancel();
+      cancelGifResultsUpdate();
       const parsedData = updateEmoteListData(emoteListDataRef.current.search);
       handleCoordsChange(getFirstCoords(parsedData.rows));
     },

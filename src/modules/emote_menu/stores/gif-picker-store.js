@@ -1,6 +1,9 @@
+import debounce from 'lodash.debounce';
 import {create} from 'zustand';
 import {fetchGifs, getGifPickerContext} from '@/modules/emote_menu/utils/twitch-gifs';
 import debug from '@/utils/debug';
+
+const UPDATE_GIF_RESULTS_DEBOUNCE_MS = 300;
 
 // twitch's gif chat cooldown, also the ring indicator's full capacity
 export const GIF_COOLDOWN_SECONDS = 30;
@@ -67,19 +70,42 @@ async function fetchGifsForSearchTerm(currentFetch, searchTerm) {
   useGifPickerStore.setState({gifs, loadingGifs: false});
 }
 
-export function updateGifResults(search = '') {
-  const {gifContext} = useGifPickerStore.getState();
-  if (gifContext == null || !gifContext.canSend || !gifContext.enabled) {
-    return Promise.resolve();
-  }
-
-  useGifPickerStore.setState({gifs: [], loadingGifs: true});
-
+function fetchGifsForSearchTermNow(search) {
   const currentFetch = {};
   lastGifsFetch = currentFetch;
   currentFetch.promise = fetchGifsForSearchTerm(currentFetch, search.trim());
-
   return currentFetch.promise;
+}
+
+const fetchGifsForSearchTermDebounced = debounce(fetchGifsForSearchTermNow, UPDATE_GIF_RESULTS_DEBOUNCE_MS);
+
+function canUpdateGifResults() {
+  const {gifContext} = useGifPickerStore.getState();
+  return gifContext != null && gifContext.canSend && gifContext.enabled;
+}
+
+export function updateGifResults(search = '') {
+  if (!canUpdateGifResults()) {
+    return Promise.resolve();
+  }
+
+  fetchGifsForSearchTermDebounced.cancel();
+  useGifPickerStore.setState({gifs: [], loadingGifs: true});
+  return fetchGifsForSearchTermNow(search);
+}
+
+export function updateGifResultsDebounced(search) {
+  if (!canUpdateGifResults()) {
+    return;
+  }
+
+  // the loading indicator starts immediately, only the fetch is debounced
+  useGifPickerStore.setState({gifs: [], loadingGifs: true});
+  fetchGifsForSearchTermDebounced(search);
+}
+
+export function cancelGifResultsUpdate() {
+  fetchGifsForSearchTermDebounced.cancel();
 }
 
 export default useGifPickerStore;
