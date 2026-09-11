@@ -57,6 +57,10 @@ function Header({
     [onModeChange]
   );
 
+  // keeps clicks on the control from moving focus to its radio, so the search
+  // input keeps the caret while swapping modes
+  const handleModeMouseDown = useCallback((event) => event.preventDefault(), []);
+
   let placeholder = selected == null ? formatMessage({defaultMessage: 'Search for Emotes'}) : selected.code;
   if (mode === EmoteMenuModes.GIFS) {
     placeholder = formatMessage({defaultMessage: 'Search GIPHY'});
@@ -82,6 +86,7 @@ function Header({
           radius="md"
           value={mode}
           onChange={handleModeChange}
+          onMouseDown={handleModeMouseDown}
           classNames={{
             root: styles.modeControl,
             label: styles.modeControlLabel,
