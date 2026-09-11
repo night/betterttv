@@ -117,16 +117,15 @@ function createGifFromGiphyRecord(gif, searchTerm) {
 
 export async function fetchGifs({apiKey, rating, searchTerm}) {
   const isSearch = searchTerm.length > 0;
-  const params = new URLSearchParams({
-    api_key: apiKey,
-    limit: GIFS_FETCH_LIMIT.toString(),
-    rating,
-  });
+  const url = new URL(`${GIPHY_API_BASE_URL}/${isSearch ? 'search' : 'trending'}`);
+  url.searchParams.set('api_key', apiKey);
+  url.searchParams.set('limit', GIFS_FETCH_LIMIT.toString());
+  url.searchParams.set('rating', rating);
   if (isSearch) {
-    params.set('q', searchTerm);
+    url.searchParams.set('q', searchTerm);
   }
 
-  const response = await fetch(`${GIPHY_API_BASE_URL}/${isSearch ? 'search' : 'trending'}?${params}`);
+  const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`failed to fetch gifs: ${response.status}`);
   }

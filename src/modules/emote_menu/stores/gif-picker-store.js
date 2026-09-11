@@ -53,7 +53,7 @@ export function fetchGifPickerContext() {
   return currentFetch.promise;
 }
 
-async function fetchGifsForSearchTerm(currentFetch, searchTerm) {
+async function fetchAndStoreGifs(currentFetch, searchTerm) {
   const {gifContext} = useGifPickerStore.getState();
 
   let gifs = [];
@@ -70,14 +70,14 @@ async function fetchGifsForSearchTerm(currentFetch, searchTerm) {
   useGifPickerStore.setState({gifs, loadingGifs: false});
 }
 
-function fetchGifsForSearchTermNow(search) {
+function startGifsFetch(search) {
   const currentFetch = {};
   lastGifsFetch = currentFetch;
-  currentFetch.promise = fetchGifsForSearchTerm(currentFetch, search.trim());
+  currentFetch.promise = fetchAndStoreGifs(currentFetch, search.trim());
   return currentFetch.promise;
 }
 
-const fetchGifsForSearchTermDebounced = debounce(fetchGifsForSearchTermNow, UPDATE_GIF_RESULTS_DEBOUNCE_MS);
+const startGifsFetchDebounced = debounce(startGifsFetch, UPDATE_GIF_RESULTS_DEBOUNCE_MS);
 
 function canUpdateGifResults() {
   const {gifContext} = useGifPickerStore.getState();
@@ -89,9 +89,9 @@ export function updateGifResults(search = '') {
     return Promise.resolve();
   }
 
-  fetchGifsForSearchTermDebounced.cancel();
+  startGifsFetchDebounced.cancel();
   useGifPickerStore.setState({gifs: [], loadingGifs: true});
-  return fetchGifsForSearchTermNow(search);
+  return startGifsFetch(search);
 }
 
 export function updateGifResultsDebounced(search) {
@@ -104,11 +104,11 @@ export function updateGifResultsDebounced(search) {
   // results while the debounce waits
   lastGifsFetch = null;
   useGifPickerStore.setState({gifs: [], loadingGifs: true});
-  fetchGifsForSearchTermDebounced(search);
+  startGifsFetchDebounced(search);
 }
 
 export function cancelGifResultsUpdate() {
-  fetchGifsForSearchTermDebounced.cancel();
+  startGifsFetchDebounced.cancel();
 }
 
 export default useGifPickerStore;
