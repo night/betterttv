@@ -64,6 +64,7 @@ export const SettingIds = {
   CHATBOT_COMMAND_AUTOCOMPLETE: 'chatbotCommandAutocomplete',
   SELF_BOT: 'selfBot',
   SELF_BOT_COMMANDS_LIST: 'selfBotCommandsList',
+  SELF_BOT_TIMERS_LIST: 'selfBotTimersList',
   REDUCED_MOTION: 'reducedMotion',
 };
 
@@ -158,10 +159,16 @@ export const PageTypes = {
   HIGHLIGHT_KEYWORDS: 4,
   BLACKLIST_KEYWORDS: 5,
   SELF_BOT_COMMANDS: 6,
+  SELF_BOT_TIMERS: 7,
 };
 
 export const PageDecendants = {
-  [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS, PageTypes.SELF_BOT_COMMANDS],
+  [PageTypes.SETTINGS]: [
+    PageTypes.HIGHLIGHT_KEYWORDS,
+    PageTypes.BLACKLIST_KEYWORDS,
+    PageTypes.SELF_BOT_COMMANDS,
+    PageTypes.SELF_BOT_TIMERS,
+  ],
 };
 
 export const NavigationModeTypes = {
@@ -230,6 +237,7 @@ export const SettingsPromotions = {
   // CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
   // SELF_BOT: 'settingsPromotionDismissedSelfBot',
   // SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
+  SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
 };
 
 export const SettingsPrompts = {
@@ -319,6 +327,7 @@ export const SettingDefaultValues = {
   [SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE]: true,
   [SettingIds.SELF_BOT]: false,
   [SettingIds.SELF_BOT_COMMANDS_LIST]: {},
+  [SettingIds.SELF_BOT_TIMERS_LIST]: {},
   [SettingIds.REDUCED_MOTION]: false,
 };
 
