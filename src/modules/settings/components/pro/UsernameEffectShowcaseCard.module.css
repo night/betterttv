@@ -1,0 +1,44 @@
+/* out of flow so extra rows overflow the fixed-height preview and clip instead of growing it */
+.showcaseMarqueeStack {
+  position: absolute;
+  top: 50%;
+  left: -10%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 120%;
+  transform: translateY(-50%) rotate(-4deg);
+}
+
+.showcaseMarquee {
+  display: flex;
+  width: max-content;
+  /* each row is its own compositor layer so the js-driven drift composites instead of
+     repainting the gradient text every frame */
+  will-change: transform;
+}
+
+.showcaseMarqueeGroup {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding-right: 32px;
+}
+
+/* the effect classes animate background-position on background-clip text with an svg
+   stroke filter — fine for one username in chat, but 100 of them repainting every frame
+   makes this pane the most expensive thing on the page. freeze the sweep in the showcase;
+   the two-class selector outweighs the single effect class without needing !important */
+.showcaseMarqueeGroup .showcaseName {
+  animation: none;
+}
+
+.showcaseName {
+  display: block;
+  overflow: hidden;
+  max-width: 280px;
+  font-size: 26px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

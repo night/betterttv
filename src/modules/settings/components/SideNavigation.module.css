@@ -55,6 +55,12 @@
   color: var(--mantine-color-yellow-5);
 }
 
+.fireIcon {
+  /* the faFire glyph extends above its declared viewBox (y starts at -32), which the svg's
+     default overflow clips into a flat-topped flame */
+  overflow: visible;
+}
+
 .navigationButton {
   font-weight: 500;
   height: 48px;
