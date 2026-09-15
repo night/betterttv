@@ -169,6 +169,11 @@ export const NavigationModeTypes = {
   ARROW_KEYS: 1,
 };
 
+export const EmoteMenuModes = {
+  EMOTES: 'emotes',
+  GIFS: 'gifs',
+};
+
 export const EmoteProviders = {
   BETTERTTV: 'bttv',
   FRANKERFACEZ: 'ffz',

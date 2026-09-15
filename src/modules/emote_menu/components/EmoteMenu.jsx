@@ -5,8 +5,14 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
 import useEmoteMenuViewStoreUpdated from '@/common/hooks/EmoteMenuViewStore';
 import emoteMenuViewStore, {CategoryPositions} from '@/common/stores/emote-menu-view-store';
-import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuTips, NavigationModeTypes} from '@/constants';
+import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuModes, EmoteMenuTips, NavigationModeTypes} from '@/constants';
 import useHorizontalResize from '@/modules/emote_menu/hooks/HorizontalResize';
+import useGifPickerStore, {
+  cancelGifResultsUpdate,
+  fetchGifPickerContext,
+  updateGifResults,
+  updateGifResultsDebounced,
+} from '@/modules/emote_menu/stores/gif-picker-store';
 import {
   getCoordsOfSelected,
   getFirstCoords,
@@ -17,6 +23,7 @@ import keyCodes from '@/utils/keycodes';
 import {isMac} from '@/utils/window';
 import EmoteList from './EmoteList';
 import styles from './EmoteMenu.module.css';
+import GifPicker from './GifPicker';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Tip, {markTipAsSeen} from './Tip';
@@ -49,6 +56,8 @@ function EmoteMenu({
   const shiftPressedRef = useRef(false);
   const [section, setSection] = useState(null);
   const [opened, {close, open}] = useDisclosure(false);
+  const [mode, setMode] = useState(EmoteMenuModes.EMOTES);
+  const gifContext = useGifPickerStore((state) => state.gifContext);
   const width = useHorizontalResize({boundingQuerySelector, handleRef, open: opened, placement});
   const emoteListRef = useRef(null);
   const [emoteListCoords, setEmoteListCoords] = useState({x: 0, y: 0});
@@ -114,6 +123,7 @@ function EmoteMenu({
 
   const handleOpen = useCallback(() => {
     open();
+    fetchGifPickerContext();
 
     const chatTextArea = document.querySelector(boundingQuerySelector);
     refs.setPositionReference(chatTextArea);
@@ -161,6 +171,8 @@ function EmoteMenu({
     }
 
     close();
+    cancelGifResultsUpdate();
+    setMode(EmoteMenuModes.EMOTES);
     setNavigationMode(NavigationModeTypes.ARROW_KEYS);
     updateEmoteListData('');
     setSection(null);
@@ -253,6 +265,10 @@ function EmoteMenu({
       To prevent this we stop it from bubbling upstream */
       event.stopPropagation();
 
+      if (mode === EmoteMenuModes.GIFS) {
+        return;
+      }
+
       if (event.key === keyCodes.Enter) {
         handleClick(selected);
         return;
@@ -261,11 +277,13 @@ function EmoteMenu({
       keyPressCallback(event, shiftPressedRef.current);
     },
     // eslint-disable-next-line @eslint-react/exhaustive-deps -- handler dependencies are stable for this callback
-    [handleClick, keyPressCallback, selected]
+    [handleClick, keyPressCallback, selected, mode]
   );
 
   const handleSection = useCallback(
     (eventKey, shouldScroll = true) => {
+      cancelGifResultsUpdate();
+      setMode(EmoteMenuModes.EMOTES);
       const parsedData = updateEmoteListData('');
       setSection(eventKey);
 
@@ -289,13 +307,49 @@ function EmoteMenu({
 
   const handleSearchChange = useCallback(
     (search) => {
-      handleScrollToPendingRow(0);
-      setNavigationMode(NavigationModeTypes.ARROW_KEYS);
-      const parsedData = updateEmoteListData(search);
+      if (mode === EmoteMenuModes.GIFS) {
+        // the emote grid isn't visible, so only track the search text and skip
+        // recomputing the emote rows until the user switches back
+        const newData = {...emoteListDataRef.current, search};
+        setEmoteListData(newData);
+        emoteListDataRef.current = newData;
+
+        const trimmedSearch = search.trim();
+        if (trimmedSearch.length === 0) {
+          // clearing the search skips the debounce
+          updateGifResults();
+        } else {
+          updateGifResultsDebounced(trimmedSearch);
+        }
+      } else if (mode === EmoteMenuModes.EMOTES) {
+        handleScrollToPendingRow(0);
+        setNavigationMode(NavigationModeTypes.ARROW_KEYS);
+        const parsedData = updateEmoteListData(search);
+        handleCoordsChange(getFirstCoords(parsedData.rows));
+      }
+    },
+    [updateEmoteListData, handleCoordsChange, handleScrollToPendingRow, mode]
+  );
+
+  const handleModeChange = useCallback(
+    (newMode) => {
+      setMode(newMode);
+
+      if (newMode === EmoteMenuModes.GIFS) {
+        updateGifResults(emoteListDataRef.current.search);
+        return;
+      }
+
+      cancelGifResultsUpdate();
+      const parsedData = updateEmoteListData(emoteListDataRef.current.search);
       handleCoordsChange(getFirstCoords(parsedData.rows));
     },
-    [updateEmoteListData, handleCoordsChange, handleScrollToPendingRow]
+    [updateEmoteListData, handleCoordsChange]
   );
+
+  const handleGifSent = useCallback(() => {
+    handleCloseRef.current();
+  }, []);
 
   return (
     <div
@@ -322,27 +376,34 @@ function EmoteMenu({
             onChange={handleSearchChange}
             toggleWhisper={toggle}
             selected={selected}
+            mode={mode}
+            gifsAvailable={gifContext != null}
+            onModeChange={handleModeChange}
           />
           <Sidebar
             className={styles.sidebar}
-            section={section}
+            section={mode === EmoteMenuModes.GIFS ? null : section}
             onClick={handleSection}
             categories={emoteListData.categories}
           />
-          <EmoteList
-            data={emoteListData}
-            ref={emoteListRef}
-            selected={selected}
-            className={styles.emotes}
-            section={section}
-            onClick={handleClick}
-            setKeyPressCallback={setKeyPressCallback}
-            onSection={onSection}
-            navigationMode={navigationMode}
-            setNavigationMode={setNavigationMode}
-            coords={emoteListCoords}
-            setCoords={handleCoordsChange}
-          />
+          {mode === EmoteMenuModes.GIFS && gifContext != null ? (
+            <GifPicker className={styles.emotes} gifContext={gifContext} onSend={handleGifSent} />
+          ) : (
+            <EmoteList
+              data={emoteListData}
+              ref={emoteListRef}
+              selected={selected}
+              className={styles.emotes}
+              section={section}
+              onClick={handleClick}
+              setKeyPressCallback={setKeyPressCallback}
+              onSection={onSection}
+              navigationMode={navigationMode}
+              setNavigationMode={setNavigationMode}
+              coords={emoteListCoords}
+              setCoords={handleCoordsChange}
+            />
+          )}
         </div>
       </ScrollbarSizeTargetContext>
       {opened ? <Tip className={styles.tip} onClose={handleClose} /> : null}
