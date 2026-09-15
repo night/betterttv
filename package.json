@@ -61,11 +61,11 @@
     "> 0.25%, not dead"
   ],
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "5.18.7",
-    "@formatjs/cli": "6.16.23",
-    "@formatjs/unplugin": "^1.2.8",
+    "@eslint-react/eslint-plugin": "5.19.0",
+    "@formatjs/cli": "6.16.26",
+    "@formatjs/unplugin": "^1.2.9",
     "@sentry/vite-plugin": "5.4.0",
-    "autoprefixer": "10.5.5",
+    "autoprefixer": "10.5.6",
     "browserslist-to-esbuild": "2.1.1",
     "emoji-toolkit": "11.0.0",
     "eslint": "10.10.0",
@@ -79,10 +79,10 @@
     "postcss": "8.5.28",
     "postcss-hexrgba": "2.1.0",
     "postcss-prefixwrap": "^1.58.0",
-    "postcss-preset-env": "^11.5.1",
+    "postcss-preset-env": "^11.5.2",
     "postcss-url": "10.1.4",
     "prettier": "3.9.6",
-    "vite": "8.2.2"
+    "vite": "8.3.0"
   },
   "overrides": {
     "minimatch@<10.0.3": "^10.2.5",
