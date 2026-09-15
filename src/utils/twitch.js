@@ -17,6 +17,7 @@ export const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-targ
 const CHAT_WYSIWYG_INPUT_EDITOR = '.chat-wysiwyg-input__editor';
 const STREAM_CHAT = '.stream-chat';
 const CHAT_BADGE_CAROUSEL = 'div[data-a-target="chat-badge-carousel"]';
+const VOD_CHAT_MAX_PARENT_DEPTH = 50;
 
 const USER_PROFILE_IMAGE_GQL_QUERY = gql`
   query BTTVGetUserProfilePicture($userId: ID!) {
@@ -499,7 +500,8 @@ export default {
     try {
       const node = searchReactParents(
         getReactInstance(document.querySelector(VOD_CHAT_CONTAINER)),
-        (n) => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.video
+        (n) => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.video,
+        VOD_CHAT_MAX_PARENT_DEPTH
       );
       currentVodChat = node.stateNode;
     } catch (_) {}
