@@ -1,0 +1,108 @@
+.showcaseSelfBotPreview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 232px;
+  padding: 24px 20px 60px;
+  user-select: none;
+  overflow: hidden;
+}
+
+.bubbleStack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 240px;
+}
+
+.bubbleRow {
+  display: flex;
+}
+
+/* alternate rows read like a conversation */
+.bubbleRow:nth-child(2) {
+  flex-direction: row-reverse;
+  align-self: flex-end;
+}
+
+.bubble {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 12px;
+  background-color: #f8f9fb;
+  box-shadow: var(--mantine-shadow-md);
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2430;
+}
+
+/* tooltip-style caret pointing at the speaker, vertically centered; same seamless
+   fill-only svg approach as the autocomplete panel's caret */
+.bubble::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -7px;
+  width: 8px;
+  height: 20px;
+  margin-top: -10px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 20'%3E%3Cpath d='M8 0 L8 20 L7 20 L7 15.5 C7 13.5 6.3 12.5 4.2 11.3 Q2 10 4.2 8.7 C6.3 7.5 7 6.5 7 4.5 L7 0 Z' fill='%23f8f9fb'/%3E%3C/svg%3E")
+    no-repeat;
+}
+
+.bubbleRow:nth-child(2) .bubble {
+  flex-direction: row-reverse;
+}
+
+/* without the avatar the text starts right at the bubble edge, so pad the speaking side */
+.bubbleNoAvatar {
+  padding-left: 12px;
+}
+
+.bubbleRow:nth-child(2) .bubbleNoAvatar {
+  padding-right: 12px;
+  padding-left: 8px;
+}
+
+.bubbleRow:nth-child(2) .bubble::after {
+  right: -7px;
+  left: auto;
+  transform: scaleX(-1);
+}
+
+/* command icon in the accent chips' finish: gradient squircle, top glint, extruded lip */
+.bubbleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  color: var(--mantine-color-white);
+  /* the 2px lip hangs below the tile, so lift it a touch to sit optically centered */
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 2px 0 var(--tile-edge);
+}
+
+.bubbleIcon[data-color='indigo'] {
+  --tile-edge: var(--mantine-color-indigo-8);
+  background: linear-gradient(180deg, var(--mantine-color-indigo-4), var(--mantine-color-indigo-6));
+}
+
+.bubbleIcon[data-color='red'] {
+  --tile-edge: var(--mantine-color-red-8);
+  background: linear-gradient(180deg, var(--mantine-color-red-4), var(--mantine-color-red-6));
+}
+
+.bubbleIcon[data-color='green'] {
+  --tile-edge: var(--mantine-color-green-8);
+  background: linear-gradient(180deg, var(--mantine-color-green-4), var(--mantine-color-green-6));
+}

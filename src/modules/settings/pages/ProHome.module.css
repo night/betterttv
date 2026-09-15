@@ -1,0 +1,44 @@
+/* two independent columns — cards stack masonry-style, each keeping its own height instead of
+   stretching to a shared grid row. multicol has no row-gap, so the cards carry a bottom margin
+   and the container swallows the trailing one. */
+.featureColumns {
+  flex-shrink: 0;
+  columns: 2;
+  column-gap: 12px;
+  margin: 0 0 -12px;
+}
+
+.featureColumns > * {
+  break-inside: avoid;
+  margin-bottom: 12px;
+}
+
+/* rendered as the PageScrollBody footer, below the scroller, so it's always flush with the
+   page bottom while content scrolls behind the border */
+.premiumActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--mantine-color-default-border);
+  background-color: var(--page-bg);
+}
+
+.premiumThanks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--mantine-font-size-md);
+  color: var(--mantine-color-dimmed);
+}
+
+.premiumThanksHeart {
+  color: var(--mantine-color-red-6);
+}
+
+@media (max-width: 800px) {
+  .featureColumns {
+    columns: 1;
+  }
+}
