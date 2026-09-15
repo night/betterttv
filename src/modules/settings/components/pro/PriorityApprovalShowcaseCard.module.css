@@ -1,0 +1,9 @@
+/* the bake is flat with its shadow baked in; the tilt stays live so it renders crisp.
+   the bake carries more empty canvas above the ticket than below, so nudge it down to
+   sit optically centered */
+.ticketArt {
+  width: 308px;
+  height: 198px;
+  margin-top: 10px;
+  transform: rotate(-2.5deg);
+}

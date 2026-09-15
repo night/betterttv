@@ -1,0 +1,49 @@
+.showcaseCard {
+  /* the label scrim references this so it always matches the field */
+  --showcase-bg: var(--mantine-color-indigo-9);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 2px solid light-dark(var(--mantine-color-indigo-5), var(--mantine-color-indigo-4));
+  border-radius: var(--mantine-radius-lg);
+  box-shadow: var(--mantine-shadow-xs);
+  /* painted on the bordered element itself so it runs flush under the border's rounded corners;
+     a child's clipped corner leaves an antialiased seam of card background showing through */
+  background-color: var(--showcase-bg);
+}
+
+/* shared stage for the cards whose art is a single pre-rendered image */
+.showcasePreview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 232px;
+  padding: 24px 20px 60px;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* baked art keeps its size even when wider than the padded stage */
+.showcasePreview > img {
+  flex-shrink: 0;
+}
+
+/* the mask fades the backdrop blur out toward the top; the label sits in the fully-opaque
+   bottom zone so only the blur fades, not the text */
+.showcaseLabel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 32px 20px 16px;
+  color: var(--mantine-color-white);
+  background: linear-gradient(to top, var(--showcase-bg), transparent);
+}
+
+@media (max-width: 800px) {
+  .showcaseCard {
+    border-radius: var(--mantine-radius-md);
+  }
+}
