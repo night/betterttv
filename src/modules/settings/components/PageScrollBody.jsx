@@ -5,7 +5,7 @@ import styles from './SettingsModal.module.css';
 
 export const PageScrollContext = React.createContext(null);
 
-export function PageScrollBody({header, children, className, ...props}) {
+export function PageScrollBody({header, footer, children, className, ...props}) {
   const ref = use(PageScrollContext);
   return (
     <div className={classNames(styles.pageScrollBody, className)}>
@@ -13,6 +13,7 @@ export function PageScrollBody({header, children, className, ...props}) {
       <Scrollbar ref={ref} mirrorPadding className={styles.pageScrollContent} {...props}>
         {children}
       </Scrollbar>
+      {footer}
     </div>
   );
 }

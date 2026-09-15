@@ -9,6 +9,7 @@ import {PageContext} from '@/modules/settings/contexts/PageContext';
 import BlacklistKeywords from '@/modules/settings/pages/BlacklistKeywords';
 import Changelog from '@/modules/settings/pages/Changelog';
 import HighlightKeywords from '@/modules/settings/pages/HighlightKeywords';
+import ProHome from '@/modules/settings/pages/ProHome';
 import SelfBotCommands from '@/modules/settings/pages/SelfBotCommands';
 import SelfBotTimers from '@/modules/settings/pages/SelfBotTimers';
 import Settings from '@/modules/settings/pages/Settings';
@@ -52,6 +53,8 @@ function Page({page, handleSettingRefCallback}) {
       return <SelfBotCommands />;
     case PageTypes.SELF_BOT_TIMERS:
       return <SelfBotTimers />;
+    case PageTypes.PRO_HOME:
+      return <ProHome />;
     case PageTypes.SETTINGS:
       return <Settings handleSettingRefCallback={handleSettingRefCallback} />;
     case PageTypes.USER_SETTINGS:

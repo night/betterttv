@@ -1,0 +1,10 @@
+/* centered on the stage center (24/60 padding, so 18px up); 300px is the smallest square
+   that reaches the card bottom from there (2 x 134, rounded up) */
+.badgeBeams {
+  position: absolute;
+  top: calc(50% - (60px - 24px) / 2);
+  left: 50%;
+  width: max(100%, 300px);
+  height: auto;
+  transform: translate(-50%, -50%);
+}
