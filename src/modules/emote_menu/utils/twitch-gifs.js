@@ -71,9 +71,17 @@ export async function getGifPickerContext() {
   }
 
   try {
-    // relies on the twitch apollo client's cache, so reopening the menu on the
-    // same channel doesn't refetch
-    const {data} = await twitch.graphqlQuery(GIF_PICKER_CONTEXT_QUERY, {channelID: currentChannel.id});
+    // twitch already fetches all of these fields on chat load, so read them
+    // from its apollo cache rather than issuing our own request. a cache miss
+    // (channel without the fields prefetched) throws and we treat gifs as
+    // unavailable.
+    const {data} = await twitch.graphqlQuery(
+      GIF_PICKER_CONTEXT_QUERY,
+      {channelID: currentChannel.id},
+      {
+        fetchPolicy: 'cache-only',
+      }
+    );
     const config = data?.gifPickerConfig;
     const channelHasGifs = (data?.user?.subscriptionProducts ?? []).some((product) => product?.hasGifs);
     const subTier = data?.user?.self?.subscriptionBenefit?.tier;
