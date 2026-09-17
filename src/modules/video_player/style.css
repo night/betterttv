@@ -41,8 +41,10 @@ main[data-platform='twitch'] .bttv-player-tooltip {
     color: var(--color-text-button-overlay, #fff);
     background-color: var(--color-background-button-icon-overlay-default, transparent);
 
-    &:hover:not(:disabled) {
-      background-color: var(--color-background-button-icon-overlay-hover, rgb(255 255 255 / 13%));
+    @media (hover: hover) {
+      &:hover:not(:disabled) {
+        background-color: var(--color-background-button-icon-overlay-hover, rgb(255 255 255 / 13%));
+      }
     }
 
     &:active:not(:disabled) {
