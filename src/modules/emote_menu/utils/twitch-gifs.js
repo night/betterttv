@@ -1,4 +1,3 @@
-import gql from 'graphql-tag';
 import {PlatformTypes} from '@/constants';
 import {getCurrentChannel} from '@/utils/channel';
 import debug from '@/utils/debug';
@@ -24,79 +23,38 @@ const GifContentRatings = {
 
 const GIF_ELIGIBLE_SUB_TIERS = ['2000', '3000'];
 
-const SendGifMessageErrors = {
-  TEMPORARILY_UNAVAILABLE: 'TEMPORARILY_UNAVAILABLE',
-};
+// twitch's own picker returns this from a send attempt while gifs are
+// temporarily unavailable
+const SEND_GIF_TEMPORARILY_UNAVAILABLE = -1;
 
-const GIF_PICKER_CONTEXT_QUERY = gql`
-  query BTTVGifPickerContext($channelID: ID!) {
-    gifPickerConfig(channelID: $channelID) {
-      isEnabled
-      isAllowlisted
-      apiKey
-      contentRating
-    }
-    user(id: $channelID) {
-      id
-      subscriptionProducts {
-        id
-        hasGifs
-      }
-      self {
-        subscriptionBenefit {
-          id
-          tier
-        }
-      }
-    }
-  }
-`;
-
-const SEND_GIF_MESSAGE_MUTATION = gql`
-  mutation BTTVSendGifMessage($input: SendGifMessageInput!) {
-    sendGifMessage(input: $input) {
-      error
-      secondsUntilCanSend
-      message {
-        id
-      }
-    }
-  }
-`;
-
-export async function getGifPickerContext() {
-  const currentChannel = getCurrentChannel();
-  if (getPlatform() !== PlatformTypes.TWITCH || currentChannel?.provider !== 'twitch') {
+export function getGifPickerContext() {
+  if (getPlatform() !== PlatformTypes.TWITCH || getCurrentChannel()?.provider !== 'twitch') {
     return null;
   }
 
-  try {
-    // twitch already fetches all of these fields on chat load, so read them
-    // from its apollo cache rather than issuing our own request. a cache miss
-    // (channel without the fields prefetched) throws and we treat gifs as
-    // unavailable.
-    const {data} = await twitch.graphqlQuery(
-      GIF_PICKER_CONTEXT_QUERY,
-      {channelID: currentChannel.id},
-      {
-        fetchPolicy: 'cache-only',
-      }
-    );
-    const config = data?.gifPickerConfig;
-    const channelHasGifs = (data?.user?.subscriptionProducts ?? []).some((product) => product?.hasGifs);
-    const subTier = data?.user?.self?.subscriptionBenefit?.tier;
-
-    return {
-      available: config?.isAllowlisted === true && config?.apiKey != null && channelHasGifs,
-      enabled: config?.isEnabled === true,
-      canSend: GIF_ELIGIBLE_SUB_TIERS.includes(subTier),
-      apiKey: config?.apiKey,
-      rating: GifContentRatings[config?.contentRating] ?? 'g',
-    };
-  } catch (error) {
-    debug.log('failed to query gif picker config', error);
+  // twitch mounts its gif picker controller with the chat and passes the
+  // giphy config, the channel's subscription data and the send handler down
+  // as props, so everything is read from there instead of our own requests
+  const gifPicker = twitch.getGifPickerController();
+  if (gifPicker == null) {
     return null;
   }
+
+  const channelHasGifs = (gifPicker.channelData?.user?.subscriptionProducts ?? []).some((product) => product?.hasGifs);
+  const subTier = gifPicker.channelData?.user?.self?.subscriptionBenefit?.tier;
+
+  return {
+    available:
+      gifPicker.giphyFlags?.showKeyboard === true &&
+      gifPicker.giphyIsAllowlisted === true &&
+      gifPicker.giphyApiKey != null &&
+      channelHasGifs,
+    enabled: gifPicker.giphyIsEnabled === true,
+    canSend: GIF_ELIGIBLE_SUB_TIERS.includes(subTier),
+    apiKey: gifPicker.giphyApiKey,
+    rating: GifContentRatings[gifPicker.giphyContentRating] ?? 'g',
+    cooldownSecondsRemaining: gifPicker.gifCooldownSecondsRemaining ?? 0,
+  };
 }
 
 function createGifFromGiphyRecord(gif, searchTerm) {
@@ -150,31 +108,21 @@ export async function fetchGifs({apiKey, rating, searchTerm}) {
 }
 
 export async function sendGifMessage(gif) {
-  const currentChannel = getCurrentChannel();
-  if (currentChannel == null) {
+  const gifPicker = twitch.getGifPickerController();
+  if (gifPicker == null) {
     return {success: false, temporarilyUnavailable: false, secondsUntilCanSend: 0};
   }
 
   try {
-    const {data} = await twitch.graphqlMutation(SEND_GIF_MESSAGE_MUTATION, {
-      input: {
-        channelID: currentChannel.id,
-        gifID: gif.id,
-        gifURL: gif.url,
-        searchTerm: gif.searchTerm.length > 0 ? gif.searchTerm : undefined,
-      },
-    });
+    // twitch's own send handler runs its mutation and records its cooldown,
+    // and resolves with 0 on success, the remaining cooldown seconds, or -1
+    const secondsUntilCanSend = (await gifPicker.onSelectGif(gif)) ?? 0;
 
-    const result = data?.sendGifMessage;
-    if (result?.error != null) {
-      return {
-        success: false,
-        temporarilyUnavailable: result.error === SendGifMessageErrors.TEMPORARILY_UNAVAILABLE,
-        secondsUntilCanSend: result.secondsUntilCanSend ?? 0,
-      };
-    }
-
-    return {success: true, secondsUntilCanSend: result?.secondsUntilCanSend ?? 0};
+    return {
+      success: secondsUntilCanSend === 0,
+      temporarilyUnavailable: secondsUntilCanSend === SEND_GIF_TEMPORARILY_UNAVAILABLE,
+      secondsUntilCanSend: Math.max(0, secondsUntilCanSend),
+    };
   } catch (error) {
     debug.log('failed to send gif message', error);
     return {success: false, temporarilyUnavailable: false, secondsUntilCanSend: 0};

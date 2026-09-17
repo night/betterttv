@@ -9,7 +9,7 @@ import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuModes, EmoteMenuTips, NavigationMod
 import useHorizontalResize from '@/modules/emote_menu/hooks/HorizontalResize';
 import useGifPickerStore, {
   cancelGifResultsUpdate,
-  fetchGifPickerContext,
+  updateGifPickerContext,
   updateGifResults,
   updateGifResultsDebounced,
 } from '@/modules/emote_menu/stores/gif-picker-store';
@@ -123,7 +123,7 @@ function EmoteMenu({
 
   const handleOpen = useCallback(() => {
     open();
-    fetchGifPickerContext();
+    updateGifPickerContext();
 
     const chatTextArea = document.querySelector(boundingQuerySelector);
     refs.setPositionReference(chatTextArea);

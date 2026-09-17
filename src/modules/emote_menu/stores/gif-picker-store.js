@@ -15,7 +15,6 @@ const useGifPickerStore = create(() => ({
   cooldownSecondsRemaining: 0,
 }));
 
-let lastContextFetch = null;
 let lastGifsFetch = null;
 let cooldownInterval = null;
 
@@ -33,24 +32,15 @@ export function startGifCooldown(totalSeconds) {
   }, 1000);
 }
 
-async function fetchContext(currentFetch) {
-  const newGifContext = await getGifPickerContext();
-
-  if (lastContextFetch !== currentFetch) {
-    return;
-  }
-
+export function updateGifPickerContext() {
+  const newGifContext = getGifPickerContext();
   useGifPickerStore.setState({gifContext: newGifContext?.available ? newGifContext : null});
-}
 
-export function fetchGifPickerContext() {
-  useGifPickerStore.setState({gifContext: null});
-
-  const currentFetch = {};
-  lastContextFetch = currentFetch;
-  currentFetch.promise = fetchContext(currentFetch);
-
-  return currentFetch.promise;
+  // twitch persists its per-channel cooldown, so a reopen or reload picks it up
+  const {cooldownSecondsRemaining} = useGifPickerStore.getState();
+  if (newGifContext != null && newGifContext.cooldownSecondsRemaining > cooldownSecondsRemaining) {
+    startGifCooldown(newGifContext.cooldownSecondsRemaining);
+  }
 }
 
 async function fetchAndStoreGifs(currentFetch, searchTerm) {

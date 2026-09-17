@@ -926,4 +926,19 @@ export default {
 
     return user;
   },
+
+  getGifPickerController() {
+    let gifPickerController;
+    try {
+      const reactRoot = getReactRoot(document.querySelector(REACT_ROOT));
+      const node = searchReactChildren(
+        reactRoot?._internalRoot?.current ?? reactRoot,
+        (n) => n.memoizedProps?.giphyApiKey != null && n.memoizedProps?.onSelectGif != null,
+        1000
+      );
+      gifPickerController = node.memoizedProps;
+    } catch (_) {}
+
+    return gifPickerController;
+  },
 };
