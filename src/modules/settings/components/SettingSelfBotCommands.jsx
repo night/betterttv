@@ -18,6 +18,7 @@ import classNames from 'classnames';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
+import useEntryListState from '@/common/hooks/EntryListState';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
@@ -44,6 +45,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
           <Checkbox
             classNames={{root: tableStyles.toggleCheckbox, body: tableStyles.toggleCheckboxBody}}
             radius="md"
+            aria-label={formatMessage({defaultMessage: 'Enable command'})}
             checked={data.enabled !== false}
             onChange={handleEnabledChange}
           />
@@ -131,7 +133,7 @@ function CommandsTable({entryList, updateHandler, deleteHandler, commandInputRef
             data={row}
             updateHandler={updateHandler}
             deleteHandler={deleteHandler}
-            commandInputRefCallback={commandInputRefCallback}
+            commandInputRefCallback={focusInputRefCallback}
           />
         ))}
       </TableTbody>
@@ -141,8 +143,7 @@ function CommandsTable({entryList, updateHandler, deleteHandler, commandInputRef
 
 function SettingSelfBotCommands({value, setValue}) {
   const [search, setSearch] = useState('');
-  const entryList = useMemo(() => Object.entries(value ?? {}).reverse(), [value]);
-  const pendingCommandFocusRef = useRef(null);
+  const {entryList, addEntry, updateHandler, deleteHandler, focusInputRefCallback} = useEntryListState(value, setValue);
   const bttvUser = useAuthStore(useShallow((state) => state.user));
 
   const commandCount = entryList.length;
@@ -174,58 +175,8 @@ function SettingSelfBotCommands({value, setValue}) {
     }
 
     setSearch('');
-    const newEntry = createNewEntry();
-
-    setValue((prevCommands) => {
-      const nextCommands = {...prevCommands};
-      nextCommands[newEntry.id] = newEntry;
-      return nextCommands;
-    });
-
-    pendingCommandFocusRef.current = newEntry.id;
-  }, [setValue, value]);
-
-  const deleteHandler = useCallback(
-    (id) => {
-      setValue((prevCommands) => {
-        const nextCommands = {...prevCommands};
-
-        if (nextCommands[id] == null) {
-          return prevCommands;
-        }
-
-        delete nextCommands[id];
-        return nextCommands;
-      });
-    },
-    [setValue]
-  );
-
-  const updateHandler = useCallback(
-    (id, newCommandData) => {
-      setValue((prevCommands) => {
-        const nextCommands = {...prevCommands};
-        const existingCommand = nextCommands[id];
-
-        if (existingCommand == null) {
-          return prevCommands;
-        }
-
-        nextCommands[id] = {...existingCommand, ...newCommandData};
-        return nextCommands;
-      });
-    },
-    [setValue]
-  );
-
-  const commandInputRefCallback = useCallback((id, ref) => {
-    if (pendingCommandFocusRef.current !== id) {
-      return;
-    }
-
-    ref?.focus();
-    pendingCommandFocusRef.current = null;
-  }, []);
+    addEntry(createNewEntry());
+  }, [addEntry, value]);
 
   return (
     <Panel
@@ -260,7 +211,7 @@ function SettingSelfBotCommands({value, setValue}) {
           entryList={filteredEntryList}
           updateHandler={updateHandler}
           deleteHandler={deleteHandler}
-          commandInputRefCallback={commandInputRefCallback}
+          commandInputRefCallback={focusInputRefCallback}
         />
       ) : entryList.length > 0 ? (
         <Text className={tableStyles.emptyText} c="dimmed">

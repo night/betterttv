@@ -17,12 +17,15 @@ import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
 import ProBadge from '@/common/components/ProBadge';
+import useEntryListState from '@/common/hooks/EntryListState';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openModal, openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
 import {
   DEFAULT_TIMER_INTERVAL_MINUTES,
+  TIMER_MAX_CHAT_LINES,
   TIMER_MAX_INTERVAL_MINUTES,
+  TIMER_MAX_MESSAGE_LENGTH,
   TIMER_MIN_CHAT_LINES,
   TIMER_MIN_INTERVAL_MINUTES,
 } from '@/modules/self_bot/timers';
@@ -37,13 +40,13 @@ function ChatLinesGuideModalBody() {
       <Text size="md" c="dimmed">
         {formatMessage({
           defaultMessage:
-            'Chat lines sets how many messages other people must send between timer posts. It keeps a timer from posting into a dead chat.',
+            'Chat lines sets how many messages other people must have sent in the last 5 minutes for a timer to post. It keeps a timer from posting into a dead chat.',
         })}
       </Text>
       <Text size="md" c="dimmed">
         {formatMessage({
           defaultMessage:
-            'If the interval passes without enough messages, the timer waits and posts once chat picks back up.',
+            'If a timer comes due without enough recent messages, it skips that round and checks again after its next interval.',
         })}
       </Text>
     </div>
@@ -93,8 +96,15 @@ function TimerNumberInput({value, min, max = Infinity, onCommit, formatValue, un
       return;
     }
 
-    onCommit(Math.min(Math.max(parsedNumber, min), max));
-  }, [draft, min, max, onCommit]);
+    const newNumber = Math.min(Math.max(parsedNumber, min), max);
+
+    // an unchanged value would still write storage and recompute the timers
+    if (newNumber === value) {
+      return;
+    }
+
+    onCommit(newNumber);
+  }, [draft, min, max, value, onCommit]);
 
   let displayValue = draft;
   if (!focused) {
@@ -147,6 +157,7 @@ function TimerRow({id, data, updateHandler, deleteHandler, messageInputRefCallba
           <Checkbox
             classNames={{root: tableStyles.toggleCheckbox, body: tableStyles.toggleCheckboxBody}}
             radius="md"
+            aria-label={formatMessage({defaultMessage: 'Enable timer'})}
             checked={data.enabled !== false}
             onChange={handleEnabledChange}
           />
@@ -162,6 +173,7 @@ function TimerRow({id, data, updateHandler, deleteHandler, messageInputRefCallba
           }}
           ref={messageInputRef}
           defaultValue={data.message}
+          maxLength={TIMER_MAX_MESSAGE_LENGTH}
           onBlur={({target: {value}}) => onUpdate({message: value})}
           placeholder={formatMessage({defaultMessage: 'Join our discord! discord.gg/nightdev'})}
         />
@@ -180,6 +192,7 @@ function TimerRow({id, data, updateHandler, deleteHandler, messageInputRefCallba
         <TimerNumberInput
           value={data.lines ?? TIMER_MIN_CHAT_LINES}
           min={TIMER_MIN_CHAT_LINES}
+          max={TIMER_MAX_CHAT_LINES}
           onCommit={onLinesCommit}
         />
       </TableTd>
@@ -250,8 +263,7 @@ function TimersTable({entryList, updateHandler, deleteHandler, messageInputRefCa
 }
 
 function SettingSelfBotTimers({value, setValue}) {
-  const entryList = useMemo(() => Object.entries(value ?? {}).reverse(), [value]);
-  const pendingMessageFocusRef = useRef(null);
+  const {entryList, addEntry, updateHandler, deleteHandler, focusInputRefCallback} = useEntryListState(value, setValue);
   const bttvUser = useAuthStore(useShallow((state) => state.user));
 
   const isPro = isUserPro(bttvUser);
@@ -269,58 +281,8 @@ function SettingSelfBotTimers({value, setValue}) {
       return;
     }
 
-    const newEntry = createNewEntry();
-
-    setValue((prevTimers) => {
-      const nextTimers = {...prevTimers};
-      nextTimers[newEntry.id] = newEntry;
-      return nextTimers;
-    });
-
-    pendingMessageFocusRef.current = newEntry.id;
-  }, [setValue]);
-
-  const deleteHandler = useCallback(
-    (id) => {
-      setValue((prevTimers) => {
-        const nextTimers = {...prevTimers};
-
-        if (nextTimers[id] == null) {
-          return prevTimers;
-        }
-
-        delete nextTimers[id];
-        return nextTimers;
-      });
-    },
-    [setValue]
-  );
-
-  const updateHandler = useCallback(
-    (id, newTimerData) => {
-      setValue((prevTimers) => {
-        const nextTimers = {...prevTimers};
-        const existingTimer = nextTimers[id];
-
-        if (existingTimer == null) {
-          return prevTimers;
-        }
-
-        nextTimers[id] = {...existingTimer, ...newTimerData};
-        return nextTimers;
-      });
-    },
-    [setValue]
-  );
-
-  const messageInputRefCallback = useCallback((id, ref) => {
-    if (pendingMessageFocusRef.current !== id) {
-      return;
-    }
-
-    ref?.focus();
-    pendingMessageFocusRef.current = null;
-  }, []);
+    addEntry(createNewEntry());
+  }, [addEntry]);
 
   return (
     <Panel
@@ -339,7 +301,7 @@ function SettingSelfBotTimers({value, setValue}) {
           entryList={entryList}
           updateHandler={updateHandler}
           deleteHandler={deleteHandler}
-          messageInputRefCallback={messageInputRefCallback}
+          messageInputRefCallback={focusInputRefCallback}
         />
       ) : (
         <Text className={tableStyles.emptyText} c="dimmed">

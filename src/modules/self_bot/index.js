@@ -12,7 +12,11 @@ import {computeSelfBotCommands, matchesCommand, matchesUserLevel} from './comman
 import {computeSelfBotTimers} from './timers';
 
 const COMMAND_COOLDOWN_MS = 2000;
+// background tabs throttle timers to one tick per minute; due sends then drain
+// one per tick, which stays within the one-message-per-tick pacing below
 const TIMER_TICK_INTERVAL_MS = 15 * 1000;
+// mirrors nightbot: a timer's chat lines requirement counts messages in the last 5 minutes
+const TIMER_CHAT_LINES_WINDOW_MS = 5 * 60 * 1000;
 // only one session per user may hold this lock, ensuring a single session replies
 const SELF_BOT_SESSION_LOCK = 'self_bot';
 
@@ -21,11 +25,11 @@ const commandCooldowns = new Map();
 let loadTime = Date.now();
 
 let computedTimers = [];
-// timer id -> {time, lineCount} anchored when the timer last sent, or when it
-// was first seen
-const timerSendAnchors = new Map();
-// external chat lines seen while timers are scheduled
-let chatLineCount = 0;
+// timer id -> when the timer last completed a check: a send, a skipped
+// (guard-failed) check, or when it was first seen
+const timerLastCheckTimes = new Map();
+// send times of recent non-broadcaster messages, pruned to the window
+const recentChatLineTimes = [];
 let timersTickInterval = null;
 
 function recomputeCommands() {
@@ -35,15 +39,15 @@ function recomputeCommands() {
 function recomputeTimers() {
   computedTimers = computeSelfBotTimers(settings.get(SettingIds.SELF_BOT_TIMERS_LIST));
 
-  // a disabled, deleted, or invalidated timer loses its anchor, so it waits a
-  // full interval again when it comes back instead of firing immediately
+  // a disabled, deleted, or invalidated timer loses its check time, so it waits
+  // a full interval again when it comes back instead of firing immediately
   const timerIds = new Set(computedTimers.map((timer) => timer.id));
-  for (const id of timerSendAnchors.keys()) {
+  for (const id of timerLastCheckTimes.keys()) {
     if (timerIds.has(id)) {
       continue;
     }
 
-    timerSendAnchors.delete(id);
+    timerLastCheckTimes.delete(id);
   }
 }
 
@@ -75,35 +79,43 @@ function sendDueTimerMessage() {
     return;
   }
 
-  // chat can be unmounted mid-navigation; hold anchors so no interval is lost
+  // chat can be unmounted mid-navigation; hold check times so no interval is lost
   if (twitch.getCurrentChat() == null) {
     return;
   }
 
+  // like nightbot, timers only run while the stream is live. clearing the check
+  // times makes every timer wait a full interval once the stream goes live.
+  if (!twitch.getCurrentChannelIsLive()) {
+    timerLastCheckTimes.clear();
+    return;
+  }
+
   const now = Date.now();
+  pruneRecentChatLines(now);
 
   let dueTimer = null;
   let dueTime = null;
 
   for (const timer of computedTimers) {
-    const anchor = timerSendAnchors.get(timer.id);
+    const lastCheckTime = timerLastCheckTimes.get(timer.id);
 
     // an unseen timer starts counting from the first tick it is observed on,
     // so activation and mid-run additions both wait a full interval to send
-    if (anchor == null) {
-      timerSendAnchors.set(timer.id, {time: now, lineCount: chatLineCount});
+    if (lastCheckTime == null) {
+      timerLastCheckTimes.set(timer.id, now);
       continue;
     }
 
-    const dueAt = anchor.time + timer.intervalMinutes * 60 * 1000;
+    const dueAt = lastCheckTime + timer.intervalMinutes * 60 * 1000;
     if (now < dueAt) {
       continue;
     }
 
-    // dead chat guard: the required chat lines are counted since the timer
-    // last sent, so a due timer holds until chat catches up rather than
-    // skipping a full interval
-    if (chatLineCount - anchor.lineCount < timer.lines) {
+    // dead chat guard, nightbot-style: the check runs once per interval, and a
+    // failed check skips this interval entirely rather than retrying early
+    if (recentChatLineTimes.length < timer.lines) {
+      timerLastCheckTimes.set(timer.id, now);
       continue;
     }
 
@@ -118,8 +130,14 @@ function sendDueTimerMessage() {
     return;
   }
 
-  timerSendAnchors.set(dueTimer.id, {time: now, lineCount: chatLineCount});
+  timerLastCheckTimes.set(dueTimer.id, now);
   twitch.sendChatMessage(dueTimer.message);
+}
+
+function pruneRecentChatLines(now) {
+  while (recentChatLineTimes.length > 0 && now - recentChatLineTimes[0] > TIMER_CHAT_LINES_WINDOW_MS) {
+    recentChatLineTimes.shift();
+  }
 }
 
 // a real viewer message: sent after load, not from a chat bot (Twitch flags
@@ -147,17 +165,13 @@ function isExternalChatMessage(messageObj) {
   return true;
 }
 
-function countTimerChatLine(messageObj) {
+function countTimerChatLine(isExternalMessage) {
   // timersTickInterval doubles as "timers are currently scheduled"
-  if (timersTickInterval == null) {
+  if (timersTickInterval == null || !isExternalMessage) {
     return;
   }
 
-  if (!isExternalChatMessage(messageObj)) {
-    return;
-  }
-
-  chatLineCount += 1;
+  recentChatLineTimes.push(Date.now());
 }
 
 function updateTimersSchedule() {
@@ -175,8 +189,8 @@ function updateTimersSchedule() {
   clearInterval(timersTickInterval);
   timersTickInterval = null;
   // countdowns and chat activity do not survive deactivation
-  timerSendAnchors.clear();
-  chatLineCount = 0;
+  timerLastCheckTimes.clear();
+  recentChatLineTimes.length = 0;
 }
 
 function updateSelfBotState() {
@@ -205,10 +219,7 @@ class SelfBotModule {
       recomputeTimers();
       updateSelfBotState();
     });
-    watcher.on('chat.message', (_, messageObj) => {
-      countTimerChatLine(messageObj);
-      this.onMessage(messageObj);
-    });
+    watcher.on('chat.message', (_, messageObj) => this.handleChatMessage(messageObj));
     settings.on(`changed.${SettingIds.SELF_BOT_COMMANDS_LIST}`, recomputeCommands);
     settings.on(`changed.${SettingIds.SELF_BOT_TIMERS_LIST}`, () => {
       recomputeTimers();
@@ -226,25 +237,25 @@ class SelfBotModule {
     updateSelfBotState();
   }
 
-  onMessage(messageObj) {
-    if (!settings.get(SettingIds.SELF_BOT)) {
+  // computes the shared per-message checks once for both timers and commands
+  handleChatMessage(messageObj) {
+    if (!isSelfBotActive()) {
       return;
     }
 
-    if (useAuthStore.getState().user == null) {
-      return;
-    }
+    const isExternalMessage = isExternalChatMessage(messageObj);
 
-    if (!twitch.getCurrentUserIsOwner()) {
-      return;
-    }
+    countTimerChatLine(isExternalMessage);
+    this.onMessage(messageObj, isExternalMessage);
+  }
 
+  onMessage(messageObj, isExternalMessage) {
     // another session holds the lock and is responsible for replying
     if (!socketClient.hasSessionLock(SELF_BOT_SESSION_LOCK)) {
       return;
     }
 
-    if (!isExternalChatMessage(messageObj)) {
+    if (!isExternalMessage) {
       return;
     }
 

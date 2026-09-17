@@ -678,6 +678,13 @@ export default {
     return currentUser.id === currentChannel.id;
   },
 
+  // the chat controller carries live status in both channel and popout chat;
+  // an unknown value reads as offline so consumers fail quiet
+  getCurrentChannelIsLive() {
+    const currentChat = this.getCurrentChat();
+    return currentChat?.props?.isLive === true;
+  },
+
   getChatInput(element = null) {
     let chatInput;
     try {
