@@ -10,6 +10,7 @@ import BlacklistKeywords from '@/modules/settings/pages/BlacklistKeywords';
 import Changelog from '@/modules/settings/pages/Changelog';
 import HighlightKeywords from '@/modules/settings/pages/HighlightKeywords';
 import SelfBotCommands from '@/modules/settings/pages/SelfBotCommands';
+import SelfBotTimers from '@/modules/settings/pages/SelfBotTimers';
 import Settings from '@/modules/settings/pages/Settings';
 import UserSettings from '@/modules/settings/pages/UserSettings';
 import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
@@ -49,6 +50,8 @@ function Page({page, handleSettingRefCallback}) {
       return <BlacklistKeywords />;
     case PageTypes.SELF_BOT_COMMANDS:
       return <SelfBotCommands />;
+    case PageTypes.SELF_BOT_TIMERS:
+      return <SelfBotTimers />;
     case PageTypes.SETTINGS:
       return <Settings handleSettingRefCallback={handleSettingRefCallback} />;
     case PageTypes.USER_SETTINGS:

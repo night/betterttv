@@ -2,6 +2,7 @@ import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Button,
+  Checkbox,
   NativeSelect,
   Pill,
   Table,
@@ -17,6 +18,7 @@ import classNames from 'classnames';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
+import useEntryListState from '@/common/hooks/EntryListState';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
@@ -31,12 +33,24 @@ const FREE_COMMAND_LIMIT = 5;
 function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCallback, ...props}) {
   const onUpdate = useCallback((newData) => updateHandler(id, newData), [updateHandler, id]);
   const onDelete = useCallback(() => deleteHandler(id), [deleteHandler, id]);
+  const handleEnabledChange = useCallback(({target: {checked}}) => onUpdate({enabled: checked}), [onUpdate]);
   const commandInputRef = useCallback((ref) => commandInputRefCallback(id, ref), [commandInputRefCallback, id]);
 
   const userLevel = data.userLevel ?? SelfBotUserLevels.EVERYONE;
 
   return (
     <TableTr {...props}>
+      <TableTd className={classNames(tableStyles.dataCellMiddle, tableStyles.toggleColumn)}>
+        <label className={tableStyles.toggleCell}>
+          <Checkbox
+            classNames={{root: tableStyles.toggleCheckbox, body: tableStyles.toggleCheckboxBody}}
+            radius="md"
+            aria-label={formatMessage({defaultMessage: 'Enable command'})}
+            checked={data.enabled !== false}
+            onChange={handleEnabledChange}
+          />
+        </label>
+      </TableTd>
       <TableTd className={classNames(tableStyles.dataCellMiddle, styles.commandColumn)}>
         <TextInput
           variant="unstyled"
@@ -48,7 +62,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
           ref={commandInputRef}
           defaultValue={data.command}
           onBlur={({target: {value}}) => onUpdate({command: value})}
-          placeholder={formatMessage({defaultMessage: '!command'})}
+          placeholder={formatMessage({defaultMessage: '!discord'})}
         />
       </TableTd>
       <TableTd className={tableStyles.dataCellMiddle}>
@@ -61,7 +75,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
           }}
           defaultValue={data.response}
           onBlur={({target: {value}}) => onUpdate({response: value})}
-          placeholder={formatMessage({defaultMessage: 'Response message'})}
+          placeholder={formatMessage({defaultMessage: 'Join our discord! discord.gg/nightdev'})}
         />
       </TableTd>
       <TableTd className={classNames(tableStyles.dataCellMiddle, tableStyles.selectColumn, styles.userLevelColumn)}>
@@ -96,7 +110,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
 
 function createNewEntry() {
   const nextId = crypto.randomUUID();
-  return {id: nextId, command: '', response: '', userLevel: SelfBotUserLevels.EVERYONE};
+  return {id: nextId, command: '', response: '', userLevel: SelfBotUserLevels.EVERYONE, enabled: true};
 }
 
 function CommandsTable({entryList, updateHandler, deleteHandler, commandInputRefCallback}) {
@@ -104,6 +118,7 @@ function CommandsTable({entryList, updateHandler, deleteHandler, commandInputRef
     <Table withColumnBorders className={tableStyles.table}>
       <TableThead>
         <TableTr>
+          <TableTh className={tableStyles.toggleColumn} />
           <TableTh className={styles.commandColumn}>{formatMessage({defaultMessage: 'Command'})}</TableTh>
           <TableTh>{formatMessage({defaultMessage: 'Response'})}</TableTh>
           <TableTh className={styles.userLevelColumn}>{formatMessage({defaultMessage: 'User Level'})}</TableTh>
@@ -118,7 +133,7 @@ function CommandsTable({entryList, updateHandler, deleteHandler, commandInputRef
             data={row}
             updateHandler={updateHandler}
             deleteHandler={deleteHandler}
-            commandInputRefCallback={commandInputRefCallback}
+            commandInputRefCallback={focusInputRefCallback}
           />
         ))}
       </TableTbody>
@@ -128,8 +143,7 @@ function CommandsTable({entryList, updateHandler, deleteHandler, commandInputRef
 
 function SettingSelfBotCommands({value, setValue}) {
   const [search, setSearch] = useState('');
-  const entryList = useMemo(() => Object.entries(value ?? {}).reverse(), [value]);
-  const pendingCommandFocusRef = useRef(null);
+  const {entryList, addEntry, updateHandler, deleteHandler, focusInputRefCallback} = useEntryListState(value, setValue);
   const bttvUser = useAuthStore(useShallow((state) => state.user));
 
   const commandCount = entryList.length;
@@ -147,70 +161,22 @@ function SettingSelfBotCommands({value, setValue}) {
     const commandCount = Object.keys(value ?? {}).length;
 
     if (commandCount >= FREE_COMMAND_LIMIT) {
-      if (bttvUser == null) {
+      const {user} = useAuthStore.getState();
+
+      if (user == null) {
         openSignInModal({}, () => newEntryHandler());
         return;
       }
 
-      if (!isUserPro(bttvUser)) {
+      if (!isUserPro(user)) {
         openSubscriptionUpgradeModal({}, () => newEntryHandler());
         return;
       }
     }
 
     setSearch('');
-    const newEntry = createNewEntry();
-
-    setValue((prevCommands) => {
-      const nextCommands = {...prevCommands};
-      nextCommands[newEntry.id] = newEntry;
-      return nextCommands;
-    });
-
-    pendingCommandFocusRef.current = newEntry.id;
-  }, [setValue, value, bttvUser]);
-
-  const deleteHandler = useCallback(
-    (id) => {
-      setValue((prevCommands) => {
-        const nextCommands = {...prevCommands};
-
-        if (nextCommands[id] == null) {
-          return prevCommands;
-        }
-
-        delete nextCommands[id];
-        return nextCommands;
-      });
-    },
-    [setValue]
-  );
-
-  const updateHandler = useCallback(
-    (id, newCommandData) => {
-      setValue((prevCommands) => {
-        const nextCommands = {...prevCommands};
-        const existingCommand = nextCommands[id];
-
-        if (existingCommand == null) {
-          return prevCommands;
-        }
-
-        nextCommands[id] = {...existingCommand, ...newCommandData};
-        return nextCommands;
-      });
-    },
-    [setValue]
-  );
-
-  const commandInputRefCallback = useCallback((id, ref) => {
-    if (pendingCommandFocusRef.current !== id) {
-      return;
-    }
-
-    ref?.focus();
-    pendingCommandFocusRef.current = null;
-  }, []);
+    addEntry(createNewEntry());
+  }, [addEntry, value]);
 
   return (
     <Panel
@@ -225,7 +191,7 @@ function SettingSelfBotCommands({value, setValue}) {
         />
       }
       rightContent={
-        <div className={styles.headerActions}>
+        <div className={tableStyles.headerActions}>
           {!isPro ? (
             <Pill size="lg" className={styles.limitPill}>
               {formatMessage(
@@ -245,7 +211,7 @@ function SettingSelfBotCommands({value, setValue}) {
           entryList={filteredEntryList}
           updateHandler={updateHandler}
           deleteHandler={deleteHandler}
-          commandInputRefCallback={commandInputRefCallback}
+          commandInputRefCallback={focusInputRefCallback}
         />
       ) : entryList.length > 0 ? (
         <Text className={tableStyles.emptyText} c="dimmed">
