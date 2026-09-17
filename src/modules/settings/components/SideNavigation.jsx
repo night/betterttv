@@ -1,6 +1,6 @@
 import {
   faArrowRight as faPanelLeftClose,
-  faScroll,
+  faFire,
   faTriangleExclamation,
   faUserGear,
 } from '@fortawesome/free-solid-svg-icons';
@@ -111,7 +111,7 @@ function UserSettingsNavigationButton({active, onClick}) {
         bttvUser == null ? (
           <Icon icon={faTriangleExclamation} className={styles.warningIcon} />
         ) : isUserPro(bttvUser) ? (
-          <ProBadge />
+          <ProBadge clickable={false} />
         ) : null
       }>
       {avatarSrc != null ? (
@@ -231,12 +231,11 @@ function SideNavigation({open, setOpen}) {
         </Scrollbar>
         <div className={styles.userSettingsContainer}>
           <NavigationButton
-            variant="transparent"
-            className={styles.settingNavigationButton}
-            active={page === PageTypes.CHANGELOG}
-            onClick={() => handleNavigate(PageTypes.CHANGELOG)}
-            label={formatMessage({defaultMessage: 'Changelog'})}>
-            <Icon icon={faScroll} className={styles.navigationIcon} />
+            className={classNames(clickableStyles.clickableContainer, styles.categoryButton)}
+            active={page === PageTypes.PRO_HOME}
+            onClick={() => handleNavigate(PageTypes.PRO_HOME)}
+            label={formatMessage({defaultMessage: 'BetterTTV Pro'})}>
+            <Icon icon={faFire} className={classNames(styles.navigationIcon, styles.fireIcon)} />
           </NavigationButton>
           <UserSettingsNavigationButton
             active={page === PageTypes.USER_SETTINGS}
