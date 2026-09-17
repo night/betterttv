@@ -8,49 +8,51 @@
   }
 }
 
+.bttv-hide-pip-button #bttv-picture-in-picture,
+.bttv-hide-reset-button #bttv-reset-player {
+  display: none !important;
+}
+
 .bttv-hide-player-cursor {
   div[data-test-selector='video-player__video-container'] {
     cursor: none;
   }
 }
 
-#bttv-picture-in-picture {
+main[data-platform='twitch'] .bttv-player-tooltip {
+  --tooltip-bg: var(--color-background-tooltip, light-dark(black, white));
+  color: var(--color-text-tooltip, light-dark(white, black));
+}
+
+#bttv-picture-in-picture,
+#bttv-reset-player {
   display: inline-flex !important;
 
   button {
-    position: relative;
-    vertical-align: middle;
-    overflow: hidden;
-    text-decoration: none;
-    white-space: nowrap;
-    font-weight: var(--font-weight-semibold);
-    border-radius: var(--border-radius-medium);
-    font-size: var(--button-text-default);
     display: inline-flex;
-    -webkit-box-align: center;
     align-items: center;
-    -webkit-box-pack: center;
     justify-content: center;
-    user-select: none;
-    height: var(--button-size-default);
-    width: var(--button-size-default);
-    border: var(--border-width-default) solid transparent;
-    background-color: var(--color-background-button-icon-overlay-default);
-    color: var(--color-text-button-overlay);
-    padding: 4px;
+    width: var(--button-size-default, 3.2rem);
+    height: var(--button-size-default, 3.2rem);
+    padding: 0;
+    border: 0;
+    border-radius: var(--border-radius-rounded, 50%);
+    cursor: pointer;
+    color: var(--color-text-button-overlay, #fff);
+    background-color: var(--color-background-button-icon-overlay-default, transparent);
 
-    &:hover {
-      color: var(--color-text-button-overlay-hover);
-      background-color: var(--color-background-button-icon-overlay-hover);
+    &:hover:not(:disabled) {
+      background-color: var(--color-background-button-icon-overlay-hover, rgb(255 255 255 / 13%));
     }
 
-    div {
-      width: 2rem;
-      height: 2rem;
+    &:active:not(:disabled) {
+      background-color: var(--color-background-button-icon-overlay-active, rgb(255 255 255 / 16%));
     }
   }
 
   svg {
+    width: 2rem;
+    height: 2rem;
     fill: currentColor;
   }
 }

@@ -45,6 +45,8 @@ export const SettingIds = {
   PRIME_PROMOTIONS: 'primePromotions',
   // HOST_BUTTON: 'hostButton', REMOVED, FOR REFERENCE ONLY
   PLAYER_EXTENSIONS: 'playerExtensions',
+  PIP_BUTTON: 'pipButton',
+  RESET_BUTTON: 'resetButton',
   CLICK_TO_PLAY: 'clickToPlay',
   EMOTE_AUTOCOMPLETE: 'emoteAutocomplete',
   MUTE_INVISIBLE_PLAYER: 'muteInvisiblePlayer',
@@ -267,6 +269,8 @@ export const SettingDefaultValues = {
   [SettingIds.DARKENED_MODE]: false,
   [SettingIds.PRIME_PROMOTIONS]: true,
   [SettingIds.PLAYER_EXTENSIONS]: true,
+  [SettingIds.PIP_BUTTON]: true,
+  [SettingIds.RESET_BUTTON]: true,
   [SettingIds.CLICK_TO_PLAY]: false,
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
   [SettingIds.SCROLL_PLAYER_CONTROLS]: false,
