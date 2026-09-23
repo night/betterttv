@@ -1,28 +1,19 @@
-import {Text} from '@mantine/core';
 import {useElementSize, useMergedRef} from '@mantine/hooks';
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useMemo, useRef} from 'react';
 import emoteMenuViewStore from '@/common/stores/emote-menu-view-store';
 import scrollbarStyles from '@/common/styles/Scrollbar.module.css';
 import {NavigationModeTypes, EMOTE_MENU_GRID_ROW_HEIGHT} from '@/constants';
+import formatMessage from '@/i18n/index';
 import useGridKeyboardNavigation from '@/modules/emote_menu/hooks/GridKeyboardNavigation';
 import {getRowColumnCounts} from '@/modules/emote_menu/utils/emote-list-grid';
 import styles from './EmoteList.module.css';
 import {EmoteRow, HeaderRow} from './EmoteListRow';
-import Icons from './Icons';
+import EmptyState from './EmptyState';
 import Preview from './Preview';
 import VirtualizedList from './VirtualizedList';
 
 const GUARD_HEIGHT = 8;
-
-const EmptySearchState = ({ref, ...props}) => {
-  return (
-    <div className={styles.empty} {...props} ref={ref}>
-      <div className={styles.emptyIcon}>{Icons.HEART_BROKEN}</div>
-      <Text c="dimmed">No results...</Text>
-    </div>
-  );
-};
 
 const BrowseEmotes = ({emoteListRows, onClick, onSection, setCoords, coords, className, headerRows, ref}) => {
   const renderRow = useCallback(
@@ -55,7 +46,7 @@ const BrowseEmotes = ({emoteListRows, onClick, onSection, setCoords, coords, cla
   );
 
   if (emoteListRows.length === 0) {
-    return <EmptySearchState ref={ref} />;
+    return <EmptyState ref={ref}>{formatMessage({defaultMessage: 'No results...'})}</EmptyState>;
   }
 
   return (

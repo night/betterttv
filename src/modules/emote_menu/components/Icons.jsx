@@ -3,10 +3,12 @@ import {
   faBasketballBall,
   faBox,
   faClock,
+  faFaceSmile,
   faFlag,
   faHeart,
   faHeartBroken,
   faIceCream,
+  faImage,
   faLeaf,
   faLightbulb,
   faLock,
@@ -32,6 +34,7 @@ function BrandedImage({src, alt, brandSrc}) {
 export default {
   STAR: <Icon icon={faStar} className={styles.icon} />,
   PEOPLE: <Icon icon={faSmileWink} className={styles.icon} />,
+  SMILE: <Icon icon={faFaceSmile} className={styles.icon} />,
   LEAF: <Icon icon={faLeaf} className={styles.icon} />,
   ICE_CREAM: <Icon icon={faIceCream} className={styles.icon} />,
   BASKET_BALL: <Icon icon={faBasketballBall} className={styles.icon} />,
@@ -50,6 +53,7 @@ export default {
       <path d="M2.68,22.71V89.22s-.25,4.13,5.55,4.13h114.5s4.44.35,4.44-4.21V21.72l-26,27L64.92,13,30,48.7Z" />
     </svg>
   ),
+  GIF: <Icon icon={faImage} className={styles.icon} />,
   YOUTUBE: <Icon icon={faYoutube} className={styles.icon} />,
   IMAGE: (brandSrc, alt, src = null) =>
     src != null ? (
