@@ -1,0 +1,36 @@
+/* dom order = reading order; columns floor at 264px and wrap by container width */
+.featureGrid {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(264px, 100%), 1fr));
+  gap: 12px;
+}
+
+/* the bake has extra headroom above; the nudge recenters it and the live tilt stays crisp */
+.ticketArt {
+  margin-top: 8px;
+  transform: rotate(-2.5deg);
+}
+
+/* the PageScrollBody footer: pinned below the scroller, content scrolls behind its border */
+.premiumActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--mantine-color-default-border);
+  background-color: var(--page-bg);
+}
+
+.premiumThanks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--mantine-font-size-md);
+  color: var(--mantine-color-dimmed);
+}
+
+.premiumThanksHeart {
+  color: var(--mantine-color-red-6);
+}

@@ -160,6 +160,7 @@ export const PageTypes = {
   BLACKLIST_KEYWORDS: 5,
   SELF_BOT_COMMANDS: 6,
   SELF_BOT_TIMERS: 7,
+  PRO_HOME: 8,
 };
 
 export const PageDecendants = {

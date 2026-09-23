@@ -55,6 +55,11 @@
   color: var(--mantine-color-yellow-5);
 }
 
+.fireIcon {
+  /* faFire overflows its viewBox above y=0; default clipping flat-tops the flame */
+  overflow: visible;
+}
+
 .navigationButton {
   font-weight: 500;
   height: 48px;
