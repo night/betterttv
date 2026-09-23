@@ -287,7 +287,7 @@ function KeywordsTable({
             colorColumn={colorColumn}
             updateHandler={updateHandler}
             deleteHandler={deleteHandler}
-            keywordInputRefCallback={focusInputRefCallback}
+            keywordInputRefCallback={keywordInputRefCallback}
             currentChannel={currentChannel}
           />
         ))}
