@@ -133,7 +133,7 @@ function CommandsTable({entryList, updateHandler, deleteHandler, commandInputRef
             data={row}
             updateHandler={updateHandler}
             deleteHandler={deleteHandler}
-            commandInputRefCallback={focusInputRefCallback}
+            commandInputRefCallback={commandInputRefCallback}
           />
         ))}
       </TableTbody>
