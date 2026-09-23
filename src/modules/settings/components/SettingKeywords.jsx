@@ -23,6 +23,7 @@ import React, {useCallback, useMemo, useRef, useState} from 'react';
 import Icon from '@/common/components/Icon';
 import useBadgeOptions from '@/common/hooks/BadgeOptions';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
+import useEntryListState from '@/common/hooks/EntryListState';
 import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openModal} from '@/common/utils/modal';
@@ -286,7 +287,7 @@ function KeywordsTable({
             colorColumn={colorColumn}
             updateHandler={updateHandler}
             deleteHandler={deleteHandler}
-            keywordInputRefCallback={keywordInputRefCallback}
+            keywordInputRefCallback={focusInputRefCallback}
             currentChannel={currentChannel}
           />
         ))}
@@ -298,7 +299,7 @@ function KeywordsTable({
 function SettingKeywords({value, setValue, colorColumn = null}) {
   const currentChannel = useCurrentChannel();
   const [search, setSearch] = useState('');
-  const entryList = useMemo(() => Object.entries(value ?? {}).reverse(), [value]);
+  const {entryList, addEntry, updateHandler, deleteHandler, focusInputRefCallback} = useEntryListState(value, setValue);
 
   const filteredEntryList = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -311,53 +312,11 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
   }, [entryList, search]);
 
   const showColorColumn = colorColumn != null;
-  const pendingKeywordFocusRef = useRef(null);
 
   const newEntryHandler = useCallback(() => {
     setSearch('');
-    const newEntry = createNewEntry();
-
-    setValue((prevKeywords) => {
-      const nextKeywords = {...prevKeywords};
-      nextKeywords[newEntry.id] = newEntry;
-      return nextKeywords;
-    });
-
-    pendingKeywordFocusRef.current = newEntry.id;
-  }, [setValue]);
-
-  const deleteHandler = useCallback(
-    (id) => {
-      setValue((prevKeywords) => {
-        const nextKeywords = {...prevKeywords};
-
-        if (nextKeywords[id] == null) {
-          return prevKeywords;
-        }
-
-        delete nextKeywords[id];
-        return nextKeywords;
-      });
-    },
-    [setValue]
-  );
-
-  const updateHandler = useCallback(
-    (id, newKeywordData) => {
-      setValue((prevKeywords) => {
-        const nextKeywords = {...prevKeywords};
-        const existingKeyword = nextKeywords[id];
-
-        if (existingKeyword == null) {
-          return prevKeywords;
-        }
-
-        nextKeywords[id] = {...existingKeyword, ...newKeywordData};
-        return nextKeywords;
-      });
-    },
-    [setValue]
-  );
+    addEntry(createNewEntry());
+  }, [addEntry]);
 
   const handlePaste = useCallback(
     (event) => {
@@ -385,15 +344,6 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
     [setValue]
   );
 
-  const keywordInputRefCallback = useCallback((id, ref) => {
-    if (pendingKeywordFocusRef.current !== id) {
-      return;
-    }
-
-    ref.focus();
-    pendingKeywordFocusRef.current = null;
-  }, []);
-
   return (
     <Panel
       title={
@@ -419,7 +369,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
           colorColumn={colorColumn}
           updateHandler={updateHandler}
           deleteHandler={deleteHandler}
-          keywordInputRefCallback={keywordInputRefCallback}
+          keywordInputRefCallback={focusInputRefCallback}
           currentChannel={currentChannel}
           onPaste={handlePaste}
         />
