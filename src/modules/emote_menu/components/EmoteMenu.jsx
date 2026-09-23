@@ -5,7 +5,14 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
 import useEmoteMenuViewStoreUpdated from '@/common/hooks/EmoteMenuViewStore';
 import emoteMenuViewStore, {CategoryPositions} from '@/common/stores/emote-menu-view-store';
-import {EMOTE_MENU_GRID_ROW_HEIGHT, EmoteMenuModes, EmoteMenuTips, NavigationModeTypes} from '@/constants';
+import {
+  ChatFlags,
+  EMOTE_MENU_GRID_ROW_HEIGHT,
+  EmoteMenuModes,
+  EmoteMenuTips,
+  NavigationModeTypes,
+  SettingIds,
+} from '@/constants';
 import useHorizontalResize from '@/modules/emote_menu/hooks/HorizontalResize';
 import useGifPickerStore, {
   cancelGifResultsUpdate,
@@ -19,6 +26,8 @@ import {
   getFirstCoordsInCategory,
   getSelectedAtCoords,
 } from '@/modules/emote_menu/utils/emote-list-grid';
+import settings from '@/settings';
+import {setFlag} from '@/utils/flags';
 import keyCodes from '@/utils/keycodes';
 import {isMac} from '@/utils/window';
 import EmoteList from './EmoteList';
@@ -347,6 +356,11 @@ function EmoteMenu({
     [updateEmoteListData, handleCoordsChange]
   );
 
+  const handleEnableGifs = useCallback(() => {
+    settings.set(SettingIds.CHAT, setFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_GIFS, true));
+    updateGifResults(emoteListDataRef.current.search);
+  }, []);
+
   const handleGifSent = useCallback(() => {
     handleCloseRef.current();
   }, []);
@@ -387,7 +401,12 @@ function EmoteMenu({
             categories={emoteListData.categories}
           />
           {mode === EmoteMenuModes.GIFS && gifContext != null ? (
-            <GifPicker className={styles.emotes} gifContext={gifContext} onSend={handleGifSent} />
+            <GifPicker
+              className={styles.emotes}
+              gifContext={gifContext}
+              onSend={handleGifSent}
+              onEnableGifs={handleEnableGifs}
+            />
           ) : (
             <EmoteList
               data={emoteListData}

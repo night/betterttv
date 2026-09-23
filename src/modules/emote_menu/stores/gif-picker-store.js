@@ -1,7 +1,10 @@
 import debounce from 'lodash.debounce';
 import {create} from 'zustand';
+import {ChatFlags, SettingIds} from '@/constants';
 import {fetchGifs, getGifPickerContext} from '@/modules/emote_menu/utils/twitch-gifs';
+import settings from '@/settings';
 import debug from '@/utils/debug';
+import {hasFlag} from '@/utils/flags';
 
 const UPDATE_GIF_RESULTS_DEBOUNCE_MS = 300;
 
@@ -71,7 +74,12 @@ const startGifsFetchDebounced = debounce(startGifsFetch, UPDATE_GIF_RESULTS_DEBO
 
 function canUpdateGifResults() {
   const {gifContext} = useGifPickerStore.getState();
-  return gifContext != null && gifContext.canSend && gifContext.enabled;
+  return (
+    gifContext != null &&
+    gifContext.canSend &&
+    gifContext.enabled &&
+    hasFlag(settings.get(SettingIds.CHAT), ChatFlags.CHAT_GIFS)
+  );
 }
 
 export function updateGifResults(search = '') {
