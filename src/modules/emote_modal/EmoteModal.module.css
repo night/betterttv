@@ -1,0 +1,150 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--mantine-color-default-border);
+  padding: 16px;
+}
+
+.metadata {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.metadataRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.metadataLabel {
+  font-size: var(--mantine-font-size-md);
+  color: var(--mantine-color-dimmed);
+}
+
+.metadataValue {
+  font-size: var(--mantine-font-size-md);
+  font-weight: 600;
+}
+
+.addButtonGroup {
+  display: inline-flex;
+}
+
+.menuChevron {
+  width: 36px;
+  min-width: 36px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.menuDropdown {
+  padding: 2px;
+}
+
+/* the radius and left padding are the button's minus the dropdown's 2px gap, so the corners stay
+   concentric and the item's label lines up with the button's */
+.menuItemButton {
+  --button-height: auto;
+  min-height: 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: calc(var(--button-padding-x-lg) - 2px);
+  border-radius: calc(var(--mantine-radius-lg) - 2px);
+}
+
+.clickable {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 100ms ease-in-out;
+}
+
+.clickable:hover {
+  background-color: var(--color-background-interactable-hover);
+}
+
+.clickable:active {
+  background-color: var(--color-background-interactable-active);
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.titleLogo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.imageWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--mantine-radius-lg);
+  border: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-body-secondary);
+  padding: 24px;
+  min-height: 160px;
+  line-height: 0;
+}
+
+.imageLink {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.imageLink .image {
+  transition: opacity 100ms ease-in-out;
+}
+
+.imageLink:hover .image {
+  opacity: 0.2;
+}
+
+.emotePageOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  /* backdrop-filter ignores the parent's overflow clipping */
+  border-radius: inherit;
+  backdrop-filter: blur(4px);
+  color: var(--mantine-color-text);
+  font-size: var(--mantine-font-size-md);
+  font-weight: 600;
+  line-height: var(--mantine-line-height);
+  opacity: 0;
+  transition: opacity 100ms ease-in-out;
+}
+
+.imageLink:hover .emotePageOverlay {
+  opacity: 1;
+}
+
+.image {
+  display: block;
+  max-width: 100%;
+  max-height: 128px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  image-rendering: auto;
+}

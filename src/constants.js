@@ -191,6 +191,27 @@ export const EmoteProviders = {
   SEVENTV: 'seventv',
 };
 
+export const EmoteAddDestinations = {
+  CHANNEL: 'channel',
+  PERSONAL: 'personal',
+};
+
+export const EmoteAvailabilityRestrictionTypes = {
+  ALREADY_ADDED: 'ALREADY_ADDED',
+  OWN_EMOTE: 'OWN_EMOTE',
+  SHARING_DISABLED: 'SHARING_DISABLED',
+  NOT_LIVE: 'NOT_LIVE',
+  NOT_APPROVED: 'NOT_APPROVED',
+  NO_SLOTS: 'NO_SLOTS',
+};
+
+export const AsyncStatuses = {
+  IDLE: 'idle',
+  PENDING: 'pending',
+  SUCCESS: 'success',
+  ERROR: 'error',
+};
+
 export const EmoteCategories = {
   BETTERTTV_GLOBAL: 'bttv-global',
   BETTERTTV_CHANNEL: 'bttv-channel',
