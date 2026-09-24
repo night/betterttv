@@ -1,17 +1,40 @@
-import {RingProgress} from '@mantine/core';
+import {Anchor, RingProgress} from '@mantine/core';
 import classNames from 'classnames';
 import React, {useCallback, useState} from 'react';
 import {LoaderIconIndicator} from '@/common/components/LoaderIcon';
+import useStorageState from '@/common/hooks/StorageState';
 import scrollbarStyles from '@/common/styles/Scrollbar.module.css';
+import {ChatFlags, SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import useGifPickerStore, {GIF_COOLDOWN_SECONDS, startGifCooldown} from '@/modules/emote_menu/stores/gif-picker-store';
 import {sendGifMessage} from '@/modules/emote_menu/utils/twitch-gifs';
+import {hasFlag} from '@/utils/flags';
 import EmptyState from './EmptyState';
 import styles from './GifPicker.module.css';
 
 function GifsUnavailable({className}) {
   return (
     <EmptyState className={className}>{formatMessage({defaultMessage: 'GIFs are currently unavailable'})}</EmptyState>
+  );
+}
+
+function GifsDisabled({className, onEnable}) {
+  return (
+    <EmptyState className={className}>
+      <div>{formatMessage({defaultMessage: 'GIFs are disabled.'})}</div>
+      <div>
+        {formatMessage(
+          {defaultMessage: '<button>Click here</button> to re-enable them.'},
+          {
+            button: ([text]) => (
+              <Anchor key="enable-chat-gifs-button" component="button" onClick={onEnable}>
+                {text}
+              </Anchor>
+            ),
+          }
+        )}
+      </div>
+    </EmptyState>
   );
 }
 
@@ -88,13 +111,14 @@ function GifItem({gif, canSend, onClick}) {
   );
 }
 
-function GifPicker({gifContext, onSend, className}) {
+function GifPicker({gifContext, onSend, onEnableGifs, className}) {
   const gifs = useGifPickerStore((state) => state.gifs);
   const loading = useGifPickerStore((state) => state.loadingGifs);
   // boolean selector, so ticks mid-cooldown don't re-render the grid
   const onCooldown = useGifPickerStore((state) => state.cooldownSecondsRemaining > 0);
   const [sending, setSending] = useState(false);
   const [temporarilyUnavailable, setTemporarilyUnavailable] = useState(false);
+  const [chatFlags] = useStorageState(SettingIds.CHAT);
 
   const canSend = gifContext.canSend && !sending && !onCooldown;
   const unavailable = !gifContext.enabled || temporarilyUnavailable;
@@ -138,6 +162,10 @@ function GifPicker({gifContext, onSend, className}) {
 
   if (unavailable) {
     return <GifsUnavailable className={className} />;
+  }
+
+  if (!hasFlag(chatFlags, ChatFlags.CHAT_GIFS)) {
+    return <GifsDisabled className={className} onEnable={onEnableGifs} />;
   }
 
   if (!gifContext.canSend) {
