@@ -12,7 +12,7 @@
     border: 1px solid var(--button-bd);
     border-bottom-width: 2px;
 
-    &:active {
+    &:active:not(:disabled, [data-disabled]) {
       border-bottom-width: 1px;
     }
 

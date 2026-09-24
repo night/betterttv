@@ -1,0 +1,35 @@
+.button {
+  position: relative;
+}
+
+/* mantine's label clips overflow, which would clip the status overlay */
+.buttonLabel {
+  overflow: visible;
+}
+
+/* the leaving side fades out fully before the entering side starts, so the label and the icon
+   are never visible on top of each other */
+.content {
+  transition: opacity 100ms ease-in-out 100ms;
+}
+
+.button[data-busy] .content {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+.status {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 100ms ease-in-out;
+  pointer-events: none;
+}
+
+.button[data-busy] .status {
+  opacity: 1;
+  transition-delay: 100ms;
+}
