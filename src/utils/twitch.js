@@ -376,6 +376,21 @@ export default {
     return broadcaster;
   },
 
+  getCurrentPlayerSource() {
+    const managers = searchReactParents(
+      getReactInstance(document.querySelector(PLAYER)),
+      (node) => node.type?.displayName === 'VideoPlayerCoreCommonManagers',
+      60
+    );
+    return searchReactChildren(
+      managers,
+      (node) =>
+        typeof node.stateNode?.setSrc === 'function' &&
+        typeof node.stateNode?.setInitialPlaybackSettings === 'function',
+      30
+    )?.stateNode;
+  },
+
   getCurrentPlayer() {
     let player;
     try {
