@@ -91,7 +91,6 @@ function UserSettingsNavigationButton({active, onClick}) {
   const avatarSrc = bttvUser?.avatar ?? getCurrentUserProfilePicture();
   const {primaryColor} = useMantineTheme();
   const activeColor = active ? primaryColor : undefined;
-  const usernameHoverEffect = bttvUser?.usernameHoverEffect ?? null;
 
   return (
     <NavigationButton
@@ -102,7 +101,7 @@ function UserSettingsNavigationButton({active, onClick}) {
         bttvUser?.displayName != null ? (
           <UsernameEffectText
             effect={bttvUser.usernameEffect}
-            hoverEffect={usernameHoverEffect}
+            hoverEffect={bttvUser.usernameHoverEffect}
             className={styles.displayName}>
             {bttvUser.displayName}
           </UsernameEffectText>

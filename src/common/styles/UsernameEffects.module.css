@@ -114,8 +114,8 @@
 }
 
 /* Username hover effects: hovering the username animates it. The name keeps any texture animation it
-   already has; adding a second animation to the list does not restart the first, so the texture never
-   jumps phase mid-hover. */
+   already has: adding a second animation to the list does not restart the first (checked in chrome, the
+   texture's Animation object survives the list change), so the texture never jumps phase mid-hover. */
 .wave,
 .bounce,
 .flip {
@@ -143,7 +143,9 @@
 }
 
 /* clip (not hidden) keeps the inline-block baseline, and only y clips so kerned ink survives.
-   the glow halo is cut at the line edges for the run; a filter would avoid that at a per-frame cost on every glow name */
+   the copies keep the host hovered: generated content hit-tests to its element, and between them they
+   cover the whole box at every frame of the roll. the hidden text does drop out of a selection made
+   while the cursor rests on the name */
 .flip:hover {
   overflow-x: visible;
   overflow-y: clip;

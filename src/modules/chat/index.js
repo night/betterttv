@@ -492,6 +492,7 @@ class ChatModule {
       fromNode.innerText = nickname;
     }
 
+    // after the nickname write, so data-bttv-name matches the text on screen
     this.applyUsernameHoverEffect(fromNode, user.id);
 
     if (

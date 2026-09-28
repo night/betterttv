@@ -10,7 +10,7 @@ import styles from './SettingRadioCard.module.css';
 function SettingRadioCard({
   value,
   tooltip,
-  tooltipPosition = 'top',
+  tooltipPosition,
   ariaLabel,
   className,
   radioCardProps = {},

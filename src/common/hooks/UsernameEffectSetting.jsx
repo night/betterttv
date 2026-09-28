@@ -20,7 +20,7 @@ export default function useUsernameEffectSetting({
 
   useEffect(() => {
     fetchEligibility();
-  }, [user]);
+  }, [user?.id]);
 
   const [value, setValue] = useDebouncedRemoteState({
     value: user?.[userField] ?? NONE,
