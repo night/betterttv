@@ -113,8 +113,9 @@
   animation: none;
 }
 
-/* Username hover effects: hovering the container marked .hoverTrigger (in chat, the badges + name block)
-   animates the name inside it. The name keeps any texture animation it already has: adding a second animation to the list does not restart the first (checked in chrome, the
+/* Username hover effects: hovering the container animates the name inside it. In chat that is twitch's
+   badges + name block (and 7tv's), addressed here so chat only ever touches the name; our own previews
+   mark their container with .hoverTrigger. The name keeps any texture animation it already has: adding a second animation to the list does not restart the first (checked in chrome, the
    texture's Animation object survives the list change), so the texture never jumps phase mid-hover. */
 .wave,
 .bounce,
@@ -123,13 +124,13 @@
   display: inline-block;
 }
 
-.hoverTrigger:hover .wave {
+:is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover .wave {
   animation:
     var(--bttv-username-effect-animation, none),
     waveHop 0.4s ease-in-out both;
 }
 
-.hoverTrigger:hover .bounce {
+:is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover .bounce {
   animation:
     var(--bttv-username-effect-animation, none),
     bounceScale 0.4s ease-in-out both;
@@ -146,7 +147,7 @@
    the copies keep the host hovered: generated content hit-tests to its element, and between them they
    cover the whole box at every frame of the roll. the hidden text does drop out of a selection made
    while the cursor rests on the name */
-.hoverTrigger:hover .flip {
+:is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover .flip {
   overflow-x: visible;
   overflow-y: clip;
   visibility: hidden;
@@ -154,8 +155,8 @@
 
 /* both copies sit on the parent's box (the offset is a transform) so an inherited texture keeps
    the parent's phase: background-position tracks the parent's sweep animation through inherit */
-.hoverTrigger:hover .flip::before,
-.hoverTrigger:hover .flip::after {
+:is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover .flip::before,
+:is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover .flip::after {
   content: attr(data-bttv-name);
   position: absolute;
   top: 0;
@@ -168,23 +169,27 @@
   animation: flipOut 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
 }
 
-.hoverTrigger:hover .flip::after {
+:is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover .flip::after {
   animation-name: flipIn;
 }
 
 /* the hover rules outweigh the .reducedMotion overrides above, so they need their own */
-.reducedMotion .hoverTrigger:hover .wave,
-.reducedMotion .hoverTrigger:hover .bounce {
+.reducedMotion :is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover .wave,
+.reducedMotion :is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover .bounce {
   animation: none;
 }
 
-.reducedMotion .hoverTrigger:hover .flip {
+.reducedMotion :is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover .flip {
   overflow-y: visible;
   visibility: visible;
 }
 
-.reducedMotion .hoverTrigger:hover .flip::before,
-.reducedMotion .hoverTrigger:hover .flip::after {
+.reducedMotion
+  :is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover
+  .flip::before,
+.reducedMotion
+  :is(.hoverTrigger, :global(.chat-line__username-container), :global(.seventv-chat-user)):hover
+  .flip::after {
   content: none;
 }
 
