@@ -7,6 +7,7 @@ import Icon from '../../../common/components/Icon';
 import UsernameEffectText from '../../../common/components/UsernameEffectText';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useUsernameEffectSetting, {NONE} from '../../../common/hooks/UsernameEffectSetting';
+import effects from '../../../common/styles/UsernameEffects.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
 import {UsernameHoverEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
@@ -45,7 +46,7 @@ function UsernameHoverEffectPreviewText({value, className, children}) {
   const usernameEffect = useAuthStore((state) => state.user?.usernameEffect ?? null);
 
   return (
-    <Text truncate size="xl" className={classNames(className, styles.flavorUsername)}>
+    <Text truncate size="xl" className={classNames(className, styles.flavorUsername, effects.hoverTrigger)}>
       <UsernameEffectText effect={usernameEffect} hoverEffect={value}>
         {children}
       </UsernameEffectText>

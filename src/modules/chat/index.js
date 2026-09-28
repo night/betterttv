@@ -24,6 +24,7 @@ const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 const EMOTE_SELECTOR =
   '.bttv-animated-static-emote, .chat-line__message, .vod-message, .pinned-chat__message, .thread-message__message';
+const USERNAME_HOVER_EFFECT_TRIGGER_SELECTOR = '.chat-line__username-container, .seventv-chat-user';
 const EMOTE_HOVER_SELECTOR =
   '.bttv-animated-static-emote:hover, .chat-line__message:hover, .vod-message:hover, .pinned-chat__message:hover, .thread-message__message:hover';
 
@@ -452,6 +453,7 @@ class ChatModule {
 
     fromNode.classList.add(hoverEffectClassName);
     fromNode.dataset.bttvName = fromNode.textContent;
+    (fromNode.closest(USERNAME_HOVER_EFFECT_TRIGGER_SELECTOR) ?? fromNode).classList.add(effects.hoverTrigger);
   }
 
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {

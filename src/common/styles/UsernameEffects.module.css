@@ -113,8 +113,8 @@
   animation: none;
 }
 
-/* Username hover effects: hovering the username animates it. The name keeps any texture animation it
-   already has: adding a second animation to the list does not restart the first (checked in chrome, the
+/* Username hover effects: hovering the container marked .hoverTrigger (in chat, the badges + name block)
+   animates the name inside it. The name keeps any texture animation it already has: adding a second animation to the list does not restart the first (checked in chrome, the
    texture's Animation object survives the list change), so the texture never jumps phase mid-hover. */
 .wave,
 .bounce,
@@ -123,13 +123,13 @@
   display: inline-block;
 }
 
-.wave:hover {
+.hoverTrigger:hover .wave {
   animation:
     var(--bttv-username-effect-animation, none),
     waveHop 0.4s ease-in-out both;
 }
 
-.bounce:hover {
+.hoverTrigger:hover .bounce {
   animation:
     var(--bttv-username-effect-animation, none),
     bounceScale 0.4s ease-in-out both;
@@ -146,7 +146,7 @@
    the copies keep the host hovered: generated content hit-tests to its element, and between them they
    cover the whole box at every frame of the roll. the hidden text does drop out of a selection made
    while the cursor rests on the name */
-.flip:hover {
+.hoverTrigger:hover .flip {
   overflow-x: visible;
   overflow-y: clip;
   visibility: hidden;
@@ -154,8 +154,8 @@
 
 /* both copies sit on the parent's box (the offset is a transform) so an inherited texture keeps
    the parent's phase: background-position tracks the parent's sweep animation through inherit */
-.flip:hover::before,
-.flip:hover::after {
+.hoverTrigger:hover .flip::before,
+.hoverTrigger:hover .flip::after {
   content: attr(data-bttv-name);
   position: absolute;
   top: 0;
@@ -168,23 +168,23 @@
   animation: flipOut 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
 }
 
-.flip:hover::after {
+.hoverTrigger:hover .flip::after {
   animation-name: flipIn;
 }
 
 /* the hover rules outweigh the .reducedMotion overrides above, so they need their own */
-.reducedMotion .wave:hover,
-.reducedMotion .bounce:hover {
+.reducedMotion .hoverTrigger:hover .wave,
+.reducedMotion .hoverTrigger:hover .bounce {
   animation: none;
 }
 
-.reducedMotion .flip:hover {
+.reducedMotion .hoverTrigger:hover .flip {
   overflow-y: visible;
   visibility: visible;
 }
 
-.reducedMotion .flip:hover::before,
-.reducedMotion .flip:hover::after {
+.reducedMotion .hoverTrigger:hover .flip::before,
+.reducedMotion .hoverTrigger:hover .flip::after {
   content: none;
 }
 
