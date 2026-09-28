@@ -425,26 +425,34 @@ class ChatModule {
     this._messageParser(element, messageObj, fromNode, badgesContainer, messageParts);
   }
 
-  applyUsernameEffect(element, fromNode, userId) {
+  applyUsernameEffect(fromNode, userId) {
     const usernameEffect = subscribers.getUsernameEffect(userId);
-    if (usernameEffect != null) {
-      const effectClassName = effects[usernameEffect];
-      if (effectClassName != null) {
-        fromNode.classList.add(effectClassName);
-      }
+    if (usernameEffect == null) {
+      return;
     }
 
-    const usernameHoverEffect = subscribers.getUsernameHoverEffect(userId);
-    if (usernameHoverEffect != null) {
-      const hoverEffectClassName = effects[usernameHoverEffect];
-      if (hoverEffectClassName != null) {
-        fromNode.classList.add(hoverEffectClassName);
-        // flip's copies read the name from here
-        fromNode.dataset.bttvName = fromNode.textContent;
-        // the whole message is the hover target; the stylesheet does the rest
-        element.classList.add(effects.hoverTrigger);
-      }
+    const effectClassName = effects[usernameEffect];
+    if (effectClassName == null) {
+      return;
     }
+
+    fromNode.classList.add(effectClassName);
+  }
+
+  applyUsernameHoverEffect(element, fromNode, userId) {
+    const usernameHoverEffect = subscribers.getUsernameHoverEffect(userId);
+    if (usernameHoverEffect == null) {
+      return;
+    }
+
+    const hoverEffectClassName = effects[usernameHoverEffect];
+    if (hoverEffectClassName == null) {
+      return;
+    }
+
+    fromNode.classList.add(hoverEffectClassName);
+    fromNode.dataset.bttvName = fromNode.textContent;
+    element.classList.add(effects.hoverTrigger);
   }
 
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
@@ -465,7 +473,8 @@ class ChatModule {
       color = fromNode.style.color;
     }
 
-    this.applyUsernameEffect(element, fromNode, user.id);
+    this.applyUsernameEffect(fromNode, user.id);
+    this.applyUsernameHoverEffect(element, fromNode, user.id);
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
       element
