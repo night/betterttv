@@ -177,32 +177,6 @@
   animation-name: flipIn;
 }
 
-/* the hover rules outweigh the .reducedMotion overrides above, so they need their own */
-.reducedMotion .hoverTrigger:hover .wave,
-.reducedMotion .hoverTrigger:hover .bounce,
-.reducedMotion [class*='username-container']:hover .wave,
-.reducedMotion [class*='seventv-chat-user']:hover .wave,
-.reducedMotion [class*='username-container']:hover .bounce,
-.reducedMotion [class*='seventv-chat-user']:hover .bounce {
-  animation: none;
-}
-
-.reducedMotion .hoverTrigger:hover .flip,
-.reducedMotion [class*='username-container']:hover .flip,
-.reducedMotion [class*='seventv-chat-user']:hover .flip {
-  overflow-y: visible;
-  visibility: visible;
-}
-
-.reducedMotion .hoverTrigger:hover .flip::before,
-.reducedMotion .hoverTrigger:hover .flip::after,
-.reducedMotion [class*='username-container']:hover .flip::before,
-.reducedMotion [class*='seventv-chat-user']:hover .flip::before,
-.reducedMotion [class*='username-container']:hover .flip::after,
-.reducedMotion [class*='seventv-chat-user']:hover .flip::after {
-  content: none;
-}
-
 @keyframes waveHop {
   0%,
   100% {

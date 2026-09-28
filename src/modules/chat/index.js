@@ -1,6 +1,7 @@
 import {getCachedBadges} from '@/actions/badges';
 import clickableStyles from '@/common/styles/Clickable.module.css';
 import effects from '@/common/styles/UsernameEffects.module.css';
+import {shouldReduceMotion} from '@/common/utils/reduced-motion';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
 import runUsernameHoverEffectAnimation from '@/common/utils/username-hover-effect-animations';
 import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes, PageTypes} from '@/constants';
@@ -440,6 +441,10 @@ class ChatModule {
   }
 
   applyUsernameHoverEffect(fromNode, userId) {
+    if (shouldReduceMotion()) {
+      return;
+    }
+
     const usernameHoverEffect = subscribers.getUsernameHoverEffect(userId);
     if (usernameHoverEffect == null) {
       return;
