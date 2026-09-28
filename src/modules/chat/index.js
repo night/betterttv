@@ -439,6 +439,8 @@ class ChatModule {
       const hoverEffectClassName = effects[usernameHoverEffect];
       if (hoverEffectClassName != null) {
         fromNode.classList.add(hoverEffectClassName);
+        // flip's copies read the name from here
+        fromNode.dataset.bttvName = fromNode.textContent;
         // the whole message is the hover target; the stylesheet does the rest
         element.classList.add(effects.hoverTrigger);
       }

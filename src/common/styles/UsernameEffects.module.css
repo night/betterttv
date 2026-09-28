@@ -136,17 +136,55 @@
     bounceScale 0.4s ease-in-out both;
 }
 
+/* flip rolls the name up and a copy in from below. the copies are pseudo-elements reading the name
+   from data-bttv-name, so the text twitch's react owns is only ever hidden, never moved */
+.flip {
+  position: relative;
+  white-space: nowrap;
+}
+
+/* clip (not hidden) keeps the inline-block baseline, and clipping y alone leaves kerned ink and
+   the glow halo alone; the element's own filter still paints after this clip, so the halo is never cut */
 .hoverTrigger:hover .flip {
-  animation:
-    var(--bttv-username-effect-animation, none),
-    flipSpin 0.6s ease-in-out both;
+  overflow-x: visible;
+  overflow-y: clip;
+  visibility: hidden;
+}
+
+/* both copies sit on the parent's box (the offset is a transform) so an inherited texture keeps
+   the parent's phase: background-position tracks the parent's sweep animation through inherit */
+.hoverTrigger:hover .flip::before,
+.hoverTrigger:hover .flip::after {
+  content: attr(data-bttv-name);
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: visible;
+  white-space: nowrap;
+  background: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: flipOut 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+}
+
+.hoverTrigger:hover .flip::after {
+  animation-name: flipIn;
 }
 
 /* the hover rules outweigh the .reducedMotion overrides above, so they need their own */
 .reducedMotion .hoverTrigger:hover .wave,
-.reducedMotion .hoverTrigger:hover .bounce,
-.reducedMotion .hoverTrigger:hover .flip {
+.reducedMotion .hoverTrigger:hover .bounce {
   animation: none;
+}
+
+.reducedMotion .hoverTrigger:hover .flip {
+  overflow-y: visible;
+  visibility: visible;
+}
+
+.reducedMotion .hoverTrigger:hover .flip::before,
+.reducedMotion .hoverTrigger:hover .flip::after {
+  content: none;
 }
 
 @keyframes waveHop {
@@ -175,12 +213,20 @@
   }
 }
 
-/* the name turns over on its horizontal axis; the perspective gives the far edge some depth */
-@keyframes flipSpin {
+@keyframes flipOut {
   from {
-    transform: perspective(200px) rotateX(0);
+    transform: translateY(0);
   }
   to {
-    transform: perspective(200px) rotateX(360deg);
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes flipIn {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
   }
 }

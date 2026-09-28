@@ -16,7 +16,8 @@ export default function UsernameEffectText({effect, hoverEffect, className, chil
   return (
     <span
       className={classNames(className, effectClassName, hoverEffect != null ? effects[hoverEffect] : null)}
-      style={style}>
+      style={style}
+      data-bttv-name={hoverEffect != null ? children : undefined}>
       {children}
     </span>
   );
