@@ -1,14 +1,14 @@
 import {faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Text} from '@mantine/core';
 import classNames from 'classnames';
-import React, {useCallback, useRef} from 'react';
+import React from 'react';
 import {updateUsernameHoverEffect} from '../../../actions/account';
 import Icon from '../../../common/components/Icon';
 import UsernameEffectText from '../../../common/components/UsernameEffectText';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useUsernameEffectSetting, {NONE} from '../../../common/hooks/UsernameEffectSetting';
+import effects from '../../../common/styles/UsernameEffects.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
-import runUsernameHoverEffectAnimation from '../../../common/utils/username-hover-effect-animations';
 import {UsernameEffectFields, UsernameHoverEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
 import useAuthStore from '../../../stores/auth';
@@ -43,16 +43,11 @@ function isEligibleForUsernameHoverEffect(eligibility, value) {
 
 // Previews animate over the user's real username effect, triggered from the whole text block.
 function UsernameHoverEffectPreviewText({value, className, children}) {
-  const ref = useRef(null);
   const usernameEffect = useAuthStore((state) => state.user?.usernameEffect ?? null);
 
-  const handleMouseEnter = useCallback(() => {
-    runUsernameHoverEffectAnimation(ref.current, value);
-  }, [value]);
-
   return (
-    <Text truncate size="xl" onMouseEnter={handleMouseEnter} className={classNames(className, styles.flavorUsername)}>
-      <UsernameEffectText ref={ref} effect={usernameEffect}>
+    <Text truncate size="xl" className={classNames(className, styles.flavorUsername, effects.hoverTrigger)}>
+      <UsernameEffectText effect={usernameEffect} hoverEffect={value}>
         {children}
       </UsernameEffectText>
     </Text>

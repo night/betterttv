@@ -1,5 +1,4 @@
-/* a drop-shadow (not text-shadow) so the hover overlay's filter takeover reproduces the halo exactly.
-   half the radius of the text-shadow it replaces: drop-shadow's blur is the gaussian sigma, text-shadow's is twice it */
+/* half the radius of the text-shadow this replaces: drop-shadow's blur is the gaussian sigma, text-shadow's is twice it */
 .glow {
   filter: drop-shadow(0 0 10px color-mix(in srgb, currentColor 80%, transparent));
 }
@@ -26,6 +25,7 @@
   --flare-duration: 8s;
   --flare-angle: 75deg;
   --flare-mix: 20%;
+  --bttv-username-effect-animation: flareSweep var(--flare-duration) linear infinite;
 
   display: inline;
 
@@ -48,7 +48,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: flareSweep var(--flare-duration) linear infinite;
+  animation: var(--bttv-username-effect-animation);
 }
 
 @keyframes effectSweep {
@@ -67,6 +67,7 @@
 .midas {
   --effect-duration: 16s;
   --background-size: 96px 96px;
+  --bttv-username-effect-animation: effectSweep var(--effect-duration) linear infinite;
 
   position: relative;
   display: inline;
@@ -76,7 +77,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: effectSweep var(--effect-duration) linear infinite;
+  animation: var(--bttv-username-effect-animation);
 }
 
 .supernova {
@@ -113,88 +114,52 @@
   animation: none;
 }
 
-/* Username hover effects: the engine (common/utils/username-hover-effect-animations.js) feeds
-   measured numbers through the --bttv-cell-* properties; declarations and timing live here. */
-/* the host's filter moves to the overlay for the run: chromium drops descendant clips inside filtered inline elements.
-   a visibility:hidden host is not hit-testable, so the visible overlay takes the hits and they bubble through it */
-.textAnimHost {
-  position: relative;
-  visibility: hidden;
-  filter: none;
+/* Username hover effects: hovering a container marked .hoverTrigger animates the username inside it.
+   The name keeps any texture animation it already has; adding a second animation to the list does not
+   restart the first, so the texture never jumps phase mid-hover. */
+.wave,
+.bounce,
+.flip {
+  /* transforms do not apply to inline boxes */
+  display: inline-block;
 }
 
-.textAnimOverlay {
-  --bttv-hover-effect-duration: 0.4s;
-  --bttv-hover-effect-stagger: 35ms;
-
-  position: absolute;
-  inset: 0;
-  visibility: visible;
+.hoverTrigger:hover .wave {
+  animation:
+    var(--bttv-username-effect-animation, none),
+    waveHop 0.4s ease-in-out both;
 }
 
-/* one character per cell at its measured slot, snapped to whole pixels so composited layers never
-   resample. the correction residuals move the cell, not the copies inside it, so the clip window
-   travels with the glyph instead of shaving it */
-.textAnimCell {
-  position: absolute;
-  left: calc(var(--bttv-cell-x) + var(--bttv-cell-dx, 0px));
-  top: calc(var(--bttv-cell-y) + var(--bttv-cell-dy, 0px));
-  width: var(--bttv-cell-width);
-  height: var(--bttv-cell-height);
-  /* the measured slot height keeps the overlay baseline exactly on the original text's */
-  line-height: var(--bttv-cell-height);
+.hoverTrigger:hover .bounce {
+  animation:
+    var(--bttv-username-effect-animation, none),
+    bounceScale 0.4s ease-in-out both;
 }
 
-/* only flip clips; clip-path backs up overflow because composited children escape overflow clips under svg filters in chromium */
-.textAnimCell.flipCell {
-  overflow: hidden;
-  clip-path: inset(0);
+.hoverTrigger:hover .flip {
+  animation:
+    var(--bttv-username-effect-animation, none),
+    flipSpin 0.6s ease-in-out both;
 }
 
-/* flip rolls each letter up into a rising copy; transform (not top) keeps the ease-out tail subpixel-smooth */
-.textAnimCell > .flipStrip {
-  display: block;
-  position: relative;
-  animation: flipSlide var(--bttv-hover-effect-duration) cubic-bezier(0.215, 0.61, 0.355, 1) both;
-  animation-delay: calc(var(--bttv-cell-index, 0) * var(--bttv-hover-effect-stagger));
+/* the hover rules outweigh the .reducedMotion overrides above, so they need their own */
+.reducedMotion .hoverTrigger:hover .wave,
+.reducedMotion .hoverTrigger:hover .bounce,
+.reducedMotion .hoverTrigger:hover .flip {
+  animation: none;
 }
 
-/* full-name-width copies keep background geometry identical to the host */
-.textAnimCell > .flipStrip > span,
-.textAnimCell > .staticStrip > span {
-  display: block;
-  width: var(--bttv-name-width);
-  margin-left: calc(var(--bttv-cell-pad) - var(--bttv-cell-char-left));
-  text-indent: var(--bttv-cell-char-left);
-  white-space: nowrap;
-  /* inherited centering (the settings preview cards) would shift a lone character off its slot */
-  text-align: left;
-  /* the overlay's filter renders over the clipped result instead, so it is never cut off */
-  filter: none;
-}
-
-/* the copies are exactly one cell tall, so the incoming glyph lands where the outgoing one sat */
-.textAnimCell > .flipStrip > span {
-  height: var(--bttv-cell-height);
-}
-
-@keyframes flipSlide {
-  from {
+@keyframes waveHop {
+  0%,
+  100% {
     transform: translateY(0);
   }
-  to {
-    transform: translateY(calc(-1 * var(--bttv-cell-height, 0px)));
+  40% {
+    transform: translateY(-18%);
   }
-}
-
-/* bounce: each letter scales up slightly and settles back, in order from start to end */
-.textAnimCell.bounceCell {
-  animation: bounceScale var(--bttv-hover-effect-duration) ease-in-out both;
-  animation-delay: calc(var(--bttv-cell-index, 0) * var(--bttv-hover-effect-stagger));
-}
-
-.textAnimCell > .staticStrip {
-  display: block;
+  70% {
+    transform: translateY(3%);
+  }
 }
 
 @keyframes bounceScale {
@@ -210,21 +175,12 @@
   }
 }
 
-/* wave: each letter hops up and settles with a slight overshoot, like a stadium wave */
-.textAnimCell.waveCell {
-  animation: waveHop var(--bttv-hover-effect-duration) ease-in-out both;
-  animation-delay: calc(var(--bttv-cell-index, 0) * var(--bttv-hover-effect-stagger));
-}
-
-@keyframes waveHop {
-  0%,
-  100% {
-    transform: translateY(0);
+/* the name turns over on its horizontal axis; the perspective gives the far edge some depth */
+@keyframes flipSpin {
+  from {
+    transform: perspective(200px) rotateX(0);
   }
-  40% {
-    transform: translateY(-18%);
-  }
-  70% {
-    transform: translateY(3%);
+  to {
+    transform: perspective(200px) rotateX(360deg);
   }
 }

@@ -1,4 +1,3 @@
-import throttle from 'lodash.throttle';
 import {getCachedBadges} from '@/actions/badges';
 import clickableStyles from '@/common/styles/Clickable.module.css';
 import effects from '@/common/styles/UsernameEffects.module.css';
@@ -27,23 +26,6 @@ const EMOTE_SELECTOR =
   '.bttv-animated-static-emote, .chat-line__message, .vod-message, .pinned-chat__message, .thread-message__message';
 const EMOTE_HOVER_SELECTOR =
   '.bttv-animated-static-emote:hover, .chat-line__message:hover, .vod-message:hover, .pinned-chat__message:hover, .thread-message__message:hover';
-
-const USERNAME_HOVER_EFFECT_COOLDOWN_MS = 3000;
-
-// leading + trailing, so the cursor resting on a name still animates it when the window ends
-const runThrottledUsernameHoverEffect = throttle(
-  function runUsernameHoverEffect(fromNode, userId) {
-    const ran =
-      fromNode.matches(':hover') &&
-      runUsernameHoverEffectAnimation(fromNode, subscribers.getUsernameHoverEffect(userId));
-    // a bailed hover gives its window back
-    if (!ran) {
-      runThrottledUsernameHoverEffect.cancel();
-    }
-  },
-  USERNAME_HOVER_EFFECT_COOLDOWN_MS,
-  {leading: true, trailing: true}
-);
 
 const EMOTE_MODIFIERS = {
   'w!': 'bttv-emote-modifier-wide',
@@ -452,10 +434,15 @@ class ChatModule {
       }
     }
 
-    // bound unconditionally and read at hover time, so a late lookup_user still animates the name
-    fromNode.addEventListener('mouseenter', function handleUsernameHoverEffectEnter() {
-      runThrottledUsernameHoverEffect(fromNode, userId);
-    });
+    const usernameHoverEffect = subscribers.getUsernameHoverEffect(userId);
+    if (usernameHoverEffect != null) {
+      const hoverEffectClassName = effects[usernameHoverEffect];
+      if (hoverEffectClassName != null) {
+        fromNode.classList.add(hoverEffectClassName);
+        // the whole message is the hover target; the stylesheet does the rest
+        element.classList.add(effects.hoverTrigger);
+      }
+    }
   }
 
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
