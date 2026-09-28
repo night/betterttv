@@ -113,9 +113,9 @@
   animation: none;
 }
 
-/* Username hover effects: hovering a container marked .hoverTrigger animates the username inside it.
-   The name keeps any texture animation it already has; adding a second animation to the list does not
-   restart the first, so the texture never jumps phase mid-hover. */
+/* Username hover effects: hovering the username animates it. The name keeps any texture animation it
+   already has; adding a second animation to the list does not restart the first, so the texture never
+   jumps phase mid-hover. */
 .wave,
 .bounce,
 .flip {
@@ -123,13 +123,13 @@
   display: inline-block;
 }
 
-.hoverTrigger:hover .wave {
+.wave:hover {
   animation:
     var(--bttv-username-effect-animation, none),
     waveHop 0.4s ease-in-out both;
 }
 
-.hoverTrigger:hover .bounce {
+.bounce:hover {
   animation:
     var(--bttv-username-effect-animation, none),
     bounceScale 0.4s ease-in-out both;
@@ -144,7 +144,7 @@
 
 /* clip (not hidden) keeps the inline-block baseline, and only y clips so kerned ink survives.
    the glow halo is cut at the line edges for the run; a filter would avoid that at a per-frame cost on every glow name */
-.hoverTrigger:hover .flip {
+.flip:hover {
   overflow-x: visible;
   overflow-y: clip;
   visibility: hidden;
@@ -152,8 +152,8 @@
 
 /* both copies sit on the parent's box (the offset is a transform) so an inherited texture keeps
    the parent's phase: background-position tracks the parent's sweep animation through inherit */
-.hoverTrigger:hover .flip::before,
-.hoverTrigger:hover .flip::after {
+.flip:hover::before,
+.flip:hover::after {
   content: attr(data-bttv-name);
   position: absolute;
   top: 0;
@@ -166,23 +166,23 @@
   animation: flipOut 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
 }
 
-.hoverTrigger:hover .flip::after {
+.flip:hover::after {
   animation-name: flipIn;
 }
 
 /* the hover rules outweigh the .reducedMotion overrides above, so they need their own */
-.reducedMotion .hoverTrigger:hover .wave,
-.reducedMotion .hoverTrigger:hover .bounce {
+.reducedMotion .wave:hover,
+.reducedMotion .bounce:hover {
   animation: none;
 }
 
-.reducedMotion .hoverTrigger:hover .flip {
+.reducedMotion .flip:hover {
   overflow-y: visible;
   visibility: visible;
 }
 
-.reducedMotion .hoverTrigger:hover .flip::before,
-.reducedMotion .hoverTrigger:hover .flip::after {
+.reducedMotion .flip:hover::before,
+.reducedMotion .flip:hover::after {
   content: none;
 }
 

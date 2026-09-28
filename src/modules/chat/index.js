@@ -439,7 +439,7 @@ class ChatModule {
     fromNode.classList.add(effectClassName);
   }
 
-  applyUsernameHoverEffect(element, fromNode, userId) {
+  applyUsernameHoverEffect(fromNode, userId) {
     const usernameHoverEffect = subscribers.getUsernameHoverEffect(userId);
     if (usernameHoverEffect == null) {
       return;
@@ -452,7 +452,6 @@ class ChatModule {
 
     fromNode.classList.add(hoverEffectClassName);
     fromNode.dataset.bttvName = fromNode.textContent;
-    element.classList.add(effects.hoverTrigger);
   }
 
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
@@ -493,7 +492,7 @@ class ChatModule {
       fromNode.innerText = nickname;
     }
 
-    this.applyUsernameHoverEffect(element, fromNode, user.id);
+    this.applyUsernameHoverEffect(fromNode, user.id);
 
     if (
       (modsOnly === true && !user.mod) ||

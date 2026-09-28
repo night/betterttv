@@ -7,7 +7,6 @@ import Icon from '../../../common/components/Icon';
 import UsernameEffectText from '../../../common/components/UsernameEffectText';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useUsernameEffectSetting, {NONE} from '../../../common/hooks/UsernameEffectSetting';
-import effects from '../../../common/styles/UsernameEffects.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
 import {UsernameHoverEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
@@ -41,12 +40,12 @@ function isEligibleForUsernameHoverEffect(eligibility, value) {
   return eligibility?.usernameHoverEffects?.[value] === true;
 }
 
-// Previews animate over the user's real username effect, triggered from the whole text block.
+// Previews animate over the user's real username effect.
 function UsernameHoverEffectPreviewText({value, className, children}) {
   const usernameEffect = useAuthStore((state) => state.user?.usernameEffect ?? null);
 
   return (
-    <Text truncate size="xl" className={classNames(className, styles.flavorUsername, effects.hoverTrigger)}>
+    <Text truncate size="xl" className={classNames(className, styles.flavorUsername)}>
       <UsernameEffectText effect={usernameEffect} hoverEffect={value}>
         {children}
       </UsernameEffectText>
@@ -115,7 +114,7 @@ function SettingUsernameHoverEffect() {
         reverse
         name={formatMessage({defaultMessage: 'Hover effect'})}
         description={formatMessage({
-          defaultMessage: 'Choose an animation that plays while your message is hovered in chat.',
+          defaultMessage: 'Choose an animation that plays while your username is hovered in chat.',
         })}
         showNewBadge
         showProBadge
