@@ -114,7 +114,7 @@
 }
 
 /* Username hover effects: hovering the container animates the name inside it. In chat that is twitch's
-   badges + name block, matched by class substring so chat only ever touches the name; our own previews
+   badges + name block (and 7tv's), matched by class substring so chat only ever touches the name; our own previews
    mark their container with .hoverTrigger. The name keeps any texture animation it already has: adding
    a second animation to the list does not restart the first (checked in chrome, the texture's Animation
    object survives the list change), so the texture never jumps phase mid-hover. */
@@ -126,14 +126,16 @@
 }
 
 .hoverTrigger:hover .wave,
-[class*='username-container']:hover .wave {
+[class*='username-container']:hover .wave,
+[class*='seventv-chat-user']:hover .wave {
   animation:
     var(--bttv-username-effect-animation, none),
     waveHop 0.4s ease-in-out both;
 }
 
 .hoverTrigger:hover .bounce,
-[class*='username-container']:hover .bounce {
+[class*='username-container']:hover .bounce,
+[class*='seventv-chat-user']:hover .bounce {
   animation:
     var(--bttv-username-effect-animation, none),
     bounceScale 0.4s ease-in-out both;
@@ -151,7 +153,8 @@
    cover the whole box at every frame of the roll. the hidden text does drop out of a selection made
    while the cursor rests on the name */
 .hoverTrigger:hover .flip,
-[class*='username-container']:hover .flip {
+[class*='username-container']:hover .flip,
+[class*='seventv-chat-user']:hover .flip {
   overflow-x: visible;
   overflow-y: clip;
   visibility: hidden;
@@ -162,7 +165,9 @@
 .hoverTrigger:hover .flip::before,
 .hoverTrigger:hover .flip::after,
 [class*='username-container']:hover .flip::before,
-[class*='username-container']:hover .flip::after {
+[class*='seventv-chat-user']:hover .flip::before,
+[class*='username-container']:hover .flip::after,
+[class*='seventv-chat-user']:hover .flip::after {
   content: attr(data-bttv-name);
   position: absolute;
   top: 0;
@@ -176,7 +181,8 @@
 }
 
 .hoverTrigger:hover .flip::after,
-[class*='username-container']:hover .flip::after {
+[class*='username-container']:hover .flip::after,
+[class*='seventv-chat-user']:hover .flip::after {
   animation-name: flipIn;
 }
 
@@ -184,12 +190,15 @@
 .reducedMotion .hoverTrigger:hover .wave,
 .reducedMotion .hoverTrigger:hover .bounce,
 .reducedMotion [class*='username-container']:hover .wave,
-.reducedMotion [class*='username-container']:hover .bounce {
+.reducedMotion [class*='seventv-chat-user']:hover .wave,
+.reducedMotion [class*='username-container']:hover .bounce,
+.reducedMotion [class*='seventv-chat-user']:hover .bounce {
   animation: none;
 }
 
 .reducedMotion .hoverTrigger:hover .flip,
-.reducedMotion [class*='username-container']:hover .flip {
+.reducedMotion [class*='username-container']:hover .flip,
+.reducedMotion [class*='seventv-chat-user']:hover .flip {
   overflow-y: visible;
   visibility: visible;
 }
@@ -197,7 +206,9 @@
 .reducedMotion .hoverTrigger:hover .flip::before,
 .reducedMotion .hoverTrigger:hover .flip::after,
 .reducedMotion [class*='username-container']:hover .flip::before,
-.reducedMotion [class*='username-container']:hover .flip::after {
+.reducedMotion [class*='seventv-chat-user']:hover .flip::before,
+.reducedMotion [class*='username-container']:hover .flip::after,
+.reducedMotion [class*='seventv-chat-user']:hover .flip::after {
   content: none;
 }
 
