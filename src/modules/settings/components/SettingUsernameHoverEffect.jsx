@@ -41,7 +41,7 @@ function isEligibleForUsernameHoverEffect(eligibility, value) {
   return eligibility?.usernameHoverEffects?.[value] === true;
 }
 
-// Previews run the hover animation over the user's real username effect; the whole text block is the trigger.
+// Previews animate over the user's real username effect, triggered from the whole text block.
 function UsernameHoverEffectPreviewText({value, className, children}) {
   const ref = useRef(null);
   const usernameEffect = useAuthStore((state) => state.user?.usernameEffect ?? null);
@@ -142,7 +142,7 @@ function SettingUsernameHoverEffect() {
               value={effectValue}
               className={styles.usernameCard}
               tooltip={label}
-              // below the card so the tooltip never covers the preview while it animates
+              // below the card so it never covers the preview mid-animation
               tooltipPosition="bottom"
               ariaLabel={label}
               withIndicators={false}>

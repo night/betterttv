@@ -30,7 +30,7 @@ const EMOTE_HOVER_SELECTOR =
 
 const USERNAME_HOVER_EFFECT_COOLDOWN_MS = 3000;
 
-// leading + trailing: the first hover runs now, and whichever username the cursor still rests on when the window ends runs then
+// leading + trailing, so the cursor resting on a name still animates it when the window ends
 const runThrottledUsernameHoverEffect = throttle(
   function runUsernameHoverEffect(fromNode, userId) {
     const ran =
@@ -452,9 +452,7 @@ class ChatModule {
       }
     }
 
-    // messages parse once (__bttvParsed), so this is a single listener per username. it binds
-    // unconditionally and reads the effect at hover time, so a lookup_user that lands after the
-    // message rendered still animates it, and switching effects applies to bound names
+    // bound unconditionally and read at hover time, so a late lookup_user still animates the name
     fromNode.addEventListener('mouseenter', function handleUsernameHoverEffectEnter() {
       runThrottledUsernameHoverEffect(fromNode, userId);
     });
