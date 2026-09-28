@@ -1,6 +1,5 @@
-/* half the radius of the text-shadow this replaces: drop-shadow's blur is the gaussian sigma, text-shadow's is twice it */
 .glow {
-  filter: drop-shadow(0 0 10px color-mix(in srgb, currentColor 80%, transparent));
+  text-shadow: 0 0 20px color-mix(in srgb, currentColor 80%, transparent);
 }
 
 /* the sweep runs during the first half of the timeline and holds for the second, so each loop
@@ -143,8 +142,8 @@
   white-space: nowrap;
 }
 
-/* clip (not hidden) keeps the inline-block baseline, and clipping y alone leaves kerned ink and
-   the glow halo alone; the element's own filter still paints after this clip, so the halo is never cut */
+/* clip (not hidden) keeps the inline-block baseline, and only y clips so kerned ink survives.
+   the glow halo is cut at the line edges for the run; a filter would avoid that at a per-frame cost on every glow name */
 .hoverTrigger:hover .flip {
   overflow-x: visible;
   overflow-y: clip;

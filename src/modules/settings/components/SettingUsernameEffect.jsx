@@ -8,7 +8,7 @@ import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useUsernameEffectSetting, {NONE} from '../../../common/hooks/UsernameEffectSetting';
 import effects from '../../../common/styles/UsernameEffects.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
-import {CHAT_COLOR_USERNAME_EFFECTS, UsernameEffectFields, UsernameEffects} from '../../../constants';
+import {CHAT_COLOR_USERNAME_EFFECTS, UsernameEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
 import useAuthStore from '../../../stores/auth';
 import {isUserPro} from '../../../utils/pro';
@@ -123,7 +123,7 @@ function SettingUsernameEffect() {
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
 
   const [value, handleChange] = useUsernameEffectSetting({
-    userField: UsernameEffectFields.EFFECT,
+    userField: 'usernameEffect',
     saveEffect: updateUsernameEffect,
     isEligible: isEligibleForUsernameEffect,
     openSignInModal: openUsernameEffectSignInModal,

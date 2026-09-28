@@ -479,9 +479,3 @@ export const UsernameHoverEffects = {
   BOUNCE: 'bounce',
   WAVE: 'wave',
 };
-
-// the fields each effect kind is stored under on the authenticated user
-export const UsernameEffectFields = {
-  EFFECT: 'usernameEffect',
-  HOVER_EFFECT: 'usernameHoverEffect',
-};

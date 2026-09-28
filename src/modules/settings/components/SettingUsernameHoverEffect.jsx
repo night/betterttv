@@ -9,7 +9,7 @@ import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useUsernameEffectSetting, {NONE} from '../../../common/hooks/UsernameEffectSetting';
 import effects from '../../../common/styles/UsernameEffects.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
-import {UsernameEffectFields, UsernameHoverEffects} from '../../../constants';
+import {UsernameHoverEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
 import useAuthStore from '../../../stores/auth';
 import {isUserPro} from '../../../utils/pro';
@@ -102,7 +102,7 @@ function SettingUsernameHoverEffect() {
   const previewDisplayName = getPreviewDisplayName(currentUser, user);
 
   const [value, handleChange] = useUsernameEffectSetting({
-    userField: UsernameEffectFields.HOVER_EFFECT,
+    userField: 'usernameHoverEffect',
     saveEffect: updateUsernameHoverEffect,
     isEligible: isEligibleForUsernameHoverEffect,
     openSignInModal: openUsernameHoverEffectSignInModal,

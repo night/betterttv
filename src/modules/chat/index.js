@@ -474,7 +474,6 @@ class ChatModule {
     }
 
     this.applyUsernameEffect(fromNode, user.id);
-    this.applyUsernameHoverEffect(element, fromNode, user.id);
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
       element
@@ -493,6 +492,8 @@ class ChatModule {
     if (nickname) {
       fromNode.innerText = nickname;
     }
+
+    this.applyUsernameHoverEffect(element, fromNode, user.id);
 
     if (
       (modsOnly === true && !user.mod) ||
