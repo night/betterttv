@@ -8,7 +8,6 @@ import useDebouncedRemoteState from './DebouncedRemoteState';
 
 export const NONE = 'none';
 
-// Shared by both effect settings: an optimistic debounced save plus the eligibility and upgrade ladder.
 export default function useUsernameEffectSetting({
   userField,
   saveEffect,

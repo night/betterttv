@@ -459,7 +459,7 @@ export const CommandAutocompleteArgumentTypes = {
   USER: 'user',
 };
 
-// API contract strings, stored on users — keep in sync with betterttv-private
+// api contract strings, keep in sync with betterttv-private
 export const UsernameEffects = {
   GLOW: 'glow',
   FLARE: 'flare',
@@ -473,7 +473,7 @@ export const UsernameEffects = {
 // glow and flare paint over the current text color; the rest paint the text themselves
 export const CHAT_COLOR_USERNAME_EFFECTS = [UsernameEffects.GLOW, UsernameEffects.FLARE];
 
-// API contract strings, stored on users — keep in sync with betterttv-private
+// api contract strings, keep in sync with betterttv-private
 export const UsernameHoverEffects = {
   FLIP: 'flip',
   BOUNCE: 'bounce',

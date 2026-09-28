@@ -41,7 +41,6 @@ function isEligibleForUsernameHoverEffect(eligibility, value) {
   return eligibility?.usernameHoverEffects?.[value] === true;
 }
 
-// Previews animate over the user's real username effect.
 function UsernameHoverEffectPreviewText({value, className, children}) {
   const usernameEffect = useAuthStore((state) => state.user?.usernameEffect ?? null);
 

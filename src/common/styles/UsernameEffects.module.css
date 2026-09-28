@@ -113,11 +113,7 @@
   animation: none;
 }
 
-/* Username hover effects: hovering the container animates the name inside it. In chat that is twitch's
-   badges + name block (and 7tv's), matched by class substring so chat only ever touches the name; our own previews
-   mark their container with .hoverTrigger. The name keeps any texture animation it already has: adding
-   a second animation to the list does not restart the first (checked in chrome, the texture's Animation
-   object survives the list change), so the texture never jumps phase mid-hover. */
+/* hover effects trigger from the name's container; adding an animation to the list never restarts the texture's */
 .wave,
 .bounce,
 .flip {
@@ -141,17 +137,13 @@
     bounceScale 0.4s ease-in-out both;
 }
 
-/* flip rolls the name up and a copy in from below. the copies are pseudo-elements reading the name
-   from data-bttv-name, so the text twitch's react owns is only ever hidden, never moved */
+/* flip's copies are pseudo-elements reading data-bttv-name, so twitch's text node is hidden, never moved */
 .flip {
   position: relative;
   white-space: nowrap;
 }
 
-/* clip (not hidden) keeps the inline-block baseline, and only y clips so kerned ink survives.
-   the copies keep the host hovered: generated content hit-tests to its element, and between them they
-   cover the whole box at every frame of the roll. the hidden text does drop out of a selection made
-   while the cursor rests on the name */
+/* clip, not hidden: hidden moves the inline-block baseline. the visible copies keep the hidden host hovered */
 .hoverTrigger:hover .flip,
 [class*='username-container']:hover .flip,
 [class*='seventv-chat-user']:hover .flip {
@@ -160,8 +152,7 @@
   visibility: hidden;
 }
 
-/* both copies sit on the parent's box (the offset is a transform) so an inherited texture keeps
-   the parent's phase: background-position tracks the parent's sweep animation through inherit */
+/* offset by transform, not top, so the inherited texture keeps the host's phase */
 .hoverTrigger:hover .flip::before,
 .hoverTrigger:hover .flip::after,
 [class*='username-container']:hover .flip::before,

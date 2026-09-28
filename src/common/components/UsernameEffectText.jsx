@@ -4,7 +4,6 @@ import effects from '@/common/styles/UsernameEffects.module.css';
 import {CHAT_COLOR_USERNAME_EFFECTS} from '@/constants';
 import twitch from '@/utils/twitch';
 
-// Renders text styled like the user's chat username, including its hover animation.
 export default function UsernameEffectText({effect, hoverEffect, className, children}) {
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
   const effectClassName = effect != null ? effects[effect] : null;

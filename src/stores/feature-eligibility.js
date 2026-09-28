@@ -3,10 +3,9 @@ import {persist} from 'zustand/middleware';
 import {getFeatureEligibility} from '@/actions/account';
 import useAuthStore from './auth';
 
-// the shipped key predates the store widening to every perk; keeping it leaves no litter behind
+// the shipped key is kept so old storage isn't left behind
 const STORAGE_ID = 'bttvPrivate_usernameEffectEligibility';
 
-// eligibility for every subscription perk, fetched lazily, deduped per user, refetched on id/pro changes
 const useFeatureEligibilityStore = create(
   persist(
     () => ({
@@ -15,7 +14,7 @@ const useFeatureEligibilityStore = create(
     }),
     {
       name: STORAGE_ID,
-      // v1 replaced the flat username effect map; older payloads are discarded and refetched
+      // v1 changed the shape; older payloads are dropped and refetched
       version: 1,
       migrate: () => ({userId: null, eligibility: null}),
     }
