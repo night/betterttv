@@ -266,6 +266,7 @@ export const SettingsPromotions = {
   // SELF_BOT: 'settingsPromotionDismissedSelfBot',
   // SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
   SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
+  USERNAME_HOVER_EFFECT: 'settingsPromotionDismissedUsernameHoverEffect',
 };
 
 export const SettingsPrompts = {

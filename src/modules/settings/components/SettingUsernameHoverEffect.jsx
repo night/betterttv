@@ -14,6 +14,8 @@ import formatMessage from '../../../i18n/index';
 import useAuthStore from '../../../stores/auth';
 import {isUserPro} from '../../../utils/pro';
 import {getCurrentUser, getPreviewDisplayName} from '../../../utils/user';
+import {useHasPromotion} from '../stores/promotion-store';
+import {SettingPanelIds} from '../stores/setting-store';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import styles from './SettingUsernameEffect.module.css';
@@ -99,6 +101,7 @@ function SettingUsernameHoverEffect() {
   const currentUser = useCurrentUser();
   const user = useAuthStore((state) => state.user);
   const previewDisplayName = getPreviewDisplayName(currentUser, user);
+  const hasPromotion = useHasPromotion(SettingPanelIds.USERNAME_EFFECT);
 
   const [value, handleChange] = useUsernameEffectSetting({
     userField: 'usernameHoverEffect',
@@ -116,7 +119,7 @@ function SettingUsernameHoverEffect() {
         description={formatMessage({
           defaultMessage: 'Choose an animation that plays while your username is hovered in chat.',
         })}
-        showNewBadge
+        showNewBadge={hasPromotion}
         showProBadge
       />
       <div className={styles.cards}>
