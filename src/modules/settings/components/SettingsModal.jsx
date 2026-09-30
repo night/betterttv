@@ -135,13 +135,17 @@ function SettingsModal({setHandleOpen}) {
   }
 
   useEffect(() => {
-    setHandleOpen((isOpen, {scrollToSettingPanelId} = {scrollToSettingPanelId: null}) => {
+    setHandleOpen((isOpen, {scrollToSettingPanelId = null, page: openToPage = null} = {}) => {
       if (isOpen) {
         modalHandlers.open();
         // Nudge signed-out users to sign in the first time they open settings.
         maybePromptSignIn();
       } else {
         modalHandlers.close();
+      }
+      if (openToPage != null) {
+        handlePageChange(openToPage);
+        return;
       }
       handleGotoSettingPanel(scrollToSettingPanelId);
     });
