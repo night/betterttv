@@ -59,7 +59,7 @@ const badgeTemplate = (url, description) => {
   return badgeContainer;
 };
 function handleProBadgeClick() {
-  settingsModule.openSettings({page: PageTypes.PRO_HOME});
+  settingsModule.openPage(PageTypes.PRO_HOME);
 }
 const proBadgeTemplate = (url, description) => {
   const badgeContainer = badgeTemplate(url, description);
