@@ -58,15 +58,13 @@ const badgeTemplate = (url, description) => {
 
   return badgeContainer;
 };
+function handleProBadgeClick() {
+  settingsModule.openSettings({page: PageTypes.PRO_HOME});
+}
 const proBadgeTemplate = (url, description) => {
   const badgeContainer = badgeTemplate(url, description);
   badgeContainer.classList.add(clickableStyles.clickable);
-
-  function handleClick() {
-    settingsModule.openSettings({page: PageTypes.PRO_HOME});
-  }
-
-  badgeContainer.addEventListener('click', handleClick);
+  badgeContainer.addEventListener('click', handleProBadgeClick);
   return badgeContainer;
 };
 const steamLobbyJoinTemplate = (joinLink) => {
