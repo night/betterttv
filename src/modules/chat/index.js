@@ -3,7 +3,6 @@ import clickableStyles from '@/common/styles/Clickable.module.css';
 import effects from '@/common/styles/UsernameEffects.module.css';
 import {shouldReduceMotion} from '@/common/utils/reduced-motion';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
-import runUsernameHoverEffectAnimation from '@/common/utils/username-hover-effect-animations';
 import {
   EmoteTypeFlags,
   SettingIds,
@@ -465,7 +464,7 @@ class ChatModule {
     }
 
     fromNode.classList.add(hoverEffectClassName);
-    (fromNode.closest(USERNAME_HOVER_EFFECT_TRIGGER_SELECTOR) ?? fromNode).classList.add(effects.hoverTrigger);
+    fromNode.closest(USERNAME_HOVER_EFFECT_TRIGGER_SELECTOR)?.classList.add(effects.hoverTrigger);
     if (usernameHoverEffect === UsernameHoverEffects.FLIP) {
       fromNode.dataset.bttvName = fromNode.textContent;
     }
