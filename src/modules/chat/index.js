@@ -463,11 +463,12 @@ class ChatModule {
       return;
     }
 
-    fromNode.classList.add(hoverEffectClassName);
-    fromNode.closest(USERNAME_HOVER_EFFECT_TRIGGER_SELECTOR)?.classList.add(effects.hoverTrigger);
     if (usernameHoverEffect === UsernameHoverEffects.FLIP) {
       fromNode.dataset.bttvName = fromNode.textContent;
     }
+
+    fromNode.classList.add(hoverEffectClassName);
+    fromNode.closest(USERNAME_HOVER_EFFECT_TRIGGER_SELECTOR)?.classList.add(effects.hoverTrigger);
   }
 
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
