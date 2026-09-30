@@ -1,10 +1,12 @@
 import {getCachedBadges} from '@/actions/badges';
+import clickableStyles from '@/common/styles/Clickable.module.css';
 import effects from '@/common/styles/UsernameEffects.module.css';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
-import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes} from '@/constants';
+import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import nicknames from '@/modules/chat_nicknames/index';
 import emotes from '@/modules/emotes/index';
+import settingsModule from '@/modules/settings/index';
 import subscribers from '@/modules/subscribers/index';
 import {bindTooltip} from '@/modules/tooltip/index';
 import settings from '@/settings';
@@ -54,6 +56,17 @@ const badgeTemplate = (url, description) => {
   image.setAttribute('data-a-target', 'chat-badge');
   badgeContainer.appendChild(image);
 
+  return badgeContainer;
+};
+const proBadgeTemplate = (url, description) => {
+  const badgeContainer = badgeTemplate(url, description);
+  badgeContainer.classList.add(clickableStyles.clickable);
+
+  function handleClick() {
+    settingsModule.openSettings({page: PageTypes.PRO_HOME});
+  }
+
+  badgeContainer.addEventListener('click', handleClick);
   return badgeContainer;
 };
 const steamLobbyJoinTemplate = (joinLink) => {
@@ -230,7 +243,7 @@ class ChatModule {
     const subscriberBadge = subscribers.getSubscriptionBadge(user.id);
     if (subscriberBadge?.url != null) {
       badges.push(
-        badgeTemplate(
+        proBadgeTemplate(
           subscriberBadge.url,
           subscriberBadge.startedAt
             ? formatMessage(

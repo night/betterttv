@@ -88,7 +88,7 @@ export default class SettingsModule {
     }
   }
 
-  openSettings({scrollToSettingPanelId} = {scrollToSettingPanelId: null}) {
-    handleOpen?.(true, {scrollToSettingPanelId});
+  openSettings({scrollToSettingPanelId = null, page = null} = {}) {
+    handleOpen?.(true, {scrollToSettingPanelId, page});
   }
 }

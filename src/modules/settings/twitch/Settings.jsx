@@ -137,7 +137,7 @@ export default class SettingsModule {
     button.classList.toggle(topNavStyles.indicator, promotionStore.hasAvailablePromotion());
   }
 
-  openSettings({scrollToSettingPanelId} = {scrollToSettingPanelId: null}) {
-    handleOpen?.(true, {scrollToSettingPanelId});
+  openSettings({scrollToSettingPanelId = null, page = null} = {}) {
+    handleOpen?.(true, {scrollToSettingPanelId, page});
   }
 }
