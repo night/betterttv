@@ -113,7 +113,7 @@
   animation: none;
 }
 
-/* hover effects trigger from the name's container; adding an animation to the list never restarts the texture's */
+/* hover effects trigger from the container chat and the previews tag .hoverTrigger; adding an animation to the list never restarts the texture's */
 .wave,
 .bounce,
 .flip {
@@ -121,20 +121,17 @@
   display: inline-block;
 }
 
-.hoverTrigger:hover .wave,
-[class*='username-container']:hover .wave,
-[class*='seventv-chat-user']:hover .wave {
+/* the 100ms delay is hover intent: a name passing under a parked cursor in less than that never starts */
+.hoverTrigger:hover .wave {
   animation:
     var(--bttv-username-effect-animation, none),
-    waveHop 0.4s ease-in-out both;
+    waveHop 0.4s 100ms ease-in-out both;
 }
 
-.hoverTrigger:hover .bounce,
-[class*='username-container']:hover .bounce,
-[class*='seventv-chat-user']:hover .bounce {
+.hoverTrigger:hover .bounce {
   animation:
     var(--bttv-username-effect-animation, none),
-    bounceScale 0.4s ease-in-out both;
+    bounceScale 0.4s 100ms ease-in-out both;
 }
 
 /* flip's copies are pseudo-elements reading data-bttv-name, so twitch's text node is hidden, never moved */
@@ -144,9 +141,7 @@
 }
 
 /* clip, not hidden: hidden moves the inline-block baseline. the visible copies keep the hidden host hovered */
-.hoverTrigger:hover .flip,
-[class*='username-container']:hover .flip,
-[class*='seventv-chat-user']:hover .flip {
+.hoverTrigger:hover .flip {
   overflow-x: visible;
   overflow-y: clip;
   visibility: hidden;
@@ -154,11 +149,7 @@
 
 /* offset by transform, not top, so the inherited texture keeps the host's phase */
 .hoverTrigger:hover .flip::before,
-.hoverTrigger:hover .flip::after,
-[class*='username-container']:hover .flip::before,
-[class*='seventv-chat-user']:hover .flip::before,
-[class*='username-container']:hover .flip::after,
-[class*='seventv-chat-user']:hover .flip::after {
+.hoverTrigger:hover .flip::after {
   content: attr(data-bttv-name);
   position: absolute;
   top: 0;
@@ -168,12 +159,10 @@
   background: inherit;
   -webkit-background-clip: text;
   background-clip: text;
-  animation: flipOut 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  animation: flipOut 0.4s 100ms cubic-bezier(0.215, 0.61, 0.355, 1) both;
 }
 
-.hoverTrigger:hover .flip::after,
-[class*='username-container']:hover .flip::after,
-[class*='seventv-chat-user']:hover .flip::after {
+.hoverTrigger:hover .flip::after {
   animation-name: flipIn;
 }
 
