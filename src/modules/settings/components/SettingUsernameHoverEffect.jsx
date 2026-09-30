@@ -45,7 +45,7 @@ function UsernameHoverEffectPreviewText({value, className, children}) {
   const usernameEffect = useAuthStore((state) => state.user?.usernameEffect ?? null);
 
   return (
-    <Text truncate size="xl" className={classNames(className, styles.flavorUsername, effects.hoverTrigger)}>
+    <Text truncate size="xl" className={classNames(className, styles.flavorUsername)}>
       <UsernameEffectText effect={usernameEffect} hoverEffect={value}>
         {children}
       </UsernameEffectText>
@@ -56,7 +56,7 @@ function UsernameHoverEffectPreviewText({value, className, children}) {
 function UsernameHoverEffectRequirementDisplay({value, displayName}) {
   return (
     <div className={styles.usernameEffectRequirement}>
-      <div className={styles.usernamePreview}>
+      <div className={classNames(styles.usernamePreview, effects.hoverTrigger)}>
         <UsernameHoverEffectPreviewText value={value} className={styles.previewUsername}>
           {displayName}
         </UsernameHoverEffectPreviewText>
@@ -134,7 +134,7 @@ function SettingUsernameHoverEffect() {
             <SettingRadioCard
               key={effectValue}
               value={effectValue}
-              className={styles.usernameCard}
+              className={classNames(styles.usernameCard, effects.hoverTrigger)}
               tooltip={label}
               // below the card so it never covers the preview mid-animation
               tooltipPosition="bottom"

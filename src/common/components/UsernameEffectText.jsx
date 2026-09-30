@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, {useMemo} from 'react';
 import effects from '@/common/styles/UsernameEffects.module.css';
 import {shouldReduceMotion} from '@/common/utils/reduced-motion';
-import {CHAT_COLOR_USERNAME_EFFECTS} from '@/constants';
+import {CHAT_COLOR_USERNAME_EFFECTS, UsernameHoverEffects} from '@/constants';
 import twitch from '@/utils/twitch';
 
 export default function UsernameEffectText({effect, hoverEffect, className, children}) {
@@ -18,7 +18,11 @@ export default function UsernameEffectText({effect, hoverEffect, className, chil
     <span
       className={classNames(className, effectClassName, hoverEffectClassName)}
       style={style}
-      data-bttv-name={hoverEffectClassName != null ? children : undefined}>
+      data-bttv-name={
+        hoverEffectClassName != null && hoverEffect === UsernameHoverEffects.FLIP && typeof children === 'string'
+          ? children
+          : undefined
+      }>
       {children}
     </span>
   );

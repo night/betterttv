@@ -4,7 +4,15 @@ import effects from '@/common/styles/UsernameEffects.module.css';
 import {shouldReduceMotion} from '@/common/utils/reduced-motion';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
 import runUsernameHoverEffectAnimation from '@/common/utils/username-hover-effect-animations';
-import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes, PageTypes} from '@/constants';
+import {
+  EmoteTypeFlags,
+  SettingIds,
+  UsernameFlags,
+  PlatformTypes,
+  BadgeTypes,
+  PageTypes,
+  UsernameHoverEffects,
+} from '@/constants';
 import formatMessage from '@/i18n/index';
 import nicknames from '@/modules/chat_nicknames/index';
 import emotes from '@/modules/emotes/index';
@@ -456,7 +464,9 @@ class ChatModule {
     }
 
     fromNode.classList.add(hoverEffectClassName);
-    fromNode.dataset.bttvName = fromNode.textContent;
+    if (usernameHoverEffect === UsernameHoverEffects.FLIP) {
+      fromNode.dataset.bttvName = fromNode.textContent;
+    }
   }
 
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
