@@ -5,12 +5,13 @@ import {hasFlag} from '@/utils/flags';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import twitch from '@/utils/twitch';
 
-// twitch's newer chat layout strips every stable class off the claim button, but it always mounts in a new transition
+// the newer chat layout leaves no stable class on the claim button, so watch transitions and bail outside the points summary
 const CLAIM_BONUS_TRANSITION_SELECTOR = '.tw-transition';
 const COMMUNITY_POINTS_SUMMARY_SELECTOR = '[data-test-selector="community-points-summary"]';
 
 let removeChannelPointsListener;
-let lastClaimButton;
+// nested transitions emit together on mount, so remember which buttons were already clicked
+const clickedClaimButtons = new WeakSet();
 
 class ChannelPoints {
   constructor() {
@@ -31,12 +32,12 @@ class ChannelPoints {
         if (!isConnected || node.closest(COMMUNITY_POINTS_SUMMARY_SELECTOR) == null) return;
 
         const claimButton = node.querySelector('button');
-        if (claimButton == null || claimButton === lastClaimButton) return;
+        if (claimButton == null || clickedClaimButtons.has(claimButton)) return;
 
         const claimableBonus = twitch.getClaimableBonus(claimButton);
         if (claimableBonus == null || claimableBonus.state.error) return;
 
-        lastClaimButton = claimButton;
+        clickedClaimButtons.add(claimButton);
         claimButton.click();
       });
 
