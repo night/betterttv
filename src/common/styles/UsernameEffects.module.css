@@ -113,7 +113,7 @@
   animation: none;
 }
 
-/* hover effects trigger from the container chat and the previews tag .hoverTrigger; adding an animation to the list never restarts the texture's */
+/* hover effects trigger from the container marked .hoverTrigger; adding an animation to the list never restarts the texture's */
 .wave,
 .bounce,
 .flip {
