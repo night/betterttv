@@ -266,6 +266,7 @@ export const SettingsPromotions = {
   // SELF_BOT: 'settingsPromotionDismissedSelfBot',
   // SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
   SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
+  USERNAME_HOVER_EFFECT: 'settingsPromotionDismissedUsernameHoverEffect',
 };
 
 export const SettingsPrompts = {
@@ -459,8 +460,7 @@ export const CommandAutocompleteArgumentTypes = {
   USER: 'user',
 };
 
-// The string values are the API/storage contract — sent to the BetterTTV API, used as eligibility
-// keys, and stored on the user — so they must be kept in sync with the backend (betterttv-private).
+// api contract strings, keep in sync with betterttv-private
 export const UsernameEffects = {
   GLOW: 'glow',
   FLARE: 'flare',
@@ -469,4 +469,14 @@ export const UsernameEffects = {
   MIDAS: 'midas',
   GLACIER: 'glacier',
   INTERGALACTIC: 'intergalactic',
+};
+
+// glow and flare paint over the current text color; the rest paint the text themselves
+export const CHAT_COLOR_USERNAME_EFFECTS = [UsernameEffects.GLOW, UsernameEffects.FLARE];
+
+// api contract strings, keep in sync with betterttv-private
+export const UsernameHoverEffects = {
+  FLIP: 'flip',
+  BOUNCE: 'bounce',
+  WAVE: 'wave',
 };
