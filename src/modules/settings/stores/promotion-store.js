@@ -11,6 +11,10 @@ const PROMOTION_SLOTS = [
     storageKey: SettingsPromotions.SELF_BOT_TIMERS,
     settingPanelId: SettingPanelIds.SELF_BOT,
   },
+  {
+    storageKey: SettingsPromotions.USERNAME_HOVER_EFFECT,
+    settingPanelId: SettingPanelIds.USERNAME_EFFECT,
+  },
 ];
 
 function isPromotionSlotSeen(storageKey) {
