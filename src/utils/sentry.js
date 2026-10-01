@@ -7,9 +7,19 @@ const client = new BrowserClient({
   dsn: SENTRY_URL,
   transport: makeFetchTransport,
   stackParser: defaultStackParser,
+  // keep the restrictive pre-v11 defaults (Sentry 11 collects user info, cookies and headers by default)
+  dataCollection: {
+    userInfo: false,
+    cookies: false,
+    httpHeaders: {
+      request: {deny: ['forwarded', '-ip', 'remote-', 'via', '-user']},
+      response: {deny: ['forwarded', '-ip', 'remote-', 'via', '-user']},
+    },
+    httpBodies: [],
+  },
   integrations: getDefaultIntegrations({}).filter(
     (defaultIntegration) =>
-      !['BrowserApiErrors', 'TryCatch', 'Breadcrumbs', 'GlobalHandlers'].includes(defaultIntegration.name)
+      !['BrowserApiErrors', 'TryCatch', 'Breadcrumbs', 'Console', 'GlobalHandlers'].includes(defaultIntegration.name)
   ),
   beforeSend: (event) => {
     // only collect errors on production releases
