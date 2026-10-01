@@ -9,7 +9,7 @@ const client = new BrowserClient({
   stackParser: defaultStackParser,
   integrations: getDefaultIntegrations({}).filter(
     (defaultIntegration) =>
-      !['BrowserApiErrors', 'TryCatch', 'Breadcrumbs', 'GlobalHandlers'].includes(defaultIntegration.name)
+      !['BrowserApiErrors', 'TryCatch', 'Breadcrumbs', 'Console', 'GlobalHandlers'].includes(defaultIntegration.name)
   ),
   beforeSend: (event) => {
     // only collect errors on production releases
