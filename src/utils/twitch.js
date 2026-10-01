@@ -6,11 +6,7 @@ import debug from './debug';
 import {getCurrentUser, setCurrentUser} from './user';
 
 const REACT_ROOT = '#root';
-// the gif picker controller renders no dom of its own to anchor a parent
-// search from, so it is searched down from the react root. the helper counts
-// child and sibling hops, measured at ~460 deep on popout chat and ~579 on
-// channel pages, so this allows the measured worst case plus headroom
-const GIF_PICKER_CONTROLLER_SEARCH_DEPTH = 1000;
+const CHAT_INPUT_CONTAINER = '.chat-input';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat,.va-vod-chat,.video-chat';
 const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
@@ -944,11 +940,12 @@ export default {
   getGifPickerController() {
     let gifPickerController;
     try {
-      const reactRoot = getReactRoot(document.querySelector(REACT_ROOT));
+      // the controller sits in the chat input's subtree, wrapped in apollo hocs that expose its
+      // props before channelData is injected, so match the inner instance that already has it
       const node = searchReactChildren(
-        reactRoot?._internalRoot?.current ?? reactRoot,
-        (n) => n.memoizedProps?.giphyApiKey != null && n.memoizedProps?.onSelectGif != null,
-        GIF_PICKER_CONTROLLER_SEARCH_DEPTH
+        getReactInstance(document.querySelector(CHAT_INPUT_CONTAINER)),
+        (n) => n.memoizedProps?.onSelectGif != null && n.memoizedProps?.channelData?.user != null,
+        50
       );
       gifPickerController = node.memoizedProps;
     } catch (_) {}
