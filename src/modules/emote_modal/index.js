@@ -1,4 +1,4 @@
-import styles from './EmoteModal.module.css';
+import clickableStyles from '@/common/styles/Clickable.module.css';
 import openEmoteModal from './openEmoteModal';
 
 export function bindEmoteModal(element, {emote}) {
@@ -10,6 +10,6 @@ export function bindEmoteModal(element, {emote}) {
     openEmoteModal(emote);
   }
 
-  element.classList.add(styles.clickable);
+  element.classList.add(clickableStyles.clickable);
   element.addEventListener('click', handleClick);
 }

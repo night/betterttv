@@ -1,10 +1,21 @@
 import {getCachedBadges} from '@/actions/badges';
+import clickableStyles from '@/common/styles/Clickable.module.css';
 import effects from '@/common/styles/UsernameEffects.module.css';
+import {shouldReduceMotion} from '@/common/utils/reduced-motion';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
-import {EmoteTypeFlags, SettingIds, UsernameFlags, PlatformTypes, BadgeTypes} from '@/constants';
+import {
+  EmoteTypeFlags,
+  SettingIds,
+  UsernameFlags,
+  PlatformTypes,
+  BadgeTypes,
+  PageTypes,
+  UsernameHoverEffects,
+} from '@/constants';
 import formatMessage from '@/i18n/index';
 import nicknames from '@/modules/chat_nicknames/index';
 import emotes from '@/modules/emotes/index';
+import settingsModule from '@/modules/settings/index';
 import subscribers from '@/modules/subscribers/index';
 import {bindTooltip} from '@/modules/tooltip/index';
 import settings from '@/settings';
@@ -23,6 +34,7 @@ const EMOTE_SELECTOR =
   '.bttv-animated-static-emote, .chat-line__message, .vod-message, .pinned-chat__message, .thread-message__message';
 const EMOTE_HOVER_SELECTOR =
   '.bttv-animated-static-emote:hover, .chat-line__message:hover, .vod-message:hover, .pinned-chat__message:hover, .thread-message__message:hover';
+const USERNAME_HOVER_EFFECT_TRIGGER_SELECTOR = '.chat-line__username-container, .seventv-chat-user';
 
 const EMOTE_MODIFIERS = {
   'w!': 'bttv-emote-modifier-wide',
@@ -54,6 +66,15 @@ const badgeTemplate = (url, description) => {
   image.setAttribute('data-a-target', 'chat-badge');
   badgeContainer.appendChild(image);
 
+  return badgeContainer;
+};
+function handleProBadgeClick() {
+  settingsModule.openPage(PageTypes.PRO_HOME);
+}
+const proBadgeTemplate = (url, description) => {
+  const badgeContainer = badgeTemplate(url, description);
+  badgeContainer.classList.add(clickableStyles.clickable);
+  badgeContainer.addEventListener('click', handleProBadgeClick);
   return badgeContainer;
 };
 const steamLobbyJoinTemplate = (joinLink) => {
@@ -230,7 +251,7 @@ class ChatModule {
     const subscriberBadge = subscribers.getSubscriptionBadge(user.id);
     if (subscriberBadge?.url != null) {
       badges.push(
-        badgeTemplate(
+        proBadgeTemplate(
           subscriberBadge.url,
           subscriberBadge.startedAt
             ? formatMessage(
@@ -427,6 +448,29 @@ class ChatModule {
     fromNode.classList.add(effectClassName);
   }
 
+  applyUsernameHoverEffect(fromNode, userId) {
+    if (shouldReduceMotion()) {
+      return;
+    }
+
+    const usernameHoverEffect = subscribers.getUsernameHoverEffect(userId);
+    if (usernameHoverEffect == null) {
+      return;
+    }
+
+    const hoverEffectClassName = effects[usernameHoverEffect];
+    if (hoverEffectClassName == null) {
+      return;
+    }
+
+    if (usernameHoverEffect === UsernameHoverEffects.FLIP) {
+      fromNode.dataset.bttvName = fromNode.textContent;
+    }
+
+    fromNode.classList.add(hoverEffectClassName);
+    fromNode.closest(USERNAME_HOVER_EFFECT_TRIGGER_SELECTOR)?.classList.add(effects.hoverTrigger);
+  }
+
   _messageParser(element, messageObj, fromNode, badgesContainer, messageParts = []) {
     if (element.__bttvParsed) return;
 
@@ -464,6 +508,9 @@ class ChatModule {
     if (nickname) {
       fromNode.innerText = nickname;
     }
+
+    // after the nickname write, so data-bttv-name matches the text on screen
+    this.applyUsernameHoverEffect(fromNode, user.id);
 
     if (
       (modsOnly === true && !user.mod) ||
