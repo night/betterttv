@@ -1,0 +1,13 @@
+.clickable {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 100ms ease-in-out;
+}
+
+.clickable:hover {
+  background-color: var(--color-background-interactable-hover);
+}
+
+.clickable:active {
+  background-color: var(--color-background-interactable-active);
+}

@@ -5,6 +5,7 @@ import {loadModuleForPlatforms} from '@/utils/modules';
 
 const settings = {
   openSettings: () => {},
+  openPage: () => {},
 };
 
 loadModuleForPlatforms(
@@ -12,6 +13,7 @@ loadModuleForPlatforms(
   [PlatformTypes.YOUTUBE, async () => new YoutubeSettingModule()]
 ).then((resolvedSettings) => {
   settings.openSettings = resolvedSettings.openSettings;
+  settings.openPage = resolvedSettings.openPage;
 });
 
 export default settings;

@@ -6,12 +6,25 @@ import {getCurrentUser} from '@/utils/user';
 
 const users = new Map();
 
-function updateSubscription({providerId, subscribed, badge, usernameEffect}) {
+function updateSubscription({providerId, subscribed, badge, usernameEffect, usernameHoverEffect}) {
   users.set(providerId, {
     badge,
     subscribed,
     usernameEffect,
+    usernameHoverEffect,
   });
+}
+
+// the current user's effects come from the auth store so their own changes apply instantly
+function getEffectSource(providerId) {
+  const platformUser = getCurrentUser();
+  const authUser = useAuthStore.getState().user;
+
+  if (platformUser != null && authUser != null && platformUser.id === providerId) {
+    return authUser;
+  }
+
+  return users.get(providerId);
 }
 
 function legacyNewSubscriber({user}) {
@@ -29,14 +42,11 @@ class SubscribersModule {
   }
 
   getUsernameEffect(providerId) {
-    const platformUser = getCurrentUser();
-    const authUser = useAuthStore.getState().user;
+    return getEffectSource(providerId)?.usernameEffect ?? null;
+  }
 
-    if (platformUser != null && authUser != null && platformUser.id === providerId) {
-      return authUser.usernameEffect ?? null;
-    }
-
-    return users.get(providerId)?.usernameEffect ?? null;
+  getUsernameHoverEffect(providerId) {
+    return getEffectSource(providerId)?.usernameHoverEffect ?? null;
   }
 
   hasLegacySubscription(providerId) {
