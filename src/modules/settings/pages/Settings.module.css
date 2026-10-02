@@ -1,16 +1,3 @@
 .unsupportedPanelButton {
   margin-top: 24px;
 }
-
-.searchInputRoot {
-  width: 100%;
-  max-width: 320px;
-}
-
-.searchInput {
-  height: 32px;
-}
-
-.noResultsText {
-  text-align: center;
-}

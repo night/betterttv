@@ -1,0 +1,38 @@
+.tooltip {
+  font-size: var(--mantine-font-size-md);
+}
+
+/* surface + checked treatment comes from the shared clickable container
+   (see ClickableContainer.module.css); this file keeps the card-only layout */
+.card {
+  position: relative;
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-radius: var(--mantine-radius-lg);
+  color: var(--mantine-color-dimmed);
+}
+
+.card[data-checked='true'] {
+  color: var(--mantine-primary-color-3);
+}
+
+.iconIndicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  color: currentColor;
+  scale: 0;
+  width: 20px;
+  height: 20px;
+  transition: all 100ms ease-in-out;
+}
+
+.card[data-checked='true'] .checkIcon {
+  opacity: 1;
+  scale: 1;
+}

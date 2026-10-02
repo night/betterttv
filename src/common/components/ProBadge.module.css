@@ -1,0 +1,12 @@
+.clickable {
+  cursor: pointer;
+  transition: filter 120ms ease;
+}
+
+.clickable:hover {
+  filter: brightness(1.1);
+}
+
+.clickable:active {
+  filter: brightness(1.2);
+}

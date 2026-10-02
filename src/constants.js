@@ -61,10 +61,11 @@ export const SettingIds = {
   EMOTE_MENU_WIDTH: 'emoteMenuWidth',
   HYPE_CHAT: 'hypeChat',
   PRIMARY_COLOR: 'primaryColor',
-  TEXT_REPLACEMENTS: 'textReplacements',
   CHATBOT_COMMAND_AUTOCOMPLETE: 'chatbotCommandAutocomplete',
   SELF_BOT: 'selfBot',
   SELF_BOT_COMMANDS_LIST: 'selfBotCommandsList',
+  SELF_BOT_TIMERS_LIST: 'selfBotTimersList',
+  REDUCED_MOTION: 'reducedMotion',
 };
 
 export const CategoryTypes = {
@@ -121,6 +122,9 @@ export const ChatFlags = {
   SUB_NOTICE: 1 << 4,
   COMMUNITY_HIGHLIGHTS: 1 << 5,
   CHAT_MESSAGE_HISTORY: 1 << 6,
+  AI_STREAM_SUMMARY: 1 << 7,
+  WATCH_STREAKS: 1 << 8,
+  CHAT_GIFS: 1 << 9,
 };
 
 export const ChannelPointsFlags = {
@@ -155,8 +159,10 @@ export const PageTypes = {
   USER_SETTINGS: 3,
   HIGHLIGHT_KEYWORDS: 4,
   BLACKLIST_KEYWORDS: 5,
-  TEXT_REPLACEMENTS: 6,
-  SELF_BOT_COMMANDS: 7,
+  SELF_BOT_COMMANDS: 6,
+  SELF_BOT_TIMERS: 7,
+  PRO_HOME: 8,
+  TEXT_REPLACEMENTS: 9,
 };
 
 export const PageDecendants = {
@@ -165,6 +171,7 @@ export const PageDecendants = {
     PageTypes.BLACKLIST_KEYWORDS,
     PageTypes.TEXT_REPLACEMENTS,
     PageTypes.SELF_BOT_COMMANDS,
+    PageTypes.SELF_BOT_TIMERS,
   ],
 };
 
@@ -173,12 +180,38 @@ export const NavigationModeTypes = {
   ARROW_KEYS: 1,
 };
 
+export const EmoteMenuModes = {
+  EMOTES: 'emotes',
+  GIFS: 'gifs',
+};
+
 export const EmoteProviders = {
   BETTERTTV: 'bttv',
   FRANKERFACEZ: 'ffz',
   TWITCH: 'twitch',
   YOUTUBE: 'youtube',
   SEVENTV: 'seventv',
+};
+
+export const EmoteAddDestinations = {
+  CHANNEL: 'channel',
+  PERSONAL: 'personal',
+};
+
+export const EmoteAvailabilityRestrictionTypes = {
+  ALREADY_ADDED: 'ALREADY_ADDED',
+  OWN_EMOTE: 'OWN_EMOTE',
+  SHARING_DISABLED: 'SHARING_DISABLED',
+  NOT_LIVE: 'NOT_LIVE',
+  NOT_APPROVED: 'NOT_APPROVED',
+  NO_SLOTS: 'NO_SLOTS',
+};
+
+export const AsyncStatuses = {
+  IDLE: 'idle',
+  PENDING: 'pending',
+  SUCCESS: 'success',
+  ERROR: 'error',
 };
 
 export const EmoteCategories = {
@@ -230,9 +263,12 @@ export const EmoteMenuTips = {
 };
 
 export const SettingsPromotions = {
-  THEME_CUSTOMIZE: 'settingsPromotionDismissedThemeCustomize',
-  CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
-  SELF_BOT: 'settingsPromotionDismissedSelfBot',
+  // USERNAME_EFFECT: 'settingsPromotionDismissedUsernameEffect',
+  // CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
+  // SELF_BOT: 'settingsPromotionDismissedSelfBot',
+  // SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
+  SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
+  USERNAME_HOVER_EFFECT: 'settingsPromotionDismissedUsernameHoverEffect',
 };
 
 export const SettingsPrompts = {
@@ -300,7 +336,10 @@ export const SettingDefaultValues = {
       ChatFlags.COMMUNITY_HIGHLIGHTS |
       ChatFlags.SUB_NOTICE |
       ChatFlags.VIEWER_GREETING |
-      ChatFlags.CHAT_MESSAGE_HISTORY,
+      ChatFlags.CHAT_MESSAGE_HISTORY |
+      ChatFlags.AI_STREAM_SUMMARY |
+      ChatFlags.WATCH_STREAKS |
+      ChatFlags.CHAT_GIFS,
     0,
   ],
   [SettingIds.AUTO_PLAY]: [
@@ -320,6 +359,8 @@ export const SettingDefaultValues = {
   [SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE]: true,
   [SettingIds.SELF_BOT]: false,
   [SettingIds.SELF_BOT_COMMANDS_LIST]: {},
+  [SettingIds.SELF_BOT_TIMERS_LIST]: {},
+  [SettingIds.REDUCED_MOTION]: false,
 };
 
 export const FlagSettings = [
@@ -419,4 +460,25 @@ export const CommandAutocompleteArgumentTypes = {
   WORD: 'word',
   PHRASE: 'phrase',
   USER: 'user',
+};
+
+// api contract strings, keep in sync with betterttv-private
+export const UsernameEffects = {
+  GLOW: 'glow',
+  FLARE: 'flare',
+  IRIDESCENCE: 'iridescence',
+  SUPERNOVA: 'supernova',
+  MIDAS: 'midas',
+  GLACIER: 'glacier',
+  INTERGALACTIC: 'intergalactic',
+};
+
+// glow and flare paint over the current text color; the rest paint the text themselves
+export const CHAT_COLOR_USERNAME_EFFECTS = [UsernameEffects.GLOW, UsernameEffects.FLARE];
+
+// api contract strings, keep in sync with betterttv-private
+export const UsernameHoverEffects = {
+  FLIP: 'flip',
+  BOUNCE: 'bounce',
+  WAVE: 'wave',
 };

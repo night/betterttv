@@ -3,6 +3,7 @@ import {modals} from '@mantine/modals';
 import React from 'react';
 import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
+import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
 import {isUserPro} from '@/utils/pro';
@@ -10,6 +11,7 @@ import styles from './Modal.module.css';
 
 const DEFAULT_LOADING_TIMEOUT = 500;
 const DEFAULT_SUCCESS_TIMEOUT = 1000;
+const MODAL_TRANSITION_DURATION = 100;
 
 const DEFAULT_CONFIRM_PROPS = {
   size: 'lg',
@@ -35,7 +37,7 @@ export function openConfirmModal({title, description, onConfirm, ...props}) {
     title,
     centered: true,
     closeButtonProps: {size: 'xl', radius: 'md'},
-    transitionProps: {transition: 'pop', duration: 100},
+    transitionProps: {transition: 'pop', duration: MODAL_TRANSITION_DURATION},
     radius: 'lg',
     size: 'lg',
     withinPortal: false,
@@ -88,7 +90,7 @@ export function openModal({title, description, ...props}) {
     title,
     centered: true,
     closeButtonProps: {size: 'xl', radius: 'md'},
-    transitionProps: {transition: 'pop', duration: 100},
+    transitionProps: {transition: 'pop', duration: MODAL_TRANSITION_DURATION},
     radius: 'lg',
     size: 'lg',
     withinPortal: false,
@@ -158,6 +160,8 @@ export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
   const {signal} = controller;
 
   let unsubscribeUserUpdated = null;
+
+  socketClient.ensureAuthentication();
 
   function onConfirm() {
     return new Promise((resolve, reject) => {

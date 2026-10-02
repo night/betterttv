@@ -1,5 +1,8 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import effects from '@/common/styles/UsernameEffects.module.css';
+import {onReducedMotionChange, shouldReduceMotion} from '@/common/utils/reduced-motion';
+import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
 import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
 import settings from '@/settings';
 import useAuthStore from '@/stores/auth';
@@ -64,6 +67,10 @@ function syncHostToFullscreen() {
 function toggleDarkModeClass() {
   const dark = settings.get(SettingIds.DARKENED_MODE) === true;
   mountNode.classList.toggle(DARK_MODE_CLASS, dark);
+}
+
+function toggleReducedMotionClass() {
+  mountNode.classList.toggle(effects.reducedMotion, shouldReduceMotion());
 }
 
 function setAdoptedStyleSheet(cssList) {
@@ -131,6 +138,10 @@ mountNode.setAttribute('data-platform', getProvider());
 mountNode.appendChild(mantineRoot);
 shadowRoot.appendChild(mountNode);
 
+// Username effect styles reference SVG filters by id; filter references only resolve within the
+// same tree scope, so the shadow root needs its own copy for settings previews to render them.
+injectUsernameEffectFilters(shadowRoot);
+
 document.documentElement.appendChild(host);
 
 document.addEventListener('fullscreenchange', syncHostToFullscreen);
@@ -141,7 +152,9 @@ addStyleSheet();
 useAuthStore.subscribe((state) => state.user?.pro ?? false, injectMantineVariables);
 
 toggleDarkModeClass();
+toggleReducedMotionClass();
 settings.on(`changed.${SettingIds.PRIMARY_COLOR}`, injectMantineVariables);
 settings.on(`changed.${SettingIds.DARKENED_MODE}`, toggleDarkModeClass);
+onReducedMotionChange(toggleReducedMotionClass);
 
 export default {mount, unmount, isMounted};

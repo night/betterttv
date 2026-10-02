@@ -1,0 +1,56 @@
+.intervalColumn {
+  width: 168px;
+}
+
+td.intervalColumn {
+  width: 168px;
+  min-width: 168px;
+  max-width: 168px;
+}
+
+.linesColumn {
+  width: 136px;
+}
+
+td.linesColumn {
+  width: 136px;
+  min-width: 136px;
+  max-width: 136px;
+}
+
+.linesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.linesHeader .infoButton {
+  color: var(--mantine-color-dimmed);
+}
+
+.linesHeader .infoButton:hover {
+  color: var(--mantine-color-text);
+}
+
+.chatLinesModalBody {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  row-gap: 16px;
+}
+
+.messageRoot,
+.numberRoot {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.formattedNumberRoot input:not(:focus) {
+  cursor: pointer;
+}
+
+.unitSection {
+  justify-content: flex-end;
+}

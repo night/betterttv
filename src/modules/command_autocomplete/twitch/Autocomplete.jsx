@@ -12,6 +12,7 @@ import {
   CommandAutocompleteArgumentTypes,
 } from '@/constants';
 import CommandRow from '@/modules/command_autocomplete/components/CommandRow';
+import {getMinimumUserLevel} from '@/modules/command_autocomplete/utils';
 import shadowDom from '@/modules/shadow_dom/index';
 import domObserver from '@/observers/dom';
 import settings from '@/settings';
@@ -314,18 +315,16 @@ class CommandAutocomplete {
         return false;
       }
 
-      let isEligible = false;
-
-      const currentUserLevelValue = UserLevelHierarchy[currentUserLevel];
-
-      if (Array.isArray(command.userLevel)) {
-        isEligible = command.userLevel.includes(currentUserLevel);
-      } else {
-        const commandUserLevelValue = UserLevelHierarchy[command.userLevel.toLowerCase()];
-        isEligible = commandUserLevelValue <= currentUserLevelValue;
+      // A command's user level is a floor: everyone at or above the lowest granted level can
+      // use it. Array user levels (Fossabot) previously required exact membership, which hid
+      // commands from higher levels — most visibly broadcaster-only commands, since Fossabot's
+      // 'broadcaster' isn't a UserLevels value and so never matched the owner.
+      const minimumUserLevel = getMinimumUserLevel(command.userLevel);
+      if (minimumUserLevel == null) {
+        return false;
       }
 
-      return isEligible;
+      return UserLevelHierarchy[minimumUserLevel] <= UserLevelHierarchy[currentUserLevel];
     });
 
     sortedCommandIndex = filteredSuggestions.sort((a, b) => a.name.localeCompare(b.name));

@@ -2,7 +2,7 @@ import debounce from 'lodash.debounce';
 import isEqual from 'lodash.isequal';
 import {getExtensionSettings, updateExtensionSettings} from '@/actions/extension';
 import {openConfirmModal} from '@/common/utils/modal';
-import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY, FlagSettings} from '@/constants';
+import {CLOUD_BACKUP_SETTINGS_STORAGE_KEY} from '@/constants';
 import formatMessage from '@/i18n/index';
 import settings from '@/settings';
 import socketClient, {EventNames} from '@/socket-client';
@@ -49,7 +49,6 @@ class CloudBackup extends SafeEventEmitter {
 
     if (newSettings.enabled != null && newSettings.enabled !== previousEnabled) {
       this.load(newSettings);
-      socketClient.handleAuthenticationRequest();
     }
   }
 
@@ -74,6 +73,8 @@ class CloudBackup extends SafeEventEmitter {
     if (!enabled) {
       return;
     }
+
+    socketClient.ensureAuthentication();
 
     if (unlistenSettingsChange == null) {
       unlistenSettingsChange = settings.on('changed', this.handleInternalSettingsChange.bind(this));
@@ -129,20 +130,12 @@ class CloudBackup extends SafeEventEmitter {
 
       ignoringInternalSettingChanges = true;
 
-      for (let [key, value] of Object.entries(serverSettings)) {
+      for (const [key, value] of Object.entries(serverSettings)) {
         if (key === 'version') {
           continue;
         }
 
-        if (FlagSettings.includes(key)) {
-          [value] = value;
-        }
-
-        let currentValue = currentSettings[key];
-        if (FlagSettings.includes(key)) {
-          [currentValue] = currentValue;
-        }
-
+        const currentValue = currentSettings[key];
         if (isEqual(currentValue, value)) {
           continue;
         }
@@ -154,6 +147,8 @@ class CloudBackup extends SafeEventEmitter {
     } finally {
       ignoringInternalSettingChanges = false;
     }
+
+    settings.applyFlagDefaults();
   }
 
   handleInternalSettingsChange(_updatedSettings, temporary) {

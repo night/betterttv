@@ -6,7 +6,7 @@ import {EmoteMenuTips, EmoteMenuTypes, PlatformTypes, SettingIds} from '@/consta
 import formatMessage from '@/i18n/index';
 import emoteMenuStore from '@/modules/emote_menu/stores/emote-menu-store';
 import settings from '@/modules/settings/index';
-import {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import {SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import storage from '@/storage';
 import {getPlatform, isMac} from '@/utils/window';
 import Icons from './Icons';

@@ -1,0 +1,9 @@
+/* hide the whole message that carries a gif fragment; twitch's hashed class suffixes change every build, so match the gifImage module name */
+.hideChatGifs {
+  :global(.chat-line__message):has(img[class*='gifImage']),
+  :global(.vod-message):has(img[class*='gifImage']),
+  :global(.pinned-chat__message):has(img[class*='gifImage']),
+  :global(.thread-message__message):has(img[class*='gifImage']) {
+    display: none !important;
+  }
+}

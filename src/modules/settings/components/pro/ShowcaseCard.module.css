@@ -1,0 +1,45 @@
+.showcaseCard {
+  /* the label scrim references this so it always matches the field */
+  --showcase-bg: var(--mantine-color-indigo-9);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 232px;
+  user-select: none;
+  overflow: hidden;
+  border: 2px solid light-dark(var(--mantine-color-indigo-5), var(--mantine-color-indigo-4));
+  border-radius: var(--mantine-radius-lg);
+  box-shadow: var(--mantine-shadow-xs);
+  /* painted on the bordered element so it runs flush under the rounded corners without a seam */
+  background-color: var(--showcase-bg);
+}
+
+.showcasePreview {
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px 60px;
+}
+
+/* painted above absolute backdrops; scales with the card, ratio held by the size attributes */
+.showcaseArt {
+  position: relative;
+  flex-shrink: 0;
+  max-width: 100%;
+  height: auto;
+}
+
+.showcaseLabel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 32px 20px 16px;
+  color: var(--mantine-color-white);
+  background: linear-gradient(to top, var(--showcase-bg), transparent);
+}
+
+@media (max-width: 800px) {
+  .showcaseCard {
+    border-radius: var(--mantine-radius-md);
+  }
+}

@@ -1,0 +1,88 @@
+/* doubled to out-specify `.emotes`'s `overflow: hidden` without relying on
+ * css emission order */
+.gifPicker.gifPicker {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  container-type: inline-size;
+}
+
+/* multicol stretches columns to fill the row, so 168px is the widest ideal
+ * width that keeps stretched columns under 256px at every breakpoint */
+.grid {
+  columns: 168px;
+  column-gap: 8px;
+  padding: 8px;
+}
+
+/* never collapse below two columns when the menu is narrow */
+@container (max-width: 360px) {
+  .grid {
+    columns: 2;
+  }
+}
+
+.gifItem {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 8px;
+  border: none;
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+  background-color: var(--mantine-color-body);
+  cursor: pointer;
+  break-inside: avoid;
+}
+
+.gifItem:disabled {
+  cursor: not-allowed;
+}
+
+/* the width/height attributes give the image an intrinsic aspect ratio, so the
+ * tile reserves its final height before the image loads */
+.gifImage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sendOverlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.gifItem:hover .sendOverlay,
+.gifItem:focus-visible .sendOverlay {
+  display: flex;
+}
+
+.sendButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--mantine-radius-xl);
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-color-white);
+  font-weight: 600;
+}
+
+.cooldownRing {
+  --gif-cooldown-ring-color: var(--mantine-color-white);
+  --gif-cooldown-ring-root-color: color-mix(in srgb, var(--mantine-color-white) 40%, transparent);
+
+  display: flex;
+  flex-shrink: 0;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}

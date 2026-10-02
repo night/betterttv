@@ -4,7 +4,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Live Chat View'});
 
@@ -27,9 +27,9 @@ function EmoteAutoLiveChatView({ref, ...props}) {
 
 SettingStore.registerSetting(EmoteAutoLiveChatView, {
   settingPanelId: SettingPanelIds.AUTO_LIVE_CHAT_VIEW,
+  settingCategoryId: SettingCategoryIds.CHANNEL,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['auto', 'live', 'chat', 'view'],
 });
 
 export default EmoteAutoLiveChatView;

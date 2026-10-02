@@ -1,0 +1,7 @@
+/* The sidebar watch streak badge has no class of its own. Target it downward from the
+   flame icon (`:has(> div > svg path…)` matches the element whose direct child wraps the
+   svg, i.e. the badge), so only the badge collapses. Matching downward means the rule can
+   never climb to the channel card, even on cards that have no .side-nav-card__title. */
+.bttv-hide-watch-streaks .side-nav-card :has(> div > svg path[d^='M11 4.5L9 2L4.80069 6.89']) {
+  display: none !important;
+}

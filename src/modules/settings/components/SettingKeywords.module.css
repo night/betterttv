@@ -128,9 +128,13 @@
   display: none;
 }
 
+.channelsInputRoot {
+  margin: 0 12px;
+}
+
 .channelsInput {
   font-size: var(--mantine-font-size-md);
-  padding: 8px 12px;
+  padding: 8px 0;
   min-height: 36px;
   border-radius: 0;
   border: 0 !important;
@@ -193,4 +197,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.badgeOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badgeOptionImage {
+  width: 18px;
+  height: 18px;
 }

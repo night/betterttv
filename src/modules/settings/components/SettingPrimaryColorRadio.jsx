@@ -1,7 +1,11 @@
 import React, {useCallback, useMemo} from 'react';
 import {DEFAULT_PRIMARY_COLOR} from '@/constants';
 import formatMessage from '@/i18n/index';
-import SettingColorRadio from './SettingColorRadio';
+import swatchStyles from './SettingPrimaryColorRadio.module.css';
+import SettingRadioCard from './SettingRadioCard';
+import SettingRadioCardGroup from './SettingRadioCardGroup';
+import groupStyles from './SettingRadioCardGroup.module.css';
+import SettingWrapper from './SettingWrapper';
 
 export const PRIMARY_COLOR_RADIO_DEFAULT = 'default';
 
@@ -44,23 +48,38 @@ function SettingPrimaryColorRadio({
   description,
   colors = PRIMARY_COLOR_PALETTE,
   showProBadge = false,
-  showBetaBadge = false,
+  showNewBadge = false,
 }) {
   const normalizedValue = useMemo(() => normalizePrimaryColor(value, colors), [value, colors]);
   const colorLabels = useMemo(() => buildPrimaryColorLabels(colors), [colors]);
   const handleChange = useCallback((next) => onChange(next === PRIMARY_COLOR_RADIO_DEFAULT ? null : next), [onChange]);
 
   return (
-    <SettingColorRadio
-      showProBadge={showProBadge}
-      showBetaBadge={showBetaBadge}
-      value={normalizedValue}
-      onChange={handleChange}
+    <SettingWrapper
       name={name}
+      wrap
+      reverse
       description={description}
-      colors={colors}
-      colorLabels={colorLabels}
-    />
+      controlClassName={groupStyles.radioGroup}
+      showProBadge={showProBadge}
+      showNewBadge={showNewBadge}>
+      <SettingRadioCardGroup value={normalizedValue} onChange={handleChange}>
+        {colors.map((color) => (
+          <SettingRadioCard
+            key={color}
+            value={color}
+            tooltip={colorLabels[color]}
+            ariaLabel={
+              color === PRIMARY_COLOR_RADIO_DEFAULT
+                ? formatMessage({defaultMessage: 'Default theme primary color'})
+                : formatMessage({defaultMessage: '{colorName} primary color'}, {colorName: color})
+            }
+            className={swatchStyles.swatch}
+            radioCardProps={{'data-bttv-color': color}}
+          />
+        ))}
+      </SettingRadioCardGroup>
+    </SettingWrapper>
   );
 }
 

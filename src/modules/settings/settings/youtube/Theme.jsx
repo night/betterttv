@@ -5,7 +5,7 @@ import {SettingDefaultValues, SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingPrimaryColorRadio from '@/modules/settings/components/SettingPrimaryColorRadio';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Theme'});
 
@@ -33,9 +33,9 @@ function Theme({ref, ...props}) {
 
 SettingStore.registerSetting(Theme, {
   settingPanelId: SettingPanelIds.THEME,
+  settingCategoryId: SettingCategoryIds.APPEARANCE,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['primary', 'color', 'theme', 'accent'],
 });
 
 export default Theme;

@@ -40,6 +40,7 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
         for (const {
           id,
           name: code,
+          timestamp,
           data: {
             listed,
             animated,
@@ -52,7 +53,7 @@ class SevenTVGlobalEmotes extends AbstractEmotes {
             continue;
           }
 
-          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url));
+          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url, timestamp));
         }
       })
       .then(() => watcher.emit('emotes.updated'));

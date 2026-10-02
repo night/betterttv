@@ -10,7 +10,8 @@ import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import {useHasPromotion} from '@/modules/settings/stores/promotion-store';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import useAuthStore from '@/stores/auth';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Self Bot'});
@@ -32,6 +33,7 @@ function openEnableSelfBotModal(setEnabled) {
 
 function SelfBot({ref, ...props}) {
   const {setPage} = use(PageContext);
+  const hasPromotion = useHasPromotion(SettingPanelIds.SELF_BOT);
   const isOnOwnChannel = useIsOnOwnChannel();
   const [enabled, setEnabled] = useStorageState(SettingIds.SELF_BOT);
   const bttvUser = useAuthStore(useShallow((state) => state.user));
@@ -61,7 +63,6 @@ function SelfBot({ref, ...props}) {
       <SettingSwitch
         name={formatMessage({defaultMessage: 'Self Bot'})}
         description={formatMessage({defaultMessage: 'Automatically send and reply to messages on your own channel.'})}
-        showBetaBadge
         value={displayEnabled}
         onChange={handleEnabledChange}
       />
@@ -76,9 +77,10 @@ function SelfBot({ref, ...props}) {
       <SettingWrapper
         name={formatMessage({defaultMessage: 'Timers'})}
         reverse
-        showComingSoonBadge
-        description={formatMessage({defaultMessage: 'Automatically send messages at specific times.'})}>
-        <Button disabled size="lg">
+        showProBadge
+        showNewBadge={hasPromotion}
+        description={formatMessage({defaultMessage: 'Automatically send messages on an interval.'})}>
+        <Button size="lg" onClick={() => setPage(PageTypes.SELF_BOT_TIMERS)}>
           {formatMessage({defaultMessage: 'Edit'})}
         </Button>
       </SettingWrapper>
@@ -88,9 +90,9 @@ function SelfBot({ref, ...props}) {
 
 SettingStore.registerSetting(SelfBot, {
   settingPanelId: SettingPanelIds.SELF_BOT,
+  settingCategoryId: SettingCategoryIds.BOTS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['self', 'bot', 'commands', 'reply', 'automatic', 'timers'],
 });
 
 export default SelfBot;

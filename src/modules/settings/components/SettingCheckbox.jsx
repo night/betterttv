@@ -3,9 +3,9 @@ import React from 'react';
 import styles from './SettingCheckbox.module.css';
 import SettingWrapper from './SettingWrapper';
 
-function SettingCheckbox({name, description, value, onChange, showProBadge = false, showBetaBadge = false, ...props}) {
+function SettingCheckbox({name, description, value, onChange, showProBadge = false, showNewBadge = false, ...props}) {
   return (
-    <SettingWrapper name={name} description={description} showProBadge={showProBadge} showBetaBadge={showBetaBadge}>
+    <SettingWrapper name={name} description={description} showProBadge={showProBadge} showNewBadge={showNewBadge}>
       <Checkbox
         {...props}
         value={String(value)}

@@ -5,7 +5,7 @@ function emoteUrl(url, version, static_ = false) {
   return `${url}/${version}${static_ ? '_static' : ''}.webp`;
 }
 
-export function createEmote(id, code, animated, owner, category, overlay, url) {
+export function createEmote(id, code, animated, owner, category, overlay, url, timestamp) {
   return new Emote({
     id,
     category,
@@ -26,6 +26,7 @@ export function createEmote(id, code, animated, owner, category, overlay, url) {
     },
     metadata: {
       isOverlay: overlay,
+      createdAt: timestamp,
     },
   });
 }

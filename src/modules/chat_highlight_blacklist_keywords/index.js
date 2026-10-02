@@ -14,7 +14,7 @@ import {getCurrentUser} from '@/utils/user';
 import watcher from '@/watcher';
 
 const CHAT_LIST_SELECTOR =
-  '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container,.video-chat div[data-test-selector="video-chat-message-list-wrapper"]';
+  '.chat-list .chat-scrollable-area__message-container,.chat-list--default .chat-scrollable-area__message-container,.chat-list--other .chat-scrollable-area__message-container,.video-chat .video-chat__message-list-wrapper';
 const CHAT_BADGE_SELECTOR = '.chat-badge';
 const VOD_CHAT_FROM_SELECTOR = '.video-chat__message-author';
 const VOD_CHAT_MESSAGE_SELECTOR = '.video-chat__message';
@@ -241,6 +241,7 @@ class ChatHighlightBlacklistKeywordsModule {
     watcher.on('load.chat', () => this.loadChat());
     watcher.on('load.vod', () => this.loadChat());
     watcher.on('chat.message', (message, messageObj) => this.onMessage(message, messageObj, false));
+    watcher.on('chat.seventv_message', (message, messageObj) => this.onMessage(message, messageObj, false));
     watcher.on('chat.notice_message', (message, messageObj) => this.onMessage(message, messageObj, true));
     watcher.on('vod.message', (message) => this.onVODMessage(message));
     settings.on(`changed.${SettingIds.BLACKLIST_KEYWORDS}`, computeBlacklistKeywords);

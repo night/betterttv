@@ -4,7 +4,7 @@ import {SettingIds, DeletedMessageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingRadio from '@/modules/settings/components/SettingRadio';
 import SettingRadioGroup from '@/modules/settings/components/SettingRadioGroup';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Deleted Messages'});
 
@@ -43,9 +43,9 @@ function DeletedMessagesModule({ref, ...props}) {
 
 SettingStore.registerSetting(DeletedMessagesModule, {
   settingPanelId: SettingPanelIds.DELETED_MESSAGES,
+  settingCategoryId: SettingCategoryIds.MODERATION,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['messages', 'deleted'],
 });
 
 export default DeletedMessagesModule;

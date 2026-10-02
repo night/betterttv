@@ -4,7 +4,7 @@ import {SettingIds, ChatLayoutTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingRadio from '@/modules/settings/components/SettingRadio';
 import SettingRadioGroup from '@/modules/settings/components/SettingRadioGroup';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Layout'});
 
@@ -29,8 +29,8 @@ function ChatLayout({ref, ...props}) {
 
 SettingStore.registerSetting(ChatLayout, {
   settingPanelId: SettingPanelIds.CHAT_LAYOUT,
+  settingCategoryId: SettingCategoryIds.CHAT,
   name: SETTING_NAME,
-  keywords: ['chat', 'layout', 'position', 'placement', 'left', 'right'],
 });
 
 export default ChatLayout;

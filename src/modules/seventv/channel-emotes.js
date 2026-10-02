@@ -43,10 +43,20 @@ class SevenTVChannelEmotes extends AbstractEmotes {
     if (!currentChannel) return;
 
     fetch(
-      `https://7tv.io/v3/users/${encodeURIComponent(currentChannel.provider)}/${encodeURIComponent(currentChannel.id)}`
+      `https://7tv.io/v3/users/${encodeURIComponent(currentChannel.provider)}/${encodeURIComponent(currentChannel.id)}`,
+      {headers: {'X-7tv-Missing-EmoteSet-Aware': '1'}}
     )
       .then((response) => response.json())
-      .then(({emote_set: emoteSet}) => {
+      .then(({emote_set_id: emoteSetId}) => {
+        if (emoteSetId == null) {
+          return null;
+        }
+
+        return fetch(`https://7tv.io/v3/emote-sets/${encodeURIComponent(emoteSetId)}`).then((response) =>
+          response.json()
+        );
+      })
+      .then((emoteSet) => {
         const {emotes} = emoteSet ?? {};
         if (emotes == null) {
           return;
@@ -55,6 +65,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         for (const {
           id,
           name: code,
+          timestamp,
           data: {
             listed,
             animated,
@@ -67,7 +78,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
             continue;
           }
 
-          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url));
+          this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url, timestamp));
         }
 
         eventSource = new ReconnectingEventSource(
@@ -98,6 +109,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
       const {
         id,
         name: code,
+        timestamp,
         data: {
           listed,
           animated,
@@ -111,7 +123,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         continue;
       }
 
-      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url));
+      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url, timestamp));
 
       watcher.emit(
         'chat.send_admin_message',
@@ -130,6 +142,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
       const {
         id,
         name: code,
+        timestamp,
         data: {
           listed,
           animated,
@@ -150,7 +163,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
         continue;
       }
 
-      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url));
+      this.emotes.set(code, createEmote(id, code, animated, owner, category, isOverlay(flags), url, timestamp));
     }
 
     for (const {key, old_value: oldValue} of pulledItems) {

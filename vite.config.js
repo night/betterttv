@@ -273,8 +273,14 @@ export default defineConfig(async ({mode}) => {
       postcss: {
         plugins: [
           postcssUrl({
-            url: (asset) =>
-              asset.url.startsWith(CDN_ENDPOINT) ? asset.url : `${CDN_ENDPOINT}/${asset.url.replace(/^\/+/, '')}`,
+            url: (asset) => {
+              // Leave same-document fragment references (e.g. `filter: url(#id)`) untouched so they
+              // resolve against the page rather than being rewritten to the CDN origin.
+              if (asset.url.startsWith('#')) return asset.url;
+              return asset.url.startsWith(CDN_ENDPOINT)
+                ? asset.url
+                : `${CDN_ENDPOINT}/${asset.url.replace(/^\/+/, '')}`;
+            },
           }),
           postcssPrefixwrap(':where(.bttv-mantine-scope)', {
             prefixRootTags: false,

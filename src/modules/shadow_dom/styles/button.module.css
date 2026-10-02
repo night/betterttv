@@ -12,8 +12,16 @@
     border: 1px solid var(--button-bd);
     border-bottom-width: 2px;
 
-    &:active {
+    &:active:not(:disabled, [data-disabled]) {
       border-bottom-width: 1px;
+    }
+
+    &:disabled,
+    &[data-disabled] {
+      opacity: 0.5;
+      background-color: var(--button-bg);
+      border-color: var(--button-bd);
+      color: var(--button-color);
     }
 
     transition-property: background-color, border-color, border-bottom-width;

@@ -1,8 +1,11 @@
 import {Badge, Text, Title, Tooltip} from '@mantine/core';
 import classNames from 'classnames';
-import React from 'react';
+import React, {use} from 'react';
+import ProBadge from '@/common/components/ProBadge';
 import usePortalRef from '@/common/hooks/PortalRef';
+import {PageTypes} from '@/constants';
 import formatMessage from '@/i18n';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
 import styles from './SettingWrapper.module.css';
 
 function SettingWrapper({
@@ -10,13 +13,21 @@ function SettingWrapper({
   description,
   children,
   showProBadge = false,
-  showBetaBadge = false,
+  showNewBadge = false,
   showComingSoonBadge = false,
   reverse = false,
   wrap = false,
   controlClassName = '',
 }) {
   const portalRef = usePortalRef();
+  const {setPage, setSidenavOpen} = use(PageContext);
+
+  function handleProBadgeClick(event) {
+    event.stopPropagation();
+    setPage(PageTypes.PRO_HOME);
+    setSidenavOpen(false);
+  }
+
   return (
     <div className={classNames(styles.root, {[styles.shouldWrap]: wrap})}>
       {!reverse ? <div className={classNames(styles.control, controlClassName)}>{children}</div> : null}
@@ -33,20 +44,18 @@ function SettingWrapper({
                   </Text>
                 }
                 portalProps={{target: portalRef.current}}>
-                <Badge color="indigo" variant="elevated" size="lg">
-                  {formatMessage({defaultMessage: 'Pro'})}
-                </Badge>
+                <ProBadge onClick={handleProBadgeClick} />
               </Tooltip>
             ) : null}
-            {showBetaBadge ? (
+            {showNewBadge ? (
               <Tooltip
                 withArrow
                 label={
                   <Text size="md">{formatMessage({defaultMessage: 'This feature is new, and may be changed.'})}</Text>
                 }
                 portalProps={{target: portalRef.current}}>
-                <Badge color="orange" variant="elevated" size="lg">
-                  {formatMessage({defaultMessage: 'Beta'})}
+                <Badge color="red" variant="elevated" size="lg">
+                  {formatMessage({defaultMessage: 'New'})}
                 </Badge>
               </Tooltip>
             ) : null}

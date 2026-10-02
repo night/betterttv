@@ -5,7 +5,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Bots'});
 
@@ -23,7 +23,6 @@ function ChatBots({ref, ...props}) {
         ref={ref}
         {...props}
         showProBadge
-        showBetaBadge
         name={formatMessage({defaultMessage: 'Command Autocomplete'})}
         value={normalizedValue}
         onChange={setNormalizedValue}
@@ -37,9 +36,9 @@ function ChatBots({ref, ...props}) {
 
 SettingStore.registerSetting(ChatBots, {
   settingPanelId: SettingPanelIds.CHATBOTS,
+  settingCategoryId: SettingCategoryIds.BOTS,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['command', 'autocomplete', 'nightbot', 'fossabot', 'moobot', 'streamelements', 'commands', 'chat', 'bot'],
 });
 
 export default ChatBots;

@@ -44,6 +44,11 @@
       width: 0;
       padding: 0;
     }
+
+    &.toggleColumn {
+      width: 0;
+      padding: 0;
+    }
   }
 
   --table-border-color: var(--mantine-color-default-border);
@@ -95,8 +100,37 @@
 }
 
 td.actionsColumn,
-td.colorColumn {
+td.colorColumn,
+td.toggleColumn {
   width: 36px;
   min-width: 36px;
   max-width: 36px;
+}
+
+.toggleCell {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggleCell input {
+  cursor: pointer;
+}
+
+.toggleCell .toggleCheckbox {
+  --checkbox-size: 16px;
+}
+
+.toggleCell .toggleCheckboxBody {
+  gap: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

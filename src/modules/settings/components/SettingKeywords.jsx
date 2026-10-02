@@ -1,6 +1,7 @@
 import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
+  Autocomplete,
   Avatar,
   Button,
   Kbd,
@@ -20,7 +21,9 @@ import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import Icon from '@/common/components/Icon';
+import useBadgeOptions from '@/common/hooks/BadgeOptions';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
+import useEntryListState from '@/common/hooks/EntryListState';
 import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openModal} from '@/common/utils/modal';
@@ -29,6 +32,9 @@ import {KeywordTypes} from '@/utils/keywords';
 import ColorPicker from './ColorPicker';
 import Panel from './Panel';
 import styles from './SettingKeywords.module.css';
+
+const MAX_BADGE_SUGGESTIONS = 25;
+const BADGE_SUGGESTIONS_MAX_DROPDOWN_HEIGHT = 220;
 
 const REGEX_EXAMPLES = [
   {pattern: '~/(cat|dog)s?/i', description: formatMessage({defaultMessage: 'Matches cat, dogs, and similar'})},
@@ -90,6 +96,15 @@ function openRegexGuideModal() {
   });
 }
 
+function renderBadgeOption({option}) {
+  return (
+    <div className={styles.badgeOption}>
+      <img src={option.imageURL} alt="" className={styles.badgeOptionImage} />
+      <Text size="md">{option.title}</Text>
+    </div>
+  );
+}
+
 function KeywordRow({
   id,
   data,
@@ -107,6 +122,9 @@ function KeywordRow({
   const [opened, {open, close}] = useDisclosure(false);
   const channels = data?.channels ?? [];
   const focusRef = useFocusTrap(opened);
+
+  const isBadgeKeyword = data.type === KeywordTypes.BADGE;
+  const badgeOptions = useBadgeOptions(isBadgeKeyword);
 
   return (
     <TableTr {...props}>
@@ -138,17 +156,37 @@ function KeywordRow({
         />
       </TableTd>
       <TableTd className={tableStyles.dataCell}>
-        <TextInput
-          variant="unstyled"
-          classNames={{
-            input: tableStyles.textInput,
-            root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
-            wrapper: tableStyles.textInputWrapper,
-          }}
-          ref={keywordInputRef}
-          defaultValue={data.keyword}
-          onBlur={({target: {value}}) => onUpdate({keyword: value})}
-        />
+        {isBadgeKeyword ? (
+          <Autocomplete
+            variant="unstyled"
+            classNames={{
+              input: tableStyles.textInput,
+              root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
+              wrapper: tableStyles.textInputWrapper,
+            }}
+            ref={keywordInputRef}
+            defaultValue={data.keyword}
+            data={badgeOptions}
+            limit={MAX_BADGE_SUGGESTIONS}
+            maxDropdownHeight={BADGE_SUGGESTIONS_MAX_DROPDOWN_HEIGHT}
+            renderOption={renderBadgeOption}
+            comboboxProps={{radius: 'lg', size: 'md', portalProps: {target: portalRef.current}}}
+            onBlur={({target: {value}}) => onUpdate({keyword: value})}
+            onOptionSubmit={(keyword) => onUpdate({keyword})}
+          />
+        ) : (
+          <TextInput
+            variant="unstyled"
+            classNames={{
+              input: tableStyles.textInput,
+              root: classNames(tableStyles.textInputRoot, styles.keywordRoot),
+              wrapper: tableStyles.textInputWrapper,
+            }}
+            ref={keywordInputRef}
+            defaultValue={data.keyword}
+            onBlur={({target: {value}}) => onUpdate({keyword: value})}
+          />
+        )}
       </TableTd>
       <TableTd className={styles.channelsDataCell}>
         <div className={classNames(styles.channelsInputContainer, {[styles.channelsInputHidden]: !opened})}>
@@ -167,7 +205,7 @@ function KeywordRow({
                 <Text size="md">{currentChannel?.displayName}</Text>
               </div>
             )}
-            classNames={{input: styles.channelsInput, pill: styles.channelsPill}}
+            classNames={{root: styles.channelsInputRoot, input: styles.channelsInput, pill: styles.channelsPill}}
             comboboxProps={{radius: 'lg', size: 'md', portalProps: {target: portalRef.current}}}
             data={currentChannel ? [currentChannel.displayName] : []}
           />
@@ -261,7 +299,7 @@ function KeywordsTable({
 function SettingKeywords({value, setValue, colorColumn = null}) {
   const currentChannel = useCurrentChannel();
   const [search, setSearch] = useState('');
-  const entryList = useMemo(() => Object.entries(value ?? {}).reverse(), [value]);
+  const {entryList, addEntry, updateHandler, deleteHandler, focusInputRefCallback} = useEntryListState(value, setValue);
 
   const filteredEntryList = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -274,53 +312,11 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
   }, [entryList, search]);
 
   const showColorColumn = colorColumn != null;
-  const pendingKeywordFocusRef = useRef(null);
 
   const newEntryHandler = useCallback(() => {
     setSearch('');
-    const newEntry = createNewEntry();
-
-    setValue((prevKeywords) => {
-      const nextKeywords = {...prevKeywords};
-      nextKeywords[newEntry.id] = newEntry;
-      return nextKeywords;
-    });
-
-    pendingKeywordFocusRef.current = newEntry.id;
-  }, [setValue]);
-
-  const deleteHandler = useCallback(
-    (id) => {
-      setValue((prevKeywords) => {
-        const nextKeywords = {...prevKeywords};
-
-        if (nextKeywords[id] == null) {
-          return prevKeywords;
-        }
-
-        delete nextKeywords[id];
-        return nextKeywords;
-      });
-    },
-    [setValue]
-  );
-
-  const updateHandler = useCallback(
-    (id, newKeywordData) => {
-      setValue((prevKeywords) => {
-        const nextKeywords = {...prevKeywords};
-        const existingKeyword = nextKeywords[id];
-
-        if (existingKeyword == null) {
-          return prevKeywords;
-        }
-
-        nextKeywords[id] = {...existingKeyword, ...newKeywordData};
-        return nextKeywords;
-      });
-    },
-    [setValue]
-  );
+    addEntry(createNewEntry());
+  }, [addEntry]);
 
   const handlePaste = useCallback(
     (event) => {
@@ -348,15 +344,6 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
     [setValue]
   );
 
-  const keywordInputRefCallback = useCallback((id, ref) => {
-    if (pendingKeywordFocusRef.current !== id) {
-      return;
-    }
-
-    ref.focus();
-    pendingKeywordFocusRef.current = null;
-  }, []);
-
   return (
     <Panel
       title={
@@ -382,7 +369,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
           colorColumn={colorColumn}
           updateHandler={updateHandler}
           deleteHandler={deleteHandler}
-          keywordInputRefCallback={keywordInputRefCallback}
+          keywordInputRefCallback={focusInputRefCallback}
           currentChannel={currentChannel}
           onPaste={handlePaste}
         />

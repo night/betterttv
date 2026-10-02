@@ -4,6 +4,7 @@ import reactStringReplace from 'react-string-replace';
 import semver from 'semver';
 import {EXT_VER} from '@/constants';
 import formatMessage from '@/i18n/index';
+import PageHeader from '@/modules/settings/components/PageHeader';
 import PageLoader from '@/modules/settings/components/PageLoader';
 import PageScrollBody from '@/modules/settings/components/PageScrollBody';
 import Panel from '@/modules/settings/components/Panel';
@@ -92,7 +93,7 @@ function Changelog() {
   }, []);
 
   return (
-    <PageScrollBody>
+    <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'Changelog'})} />}>
       {loading ? <PageLoader /> : null}
       {!loading && changelogEntries == null ? (
         <Text>{formatMessage({defaultMessage: 'Failed to load Changelog.'})}</Text>

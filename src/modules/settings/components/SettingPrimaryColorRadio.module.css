@@ -1,0 +1,48 @@
+/* Each swatch paints its own color. The shared clickable container swaps its background between
+   surface tokens on hover/press and checked tokens when checked — all of which would override a
+   swatch's color. Point every one of those tokens at the swatch's own color (--swatch-bg, a shade
+   darker on press) and restore the full-strength checked outline so a colored card keeps its color
+   in every state; each swatch just sets the two vars. */
+.swatch {
+  justify-content: flex-end;
+  --surface-bg: var(--swatch-bg);
+  --surface-bg-hover: var(--swatch-bg);
+  --surface-bg-active: var(--swatch-bg-active);
+  --checked-outline: 2px solid var(--mantine-primary-color-3);
+  --checked-border-color: var(--mantine-color-body-secondary);
+  --checked-bg: var(--swatch-bg);
+  --checked-bg-hover: var(--swatch-bg);
+  --checked-bg-active: var(--swatch-bg-active);
+}
+
+.swatch[data-bttv-color='default'] {
+  --swatch-bg: var(--mantine-color-dark-0);
+  --swatch-bg-active: var(--mantine-color-dark-1);
+  color: var(--mantine-color-dark-2);
+  --checked-outline: 2px solid var(--mantine-color-dark-2);
+}
+
+.swatch[data-bttv-color='red'] {
+  --swatch-bg: var(--mantine-color-red-6);
+  --swatch-bg-active: var(--mantine-color-red-7);
+}
+
+.swatch[data-bttv-color='pink'] {
+  --swatch-bg: var(--mantine-color-pink-6);
+  --swatch-bg-active: var(--mantine-color-pink-7);
+}
+
+.swatch[data-bttv-color='indigo'] {
+  --swatch-bg: var(--mantine-color-indigo-6);
+  --swatch-bg-active: var(--mantine-color-indigo-7);
+}
+
+.swatch[data-bttv-color='green'] {
+  --swatch-bg: var(--mantine-color-green-6);
+  --swatch-bg-active: var(--mantine-color-green-7);
+}
+
+.swatch[data-bttv-color='orange'] {
+  --swatch-bg: var(--mantine-color-orange-6);
+  --swatch-bg-active: var(--mantine-color-orange-7);
+}

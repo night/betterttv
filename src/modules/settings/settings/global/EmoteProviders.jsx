@@ -7,11 +7,11 @@ import formatMessage from '@/i18n/index';
 import globalEmotes from '@/modules/emotes/global-emotes';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import {hasFlag} from '@/utils/flags';
 import styles from './Emotes.module.css';
 
-const SETTING_NAME = formatMessage({defaultMessage: 'Emotes'});
+const SETTING_NAME = formatMessage({defaultMessage: 'Emote Providers'});
 
 const EMOTE_MODIFIERS_DESCRIPTION = {
   'w!': formatMessage({defaultMessage: 'Will display the emote in a wide format'}),
@@ -72,7 +72,7 @@ function openEmoteModifiersModal() {
   });
 }
 
-function EmotesModule({ref, ...props}) {
+function EmoteProviders({ref, ...props}) {
   const [emotes, setEmotes] = useStorageState(SettingIds.EMOTES);
 
   function handleEmoteModifiersChange(newFlags) {
@@ -166,11 +166,11 @@ function EmotesModule({ref, ...props}) {
   );
 }
 
-SettingStore.registerSetting(EmotesModule, {
+SettingStore.registerSetting(EmoteProviders, {
   settingPanelId: SettingPanelIds.EMOTES,
+  settingCategoryId: SettingCategoryIds.EMOTES,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: ['bttv', 'ffz', '7tv', 'betterttv', 'frankerfacez', 'animated', 'gif', 'images', 'emotes'],
 });
 
-export default EmotesModule;
+export default EmoteProviders;

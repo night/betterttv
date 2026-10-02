@@ -1,0 +1,136 @@
+/* bottom-anchored so wide cards grow the bank up into the clip; 120px pins its bottom where
+   the two-column width put it (368px wide at 1200x800, shifted -132px) */
+.cloudIconBob {
+  position: absolute;
+  bottom: 120px;
+  left: -6%;
+  display: flex;
+  justify-content: center;
+  width: 112%;
+  z-index: 1;
+  animation: cloud-bob 10s ease-in-out infinite;
+}
+
+@keyframes cloud-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.cloudGraphic {
+  display: block;
+  width: 100%;
+  /* narrow cards must crop the bank at the sides, not let it shrink up out of view */
+  min-width: 368px;
+}
+
+/* pre-rendered slab; the bake carries glow margins, offsetting it from the old 56px icon box */
+.cloudAppIcon {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  z-index: 1;
+  display: block;
+  width: 88px;
+  height: 92px;
+  margin-left: -44px;
+}
+
+.cloudBeams {
+  position: absolute;
+  top: 24px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 24px);
+  opacity: 0.8;
+}
+
+.cloudStreams {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  width: 220px;
+  height: 240px;
+  margin-left: -110px;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+}
+
+.cloudGlyph {
+  position: absolute;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(219, 226, 255, 0.6);
+  offset-rotate: 0deg;
+  animation-name: glyph-rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  /* stagger the 12 slots of a stream evenly across its loop */
+  animation-delay: calc(var(--slot) * (var(--stream-duration) / -12));
+  animation-duration: var(--stream-duration);
+}
+
+@keyframes glyph-rise {
+  from {
+    offset-distance: 0%;
+  }
+
+  to {
+    offset-distance: 100%;
+  }
+}
+
+.cloudGlyphLeft {
+  composes: cloudGlyph;
+  --stream-duration: 15.5s;
+  offset-path: path('M 62 238 C 85 150 98 80 101 0');
+}
+
+.cloudGlyphCenter {
+  composes: cloudGlyph;
+  --stream-duration: 14s;
+  offset-path: path('M 110 238 L 110 0');
+}
+
+.cloudGlyphRight {
+  composes: cloudGlyph;
+  --stream-duration: 17s;
+  offset-path: path('M 158 238 C 135 150 122 80 119 0');
+}
+
+.cloudGlyphOuterLeft {
+  composes: cloudGlyph;
+  --stream-duration: 19s;
+  font-size: 9px;
+  color: rgba(219, 226, 255, 0.4);
+  offset-path: path('M 20 238 C 58 150 86 80 92 0');
+}
+
+.cloudGlyphOuterRight {
+  composes: cloudGlyph;
+  --stream-duration: 20s;
+  font-size: 9px;
+  color: rgba(219, 226, 255, 0.4);
+  offset-path: path('M 200 238 C 162 150 134 80 128 0');
+}
+
+.cloudStreams span:nth-child(5n + 2) {
+  color: var(--mantine-color-white);
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloudIconBob,
+  .cloudGlyph {
+    animation: none;
+  }
+}

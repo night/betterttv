@@ -1,10 +1,15 @@
 import {Text, Button} from '@mantine/core';
-import React, {useMemo} from 'react';
+import {useInView} from 'framer-motion';
+import React, {use, useCallback, useEffect, useMemo, useRef} from 'react';
+import useScrollSpy from '@/common/hooks/ScrollSpy';
 import formatMessage from '@/i18n/index';
-import PageScrollBody from '@/modules/settings/components/PageScrollBody';
+import PageHeader from '@/modules/settings/components/PageHeader';
+import PageScrollBody, {PageScrollContext} from '@/modules/settings/components/PageScrollBody';
 import Panel from '@/modules/settings/components/Panel';
-import Promotion from '@/modules/settings/components/Promotion';
-import SettingStore from '@/modules/settings/stores/SettingStore';
+import {orderSettingsByCategory} from '@/modules/settings/setting-categories';
+import promotionStore from '@/modules/settings/stores/promotion-store';
+import SettingStore from '@/modules/settings/stores/setting-store';
+import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
 import extension from '@/utils/extension';
 import styles from './Settings.module.css';
 
@@ -38,44 +43,80 @@ function UnsupportedChromiumVersion() {
   );
 }
 
-function SettingsList({search, settings, handleSettingRefCallback}) {
+// Renders one setting panel and clears its promotion dot once it scrolls into view, so a promoted
+// setting is only advertised until the user has actually seen it. markSettingPanelPromotionSeen
+// no-ops for panels without a promotion, so this is safe to run for every setting.
+function SettingPanel({setting, onRef}) {
+  const panelRef = useRef(null);
+  const inView = useInView(panelRef, {once: true, amount: 0.5});
+
+  useEffect(() => {
+    if (inView) {
+      promotionStore.markSettingPanelPromotionSeen(setting.settingPanelId);
+    }
+  }, [inView, setting.settingPanelId]);
+
+  const handleRef = useCallback(
+    (element) => {
+      panelRef.current = element;
+      onRef(setting.settingPanelId, element);
+    },
+    [onRef, setting.settingPanelId]
+  );
+
+  return setting.render({ref: handleRef});
+}
+
+// Memoized so a modal-level re-render (e.g. the mobile sidenav toggling) doesn't re-render every
+// panel and re-thrash all their ref callbacks — props are stable, so this skips the work.
+const SettingsList = React.memo(function SettingsList({settings, handleSettingRefCallback}) {
   if (IS_UNSUPPORTED_CHROME_INSTALL) {
     return <UnsupportedChromiumVersion />;
   }
 
-  const searchedSettings = settings
-    .filter(
-      (setting) =>
-        search.length === 0 ||
-        setting.keywords.join(' ').includes(search.toLowerCase()) ||
-        setting.name.toLowerCase().includes(search.toLowerCase())
-    )
-    .map((setting) =>
-      setting.render({
-        ref: (ref) => handleSettingRefCallback(setting.settingPanelId, ref),
-      })
-    );
+  return settings.map((setting) => (
+    <SettingPanel key={setting.settingPanelId} setting={setting} onRef={handleSettingRefCallback} />
+  ));
+});
 
-  if (searchedSettings.length === 0) {
-    return (
-      <Panel>
-        <Text size="lg" className={styles.noResultsText} c="dimmed">
-          {formatMessage({defaultMessage: 'No settings found.'})}
-        </Text>
-      </Panel>
-    );
-  }
+function Settings({handleSettingRefCallback}) {
+  const settings = useMemo(() => orderSettingsByCategory(SettingStore.getSupportedSettings()), []);
+  const scrollRef = use(PageScrollContext);
+  const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
 
-  return searchedSettings;
-}
+  // Tag each panel with its id so the scroll spy can discover it and report which one is in view.
+  const handleSettingRef = useCallback(
+    (settingPanelId, element) => {
+      if (element != null) {
+        element.dataset.settingPanelId = settingPanelId;
+      }
+      handleSettingRefCallback(settingPanelId, element);
+    },
+    [handleSettingRefCallback]
+  );
 
-function Settings({search, handleSettingRefCallback}) {
-  const settings = useMemo(() => SettingStore.getSupportedSettings().sort((a, b) => a.name.localeCompare(b.name)), []);
+  // The page header is a (non-sticky) sibling above the scroll area, so the scroll area's own top
+  // already sits clear of it. The detection line only accounts for the panels' scroll-margin, so a
+  // panel activates once its top reaches the same offset scroll-into-view leaves it at.
+  const getScrollOffset = useCallback(() => {
+    const scroller = scrollRef?.current;
+    if (scroller == null) {
+      return 0;
+    }
+    return parseFloat(getComputedStyle(scroller).getPropertyValue('--page-scroll-margin-top')) || 0;
+  }, [scrollRef]);
+
+  useScrollSpy({
+    scrollHost: scrollRef,
+    selector: '[data-setting-panel-id]',
+    getValue: (element) => element.dataset.settingPanelId,
+    getOffset: getScrollOffset,
+    onActive: setActivePanelId,
+  });
 
   return (
-    <PageScrollBody>
-      {search.length === 0 ? <Promotion /> : null}
-      <SettingsList search={search} settings={settings} handleSettingRefCallback={handleSettingRefCallback} />
+    <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'Settings'})} />}>
+      <SettingsList settings={settings} handleSettingRefCallback={handleSettingRef} />
     </PageScrollBody>
   );
 }

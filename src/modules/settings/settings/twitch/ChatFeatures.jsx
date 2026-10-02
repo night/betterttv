@@ -7,11 +7,11 @@ import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
-import SettingStore, {SettingPanelIds} from '@/modules/settings/stores/SettingStore';
+import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
-const SETTING_NAME = formatMessage({defaultMessage: 'Chat'});
+const SETTING_NAME = formatMessage({defaultMessage: 'Chat Features'});
 
-function ChatModule({ref, ...props}) {
+function ChatFeatures({ref, ...props}) {
   const {setPage} = use(PageContext);
   const [chat, setChat] = useStorageState(SettingIds.CHAT);
 
@@ -64,7 +64,15 @@ function ChatModule({ref, ...props}) {
         value={ChatFlags.COMMUNITY_HIGHLIGHTS}
         name={formatMessage({defaultMessage: 'Community Highlights'})}
         description={formatMessage({
-          defaultMessage: 'Show alerts above chat window for hype trains, drops, pinned messages, etc.',
+          defaultMessage:
+            'Show alerts above chat window for hype trains, polls, predictions, drops, pinned messages, etc.',
+        })}
+      />
+      <SettingCheckbox
+        value={ChatFlags.WATCH_STREAKS}
+        name={formatMessage({defaultMessage: 'Watch Streaks'})}
+        description={formatMessage({
+          defaultMessage: 'Show watch streaks in chat and on followed channels in the sidebar.',
         })}
       />
       <SettingCheckbox
@@ -74,26 +82,29 @@ function ChatModule({ref, ...props}) {
           defaultMessage: 'Restore what you previously typed by pressing up/down arrow in chat.',
         })}
       />
+      <SettingCheckbox
+        value={ChatFlags.CHAT_GIFS}
+        name={formatMessage({defaultMessage: 'GIFs'})}
+        description={formatMessage({
+          defaultMessage: 'Show GIFs sent by Tier 2 and Tier 3 subscribers in the chat window.',
+        })}
+      />
+      <SettingCheckbox
+        value={ChatFlags.AI_STREAM_SUMMARY}
+        name={formatMessage({defaultMessage: 'AI Stream Summaries'})}
+        description={formatMessage({
+          defaultMessage: "Show Twitch's AI-generated mid-stream summary recaps in the chat window.",
+        })}
+      />
     </SettingCheckboxGroup>
   );
 }
 
-SettingStore.registerSetting(ChatModule, {
+SettingStore.registerSetting(ChatFeatures, {
   settingPanelId: SettingPanelIds.CHAT,
+  settingCategoryId: SettingCategoryIds.CHAT,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
-  keywords: [
-    'bits',
-    'highlights',
-    'community',
-    'chat',
-    'replies',
-    'clips',
-    'subs',
-    'subscriptions',
-    'text',
-    'replacements',
-  ],
 });
 
-export default ChatModule;
+export default ChatFeatures;

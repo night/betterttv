@@ -1,10 +1,12 @@
 import cookies from 'cookies-js';
 import gql from 'graphql-tag';
+import watcher from '@/watcher';
 import {getCurrentChannel, setCurrentChannel} from './channel';
 import debug from './debug';
 import {getCurrentUser, setCurrentUser} from './user';
 
 const REACT_ROOT = '#root';
+const CHAT_INPUT_CONTAINER = '.chat-input';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat,.va-vod-chat,.video-chat';
 const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
@@ -15,12 +17,24 @@ const CHAT_MESSAGE_SELECTOR = '.chat-line__message';
 export const CHAT_INPUT = 'textarea[data-a-target="chat-input"], div[data-a-target="chat-input"]';
 const CHAT_WYSIWYG_INPUT_EDITOR = '.chat-wysiwyg-input__editor';
 const STREAM_CHAT = '.stream-chat';
+const CHAT_BADGE_CAROUSEL = 'div[data-a-target="chat-badge-carousel"]';
+const VOD_CHAT_MAX_PARENT_DEPTH = 50;
 
 const USER_PROFILE_IMAGE_GQL_QUERY = gql`
   query BTTVGetUserProfilePicture($userId: ID!) {
     user(id: $userId) {
       id
       profileImageURL(width: 300)
+    }
+  }
+`;
+
+const GLOBAL_BADGES_GQL_QUERY = gql`
+  query BTTVGetGlobalBadges {
+    badges {
+      id
+      title
+      imageURL(size: DOUBLE)
     }
   }
 `;
@@ -102,6 +116,7 @@ if (userCookie) {
       name: login,
       displayName,
     });
+    watcher.emit('load.user');
   } catch (_) {}
 }
 
@@ -142,6 +157,24 @@ export default {
     profilePicturesByUserId[userId] = profilePicture;
 
     return profilePicture;
+  },
+
+  async getGlobalBadges() {
+    const {data} = await this.graphqlQuery(GLOBAL_BADGES_GQL_QUERY);
+    return data.badges.filter((badge) => badge != null);
+  },
+
+  getCurrentUserChatColor() {
+    let chatColor = null;
+    try {
+      const node = searchReactParents(
+        getReactInstance(document.querySelector(CHAT_BADGE_CAROUSEL)),
+        (n) => n.memoizedProps?.data?.currentUser?.chatColor != null
+      );
+      chatColor = node.memoizedProps.data.currentUser.chatColor;
+    } catch (_) {}
+
+    return chatColor;
   },
 
   updateCurrentChannel() {
@@ -253,6 +286,7 @@ export default {
       SUBSCRIPTION: twitchTMIActionTypes.Subscription,
       RESUBSCRIPTION: twitchTMIActionTypes.Resubscription,
       SUBGIFT: twitchTMIActionTypes.SubGift,
+      VIEWER_MILESTONE: twitchTMIActionTypes.ViewerMilestone,
     };
 
     return TMIActionTypes;
@@ -467,7 +501,8 @@ export default {
     try {
       const node = searchReactParents(
         getReactInstance(document.querySelector(VOD_CHAT_CONTAINER)),
-        (n) => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.video
+        (n) => n.stateNode && n.stateNode.props && n.stateNode.props.data && n.stateNode.props.data.video,
+        VOD_CHAT_MAX_PARENT_DEPTH
       );
       currentVodChat = node.stateNode;
     } catch (_) {}
@@ -644,6 +679,13 @@ export default {
     const currentChannel = getCurrentChannel();
     if (!currentUser || !currentChannel) return false;
     return currentUser.id === currentChannel.id;
+  },
+
+  // the chat controller carries live status in both channel and popout chat;
+  // an unknown value reads as offline so consumers fail quiet
+  getCurrentChannelIsLive() {
+    const currentChat = this.getCurrentChat();
+    return currentChat?.props?.isLive === true;
   },
 
   getChatInput(element = null) {
@@ -893,5 +935,21 @@ export default {
     } catch (_) {}
 
     return user;
+  },
+
+  getGifPickerController() {
+    let gifPickerController;
+    try {
+      // the controller sits in the chat input's subtree, wrapped in apollo hocs that expose its
+      // props before channelData is injected, so match the inner instance that already has it
+      const node = searchReactChildren(
+        getReactInstance(document.querySelector(CHAT_INPUT_CONTAINER)),
+        (n) => n.memoizedProps?.onSelectGif != null && n.memoizedProps?.channelData?.user != null,
+        50
+      );
+      gifPickerController = node.memoizedProps;
+    } catch (_) {}
+
+    return gifPickerController;
   },
 };
