@@ -1,14 +1,18 @@
-import React from 'react';
+import {Button} from '@mantine/core';
+import React, {use} from 'react';
 import useStorageState from '@/common/hooks/StorageState';
-import {SettingIds, ChatFlags} from '@/constants';
+import {ChatFlags, PageTypes, SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Features'});
 
 function ChatFeatures({ref, ...props}) {
+  const {setPage} = use(PageContext);
   const [chat, setChat] = useStorageState(SettingIds.CHAT);
 
   return (
@@ -19,6 +23,16 @@ function ChatFeatures({ref, ...props}) {
       value={chat}
       onChange={setChat}
       flags={Object.values(ChatFlags)}>
+      <SettingWrapper
+        name={formatMessage({defaultMessage: 'Text Replacements'})}
+        reverse
+        description={formatMessage({
+          defaultMessage: 'Create custom text replacements so typing a trigger in chat sends a different string.',
+        })}>
+        <Button size="lg" onClick={() => setPage(PageTypes.TEXT_REPLACEMENTS)}>
+          {formatMessage({defaultMessage: 'Edit'})}
+        </Button>
+      </SettingWrapper>
       <SettingCheckbox
         value={ChatFlags.CHAT_REPLIES}
         name={formatMessage({defaultMessage: 'Chat Replies'})}
