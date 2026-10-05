@@ -63,7 +63,15 @@
 .supernova,
 .glacier,
 .intergalactic,
-.midas {
+.midas,
+.peach,
+.abyss,
+.phoenix,
+.arcane,
+.evergreen,
+.sakura,
+.onyx,
+.crimson {
   --effect-duration: 16s;
   --background-size: 96px 96px;
   --bttv-username-effect-animation: effectSweep var(--effect-duration) linear infinite;
@@ -104,12 +112,60 @@
   filter: url(#stroke-text-svg-filter-iridescence);
 }
 
+.peach {
+  background-image: url(assets/username_effects/peach.png);
+  filter: url(#stroke-text-svg-filter-peach);
+}
+
+.abyss {
+  background-image: url(assets/username_effects/abyss.png);
+  filter: url(#stroke-text-svg-filter-abyss);
+}
+
+.phoenix {
+  background-image: url(assets/username_effects/phoenix.png);
+  filter: url(#stroke-text-svg-filter-phoenix);
+}
+
+.arcane {
+  background-image: url(assets/username_effects/arcane.png);
+  filter: url(#stroke-text-svg-filter-arcane);
+}
+
+.evergreen {
+  background-image: url(assets/username_effects/evergreen.png);
+  filter: url(#stroke-text-svg-filter-evergreen);
+}
+
+.sakura {
+  background-image: url(assets/username_effects/sakura.png);
+  filter: url(#stroke-text-svg-filter-sakura);
+}
+
+.onyx {
+  background-image: url(assets/username_effects/onyx.png);
+  filter: url(#stroke-text-svg-filter-onyx);
+}
+
+.crimson {
+  background-image: url(assets/username_effects/crimson.png);
+  filter: url(#stroke-text-svg-filter-crimson);
+}
+
 .reducedMotion .flare,
 .reducedMotion .iridescence,
 .reducedMotion .supernova,
 .reducedMotion .glacier,
 .reducedMotion .intergalactic,
-.reducedMotion .midas {
+.reducedMotion .midas,
+.reducedMotion .peach,
+.reducedMotion .abyss,
+.reducedMotion .phoenix,
+.reducedMotion .arcane,
+.reducedMotion .evergreen,
+.reducedMotion .sakura,
+.reducedMotion .onyx,
+.reducedMotion .crimson {
   animation: none;
 }
 
