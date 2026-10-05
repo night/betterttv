@@ -11,6 +11,7 @@ import {
   TableTr,
   Text,
   TextInput,
+  Tooltip,
 } from '@mantine/core';
 import classNames from 'classnames';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -18,6 +19,7 @@ import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
 import ProBadge from '@/common/components/ProBadge';
 import useEntryListState from '@/common/hooks/EntryListState';
+import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openModal, openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
@@ -28,6 +30,7 @@ import {
   TIMER_MAX_MESSAGE_LENGTH,
   TIMER_MIN_CHAT_LINES,
   TIMER_MIN_INTERVAL_MINUTES,
+  validateTimerMessage,
 } from '@/modules/self_bot/timers';
 import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
@@ -149,6 +152,8 @@ function TimerRow({id, data, updateHandler, deleteHandler, messageInputRefCallba
   const onLinesCommit = useCallback((lines) => onUpdate({lines}), [onUpdate]);
   const handleEnabledChange = useCallback(({target: {checked}}) => onUpdate({enabled: checked}), [onUpdate]);
   const messageInputRef = useCallback((ref) => messageInputRefCallback(id, ref), [messageInputRefCallback, id]);
+  const portalRef = usePortalRef();
+  const commandError = useMemo(() => validateTimerMessage(data.message), [data.message]);
 
   return (
     <TableTr {...props}>
@@ -164,19 +169,26 @@ function TimerRow({id, data, updateHandler, deleteHandler, messageInputRefCallba
         </label>
       </TableTd>
       <TableTd className={tableStyles.dataCellMiddle}>
-        <TextInput
-          variant="unstyled"
-          classNames={{
-            input: tableStyles.textInput,
-            root: classNames(tableStyles.textInputRoot, styles.messageRoot),
-            wrapper: tableStyles.textInputWrapper,
-          }}
-          ref={messageInputRef}
-          defaultValue={data.message}
-          maxLength={TIMER_MAX_MESSAGE_LENGTH}
-          onBlur={({target: {value}}) => onUpdate({message: value})}
-          placeholder={formatMessage({defaultMessage: 'Join our discord! discord.gg/nightdev'})}
-        />
+        <Tooltip
+          label={commandError}
+          disabled={commandError == null}
+          withArrow
+          portalProps={{target: portalRef.current}}>
+          <TextInput
+            variant="unstyled"
+            classNames={{
+              input: tableStyles.textInput,
+              root: classNames(tableStyles.textInputRoot, styles.messageRoot),
+              wrapper: tableStyles.textInputWrapper,
+            }}
+            ref={messageInputRef}
+            defaultValue={data.message}
+            maxLength={TIMER_MAX_MESSAGE_LENGTH}
+            error={commandError != null}
+            onBlur={({target: {value}}) => onUpdate({message: value})}
+            placeholder={formatMessage({defaultMessage: 'Join our discord! discord.gg/nightdev'})}
+          />
+        </Tooltip>
       </TableTd>
       <TableTd className={classNames(tableStyles.dataCellMiddle, styles.intervalColumn)}>
         <TimerNumberInput
