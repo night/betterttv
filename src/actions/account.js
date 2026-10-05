@@ -4,10 +4,6 @@ export function updateSubscriptionBadge(badge, {signal} = {}) {
   return api.patch('account/subscription/badge', {body: {badge}, signal});
 }
 
-export function getSubscriptionBadgeEligibility() {
-  return api.get('account/subscription/badge/eligibility');
-}
-
 export function updateSubscriptionBadgeId(badgeId, {signal} = {}) {
   return api.patch('account/subscription/badge', {body: {badgeId}, signal});
 }
