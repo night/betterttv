@@ -2,7 +2,7 @@ import {faQuestion, faRepeat, faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Skeleton} from '@mantine/core';
 import classNames from 'classnames';
 import {DateTime} from 'luxon';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import {updateSubscriptionBadge, updateSubscriptionBadgeId} from '@/actions/account';
 import Icon from '@/common/components/Icon';
@@ -11,7 +11,7 @@ import useProRequiredState from '@/common/hooks/ProRequiredState';
 import formatMessage from '@/i18n';
 import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
-import useSubscriptionBadgeEligibilityStore, {fetchEligibility} from '@/stores/subscription-badge-eligibility';
+import useFeatureEligibilityStore, {fetchEligibility} from '@/stores/feature-eligibility';
 import {getCurrentChannel} from '@/utils/channel';
 import {isUserPro} from '@/utils/pro';
 import SettingRadioCard from './SettingRadioCard';
@@ -54,11 +54,14 @@ function SubscriptionBadgeSetting() {
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
 
   // persisted eligibility may belong to a previous session's account; only use it for the current user
-  const {eligibleBadges, nextBadgeUnlocksAt} = useSubscriptionBadgeEligibilityStore(
-    useShallow((state) => ({
-      eligibleBadges: user != null && state.userId === user.id ? state.eligibleBadges : null,
-      nextBadgeUnlocksAt: user != null && state.userId === user.id ? state.nextBadgeUnlocksAt : null,
-    }))
+  const badgeEligibility = useFeatureEligibilityStore((state) =>
+    user != null && state.userId === user.id ? state.eligibility?.badges : null
+  );
+  const nextBadgeUnlocksAt = badgeEligibility?.nextBadgeUnlocksAt ?? null;
+  // the api lists badges oldest first; the picker shows the latest first
+  const eligibleBadges = useMemo(
+    () => (badgeEligibility?.eligibleBadges != null ? [...badgeEligibility.eligibleBadges].reverse() : null),
+    [badgeEligibility?.eligibleBadges]
   );
 
   useEffect(() => {
