@@ -139,8 +139,6 @@ function SettingUsernameHoverEffect() {
               value={effectValue}
               className={classNames(styles.usernameCard, effects.hoverTrigger)}
               tooltip={label}
-              // below the card so it never covers the preview mid-animation
-              tooltipPosition="bottom"
               ariaLabel={label}
               withIndicators={false}>
               <UsernameHoverEffectPreviewText value={effectValue}>{previewDisplayName}</UsernameHoverEffectPreviewText>
