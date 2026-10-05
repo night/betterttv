@@ -58,7 +58,6 @@ function SubscriptionBadgeSetting() {
     user != null && state.userId === user.id ? state.eligibility?.badges : null
   );
   const nextBadgeUnlocksAt = badgeEligibility?.nextBadgeUnlocksAt ?? null;
-  // the api lists badges oldest first; the picker shows the latest first
   const eligibleBadges = useMemo(
     () => (badgeEligibility?.eligibleBadges != null ? [...badgeEligibility.eligibleBadges].reverse() : null),
     [badgeEligibility?.eligibleBadges]
