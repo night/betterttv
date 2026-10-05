@@ -101,7 +101,7 @@ function SettingUsernameHoverEffect() {
   const currentUser = useCurrentUser();
   const user = useAuthStore((state) => state.user);
   const previewDisplayName = getPreviewDisplayName(currentUser, user);
-  const hasPromotion = useHasPromotion(SettingPanelIds.USERNAME_EFFECT);
+  const hasPromotion = useHasPromotion(SettingPanelIds.USERNAME_HOVER_EFFECT);
 
   const [value, handleChange] = useUsernameEffectSetting({
     userField: 'usernameHoverEffect',

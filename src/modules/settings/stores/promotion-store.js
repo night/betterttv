@@ -13,7 +13,7 @@ const PROMOTION_SLOTS = [
   },
   {
     storageKey: SettingsPromotions.USERNAME_HOVER_EFFECT,
-    settingPanelId: SettingPanelIds.USERNAME_EFFECT,
+    settingPanelId: SettingPanelIds.USERNAME_HOVER_EFFECT,
   },
 ];
 
