@@ -101,7 +101,7 @@ function SettingUsernameHoverEffect() {
   const currentUser = useCurrentUser();
   const user = useAuthStore((state) => state.user);
   const previewDisplayName = getPreviewDisplayName(currentUser, user);
-  const hasPromotion = useHasPromotion(SettingPanelIds.USERNAME_EFFECT);
+  const hasPromotion = useHasPromotion(SettingPanelIds.USERNAME_HOVER_EFFECT);
 
   const [value, handleChange] = useUsernameEffectSetting({
     userField: 'usernameHoverEffect',
@@ -139,8 +139,6 @@ function SettingUsernameHoverEffect() {
               value={effectValue}
               className={classNames(styles.usernameCard, effects.hoverTrigger)}
               tooltip={label}
-              // below the card so it never covers the preview mid-animation
-              tooltipPosition="bottom"
               ariaLabel={label}
               withIndicators={false}>
               <UsernameHoverEffectPreviewText value={effectValue}>{previewDisplayName}</UsernameHoverEffectPreviewText>
