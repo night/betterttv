@@ -21,11 +21,6 @@ const useFeatureEligibilityStore = create(
   )
 );
 
-// badge eligibility used to persist in its own store before it was read from this one
-try {
-  window.localStorage.removeItem('bttvPrivate_subscriptionBadgeEligibility');
-} catch (_) {}
-
 let lastFetch = null;
 
 function clearEligibility() {
