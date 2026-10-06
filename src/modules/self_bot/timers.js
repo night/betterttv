@@ -1,9 +1,17 @@
+import formatMessage from '@/i18n/index';
+
 export const TIMER_MIN_INTERVAL_MINUTES = 1;
 export const TIMER_MAX_INTERVAL_MINUTES = 24 * 60;
 export const TIMER_MIN_CHAT_LINES = 2;
 export const TIMER_MAX_CHAT_LINES = 100;
 export const TIMER_MAX_MESSAGE_LENGTH = 500;
 export const DEFAULT_TIMER_INTERVAL_MINUTES = 5;
+
+export function validateTimerMessage(message) {
+  return /^[/.]/.test(message?.trim() ?? '')
+    ? formatMessage({defaultMessage: 'Timers cannot run chat commands'})
+    : undefined;
+}
 
 export function computeSelfBotTimers(timersMap) {
   const computed = [];
@@ -22,8 +30,7 @@ export function computeSelfBotTimers(timersMap) {
       continue;
     }
 
-    // never let a timer run chat commands unattended (/clear, /raid, ...)
-    if (trimmedMessage.startsWith('/') || trimmedMessage.startsWith('.')) {
+    if (validateTimerMessage(trimmedMessage) != null) {
       continue;
     }
 

@@ -10,7 +10,6 @@ import styles from './SettingRadioCard.module.css';
 function SettingRadioCard({
   value,
   tooltip,
-  tooltipPosition,
   ariaLabel,
   className,
   radioCardProps = {},
@@ -40,7 +39,6 @@ function SettingRadioCard({
   return (
     <Tooltip
       openDelay={200}
-      position={tooltipPosition}
       withArrow
       arrowSize={8}
       radius="md"

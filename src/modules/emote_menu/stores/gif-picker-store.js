@@ -35,6 +35,11 @@ export function startGifCooldown(totalSeconds) {
   }, 1000);
 }
 
+export function resetGifCooldown() {
+  clearInterval(cooldownInterval);
+  useGifPickerStore.setState({cooldownSecondsRemaining: 0});
+}
+
 export function updateGifPickerContext() {
   const newGifContext = getGifPickerContext();
   useGifPickerStore.setState({gifContext: newGifContext?.available ? newGifContext : null});

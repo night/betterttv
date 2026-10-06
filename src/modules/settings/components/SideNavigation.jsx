@@ -13,7 +13,6 @@ import ProBadge from '@/common/components/ProBadge';
 import Scrollbar from '@/common/components/Scrollbar';
 import UsernameEffectText from '@/common/components/UsernameEffectText';
 import useCurrentUser from '@/common/hooks/CurrentUser';
-import effects from '@/common/styles/UsernameEffects.module.css';
 import {PageDecendants, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
@@ -97,17 +96,10 @@ function UserSettingsNavigationButton({active, onClick}) {
     <NavigationButton
       active={active}
       onClick={onClick}
-      className={classNames(
-        clickableStyles.clickableContainer,
-        styles.userSettingsNavigationButton,
-        effects.hoverTrigger
-      )}
+      className={classNames(clickableStyles.clickableContainer, styles.userSettingsNavigationButton)}
       label={
         bttvUser?.displayName != null ? (
-          <UsernameEffectText
-            effect={bttvUser.usernameEffect}
-            hoverEffect={bttvUser.usernameHoverEffect}
-            className={styles.displayName}>
+          <UsernameEffectText effect={bttvUser.usernameEffect} className={styles.displayName}>
             {bttvUser.displayName}
           </UsernameEffectText>
         ) : (

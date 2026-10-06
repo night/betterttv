@@ -82,7 +82,7 @@
   transform: none;
 }
 
-/* top-level nav items for each individual setting (also used by the Changelog button). These use
+/* top-level nav items for each individual setting. These use
    Mantine's transparent variant, so there's no background fill in any state (rest, hover, or
    active) — hovering only undims the label (see the hover rule below), Discord-style, and the
    pill treatment stays exclusive to the category rows. */

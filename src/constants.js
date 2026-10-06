@@ -471,6 +471,14 @@ export const UsernameEffects = {
   MIDAS: 'midas',
   GLACIER: 'glacier',
   INTERGALACTIC: 'intergalactic',
+  PEACH: 'peach',
+  ABYSS: 'abyss',
+  PHOENIX: 'phoenix',
+  ARCANE: 'arcane',
+  EVERGREEN: 'evergreen',
+  SAKURA: 'sakura',
+  ONYX: 'onyx',
+  CRIMSON: 'crimson',
 };
 
 // glow and flare paint over the current text color; the rest paint the text themselves

@@ -33,6 +33,7 @@ export const SettingPanelIds = {
   SELF_BOT: 'selfBot',
   SUBSCRIPTION_BADGE: 'subscriptionBadge',
   USERNAME_EFFECT: 'usernameEffect',
+  USERNAME_HOVER_EFFECT: 'usernameHoverEffect',
   ACCESSIBILITY: 'accessibility',
 };
 

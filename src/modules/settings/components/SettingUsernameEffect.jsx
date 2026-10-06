@@ -27,13 +27,24 @@ function getChatColorStyle(effect, chatColor) {
   return {color: chatColor};
 }
 
+// unlocked by an annual subscription, so Pro users on a monthly plan can still upgrade for them
+const ANNUAL_EFFECTS = [UsernameEffects.IRIDESCENCE, UsernameEffects.ONYX];
+
 const EFFECT_CARDS = [
   {value: UsernameEffects.FLARE, label: formatMessage({defaultMessage: 'Flare'})},
+  {value: UsernameEffects.PEACH, label: formatMessage({defaultMessage: 'Peach'})},
   {value: UsernameEffects.GLACIER, label: formatMessage({defaultMessage: 'Glacier'})},
+  {value: UsernameEffects.ARCANE, label: formatMessage({defaultMessage: 'Arcane'})},
+  {value: UsernameEffects.PHOENIX, label: formatMessage({defaultMessage: 'Phoenix'})},
   {value: UsernameEffects.INTERGALACTIC, label: formatMessage({defaultMessage: 'Intergalactic'})},
+  {value: UsernameEffects.CRIMSON, label: formatMessage({defaultMessage: 'Crimson'})},
+  {value: UsernameEffects.ABYSS, label: formatMessage({defaultMessage: 'Abyss'})},
   {value: UsernameEffects.SUPERNOVA, label: formatMessage({defaultMessage: 'Supernova'})},
+  {value: UsernameEffects.EVERGREEN, label: formatMessage({defaultMessage: 'Evergreen'})},
+  {value: UsernameEffects.SAKURA, label: formatMessage({defaultMessage: 'Sakura'})},
   {value: UsernameEffects.MIDAS, label: formatMessage({defaultMessage: 'Midas'})},
   {value: UsernameEffects.IRIDESCENCE, label: formatMessage({defaultMessage: 'Iridescence'})},
+  {value: UsernameEffects.ONYX, label: formatMessage({defaultMessage: 'Onyx'})},
   {value: UsernameEffects.GLOW, label: formatMessage({defaultMessage: 'Glow'})},
 ];
 
@@ -45,6 +56,14 @@ const UsernameEffectRequirementDisplayTitleByEffect = {
   [UsernameEffects.MIDAS]: formatMessage({defaultMessage: 'Midas Effect'}),
   [UsernameEffects.GLACIER]: formatMessage({defaultMessage: 'Glacier Effect'}),
   [UsernameEffects.INTERGALACTIC]: formatMessage({defaultMessage: 'Intergalactic Effect'}),
+  [UsernameEffects.PEACH]: formatMessage({defaultMessage: 'Peach Effect'}),
+  [UsernameEffects.ABYSS]: formatMessage({defaultMessage: 'Abyss Effect'}),
+  [UsernameEffects.PHOENIX]: formatMessage({defaultMessage: 'Phoenix Effect'}),
+  [UsernameEffects.ARCANE]: formatMessage({defaultMessage: 'Arcane Effect'}),
+  [UsernameEffects.EVERGREEN]: formatMessage({defaultMessage: 'Evergreen Effect'}),
+  [UsernameEffects.SAKURA]: formatMessage({defaultMessage: 'Sakura Effect'}),
+  [UsernameEffects.ONYX]: formatMessage({defaultMessage: 'Onyx Effect'}),
+  [UsernameEffects.CRIMSON]: formatMessage({defaultMessage: 'Crimson Effect'}),
 };
 
 const UsernameEffectRequirementDisplayTextByEffect = {
@@ -55,6 +74,14 @@ const UsernameEffectRequirementDisplayTextByEffect = {
   [UsernameEffects.MIDAS]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 12 months.'}),
   [UsernameEffects.GLACIER]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 3 months.'}),
   [UsernameEffects.INTERGALACTIC]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 6 months.'}),
+  [UsernameEffects.PEACH]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 2 months.'}),
+  [UsernameEffects.ABYSS]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 8 months.'}),
+  [UsernameEffects.PHOENIX]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 5 months.'}),
+  [UsernameEffects.ARCANE]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 4 months.'}),
+  [UsernameEffects.EVERGREEN]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 10 months.'}),
+  [UsernameEffects.SAKURA]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 11 months.'}),
+  [UsernameEffects.ONYX]: formatMessage({defaultMessage: 'Rewarded to any annual Pro user.'}),
+  [UsernameEffects.CRIMSON]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 7 months.'}),
 };
 
 const UsernameEffectRequirementClassNamesByEffect = {
@@ -65,6 +92,14 @@ const UsernameEffectRequirementClassNamesByEffect = {
   [UsernameEffects.MIDAS]: classNames(styles.flavorUsername, effects.midas),
   [UsernameEffects.GLACIER]: classNames(styles.flavorUsername, effects.glacier),
   [UsernameEffects.INTERGALACTIC]: classNames(styles.flavorUsername, effects.intergalactic),
+  [UsernameEffects.PEACH]: classNames(styles.flavorUsername, effects.peach),
+  [UsernameEffects.ABYSS]: classNames(styles.flavorUsername, effects.abyss),
+  [UsernameEffects.PHOENIX]: classNames(styles.flavorUsername, effects.phoenix),
+  [UsernameEffects.ARCANE]: classNames(styles.flavorUsername, effects.arcane),
+  [UsernameEffects.EVERGREEN]: classNames(styles.flavorUsername, effects.evergreen),
+  [UsernameEffects.SAKURA]: classNames(styles.flavorUsername, effects.sakura),
+  [UsernameEffects.ONYX]: classNames(styles.flavorUsername, effects.onyx),
+  [UsernameEffects.CRIMSON]: classNames(styles.flavorUsername, effects.crimson),
 };
 
 function UsernameEffectRequirementDisplay({value, displayName, chatColor}) {
@@ -92,7 +127,7 @@ function isEligibleForUsernameEffect(eligibility, value) {
 function openUsernameEffectSubscriptionUpgradeModal(value, callback) {
   const displayName = getPreviewDisplayName(getCurrentUser(), useAuthStore.getState().user);
   const chatColor = twitch.getCurrentUserChatColor();
-  const upgradeDisabled = isUserPro(useAuthStore.getState().user) && value !== UsernameEffects.IRIDESCENCE;
+  const upgradeDisabled = isUserPro(useAuthStore.getState().user) && !ANNUAL_EFFECTS.includes(value);
 
   return openSubscriptionUpgradeModal(
     {

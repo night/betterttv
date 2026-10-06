@@ -14,7 +14,6 @@ function SettingWrapper({
   children,
   showProBadge = false,
   showNewBadge = false,
-  showComingSoonBadge = false,
   reverse = false,
   wrap = false,
   controlClassName = '',
@@ -56,16 +55,6 @@ function SettingWrapper({
                 portalProps={{target: portalRef.current}}>
                 <Badge color="red" variant="elevated" size="lg">
                   {formatMessage({defaultMessage: 'New'})}
-                </Badge>
-              </Tooltip>
-            ) : null}
-            {showComingSoonBadge ? (
-              <Tooltip
-                withArrow
-                label={<Text size="md">{formatMessage({defaultMessage: 'This feature is not available yet.'})}</Text>}
-                portalProps={{target: portalRef.current}}>
-                <Badge color="green" variant="elevated" size="lg">
-                  {formatMessage({defaultMessage: 'Coming Soon'})}
                 </Badge>
               </Tooltip>
             ) : null}
