@@ -94,6 +94,8 @@ export async function performAdd(emoteId, destination) {
     return;
   }
 
+  fetchAvailability(emoteId, user.id);
+
   if (destination === EmoteAddDestinations.PERSONAL && !isUserPro(user)) {
     openSubscriptionUpgradeModal({}, () => performAdd(emoteId, destination));
     return;
