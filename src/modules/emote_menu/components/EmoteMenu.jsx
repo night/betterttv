@@ -1,7 +1,7 @@
 import {autoUpdate, offset, useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
 import useEmoteMenuViewStoreUpdated from '@/common/hooks/EmoteMenuViewStore';
 import emoteMenuViewStore, {CategoryPositions} from '@/common/stores/emote-menu-view-store';
@@ -69,6 +69,7 @@ function EmoteMenu({
   const gifContext = useGifPickerStore((state) => state.gifContext);
   const width = useHorizontalResize({boundingQuerySelector, handleRef, open: opened, placement});
   const emoteListRef = useRef(null);
+  const pendingScrollRowIndexRef = useRef(null);
   const [emoteListCoords, setEmoteListCoords] = useState({x: 0, y: 0});
   const [navigationMode, setNavigationMode] = useState(NavigationModeTypes.ARROW_KEYS);
   const focusRef = useFocusTrap(opened && navigationMode === NavigationModeTypes.ARROW_KEYS);
@@ -141,6 +142,7 @@ function EmoteMenu({
   const handleScrollToPendingRow = useCallback((pendingScrollRowIndex) => {
     const listEl = emoteListRef.current;
     if (listEl == null) {
+      pendingScrollRowIndexRef.current = pendingScrollRowIndex;
       return;
     }
 
@@ -152,6 +154,16 @@ function EmoteMenu({
     const scrollTop = pendingScrollRowIndex * EMOTE_MENU_GRID_ROW_HEIGHT + 1;
     listEl.scrollTo(0, scrollTop);
   }, []);
+
+  useLayoutEffect(() => {
+    const pendingScrollRowIndex = pendingScrollRowIndexRef.current;
+    if (mode !== EmoteMenuModes.EMOTES || pendingScrollRowIndex == null) {
+      return;
+    }
+
+    pendingScrollRowIndexRef.current = null;
+    handleScrollToPendingRow(pendingScrollRowIndex);
+  }, [mode, handleScrollToPendingRow]);
 
   const updateEmoteListData = useCallback((currentSearch = '') => {
     let rows = emoteMenuViewStore.rows;
