@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import classNames from 'classnames';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import Icon from '@/common/components/Icon';
 import ProBadge from '@/common/components/ProBadge';

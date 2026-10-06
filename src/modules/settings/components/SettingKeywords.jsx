@@ -19,7 +19,7 @@ import {
 } from '@mantine/core';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import Icon from '@/common/components/Icon';
 import useBadgeOptions from '@/common/hooks/BadgeOptions';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
@@ -274,7 +274,7 @@ function KeywordsTable({
               </ActionIcon>
             </div>
           </TableTh>
-          <TableTh className={styles.channelsColumn}>{formatMessage({defaultMessage: 'Channels'})}</TableTh>
+          <TableTh>{formatMessage({defaultMessage: 'Channels'})}</TableTh>
           <TableTh className={tableStyles.actionsColumn} />
         </TableTr>
       </TableThead>
@@ -361,7 +361,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
           {formatMessage({defaultMessage: 'New Entry'})}
         </Button>
       }
-      className={styles.settingGroupContent}>
+      className={tableStyles.settingGroupContent}>
       {filteredEntryList.length > 0 ? (
         <KeywordsTable
           entryList={filteredEntryList}
@@ -374,7 +374,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
           onPaste={handlePaste}
         />
       ) : entryList.length > 0 ? (
-        <Text className={styles.noKeywordsText} c="dimmed">
+        <Text className={tableStyles.emptyText} c="dimmed">
           {formatMessage({defaultMessage: 'No keywords match your search.'})}
         </Text>
       ) : (
