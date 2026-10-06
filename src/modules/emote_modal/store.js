@@ -61,7 +61,7 @@ async function loadAvailability(emoteId, userId, key) {
   }
 
   useEmoteModalStore.setState((state) => {
-    const current = state.availability[key];
+    const current = state.availability[key] === UNKNOWN_AVAILABILITY ? null : state.availability[key];
     // adds performed while the lookup was in flight are fresher than the fetched snapshot
     const merged = current == null && result === UNKNOWN_AVAILABILITY ? UNKNOWN_AVAILABILITY : {...result, ...current};
     return {availability: {...state.availability, [key]: merged}};

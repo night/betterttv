@@ -154,7 +154,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
 
       const existingEmote = this.getEligibleEmoteById(id);
       if (existingEmote == null) {
-        return;
+        continue;
       }
 
       this.emotes.delete(existingEmote.code);
@@ -175,7 +175,7 @@ class SevenTVChannelEmotes extends AbstractEmotes {
 
       const existingEmote = this.getEligibleEmoteById(id);
       if (existingEmote == null) {
-        return;
+        continue;
       }
 
       this.emotes.delete(existingEmote.code);
