@@ -11,7 +11,7 @@ const settings = {
 loadModuleForPlatforms(
   [PlatformTypes.TWITCH, async () => new TwitchSettingsModule()],
   [PlatformTypes.YOUTUBE, async () => new YoutubeSettingModule()]
-).then((resolvedSettings) => {
+)?.then((resolvedSettings) => {
   settings.openSettings = resolvedSettings.openSettings;
   settings.openPage = resolvedSettings.openPage;
 });
