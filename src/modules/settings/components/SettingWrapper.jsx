@@ -1,11 +1,13 @@
 import {Badge, Text, Title, Tooltip} from '@mantine/core';
 import classNames from 'classnames';
-import React, {use} from 'react';
+import React, {use, useEffect} from 'react';
 import ProBadge from '@/common/components/ProBadge';
 import usePortalRef from '@/common/hooks/PortalRef';
 import {PageTypes} from '@/constants';
 import formatMessage from '@/i18n';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
+import SearchSettingContext from '@/modules/settings/contexts/SearchSettingContext';
+import searchStore from '@/modules/settings/stores/search-store';
 import styles from './SettingWrapper.module.css';
 
 function SettingWrapper({
@@ -21,6 +23,16 @@ function SettingWrapper({
 }) {
   const portalRef = usePortalRef();
   const {setPage, setSidenavOpen} = use(PageContext);
+  const settingPanelId = use(SearchSettingContext);
+
+  useEffect(() => {
+    searchStore.registerSearchEntry({
+      key: `setting:${settingPanelId}:${name}:${description}`,
+      name,
+      description,
+      settingPanelId,
+    });
+  }, [settingPanelId, name, description]);
 
   function handleProBadgeClick(event) {
     event.stopPropagation();

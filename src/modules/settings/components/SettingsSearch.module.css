@@ -1,0 +1,42 @@
+.searchInputRoot {
+  --input-height: 40px;
+  flex-shrink: 0;
+  margin: 8px;
+}
+
+.searchIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.dropdown {
+  padding: 6px;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: var(--mantine-radius-md);
+}
+
+.option[data-combobox-selected] {
+  color: var(--mantine-primary-color-filled);
+  background-color: var(--mantine-primary-color-light-hover);
+}
+
+.option[data-combobox-selected] .optionDescription {
+  color: var(--mantine-primary-color-filled) !important;
+  opacity: 0.7;
+}
+
+.option:active,
+[data-pending-complete] .option[data-combobox-selected] {
+  background-color: var(--mantine-primary-color-light-active);
+  transition: background-color 0.1s ease-in-out;
+}
+
+.optionName {
+  font-weight: 500;
+}

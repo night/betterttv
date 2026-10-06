@@ -6,6 +6,7 @@ import formatMessage from '@/i18n/index';
 import PageHeader from '@/modules/settings/components/PageHeader';
 import PageScrollBody, {PageScrollContext} from '@/modules/settings/components/PageScrollBody';
 import Panel from '@/modules/settings/components/Panel';
+import SearchSettingContext from '@/modules/settings/contexts/SearchSettingContext';
 import {orderSettingsByCategory} from '@/modules/settings/setting-categories';
 import promotionStore from '@/modules/settings/stores/promotion-store';
 import SettingStore from '@/modules/settings/stores/setting-store';
@@ -64,7 +65,7 @@ function SettingPanel({setting, onRef}) {
     [onRef, setting.settingPanelId]
   );
 
-  return setting.render({ref: handleRef});
+  return <SearchSettingContext value={setting.settingPanelId}>{setting.render({ref: handleRef})}</SearchSettingContext>;
 }
 
 // Memoized so a modal-level re-render (e.g. the mobile sidenav toggling) doesn't re-render every

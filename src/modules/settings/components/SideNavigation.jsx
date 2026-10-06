@@ -25,6 +25,7 @@ import {isUserPro} from '@/utils/pro';
 import {getCurrentUserProfilePicture} from '@/utils/user';
 import AnimatedLogo from './AnimatedLogo';
 import clickableStyles from './ClickableContainer.module.css';
+import SettingsSearch from './SettingsSearch';
 import styles from './SideNavigation.module.css';
 
 // Tag the nav buttons so the active one can be found and scrolled into view.
@@ -195,6 +196,7 @@ function SideNavigation({open, setOpen}) {
           <AnimatedLogo className={styles.logo} />
           <CloseMenuButton onClick={close} className={styles.closeButton} />
         </div>
+        <SettingsSearch onNavigate={close} />
         <Scrollbar mirrorPadding className={styles.settingsScrollArea} ref={containerRef}>
           {categorizedGroups.map((group) => {
             const isOpen = group.id === openCategoryId;
