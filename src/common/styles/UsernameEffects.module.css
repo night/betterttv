@@ -222,6 +222,20 @@
   animation-name: flipIn;
 }
 
+.reducedMotion .hoverTrigger:hover .wave,
+.reducedMotion .hoverTrigger:hover .bounce {
+  animation: none;
+}
+
+.reducedMotion .hoverTrigger:hover .flip {
+  visibility: visible;
+}
+
+.reducedMotion .hoverTrigger:hover .flip::before,
+.reducedMotion .hoverTrigger:hover .flip::after {
+  content: none;
+}
+
 @keyframes waveHop {
   0%,
   100% {

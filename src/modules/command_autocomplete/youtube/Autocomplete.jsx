@@ -184,13 +184,15 @@ class CommandAutocomplete {
 
     const commandAutocompleteEnabled = getProSettingValue(SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE, false);
 
+    chatInputElement.removeEventListener('focus', listener, true);
+    listener = null;
+
     if (!commandAutocompleteEnabled || !this.dirty) {
-      chatInputElement.removeEventListener('focus', listener, true);
-      listener = null;
-    } else {
-      listener = this.ensureCommandsLoaded.bind(this);
-      chatInputElement.addEventListener('focus', listener, true);
+      return;
     }
+
+    listener = this.ensureCommandsLoaded.bind(this);
+    chatInputElement.addEventListener('focus', listener, true);
   }
 
   async fetchChannelCommands() {
