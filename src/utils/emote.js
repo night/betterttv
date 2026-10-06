@@ -11,7 +11,7 @@ export const EmoteProviderMetadata = {
   [EmoteProviders.FRANKERFACEZ]: {
     displayName: 'FrankerFaceZ',
     logoUrl: cdn.url('/assets/logos/ffz_logo.png'),
-    emotePageUrl: 'https://www.frankerfacez.com/emote/',
+    emotePageUrl: 'https://www.frankerfacez.com/emoticon/',
   },
   [EmoteProviders.SEVENTV]: {
     displayName: '7TV',
