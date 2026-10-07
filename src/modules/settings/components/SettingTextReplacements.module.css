@@ -1,0 +1,47 @@
+.panelContent {
+  composes: settingGroupContent from './SettingKeywords.module.css';
+}
+
+.table {
+  composes: table from './SettingKeywords.module.css';
+}
+
+.actionsColumn {
+  composes: actionsColumn from './SettingKeywords.module.css';
+}
+
+.inputDataCell,
+.actionsDataCell {
+  padding: 0 !important;
+}
+
+.cellInput {
+  font-size: var(--mantine-font-size-md);
+  padding-left: 12px;
+}
+
+.cellInput:focus {
+  box-shadow: unset;
+}
+
+.inputRoot,
+.cellInput,
+.inputWrapper {
+  height: 100%;
+}
+
+.inputRoot {
+  min-width: 160px;
+}
+
+.actionIcon {
+  composes: actionIcon from './SettingKeywords.module.css';
+}
+
+.actionIconIcon {
+  composes: actionIconIcon from './SettingKeywords.module.css';
+}
+
+.emptyText {
+  composes: noKeywordsText from './SettingKeywords.module.css';
+}

@@ -52,6 +52,7 @@ export const SettingCategoryIds = {
 export const PageSettingPanelIds = {
   [PageTypes.HIGHLIGHT_KEYWORDS]: SettingPanelIds.HIGHLIGHTS,
   [PageTypes.BLACKLIST_KEYWORDS]: SettingPanelIds.BLACKLIST_KEYWORDS,
+  [PageTypes.TEXT_REPLACEMENTS]: SettingPanelIds.CHAT,
   [PageTypes.SELF_BOT_COMMANDS]: SettingPanelIds.SELF_BOT,
   [PageTypes.SELF_BOT_TIMERS]: SettingPanelIds.SELF_BOT,
 };

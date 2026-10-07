@@ -13,6 +13,7 @@ import ProHome from '@/modules/settings/pages/ProHome';
 import SelfBotCommands from '@/modules/settings/pages/SelfBotCommands';
 import SelfBotTimers from '@/modules/settings/pages/SelfBotTimers';
 import Settings from '@/modules/settings/pages/Settings';
+import TextReplacements from '@/modules/settings/pages/TextReplacements';
 import UserSettings from '@/modules/settings/pages/UserSettings';
 import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
 import storage from '@/storage';
@@ -49,6 +50,8 @@ function Page({page, handleSettingRefCallback}) {
       return <HighlightKeywords />;
     case PageTypes.BLACKLIST_KEYWORDS:
       return <BlacklistKeywords />;
+    case PageTypes.TEXT_REPLACEMENTS:
+      return <TextReplacements />;
     case PageTypes.SELF_BOT_COMMANDS:
       return <SelfBotCommands />;
     case PageTypes.SELF_BOT_TIMERS:
