@@ -62,6 +62,13 @@ function ChatFeatures({ref, ...props}) {
         })}
       />
       <SettingCheckbox
+        value={ChatFlags.SAVE_YOUR_STREAK}
+        name={formatMessage({defaultMessage: 'Save your Streak'})}
+        description={formatMessage({
+          defaultMessage: 'Show the "Save your Streak" prompt in the sidebar.',
+        })}
+      />
+      <SettingCheckbox
         value={ChatFlags.CHAT_MESSAGE_HISTORY}
         name={formatMessage({defaultMessage: 'Message History'})}
         description={formatMessage({
