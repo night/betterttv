@@ -20,11 +20,13 @@ import {groupSettingsByCategory} from '@/modules/settings/setting-categories';
 import {useUnseenSettingPanelIds} from '@/modules/settings/stores/promotion-store';
 import SettingStore, {PageSettingPanelIds} from '@/modules/settings/stores/setting-store';
 import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
+import useSettingsSearchStore, {panelMatchesSearch} from '@/modules/settings/stores/settings-search';
 import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
 import {getCurrentUserProfilePicture} from '@/utils/user';
 import AnimatedLogo from './AnimatedLogo';
 import clickableStyles from './ClickableContainer.module.css';
+import SettingsSearch from './SettingsSearch';
 import styles from './SideNavigation.module.css';
 
 // Tag the nav buttons so the active one can be found and scrolled into view.
@@ -138,6 +140,20 @@ function SideNavigation({open, setOpen}) {
   const isSettingsPage = page === PageTypes.SETTINGS || PageDecendants[PageTypes.SETTINGS]?.includes(page);
 
   const categorizedGroups = useMemo(() => groupSettingsByCategory(SettingStore.getSupportedSettings()), []);
+  const query = useSettingsSearchStore((state) => state.query.trim());
+  const searchEntries = useSettingsSearchStore((state) => state.entries);
+  const visibleGroups = useMemo(
+    () =>
+      query.length === 0
+        ? categorizedGroups
+        : categorizedGroups
+            .map((group) => ({
+              ...group,
+              settings: group.settings.filter((setting) => panelMatchesSearch(setting, query, searchEntries)),
+            }))
+            .filter((group) => group.settings.length > 0),
+    [categorizedGroups, query, searchEntries]
+  );
 
   const unseenPanelIds = useUnseenSettingPanelIds();
 
@@ -195,9 +211,10 @@ function SideNavigation({open, setOpen}) {
           <AnimatedLogo className={styles.logo} />
           <CloseMenuButton onClick={close} className={styles.closeButton} />
         </div>
+        <SettingsSearch />
         <Scrollbar mirrorPadding className={styles.settingsScrollArea} ref={containerRef}>
-          {categorizedGroups.map((group) => {
-            const isOpen = group.id === openCategoryId;
+          {visibleGroups.map((group) => {
+            const isOpen = query.length > 0 || group.id === openCategoryId;
             // While a category is collapsed its settings' dots are hidden with them, so the category
             // row carries a dot of its own.
             const hasPromotion =
