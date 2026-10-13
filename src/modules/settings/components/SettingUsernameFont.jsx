@@ -2,21 +2,21 @@ import {faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Text} from '@mantine/core';
 import classNames from 'classnames';
 import React from 'react';
-import {updateUsernameFont} from '../../../actions/account';
-import Icon from '../../../common/components/Icon';
-import UsernameEffectText from '../../../common/components/UsernameEffectText';
-import useCurrentUser from '../../../common/hooks/CurrentUser';
-import useUsernameEffectSetting, {NONE} from '../../../common/hooks/UsernameEffectSetting';
-import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
-import {UsernameFonts} from '../../../constants';
-import formatMessage from '../../../i18n/index';
-import useAuthStore from '../../../stores/auth';
-import {isUserPro} from '../../../utils/pro';
-import {getCurrentUser, getPreviewDisplayName} from '../../../utils/user';
-import SettingRadioCard from './SettingRadioCard';
-import SettingRadioCardGroup from './SettingRadioCardGroup';
-import styles from './SettingUsernameEffect.module.css';
-import SettingWrapper from './SettingWrapper';
+import {updateUsernameFont} from '@/actions/account';
+import Icon from '@/common/components/Icon';
+import UsernameEffectText from '@/common/components/UsernameEffectText';
+import useCurrentUser from '@/common/hooks/CurrentUser';
+import useUsernameEffectSetting, {NONE} from '@/common/hooks/UsernameEffectSetting';
+import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
+import {UsernameFonts} from '@/constants';
+import formatMessage from '@/i18n/index';
+import SettingRadioCard from '@/modules/settings/components/SettingRadioCard';
+import SettingRadioCardGroup from '@/modules/settings/components/SettingRadioCardGroup';
+import styles from '@/modules/settings/components/SettingUsernameEffect.module.css';
+import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import useAuthStore from '@/stores/auth';
+import {isUserPro} from '@/utils/pro';
+import {getCurrentUser, getPreviewDisplayName} from '@/utils/user';
 
 const FONT_CARDS = [
   {value: UsernameFonts.TREBUCHET, label: formatMessage({defaultMessage: 'Formal'})},
@@ -60,7 +60,7 @@ function UsernameFontRequirementDisplay({value, displayName}) {
 
 function openUsernameFontSubscriptionUpgradeModal(value, callback) {
   const displayName = getPreviewDisplayName(getCurrentUser(), useAuthStore.getState().user);
-  // every font unlocks with pro, so a pro user has nothing to upgrade to
+  // fonts only need pro, so there's nothing to upgrade to
   const upgradeDisabled = isUserPro(useAuthStore.getState().user);
 
   return openSubscriptionUpgradeModal(

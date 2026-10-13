@@ -280,7 +280,7 @@
   }
 }
 
-/* username fonts are web-safe stacks: each falls back to a lookalike, then to a generic family every browser has */
+/* web-safe username font stacks, each ending in a generic family */
 .trebuchet {
   font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
 }
