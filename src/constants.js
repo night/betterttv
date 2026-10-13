@@ -488,3 +488,14 @@ export const UsernameHoverEffects = {
   BOUNCE: 'bounce',
   WAVE: 'wave',
 };
+
+// api contract strings, keep in sync with betterttv-private
+export const UsernameFonts = {
+  GEORGIA: 'georgia',
+  PALATINO: 'palatino',
+  COURIER: 'courier',
+  COMIC_SANS: 'comic_sans',
+  IMPACT: 'impact',
+  BRUSH_SCRIPT: 'brush_script',
+  TREBUCHET: 'trebuchet',
+};

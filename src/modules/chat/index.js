@@ -448,6 +448,20 @@ class ChatModule {
     fromNode.classList.add(effectClassName);
   }
 
+  applyUsernameFont(fromNode, userId) {
+    const usernameFont = subscribers.getUsernameFont(userId);
+    if (usernameFont == null) {
+      return;
+    }
+
+    const fontClassName = effects[usernameFont];
+    if (fontClassName == null) {
+      return;
+    }
+
+    fromNode.classList.add(fontClassName);
+  }
+
   applyUsernameHoverEffect(fromNode, userId) {
     if (shouldReduceMotion()) {
       return;
@@ -490,6 +504,7 @@ class ChatModule {
     }
 
     this.applyUsernameEffect(fromNode, user.id);
+    this.applyUsernameFont(fromNode, user.id);
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
       element
