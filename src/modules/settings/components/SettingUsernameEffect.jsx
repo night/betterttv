@@ -196,7 +196,10 @@ function SettingUsernameEffect() {
                 truncate
                 size="xl"
                 style={getChatColorStyle(effectValue, chatColor)}
-                className={UsernameEffectRequirementClassNamesByEffect[effectValue]}>
+                className={classNames(
+                  UsernameEffectRequirementClassNamesByEffect[effectValue],
+                  user?.usernameFont != null ? effects[user.usernameFont] : null
+                )}>
                 {getPreviewDisplayName(currentUser, user)}
               </Text>
             </SettingRadioCard>

@@ -18,15 +18,11 @@ import SettingRadioCardGroup from './SettingRadioCardGroup';
 import styles from './SettingUsernameEffect.module.css';
 import SettingWrapper from './SettingWrapper';
 
-// font names are proper nouns, so they aren't translated
 const FONT_CARDS = [
-  {value: UsernameFonts.GEORGIA, label: 'Georgia'},
-  {value: UsernameFonts.PALATINO, label: 'Palatino'},
-  {value: UsernameFonts.COURIER, label: 'Courier'},
+  {value: UsernameFonts.TREBUCHET, label: formatMessage({defaultMessage: 'Formal'})},
+  {value: UsernameFonts.COURIER, label: formatMessage({defaultMessage: 'Typewriter'})},
+  // a font name, so it isn't translated
   {value: UsernameFonts.COMIC_SANS, label: 'Comic Sans'},
-  {value: UsernameFonts.IMPACT, label: 'Impact'},
-  {value: UsernameFonts.BRUSH_SCRIPT, label: 'Brush Script'},
-  {value: UsernameFonts.TREBUCHET, label: 'Trebuchet'},
 ];
 
 const USERNAME_FONT_TITLE = formatMessage({defaultMessage: 'Username Font'});

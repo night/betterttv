@@ -281,12 +281,8 @@
 }
 
 /* username fonts are web-safe stacks: each falls back to a lookalike, then to a generic family every browser has */
-.georgia {
-  font-family: Georgia, 'Times New Roman', Times, serif;
-}
-
-.palatino {
-  font-family: 'Palatino Linotype', Palatino, 'Book Antiqua', 'URW Palladio L', serif;
+.trebuchet {
+  font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
 }
 
 .courier {
@@ -295,17 +291,4 @@
 
 .comic_sans {
   font-family: 'Comic Sans MS', 'Comic Sans', 'Comic Neue', cursive;
-}
-
-.impact {
-  font-family: Impact, Haettenschweiler, 'Franklin Gothic Bold', 'Arial Black', sans-serif;
-  font-weight: 400;
-}
-
-.brush_script {
-  font-family: 'Brush Script MT', 'Brush Script Std', 'Lucida Handwriting', cursive;
-}
-
-.trebuchet {
-  font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
 }
