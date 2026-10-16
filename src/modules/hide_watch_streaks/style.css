@@ -5,3 +5,8 @@
 .bttv-hide-watch-streaks .side-nav-card :has(> div > svg path[d^='M11 4.5L9 2L4.80069 6.89']) {
   display: none !important;
 }
+
+/* The group label is localized. Anchor to the semantic CSS-module prefix on its direct rows instead. */
+.bttv-hide-save-your-streak [role='group']:has(> [class*='saveYourStreakSideNavRow--']) {
+  display: none !important;
+}
