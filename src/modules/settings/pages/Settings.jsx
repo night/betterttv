@@ -6,10 +6,12 @@ import formatMessage from '@/i18n/index';
 import PageHeader from '@/modules/settings/components/PageHeader';
 import PageScrollBody, {PageScrollContext} from '@/modules/settings/components/PageScrollBody';
 import Panel from '@/modules/settings/components/Panel';
+import SearchSettingContext from '@/modules/settings/contexts/SearchSettingContext';
 import {orderSettingsByCategory} from '@/modules/settings/setting-categories';
 import promotionStore from '@/modules/settings/stores/promotion-store';
 import SettingStore from '@/modules/settings/stores/setting-store';
 import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
+import useSettingsSearchStore, {panelMatchesSearch} from '@/modules/settings/stores/settings-search';
 import extension from '@/utils/extension';
 import styles from './Settings.module.css';
 
@@ -46,7 +48,7 @@ function UnsupportedChromiumVersion() {
 // Renders one setting panel and clears its promotion dot once it scrolls into view, so a promoted
 // setting is only advertised until the user has actually seen it. markSettingPanelPromotionSeen
 // no-ops for panels without a promotion, so this is safe to run for every setting.
-function SettingPanel({setting, onRef}) {
+function SettingPanel({setting, onRef, visible}) {
   const panelRef = useRef(null);
   const inView = useInView(panelRef, {once: true, amount: 0.5});
 
@@ -64,23 +66,34 @@ function SettingPanel({setting, onRef}) {
     [onRef, setting.settingPanelId]
   );
 
-  return setting.render({ref: handleRef});
+  return (
+    <div style={{display: visible ? 'contents' : 'none'}}>
+      <SearchSettingContext value={setting.settingPanelId}>{setting.render({ref: handleRef})}</SearchSettingContext>
+    </div>
+  );
 }
 
 // Memoized so a modal-level re-render (e.g. the mobile sidenav toggling) doesn't re-render every
 // panel and re-thrash all their ref callbacks — props are stable, so this skips the work.
-const SettingsList = React.memo(function SettingsList({settings, handleSettingRefCallback}) {
+const SettingsList = React.memo(function SettingsList({settings, handleSettingRefCallback, query, entries}) {
   if (IS_UNSUPPORTED_CHROME_INSTALL) {
     return <UnsupportedChromiumVersion />;
   }
 
   return settings.map((setting) => (
-    <SettingPanel key={setting.settingPanelId} setting={setting} onRef={handleSettingRefCallback} />
+    <SettingPanel
+      key={setting.settingPanelId}
+      setting={setting}
+      onRef={handleSettingRefCallback}
+      visible={query.length === 0 || panelMatchesSearch(setting, query, entries)}
+    />
   ));
 });
 
 function Settings({handleSettingRefCallback}) {
   const settings = useMemo(() => orderSettingsByCategory(SettingStore.getSupportedSettings()), []);
+  const query = useSettingsSearchStore((state) => state.query.trim());
+  const entries = useSettingsSearchStore((state) => state.entries);
   const scrollRef = use(PageScrollContext);
   const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
 
@@ -116,7 +129,7 @@ function Settings({handleSettingRefCallback}) {
 
   return (
     <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'Settings'})} />}>
-      <SettingsList settings={settings} handleSettingRefCallback={handleSettingRef} />
+      <SettingsList settings={settings} handleSettingRefCallback={handleSettingRef} query={query} entries={entries} />
     </PageScrollBody>
   );
 }
