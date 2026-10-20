@@ -491,7 +491,7 @@ export const UsernameHoverEffects = {
 
 // api contract strings, keep in sync with betterttv-private
 export const UsernameFonts = {
-  TREBUCHET: 'trebuchet',
-  COURIER: 'courier',
-  COMIC_SANS: 'comic_sans',
+  FORMAL: 'formal',
+  TYPEWRITER: 'typewriter',
+  COMIC: 'comic',
 };

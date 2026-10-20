@@ -7,6 +7,7 @@ import Icon from '../../../common/components/Icon';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useUsernameEffectSetting, {NONE} from '../../../common/hooks/UsernameEffectSetting';
 import effects from '../../../common/styles/UsernameEffects.module.css';
+import fonts from '../../../common/styles/UsernameFonts.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
 import {CHAT_COLOR_USERNAME_EFFECTS, UsernameEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
@@ -198,7 +199,7 @@ function SettingUsernameEffect() {
                 style={getChatColorStyle(effectValue, chatColor)}
                 className={classNames(
                   UsernameEffectRequirementClassNamesByEffect[effectValue],
-                  user?.usernameFont != null ? effects[user.usernameFont] : null
+                  fonts[user?.usernameFont]
                 )}>
                 {getPreviewDisplayName(currentUser, user)}
               </Text>

@@ -19,10 +19,9 @@ import {isUserPro} from '@/utils/pro';
 import {getCurrentUser, getPreviewDisplayName} from '@/utils/user';
 
 const FONT_CARDS = [
-  {value: UsernameFonts.TREBUCHET, label: formatMessage({defaultMessage: 'Formal'})},
-  {value: UsernameFonts.COURIER, label: formatMessage({defaultMessage: 'Typewriter'})},
-  // a font name, so it isn't translated
-  {value: UsernameFonts.COMIC_SANS, label: 'Comic Sans'},
+  {value: UsernameFonts.FORMAL, label: formatMessage({defaultMessage: 'Formal'})},
+  {value: UsernameFonts.TYPEWRITER, label: formatMessage({defaultMessage: 'Typewriter'})},
+  {value: UsernameFonts.COMIC, label: formatMessage({defaultMessage: 'Comic'})},
 ];
 
 const USERNAME_FONT_TITLE = formatMessage({defaultMessage: 'Username Font'});

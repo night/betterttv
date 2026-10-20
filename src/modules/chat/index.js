@@ -1,6 +1,7 @@
 import {getCachedBadges} from '@/actions/badges';
 import clickableStyles from '@/common/styles/Clickable.module.css';
 import effects from '@/common/styles/UsernameEffects.module.css';
+import fonts from '@/common/styles/UsernameFonts.module.css';
 import {shouldReduceMotion} from '@/common/utils/reduced-motion';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
 import {
@@ -435,12 +436,26 @@ class ChatModule {
   }
 
   applyUsernameEffect(fromNode, userId) {
-    for (const value of [subscribers.getUsernameEffect(userId), subscribers.getUsernameFont(userId)]) {
-      const className = value != null ? effects[value] : null;
-      if (className != null) {
-        fromNode.classList.add(className);
-      }
+    const usernameEffect = subscribers.getUsernameEffect(userId);
+    if (usernameEffect == null) {
+      return;
     }
+
+    const effectClassName = effects[usernameEffect];
+    if (effectClassName == null) {
+      return;
+    }
+
+    fromNode.classList.add(effectClassName);
+  }
+
+  applyUsernameFont(fromNode, userId) {
+    const className = fonts[subscribers.getUsernameFont(userId)];
+    if (className == null) {
+      return;
+    }
+
+    fromNode.classList.add(className);
   }
 
   applyUsernameHoverEffect(fromNode, userId) {
@@ -485,6 +500,7 @@ class ChatModule {
     }
 
     this.applyUsernameEffect(fromNode, user.id);
+    this.applyUsernameFont(fromNode, user.id);
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
       element
