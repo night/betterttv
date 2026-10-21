@@ -126,6 +126,7 @@ export const ChatFlags = {
   WATCH_STREAKS: 1 << 8,
   CHAT_GIFS: 1 << 9,
   SAVE_YOUR_STREAK: 1 << 10,
+  CHAT_WATCH_STREAKS: 1 << 11,
 };
 
 export const ChannelPointsFlags = {
@@ -339,7 +340,8 @@ export const SettingDefaultValues = {
       ChatFlags.AI_STREAM_SUMMARY |
       ChatFlags.WATCH_STREAKS |
       ChatFlags.CHAT_GIFS |
-      ChatFlags.SAVE_YOUR_STREAK,
+      ChatFlags.SAVE_YOUR_STREAK |
+      ChatFlags.CHAT_WATCH_STREAKS,
     0,
   ],
   [SettingIds.AUTO_PLAY]: [
