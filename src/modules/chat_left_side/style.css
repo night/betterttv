@@ -59,7 +59,16 @@
     }
   }
 
+  /*
+   * Twitch anchors the collapsed toggle outside the column's left edge,
+   * which keeps it visible only while the column sits on the right. With
+   * the chat swapped left the zero-width collapsed column is at the
+   * viewport's left edge, so the toggle lands off-screen (measured at
+   * x = -42px). Pin it back into view, mirroring the default layout's
+   * 10px margin from the viewport edge.
+   */
   .right-column--collapsed .right-column__toggle-visibility {
+    left: 10px !important;
     transform: rotate(-180deg);
   }
 
