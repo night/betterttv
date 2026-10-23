@@ -68,7 +68,7 @@ function SettingPanel({setting, onRef, visible}) {
 
   return (
     <div style={{display: visible ? 'contents' : 'none'}}>
-      <SearchSettingContext value={setting.settingPanelId}>{setting.render({ref: handleRef})}</SearchSettingContext>
+      <SearchSettingContext value={setting}>{setting.render({ref: handleRef})}</SearchSettingContext>
     </div>
   );
 }

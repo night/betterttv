@@ -22,7 +22,8 @@ function SettingWrapper({
 }) {
   const portalRef = usePortalRef();
   const {setPage, setSidenavOpen} = use(PageContext);
-  const settingPanelId = use(SearchSettingContext);
+  const settingPanel = use(SearchSettingContext);
+  const settingPanelId = settingPanel?.settingPanelId;
   const query = useSettingsSearchStore((state) => state.query);
   const registerEntry = useSettingsSearchStore((state) => state.registerEntry);
 
@@ -31,7 +32,7 @@ function SettingWrapper({
     registerEntry(searchEntryId, {settingPanelId, name, description});
   }, [description, name, registerEntry, settingPanelId]);
 
-  if (!settingsSearchMatches(query, name, description)) {
+  if (!settingsSearchMatches(query, settingPanel?.name) && !settingsSearchMatches(query, name, description)) {
     return null;
   }
 
