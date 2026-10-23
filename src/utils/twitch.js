@@ -902,7 +902,11 @@ export default {
     if (client == null) {
       return Promise.reject(new Error('unable to locate Twitch Apollo client'));
     }
-    return client.query({query, variables, ...options});
+    // our queries only read, so keep their results out of twitch's normalized cache. a selection
+    // that lacks the fields twitch keys an entity on (e.g. channel.self without id) is written
+    // inline over twitch's reference, orphaning everything it cached there and forcing it to
+    // refetch, which is what broke the native emote picker
+    return client.query({query, variables, fetchPolicy: 'no-cache', ...options});
   },
 
   graphqlMutation(mutation, variables) {
