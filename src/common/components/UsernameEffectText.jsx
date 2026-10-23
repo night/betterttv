@@ -1,11 +1,12 @@
 import classNames from 'classnames';
 import React, {useMemo} from 'react';
 import effects from '@/common/styles/UsernameEffects.module.css';
+import fonts from '@/common/styles/UsernameFonts.module.css';
 import {shouldReduceMotion} from '@/common/utils/reduced-motion';
 import {CHAT_COLOR_USERNAME_EFFECTS, UsernameHoverEffects} from '@/constants';
 import twitch from '@/utils/twitch';
 
-export default function UsernameEffectText({effect, hoverEffect, className, children}) {
+export default function UsernameEffectText({effect, hoverEffect, font, className, children}) {
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
   const effectClassName = effect != null ? effects[effect] : null;
   const hoverEffectClassName = hoverEffect != null && !shouldReduceMotion() ? effects[hoverEffect] : null;
@@ -16,7 +17,7 @@ export default function UsernameEffectText({effect, hoverEffect, className, chil
 
   return (
     <span
-      className={classNames(className, effectClassName, hoverEffectClassName)}
+      className={classNames(className, effectClassName, hoverEffectClassName, fonts[font])}
       style={style}
       data-bttv-name={
         hoverEffectClassName != null && hoverEffect === UsernameHoverEffects.FLIP && typeof children === 'string'

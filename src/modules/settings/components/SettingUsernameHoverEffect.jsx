@@ -45,10 +45,11 @@ function isEligibleForUsernameHoverEffect(eligibility, value) {
 
 function UsernameHoverEffectPreviewText({value, className, children}) {
   const usernameEffect = useAuthStore((state) => state.user?.usernameEffect ?? null);
+  const usernameFont = useAuthStore((state) => state.user?.usernameFont ?? null);
 
   return (
     <Text truncate size="xl" className={classNames(className, styles.flavorUsername)}>
-      <UsernameEffectText effect={usernameEffect} hoverEffect={value}>
+      <UsernameEffectText effect={usernameEffect} hoverEffect={value} font={usernameFont}>
         {children}
       </UsernameEffectText>
     </Text>
