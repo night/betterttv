@@ -61,7 +61,7 @@ function UsernameEffectShowcaseCard() {
         ))}
       </div>
       <Title order={3} className={cardStyles.showcaseLabel}>
-        {formatMessage({defaultMessage: 'Username & Hover Effects'})}
+        {formatMessage({defaultMessage: 'Username, Font & Hover Effects'})}
       </Title>
     </div>
   );

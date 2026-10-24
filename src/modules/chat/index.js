@@ -1,6 +1,7 @@
 import {getCachedBadges} from '@/actions/badges';
 import clickableStyles from '@/common/styles/Clickable.module.css';
 import effects from '@/common/styles/UsernameEffects.module.css';
+import fonts from '@/common/styles/UsernameFonts.module.css';
 import {shouldReduceMotion} from '@/common/utils/reduced-motion';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
 import {
@@ -448,6 +449,15 @@ class ChatModule {
     fromNode.classList.add(effectClassName);
   }
 
+  applyUsernameFont(fromNode, userId) {
+    const className = fonts[subscribers.getUsernameFont(userId)];
+    if (className == null) {
+      return;
+    }
+
+    fromNode.classList.add(className);
+  }
+
   applyUsernameHoverEffect(fromNode, userId) {
     if (shouldReduceMotion()) {
       return;
@@ -490,6 +500,7 @@ class ChatModule {
     }
 
     this.applyUsernameEffect(fromNode, user.id);
+    this.applyUsernameFont(fromNode, user.id);
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
       element

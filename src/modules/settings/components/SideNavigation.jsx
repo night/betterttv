@@ -99,7 +99,10 @@ function UserSettingsNavigationButton({active, onClick}) {
       className={classNames(clickableStyles.clickableContainer, styles.userSettingsNavigationButton)}
       label={
         bttvUser?.displayName != null ? (
-          <UsernameEffectText effect={bttvUser.usernameEffect} className={styles.displayName}>
+          <UsernameEffectText
+            effect={bttvUser.usernameEffect}
+            font={bttvUser.usernameFont}
+            className={styles.displayName}>
             {bttvUser.displayName}
           </UsernameEffectText>
         ) : (
