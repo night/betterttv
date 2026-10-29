@@ -38,71 +38,102 @@ function createEmote(id, code, animated, user) {
   });
 }
 
+function formatAddedMessage(codes) {
+  if (codes.length === 1) {
+    const [code] = codes;
+    return formatMessage(
+      {defaultMessage: 'BetterTTV Emotes: {emoteCode} has been added to chat'},
+      {emoteCode: `${code} \u200B \u200B${code}\u200B`}
+    );
+  }
+
+  return formatMessage(
+    {defaultMessage: 'BetterTTV Emotes: {count, plural, other {# emotes have}} been added to chat'},
+    {count: codes.length}
+  );
+}
+
+function formatRemovedMessage(codes) {
+  if (codes.length === 1) {
+    const [code] = codes;
+    return formatMessage(
+      {defaultMessage: 'BetterTTV Emotes: {emoteCode} has been removed from chat'},
+      {emoteCode: `\u200B${code}\u200B`}
+    );
+  }
+
+  return formatMessage(
+    {defaultMessage: 'BetterTTV Emotes: {count, plural, other {# emotes have}} been removed from chat'},
+    {count: codes.length}
+  );
+}
+
 class ChannelEmotes extends AbstractEmotes {
   constructor() {
     super();
 
     watcher.on('channel.updated', (d) => this.updateChannelEmotes(d));
 
-    socketClient.on(EventNames.EMOTE_CREATE, ({channel, emote}) => {
-      if (!validChannelDestination(channel)) {
-        return;
+    socketClient.on(EventNames.EMOTE_CREATE, ({channel, emote}) => this.updateEmotes(channel, {added: [emote]}));
+    socketClient.on(EventNames.EMOTE_UPDATE, ({channel, emote}) => this.updateEmotes(channel, {updated: [emote]}));
+    socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => this.updateEmotes(channel, {removed: [emoteId]}));
+    socketClient.on(EventNames.EMOTES_UPDATE, ({channel, ...changes}) => this.updateEmotes(channel, changes));
+  }
+
+  // removals go first, so an emote removed and added back in the same update stays
+  updateEmotes(channel, {added = [], removed = [], updated = []}) {
+    if (!validChannelDestination(channel)) {
+      return;
+    }
+
+    const removedCodes = [];
+    for (const emoteId of removed) {
+      const emote = this.getEligibleEmoteById(emoteId);
+      if (emote == null) {
+        continue;
+      }
+
+      this.emotes.delete(emote.code);
+      removedCodes.push(emote.code);
+    }
+
+    let renamed = false;
+    for (const update of updated) {
+      const emote = this.getEligibleEmoteById(update.id);
+      if (emote == null) {
+        continue;
+      }
+
+      this.emotes.delete(emote.code);
+      const {id, code, animated, user} = {...emote, ...update};
+      this.emotes.set(code, createEmote(id, code, animated, user ?? emote.channel));
+      renamed = true;
+    }
+
+    const addedCodes = [];
+    for (const emote of added) {
+      // a repeated event for an emote that's already here changes nothing
+      if (this.emotes.get(emote.code)?.id === emote.id) {
+        continue;
       }
 
       this.emotes.set(emote.code, createEmote(emote.id, emote.code, emote.animated, emote.user));
+      addedCodes.push(emote.code);
+    }
 
-      watcher.emit('emotes.updated');
-      watcher.emit(
-        'chat.send_admin_message',
-        formatMessage(
-          {defaultMessage: 'BetterTTV Emotes: {emoteCode} has been added to chat'},
-          {emoteCode: `${emote.code} \u200B \u200B${emote.code}\u200B`}
-        )
-      );
-    });
+    if (removedCodes.length === 0 && addedCodes.length === 0 && !renamed) {
+      return;
+    }
 
-    socketClient.on(EventNames.EMOTE_UPDATE, ({channel, ...payload}) => {
-      if (!validChannelDestination(channel)) {
-        return;
-      }
+    watcher.emit('emotes.updated');
 
-      const emote = this.getEligibleEmoteById(payload.emote.id);
-      if (emote == null) {
-        return;
-      }
+    if (removedCodes.length > 0) {
+      watcher.emit('chat.send_admin_message', formatRemovedMessage(removedCodes));
+    }
 
-      this.emotes.delete(emote.code);
-
-      const newEmote = {...emote, ...payload.emote};
-      this.emotes.set(
-        newEmote.code,
-        createEmote(newEmote.id, newEmote.code, newEmote.animated, newEmote.user ?? emote.channel)
-      );
-
-      watcher.emit('emotes.updated');
-    });
-
-    socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {
-      if (!validChannelDestination(channel)) {
-        return;
-      }
-
-      const emote = this.getEligibleEmoteById(emoteId);
-      if (emote == null) {
-        return;
-      }
-
-      this.emotes.delete(emote.code);
-
-      watcher.emit('emotes.updated');
-      watcher.emit(
-        'chat.send_admin_message',
-        formatMessage(
-          {defaultMessage: 'BetterTTV Emotes: {emoteCode} has been removed from chat'},
-          {emoteCode: `\u200B${emote.code}\u200B`}
-        )
-      );
-    });
+    if (addedCodes.length > 0) {
+      watcher.emit('chat.send_admin_message', formatAddedMessage(addedCodes));
+    }
   }
 
   get category() {
