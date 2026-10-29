@@ -1,3 +1,4 @@
+import {getCachedUser} from '@/actions/users';
 import {EmoteCategories, EmoteProviders} from '@/constants';
 import formatMessage from '@/i18n/index';
 import socketClient, {deserializeSocketChannel, EventNames} from '@/socket-client';
@@ -80,6 +81,26 @@ class ChannelEmotes extends AbstractEmotes {
       );
 
       watcher.emit('emotes.updated');
+    });
+
+    socketClient.on(EventNames.EMOTES_REFRESH, async ({channel}) => {
+      if (!validChannelDestination(channel)) {
+        return;
+      }
+
+      const currentChannel = getCurrentChannel();
+      let data;
+      try {
+        data = await getCachedUser(currentChannel.provider, currentChannel.id);
+      } catch (_) {
+        return;
+      }
+
+      this.updateChannelEmotes(data);
+      watcher.emit(
+        'chat.send_admin_message',
+        formatMessage({defaultMessage: 'BetterTTV Emotes: The channel emotes have been updated'})
+      );
     });
 
     socketClient.on(EventNames.EMOTE_DELETE, ({channel, emoteId}) => {
