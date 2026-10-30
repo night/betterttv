@@ -1,0 +1,10 @@
+.root {
+  --input-height: 40px;
+  flex-shrink: 0;
+  margin: 8px;
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+}
