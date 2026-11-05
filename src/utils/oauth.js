@@ -48,8 +48,9 @@ export async function executeOAuth2AuthorizationFlow({signal} = {}) {
   });
 
   // open before any await, browsers like Safari and Firefox block popups that aren't opened
-  // directly from the click
-  if (!currentPopup.open({url: 'about:blank', width: 400, height: 600})) {
+  // directly from the click. it waits on the website's loader until the authorize url is ready
+  const loadingUrl = new URL('/extension/popup', redirectUri.origin);
+  if (!currentPopup.open({url: loadingUrl.toString(), width: 400, height: 600})) {
     throw new PopupBlockedError('Popup blocked');
   }
 
