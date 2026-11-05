@@ -33,7 +33,6 @@
     "@sentry/browser": "11.10.0",
     "@twemoji/api": "17.0.3",
     "classnames": "2.5.1",
-    "cookies-js": "1.2.3",
     "delegated-events": "1.1.2",
     "events": "3.3.0",
     "file-saver": "2.0.5",

@@ -1,4 +1,4 @@
-import cookies from 'cookies-js';
+import {getCookie, setCookie} from '@/utils/cookies';
 
 class Storage {
   constructor() {
@@ -44,7 +44,7 @@ class Storage {
     }
 
     try {
-      const storageValue = this._localStorageSupport ? window.localStorage.getItem(id) : cookies.get(id);
+      const storageValue = this._localStorageSupport ? window.localStorage.getItem(id) : getCookie(id);
       if (storageValue == null) {
         return null;
       }
@@ -66,10 +66,18 @@ class Storage {
     value = JSON.stringify(value);
 
     if (this._localStorageSupport) {
-      window.localStorage.setItem(storageId, value);
-    } else {
-      cookies.set(storageId, value, {expires: Infinity});
+      try {
+        window.localStorage.setItem(storageId, value);
+        return;
+      } catch (e) {
+        // localStorage can become unavailable after our initial check (e.g. null in some Safari contexts)
+        this._localStorageSupport = false;
+      }
     }
+
+    try {
+      setCookie(storageId, value);
+    } catch (e) {}
   }
 }
 
