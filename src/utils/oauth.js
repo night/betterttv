@@ -31,8 +31,6 @@ function closePopup() {
 }
 
 export async function executeOAuth2AuthorizationFlow({signal} = {}) {
-  const {code_verifier: codeVerifier, code_challenge: codeChallenge} = await pkceChallenge();
-  const authorizationUrl = getAuthorizeUrl();
   const state = crypto.randomUUID();
 
   const redirectUri = new URL(OAUTH2_REDIRECT_URI);
@@ -40,22 +38,22 @@ export async function executeOAuth2AuthorizationFlow({signal} = {}) {
   redirectUri.searchParams.set('origin', origin);
   const expectedOrigin = redirectUri.origin;
 
-  authorizationUrl.searchParams.set('client_id', OAUTH2_CLIENT_ID);
-  authorizationUrl.searchParams.set('redirect_uri', redirectUri.toString());
-  authorizationUrl.searchParams.set('response_type', 'code');
-  authorizationUrl.searchParams.set('scope', REQUIRED_SCOPES.join(' '));
-  authorizationUrl.searchParams.set('state', state);
-  authorizationUrl.searchParams.set('code_challenge', codeChallenge);
-  authorizationUrl.searchParams.set('code_challenge_method', 'S256');
-
   if (popup != null) {
     closePopup();
   }
 
-  popup = new Popup({
+  const currentPopup = new Popup({
     expectedOrigin,
     windowName: formatMessage({defaultMessage: 'Login to BetterTTV'}),
   });
+
+  // open before any await, browsers like Safari and Firefox block popups that aren't opened
+  // directly from the click
+  if (!currentPopup.open({url: 'about:blank', width: 400, height: 600})) {
+    throw new PopupBlockedError('Popup blocked');
+  }
+
+  popup = currentPopup;
 
   let cleanUpAbortListener = null;
   if (signal != null) {
@@ -66,6 +64,8 @@ export async function executeOAuth2AuthorizationFlow({signal} = {}) {
 
   return await new Promise((resolve, reject) => {
     let isHandlingMessage = false;
+    let isClosed = false;
+    let codeVerifier = null;
 
     function handleMessage(data) {
       if (data?.state == null) {
@@ -94,10 +94,11 @@ export async function executeOAuth2AuthorizationFlow({signal} = {}) {
       resolve({codeVerifier, code: data.code, redirectUri});
     }
 
-    popup.addListener('EXTENSION_CALLBACK', handleMessage);
+    currentPopup.addListener('EXTENSION_CALLBACK', handleMessage);
     const timeout = setTimeout(() => closePopup(), POPUP_TIMEOUT);
 
-    popup.once('close', () => {
+    currentPopup.once('close', () => {
+      isClosed = true;
       cleanUpAbortListener?.();
       cleanUpAbortListener = null;
 
@@ -105,7 +106,7 @@ export async function executeOAuth2AuthorizationFlow({signal} = {}) {
         clearTimeout(timeout);
       }
 
-      popup.removeListener('EXTENSION_CALLBACK', handleMessage);
+      currentPopup.removeListener('EXTENSION_CALLBACK', handleMessage);
 
       if (isHandlingMessage) {
         return;
@@ -114,11 +115,30 @@ export async function executeOAuth2AuthorizationFlow({signal} = {}) {
       reject(new Error('Popup closed without message'));
     });
 
-    if (!popup.open({url: authorizationUrl, width: 400, height: 600})) {
-      isHandlingMessage = true;
-      popup.emit('close');
-      reject(new PopupBlockedError('Popup blocked'));
-    }
+    pkceChallenge()
+      .then(({code_verifier: newCodeVerifier, code_challenge: codeChallenge}) => {
+        if (isClosed) {
+          return;
+        }
+
+        codeVerifier = newCodeVerifier;
+
+        const authorizationUrl = getAuthorizeUrl();
+        authorizationUrl.searchParams.set('client_id', OAUTH2_CLIENT_ID);
+        authorizationUrl.searchParams.set('redirect_uri', redirectUri.toString());
+        authorizationUrl.searchParams.set('response_type', 'code');
+        authorizationUrl.searchParams.set('scope', REQUIRED_SCOPES.join(' '));
+        authorizationUrl.searchParams.set('state', state);
+        authorizationUrl.searchParams.set('code_challenge', codeChallenge);
+        authorizationUrl.searchParams.set('code_challenge_method', 'S256');
+
+        currentPopup.setLocation(authorizationUrl.toString());
+      })
+      .catch((error) => {
+        isHandlingMessage = true;
+        closePopup();
+        reject(error);
+      });
   });
 }
 
