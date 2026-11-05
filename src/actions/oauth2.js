@@ -25,6 +25,30 @@ export async function exchangeCodeForCredentials({code, codeVerifier, clientId, 
   });
 }
 
+export async function requestDeviceCode({clientId, scope, signal}) {
+  return api.post('oauth2/authorize/device', {
+    signal,
+    autoRefreshToken: false,
+    version: null,
+    body: new URLSearchParams({client_id: clientId, scope}),
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  });
+}
+
+export async function exchangeDeviceCodeForCredentials({deviceCode, clientId, signal}) {
+  return api.post('oauth2/token', {
+    signal,
+    autoRefreshToken: false,
+    version: null,
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
+      client_id: clientId,
+      device_code: deviceCode,
+    }),
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  });
+}
+
 export async function refreshAccessToken({refreshToken, clientId}) {
   return api.post('oauth2/token', {
     autoRefreshToken: false,

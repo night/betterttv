@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
-import {openConfirmModal} from '@/common/utils/modal';
+import {executeSignIn, openConfirmModal} from '@/common/utils/modal';
 import {EXT_VER, SettingsPrompts} from '@/constants';
 import formatMessage from '@/i18n/index';
 import Alert from '@/modules/settings/components/Alert';
@@ -18,7 +18,6 @@ import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import storage from '@/storage';
 import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
-import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
 import {revokeAccessToken} from '@/utils/oauth';
 
 function BackupSetting({description, disabled}) {
@@ -75,7 +74,7 @@ function useSignIn() {
   function signIn() {
     setSigningIn(true);
     // TODO: Handle errors, maybe show modal?
-    executeOAuth2SignInAndSetCredentials().finally(() => setSigningIn(false));
+    executeSignIn().finally(() => setSigningIn(false));
   }
 
   return [signingIn, signIn];

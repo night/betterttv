@@ -1,12 +1,15 @@
 import {Text} from '@mantine/core';
 import {modals} from '@mantine/modals';
 import React from 'react';
+import DeviceCodeSignIn from '@/common/components/DeviceCodeSignIn';
 import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
 import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
+import {PopupBlockedError} from '@/utils/oauth';
 import {isUserPro} from '@/utils/pro';
+import {canOpenPopup} from '@/utils/window';
 import styles from './Modal.module.css';
 
 const DEFAULT_LOADING_TIMEOUT = 500;
@@ -112,6 +115,50 @@ export function openModal({title, description, ...props}) {
   });
 }
 
+function openDeviceCodeSignInModal({signal} = {}) {
+  return new Promise((resolve, reject) => {
+    let signedIn = false;
+
+    function handleCancel() {
+      modals.close(modalId);
+    }
+
+    function handleSignIn() {
+      signedIn = true;
+      modals.close(modalId);
+    }
+
+    function handleClose() {
+      signal?.removeEventListener('abort', handleCancel);
+      signedIn ? resolve() : reject(new Error('Sign in cancelled'));
+    }
+
+    const modalId = openModal({
+      title: formatMessage({defaultMessage: 'Sign in to BetterTTV'}),
+      description: <DeviceCodeSignIn onSignIn={handleSignIn} onCancel={handleCancel} />,
+      onClose: handleClose,
+    });
+
+    signal?.addEventListener('abort', handleCancel, {once: true});
+  });
+}
+
+export async function executeSignIn({signal} = {}) {
+  if (!canOpenPopup()) {
+    return openDeviceCodeSignInModal({signal});
+  }
+
+  try {
+    return await executeOAuth2SignInAndSetCredentials({signal});
+  } catch (error) {
+    if (!(error instanceof PopupBlockedError)) {
+      throw error;
+    }
+
+    return openDeviceCodeSignInModal({signal});
+  }
+}
+
 export function openSignInModal(props = {}, callback = () => {}) {
   const controller = new AbortController();
   const {signal} = controller;
@@ -135,7 +182,7 @@ export function openSignInModal(props = {}, callback = () => {}) {
         () => handleUserUpdated()
       );
 
-      executeOAuth2SignInAndSetCredentials({signal}).catch(reject);
+      executeSignIn({signal}).catch(reject);
     });
   }
 
