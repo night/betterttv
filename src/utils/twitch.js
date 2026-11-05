@@ -1,5 +1,5 @@
-import cookies from 'cookies-js';
 import gql from 'graphql-tag';
+import {getCookie} from '@/utils/cookies';
 import watcher from '@/watcher';
 import {getCurrentChannel, setCurrentChannel} from './channel';
 import debug from './debug';
@@ -106,7 +106,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 let chatClient;
 const profilePicturesByUserId = {};
 
-const userCookie = cookies.get('twilight-user');
+const userCookie = getCookie('twilight-user');
 if (userCookie) {
   try {
     const {id, login, displayName} = JSON.parse(userCookie);
