@@ -46,9 +46,11 @@ settings.on(`changed.${SettingIds.AUTO_THEME_MODE}`, (value, temporary) => {
   matchSystemTheme();
 });
 
-(() => {
-  connectStore = twitch.getConnectStore();
-  if (!connectStore) return;
+const CONNECT_STORE_POLL_INTERVAL = 100;
+const CONNECT_STORE_TIMEOUT = 30000;
+
+function syncWithTwitchTheme(store) {
+  connectStore = store;
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     matchSystemTheme();
@@ -56,7 +58,7 @@ settings.on(`changed.${SettingIds.AUTO_THEME_MODE}`, (value, temporary) => {
 
   matchSystemTheme();
 
-  connectStore.subscribe(() => {
+  function syncDarkenedMode() {
     const uiState = connectStore.getState().ui;
     const isDarkMode = uiState.theme === TwitchThemes.DARK || uiState.theatreModeEnabled === true;
     if (settings.get(SettingIds.DARKENED_MODE) === isDarkMode) {
@@ -64,5 +66,28 @@ settings.on(`changed.${SettingIds.AUTO_THEME_MODE}`, (value, temporary) => {
     }
 
     settings.set(SettingIds.DARKENED_MODE, isDarkMode, true);
-  });
+  }
+
+  // we may attach after twitch already set its theme, so sync once up front
+  syncDarkenedMode();
+  connectStore.subscribe(syncDarkenedMode);
+}
+
+// we can load before twitch's react root mounts, so keep looking for the store until it does
+(() => {
+  const startTime = Date.now();
+
+  function findConnectStore() {
+    const store = twitch.getConnectStore();
+    if (store != null) {
+      syncWithTwitchTheme(store);
+      return;
+    }
+
+    if (Date.now() - startTime < CONNECT_STORE_TIMEOUT) {
+      setTimeout(findConnectStore, CONNECT_STORE_POLL_INTERVAL);
+    }
+  }
+
+  findConnectStore();
 })();
