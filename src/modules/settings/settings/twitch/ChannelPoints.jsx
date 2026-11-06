@@ -8,7 +8,7 @@ import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Channel Points'});
-const CHANNEL_POINTS_DESCRIPTION = formatMessage({defaultMessage: 'Show channel points in the chat window.'});
+const SETTING_DESCRIPTION = formatMessage({defaultMessage: 'Show channel points in the chat window.'});
 const AUTO_CLAIM_NAME = formatMessage({defaultMessage: 'Auto Claim'});
 const AUTO_CLAIM_DESCRIPTION = formatMessage({defaultMessage: 'Claim bonus channel points when available.'});
 const MESSAGE_HIGHLIGHT_REWARDS_NAME = formatMessage({defaultMessage: 'Message Highlight Rewards'});
@@ -30,7 +30,7 @@ function ChannelPointsModule({ref, ...props}) {
       <SettingCheckbox
         value={ChannelPointsFlags.CHANNEL_POINTS}
         name={SETTING_NAME}
-        description={CHANNEL_POINTS_DESCRIPTION}
+        description={SETTING_DESCRIPTION}
       />
       <SettingCheckbox
         value={ChannelPointsFlags.AUTO_CLAIM}
@@ -48,7 +48,7 @@ function ChannelPointsModule({ref, ...props}) {
 
 registerSearchEntry({
   query: SETTING_NAME,
-  description: CHANNEL_POINTS_DESCRIPTION,
+  description: SETTING_DESCRIPTION,
   settingPanelId: SettingPanelIds.CHANNEL_POINTS,
 });
 

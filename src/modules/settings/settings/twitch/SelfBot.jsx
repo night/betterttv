@@ -16,7 +16,7 @@ import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/setti
 import useAuthStore from '@/stores/auth';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Self Bot'});
-const SELF_BOT_DESCRIPTION = formatMessage({
+const SETTING_DESCRIPTION = formatMessage({
   defaultMessage: 'Automatically send and reply to messages on your own channel.',
 });
 const COMMANDS_NAME = formatMessage({defaultMessage: 'Commands'});
@@ -70,7 +70,7 @@ function SelfBot({ref, ...props}) {
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
         name={SETTING_NAME}
-        description={SELF_BOT_DESCRIPTION}
+        description={SETTING_DESCRIPTION}
         value={displayEnabled}
         onChange={handleEnabledChange}
       />
@@ -95,7 +95,7 @@ function SelfBot({ref, ...props}) {
 
 registerSearchEntry({
   query: SETTING_NAME,
-  description: SELF_BOT_DESCRIPTION,
+  description: SETTING_DESCRIPTION,
   settingPanelId: SettingPanelIds.SELF_BOT,
 });
 

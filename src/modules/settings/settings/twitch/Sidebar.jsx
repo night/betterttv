@@ -12,9 +12,6 @@ const RECENTLY_WATCHED_CHANNELS_NAME = formatMessage({defaultMessage: 'Recently 
 const RECENTLY_WATCHED_CHANNELS_DESCRIPTION = formatMessage({
   defaultMessage: 'Show recently watched channels in the sidebar.',
 });
-const OFFLINE_FOLLOWED_CHANNELS_DESCRIPTION = formatMessage({
-  defaultMessage: 'Show offline followed channels in the sidebar.',
-});
 const RECOMMENDED_CHANNELS_NAME = formatMessage({defaultMessage: 'Recommended Channels'});
 const RECOMMENDED_CHANNELS_DESCRIPTION = formatMessage({defaultMessage: 'Show recommended channels in the sidebar.'});
 const RECOMMENDED_CATEGORIES_NAME = formatMessage({defaultMessage: 'Recommended Categories'});
@@ -24,6 +21,9 @@ const RECOMMENDED_CATEGORIES_DESCRIPTION = formatMessage({
 const SIMILAR_CHANNELS_NAME = formatMessage({defaultMessage: 'Similar Channels'});
 const SIMILAR_CHANNELS_DESCRIPTION = formatMessage({defaultMessage: 'Show similar channels in the sidebar.'});
 const OFFLINE_FOLLOWED_CHANNELS_NAME = formatMessage({defaultMessage: 'Offline Followed Channels'});
+const OFFLINE_FOLLOWED_CHANNELS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Show offline followed channels in the sidebar.',
+});
 const AUTO_EXPAND_CHANNELS_NAME = formatMessage({defaultMessage: 'Auto-Expand Channels'});
 const AUTO_EXPAND_CHANNELS_DESCRIPTION = formatMessage({
   defaultMessage: 'Clicks the Load More followed channels button in the sidebar for you.',

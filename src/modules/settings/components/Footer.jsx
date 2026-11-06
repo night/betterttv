@@ -162,13 +162,7 @@ const DASHBOARD_LINKS = [
 ];
 
 for (const {href, icon, label, description} of DASHBOARD_LINKS) {
-  registerSearchEntry({
-    query: label,
-    description,
-    keywords: ['dashboard'],
-    href,
-    icon,
-  });
+  registerSearchEntry({query: label, description, keywords: ['dashboard'], href, icon});
 }
 
 for (const {href, keywords, icon, label} of [

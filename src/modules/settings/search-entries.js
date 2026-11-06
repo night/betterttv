@@ -15,63 +15,25 @@ export function registerSearchEntry(entry) {
   entries.push({...entry, id: entries.length});
 }
 
-function findRanges(text, terms) {
-  const lowerText = text.toLowerCase();
-  const ranges = [];
-
-  for (const term of terms) {
-    let start = lowerText.indexOf(term);
-    while (start !== -1) {
-      ranges.push([start, start + term.length]);
-      start = lowerText.indexOf(term, start + term.length);
-    }
-  }
-
-  ranges.sort(([a], [b]) => a - b);
-
-  return ranges.reduce((merged, [start, end]) => {
-    const last = merged[merged.length - 1];
-    if (last != null && start <= last[1]) {
-      last[1] = Math.max(last[1], end);
-    } else {
-      merged.push([start, end]);
-    }
-    return merged;
-  }, []);
-}
-
 // higher is a better match, and 0 no match. every word of the search has to be found somewhere
 function scoreEntry({query, description = '', keywords = []}, phrase, terms) {
   const title = query.toLowerCase();
-  const body = description.toLowerCase();
-  const searchable = `${title} ${body} ${keywords.join(' ').toLowerCase()}`;
+  const searchable = `${title} ${description.toLowerCase()} ${keywords.join(' ')}`;
 
   if (!terms.every((term) => searchable.includes(term))) {
     return 0;
   }
 
   if (title === phrase) {
-    return 100;
+    return 4;
   }
   if (title.startsWith(phrase)) {
-    return 80;
+    return 3;
   }
-  if (title.includes(` ${phrase}`)) {
-    return 70;
-  }
-  if (title.includes(phrase)) {
-    return 60;
-  }
-  if (terms.every((term) => title.includes(term))) {
-    return 50;
-  }
-  if (keywords.some((keyword) => keyword.toLowerCase().startsWith(phrase))) {
-    return 40;
-  }
-  return body.includes(phrase) ? 30 : 20;
+  return title.includes(phrase) ? 2 : 1;
 }
 
-// the entries matching the search, best first, with the ranges of their text to highlight
+// the entries matching the search, best first, with the words to highlight in them
 export function searchEntries(text, isAvailable) {
   const phrase = text.trim().toLowerCase();
   const terms = phrase.split(/\s+/).filter((term) => term.length > 0);
@@ -95,9 +57,9 @@ export function searchEntries(text, isAvailable) {
     })
     .map((entry) => ({
       entry,
+      terms,
       score: scoreEntry(entry, phrase, terms),
-      queryRanges: findRanges(entry.query, terms),
-      descriptionRanges: findRanges(entry.description ?? '', terms),
+      descriptionMatches: terms.some((term) => entry.description?.toLowerCase().includes(term)),
     }))
     .filter(({score}) => score > 0)
     .sort((a, b) => b.score - a.score || (a.entry.href != null) - (b.entry.href != null));

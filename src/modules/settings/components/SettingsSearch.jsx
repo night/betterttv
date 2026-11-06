@@ -1,4 +1,4 @@
-import {Kbd, Popover, TextInput} from '@mantine/core';
+import {Highlight, Kbd, Popover, TextInput} from '@mantine/core';
 import {useWindowEvent} from '@mantine/hooks';
 import classNames from 'classnames';
 import {Search, SquareArrowOutUpRight} from 'lucide-react';
@@ -29,6 +29,7 @@ const RETURN_GLYPH = (
 
 const MAX_CATEGORY_MATCHES = 3;
 const NO_CATEGORY_IDS = new Set();
+const NO_TERMS = [];
 
 const searchClassNames = {wrapper: styles.wrapper};
 const searchHintClassNames = {wrapper: classNames(styles.wrapper, styles.wrapperHint)};
@@ -84,24 +85,6 @@ function buildRows(results, categories, expandedCategoryIds) {
   return rows.flat();
 }
 
-function HighlightedText({text, ranges = []}) {
-  const parts = [];
-  let position = 0;
-
-  for (const [start, end] of ranges) {
-    parts.push(text.slice(position, start));
-    parts.push(
-      <mark key={start} className={styles.match}>
-        {text.slice(start, end)}
-      </mark>
-    );
-    position = end;
-  }
-  parts.push(text.slice(position));
-
-  return parts;
-}
-
 function keepInputFocused(event) {
   event.preventDefault();
 }
@@ -111,11 +94,11 @@ function scrollIntoView(element) {
 }
 
 const SearchRow = React.memo(function SearchRow({id, row, index, selected, pressed, onHover, onAccept}) {
-  const {entry, icon: Icon, more, nested, queryRanges, descriptionRanges} = row;
+  const {entry, icon: Icon, more, nested, terms = NO_TERMS, descriptionMatches} = row;
   const handleHover = useCallback(() => onHover(index), [onHover, index]);
   const handleClick = useCallback(() => onAccept(entry), [onAccept, entry]);
   // a setting's description is noise until it's why the setting matched
-  const showDescription = entry.description != null && (!nested || descriptionRanges?.length > 0);
+  const showDescription = entry.description != null && (!nested || descriptionMatches);
 
   return (
     <button
@@ -127,20 +110,17 @@ const SearchRow = React.memo(function SearchRow({id, row, index, selected, press
       className={classNames(styles.row, {[styles.rowMore]: more})}
       data-selected={selected || undefined}
       data-pressed={pressed || undefined}
-      onMouseDown={keepInputFocused}
       onMouseMove={handleHover}
       onClick={handleClick}>
-      <span className={styles.rowIcon} data-empty={Icon == null || undefined}>
-        {Icon != null ? <Icon size={18} /> : null}
-      </span>
+      <span className={styles.rowIcon}>{Icon != null ? <Icon size={18} /> : null}</span>
       <span className={styles.rowText}>
-        <span className={styles.rowTitle}>
-          <HighlightedText text={entry.query} ranges={queryRanges} />
-        </span>
+        <Highlight unstyled component="span" className={styles.rowTitle} highlight={terms}>
+          {entry.query}
+        </Highlight>
         {showDescription ? (
-          <span className={styles.rowDescription}>
-            <HighlightedText text={entry.description} ranges={descriptionRanges} />
-          </span>
+          <Highlight unstyled component="span" className={styles.rowDescription} highlight={terms}>
+            {entry.description}
+          </Highlight>
         ) : null}
       </span>
       {entry.href != null ? <SquareArrowOutUpRight size={14} className={styles.rowExternal} /> : null}
@@ -274,16 +254,16 @@ function SettingsSearch({onAccept}) {
   return (
     <div className={styles.root}>
       {opened ? <div className={styles.dim} /> : null}
-      <Popover
-        id={listId}
-        opened={opened}
-        position="bottom-start"
-        width="32rem"
-        radius="lg"
-        shadow="lg"
-        portalProps={{target: portalRef?.current}}>
-        <Popover.Target>
-          <div className={styles.field}>
+      <div className={styles.field}>
+        <Popover
+          id={listId}
+          opened={opened}
+          position="bottom-start"
+          width="32rem"
+          radius="lg"
+          shadow="lg"
+          portalProps={{target: portalRef?.current}}>
+          <Popover.Target popupType="listbox">
             <TextInput
               ref={inputRef}
               // the modal's focus trap starts here; on a narrow screen the sidebar is closed
@@ -301,8 +281,6 @@ function SettingsSearch({onAccept}) {
               aria-label={formatMessage({defaultMessage: 'Search settings'})}
               role="combobox"
               aria-autocomplete="list"
-              aria-expanded={opened}
-              aria-controls={`${listId}-dropdown`}
               aria-activedescendant={opened && rows.length > 0 ? `${listId}-${activeIndex}` : undefined}
               leftSection={<Search size={18} />}
               rightSection={
@@ -321,29 +299,29 @@ function SettingsSearch({onAccept}) {
                 ) : null
               }
             />
-          </div>
-        </Popover.Target>
-        {/* unmounted rather than faded, or an emptied search shows No results on its way out */}
-        {opened ? (
-          <Popover.Dropdown className={styles.dropdown} role="listbox">
-            {rows.map((row, index) => (
-              <SearchRow
-                key={row.entry.id}
-                id={`${listId}-${index}`}
-                row={row}
-                index={index}
-                selected={index === activeIndex}
-                pressed={enterHeld && index === activeIndex}
-                onHover={setSelectedIndex}
-                onAccept={handleAccept}
-              />
-            ))}
-            {rows.length === 0 ? (
-              <div className={styles.empty}>{formatMessage({defaultMessage: 'No results'})}</div>
-            ) : null}
-          </Popover.Dropdown>
-        ) : null}
-      </Popover>
+          </Popover.Target>
+          {/* unmounted rather than faded, or an emptied search shows No results on its way out */}
+          {opened ? (
+            <Popover.Dropdown className={styles.dropdown} role="listbox" onMouseDown={keepInputFocused}>
+              {rows.map((row, index) => (
+                <SearchRow
+                  key={row.entry.id}
+                  id={`${listId}-${index}`}
+                  row={row}
+                  index={index}
+                  selected={index === activeIndex}
+                  pressed={enterHeld && index === activeIndex}
+                  onHover={setSelectedIndex}
+                  onAccept={handleAccept}
+                />
+              ))}
+              {rows.length === 0 ? (
+                <div className={styles.empty}>{formatMessage({defaultMessage: 'No results'})}</div>
+              ) : null}
+            </Popover.Dropdown>
+          ) : null}
+        </Popover>
+      </div>
     </div>
   );
 }

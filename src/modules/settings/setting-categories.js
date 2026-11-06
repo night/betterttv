@@ -29,10 +29,7 @@ const CATEGORY_ICONS = {
 };
 
 for (const [categoryId, label] of Object.entries(CATEGORY_LABELS)) {
-  registerSearchEntry({
-    query: label,
-    categoryId,
-  });
+  registerSearchEntry({query: label, categoryId});
 }
 
 // Group the given settings into their categories (in category-defined order), dropping categories

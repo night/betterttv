@@ -143,11 +143,6 @@
   width: 24px;
 }
 
-/* lined up with the title beside its category's icon */
-.rowIcon[data-empty] {
-  visibility: hidden;
-}
-
 .rowText {
   flex: 1;
   min-width: 0;
@@ -171,7 +166,7 @@
   color: var(--mantine-color-dimmed);
 }
 
-.match {
+.rowText mark {
   color: var(--mantine-primary-color-filled);
   background: none;
 }

@@ -9,7 +9,7 @@ import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Blacklist Keywords'});
-const BLACKLIST_KEYWORDS_DESCRIPTION = formatMessage({
+const SETTING_DESCRIPTION = formatMessage({
   defaultMessage: 'Remove certain words, phrases or users from your chat.',
 });
 
@@ -18,7 +18,7 @@ function BlacklistKeywords({ref, ...props}) {
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
-      <SettingWrapper name={SETTING_NAME} reverse description={BLACKLIST_KEYWORDS_DESCRIPTION}>
+      <SettingWrapper name={SETTING_NAME} reverse description={SETTING_DESCRIPTION}>
         <Button size="lg" onClick={() => setPage(PageTypes.BLACKLIST_KEYWORDS)}>
           {formatMessage({defaultMessage: 'Edit'})}
         </Button>
@@ -29,7 +29,7 @@ function BlacklistKeywords({ref, ...props}) {
 
 registerSearchEntry({
   query: SETTING_NAME,
-  description: BLACKLIST_KEYWORDS_DESCRIPTION,
+  description: SETTING_DESCRIPTION,
   settingPanelId: SettingPanelIds.BLACKLIST_KEYWORDS,
   onAccept: ({setPage}) => setPage(PageTypes.BLACKLIST_KEYWORDS),
 });

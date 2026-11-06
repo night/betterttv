@@ -54,14 +54,7 @@ function PageContainer({children, className, scrollRef, onMount}) {
 }
 
 function flashRow(row) {
-  function handleAnimationEnd(event) {
-    if (event.target === row) {
-      row.removeAttribute('data-flash');
-      row.removeEventListener('animationend', handleAnimationEnd);
-    }
-  }
-
-  row.addEventListener('animationend', handleAnimationEnd);
+  row.addEventListener('animationend', () => row.removeAttribute('data-flash'), {once: true});
   row.setAttribute('data-flash', '');
 }
 
@@ -102,11 +95,12 @@ function SettingsModal({setHandleOpen}) {
     }
 
     const currentPageDecendants = PageDecendants[page];
+    const parentPanelId = PageSettingPanelIds[newPage];
+    const parentCategoryId = SettingStore.settings[parentPanelId]?.settingCategoryId;
 
     // When navigating into a descendant page, remember the parent's scroll position
     // so it can be restored when returning.
     if (currentPageDecendants != null && currentPageDecendants.includes(newPage)) {
-      const parentCategoryId = SettingStore.settings[PageSettingPanelIds[newPage]]?.settingCategoryId;
       lastParentDataRef.current.page = page;
       // search can come in from another category, whose scroll position means nothing on the way back
       lastParentDataRef.current.scrollTop =
@@ -114,9 +108,8 @@ function SettingsModal({setHandleOpen}) {
     }
 
     // a descendant page belongs to a setting, so its category stays active and back returns there
-    const parentPanelId = PageSettingPanelIds[newPage];
     if (parentPanelId != null) {
-      setCategoryId(SettingStore.settings[parentPanelId]?.settingCategoryId ?? null);
+      setCategoryId(parentCategoryId ?? null);
     }
 
     setPage(newPage);
