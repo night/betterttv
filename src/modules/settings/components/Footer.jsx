@@ -1,5 +1,23 @@
 import {Anchor, Text, Tooltip} from '@mantine/core';
-import {Bug, CodeXml, Globe, History, Lightbulb, Lock, Mail, Scale} from 'lucide-react';
+import {
+  Bot,
+  Bug,
+  CircleUserRound,
+  CodeXml,
+  Coins,
+  CreditCard,
+  Globe,
+  History,
+  Lightbulb,
+  Link,
+  Lock,
+  Mail,
+  PaintbrushVertical,
+  Scale,
+  Smile,
+  Upload,
+  Users,
+} from 'lucide-react';
 import React, {use} from 'react';
 import {CrowdinMark, DiscordMark, GithubMark, XMark} from '@/common/components/BrandMarks';
 import usePortalRef from '@/common/hooks/PortalRef';
@@ -85,6 +103,41 @@ const FOOTER_OTHER_LINKS = [
     label: formatMessage({defaultMessage: 'Developer API'}),
   },
 ];
+
+// the website's dashboard pages, which are only reached through search
+const DASHBOARD_LINKS = [
+  {
+    href: ExternalLinks.DASHBOARD_CHANNEL_EMOTES,
+    icon: Smile,
+    label: formatMessage({defaultMessage: 'Channel Emotes'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_PERSONAL_EMOTES,
+    icon: CircleUserRound,
+    label: formatMessage({defaultMessage: 'Personal Emotes'}),
+  },
+  {href: ExternalLinks.DASHBOARD_UPLOADS, icon: Upload, label: formatMessage({defaultMessage: 'Emote Uploads'})},
+  {
+    href: ExternalLinks.DASHBOARD_APPEARANCE,
+    icon: PaintbrushVertical,
+    label: formatMessage({defaultMessage: 'Appearance'}),
+  },
+  {href: ExternalLinks.DASHBOARD_CONNECTIONS, icon: Link, label: formatMessage({defaultMessage: 'Connections'})},
+  {href: ExternalLinks.PRO, icon: CreditCard, label: formatMessage({defaultMessage: 'Subscription'})},
+  {href: ExternalLinks.DASHBOARD_EDITORS, icon: Users, label: formatMessage({defaultMessage: 'Editors'})},
+  {href: ExternalLinks.DASHBOARD_BOTS, icon: Bot, label: formatMessage({defaultMessage: 'Chat Bots'})},
+  {href: ExternalLinks.DASHBOARD_CHANNEL_POINTS, icon: Coins, label: formatMessage({defaultMessage: 'Channel Points'})},
+];
+
+for (const {href, icon, label} of DASHBOARD_LINKS) {
+  registerSearchEntry({
+    query: label,
+    description: formatMessage({defaultMessage: 'Opens in your BetterTTV dashboard.'}),
+    keywords: ['dashboard'],
+    href,
+    icon,
+  });
+}
 
 for (const {href, keywords, icon, label} of [
   ...FOOTER_EXPLORE_LINKS,

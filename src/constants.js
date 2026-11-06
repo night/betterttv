@@ -414,6 +414,14 @@ export const ExternalLinks = {
   PRIVACY: 'https://betterttv.com/privacy',
   DEVELOPER_API: 'https://betterttv.com/developers/api',
   PRO: 'https://betterttv.com/dashboard/account/subscription',
+  DASHBOARD_CHANNEL_EMOTES: 'https://betterttv.com/dashboard/emotes/channel',
+  DASHBOARD_PERSONAL_EMOTES: 'https://betterttv.com/dashboard/emotes/personal',
+  DASHBOARD_UPLOADS: 'https://betterttv.com/dashboard/emotes/upload',
+  DASHBOARD_APPEARANCE: 'https://betterttv.com/dashboard/account/appearance',
+  DASHBOARD_CONNECTIONS: 'https://betterttv.com/dashboard/account/connections',
+  DASHBOARD_EDITORS: 'https://betterttv.com/dashboard/editors',
+  DASHBOARD_BOTS: 'https://betterttv.com/dashboard/bots',
+  DASHBOARD_CHANNEL_POINTS: 'https://betterttv.com/dashboard/twitch_channel_points_reward',
 };
 
 export const CommandProviders = {

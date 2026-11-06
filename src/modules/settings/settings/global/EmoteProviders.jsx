@@ -23,10 +23,14 @@ const SEVENTV_LISTING_OPTIONS = [
 ];
 
 // the title names the provider, so the logo is only there for scanning the list
-function ProviderLogo({provider}) {
+function ProviderLogo({provider, className}) {
   return (
     <img
-      className={classNames(styles.providerLogo, {[styles.ffzLogo]: provider === EmoteProviderIds.FRANKERFACEZ})}
+      className={classNames(
+        styles.providerLogo,
+        {[styles.ffzLogo]: provider === EmoteProviderIds.FRANKERFACEZ},
+        className
+      )}
       src={EmoteProviderMetadata[provider].logoUrl}
       alt=""
     />
@@ -110,6 +114,7 @@ function EmoteProviders({ref, ...props}) {
 registerSearchEntry({
   query: formatMessage({defaultMessage: 'Show BetterTTV emotes'}),
   description: formatMessage({defaultMessage: 'Adds extra cool emotes for you to use.'}),
+  keywords: ['bttv'],
   icon: searchIconFor(EmoteProviderIds.BETTERTTV),
   settingPanelId: SettingPanelIds.EMOTES,
 });
@@ -117,6 +122,7 @@ registerSearchEntry({
 registerSearchEntry({
   query: formatMessage({defaultMessage: 'Show FrankerFaceZ emotes'}),
   description: formatMessage({defaultMessage: 'Adds emotes from this third party extension.'}),
+  keywords: ['ffz'],
   icon: searchIconFor(EmoteProviderIds.FRANKERFACEZ),
   settingPanelId: SettingPanelIds.EMOTES,
 });
@@ -124,13 +130,14 @@ registerSearchEntry({
 registerSearchEntry({
   query: formatMessage({defaultMessage: 'Show 7TV emotes'}),
   description: formatMessage({defaultMessage: 'Adds emotes from this third party extension.'}),
+  keywords: ['seventv', 'seven tv'],
   icon: searchIconFor(EmoteProviderIds.SEVENTV),
   settingPanelId: SettingPanelIds.EMOTES,
 });
 
 registerSearchEntry({
   query: formatMessage({defaultMessage: 'Include explicit 7TV emotes'}),
-  keywords: ['unlisted', 'approved', 'nsfw'],
+  keywords: ['seventv', 'seven tv', 'unlisted', 'approved', 'nsfw'],
   settingPanelId: SettingPanelIds.EMOTES,
 });
 

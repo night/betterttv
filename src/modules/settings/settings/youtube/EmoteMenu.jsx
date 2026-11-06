@@ -40,6 +40,7 @@ function EmoteMenu({ref, ...props}) {
 registerSearchEntry({
   query: formatMessage({defaultMessage: "Use BetterTTV's emote menu"}),
   description: formatMessage({defaultMessage: 'Enables a more advanced emote menu for chat.'}),
+  keywords: ['bttv'],
   settingPanelId: SettingPanelIds.EMOTE_MENU,
 });
 

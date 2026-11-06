@@ -27,6 +27,7 @@ function handleUpgradeClick() {
 registerSearchEntry({
   query: formatMessage({defaultMessage: 'BetterTTV Pro'}),
   description: formatMessage({defaultMessage: 'Perks for subscribers.'}),
+  keywords: ['bttv'],
   icon: Flame,
   onAccept: ({setPage}) => setPage(PageTypes.PRO_HOME),
 });
@@ -38,6 +39,14 @@ registerSearchEntry({
   icon: CreditCard,
   href: ExternalLinks.PRO,
   onAccept: handleUpgradeClick,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Gift Pro'}),
+  description: formatMessage({defaultMessage: 'Give BetterTTV Pro to someone else.'}),
+  keywords: ['gift', 'present', 'give'],
+  icon: Gift,
+  onAccept: openGiftProModal,
 });
 
 // the page's main action for a subscriber; beside Subscribe it steps back to the flat style

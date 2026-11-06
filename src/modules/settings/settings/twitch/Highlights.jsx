@@ -89,6 +89,7 @@ registerSearchEntry({
   query: formatMessage({defaultMessage: 'Highlight Keywords'}),
   description: formatMessage({defaultMessage: 'Highlight certain words, phrases or users in your chat.'}),
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
+  onAccept: ({setPage}) => setPage(PageTypes.HIGHLIGHT_KEYWORDS),
 });
 
 registerSearchEntry({

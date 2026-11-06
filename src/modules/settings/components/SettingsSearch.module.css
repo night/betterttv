@@ -58,9 +58,22 @@
   border-radius: 5px;
 }
 
+/* square, and pressed while Enter is held */
 .kbdEnter {
   width: 20px;
   padding: 0;
+  transition:
+    background-color 80ms ease,
+    border-color 80ms ease,
+    color 80ms ease,
+    transform 80ms ease;
+}
+
+.kbdEnter[data-pressed] {
+  color: var(--mantine-color-text);
+  background-color: var(--mantine-color-elevated-active);
+  border-color: var(--mantine-color-dark-3);
+  transform: translateY(1px);
 }
 
 /* Mantine writes the popover's width inline, hence !important */
@@ -80,6 +93,8 @@
   width: 100%;
   min-height: 36px;
   padding: 4px 12px;
+  /* matches the dropdown's padding, so keyboard scrolling keeps the row off its edges */
+  scroll-margin-block: 4px;
   border: 0;
   border-radius: calc(var(--mantine-radius-lg) - 4px);
   background: none;
@@ -92,6 +107,15 @@
 
 .row[data-selected] {
   background-color: var(--mantine-color-elevated-hover);
+}
+
+.row:active,
+.row[data-pressed] {
+  background-color: var(--mantine-color-elevated-active);
+}
+
+.rowMore {
+  color: var(--mantine-color-dimmed);
 }
 
 .rowIcon {

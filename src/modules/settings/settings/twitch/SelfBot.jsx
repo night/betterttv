@@ -98,6 +98,7 @@ registerSearchEntry({
 registerSearchEntry({
   query: formatMessage({defaultMessage: 'Commands'}),
   description: formatMessage({defaultMessage: 'Configure command triggers and responses.'}),
+  keywords: ['self bot'],
   settingPanelId: SettingPanelIds.SELF_BOT,
   onAccept: ({setPage}) => setPage(PageTypes.SELF_BOT_COMMANDS),
 });
@@ -105,6 +106,7 @@ registerSearchEntry({
 registerSearchEntry({
   query: formatMessage({defaultMessage: 'Timers'}),
   description: formatMessage({defaultMessage: 'Automatically send messages on an interval.'}),
+  keywords: ['self bot'],
   settingPanelId: SettingPanelIds.SELF_BOT,
   onAccept: ({setPage}) => setPage(PageTypes.SELF_BOT_TIMERS),
 });

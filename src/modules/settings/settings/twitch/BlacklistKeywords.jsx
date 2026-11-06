@@ -31,6 +31,7 @@ registerSearchEntry({
   query: formatMessage({defaultMessage: 'Blacklist Keywords'}),
   description: formatMessage({defaultMessage: 'Remove certain words, phrases or users from your chat.'}),
   settingPanelId: SettingPanelIds.BLACKLIST_KEYWORDS,
+  onAccept: ({setPage}) => setPage(PageTypes.BLACKLIST_KEYWORDS),
 });
 
 SettingStore.registerSetting(BlacklistKeywords, {
