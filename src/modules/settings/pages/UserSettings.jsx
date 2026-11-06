@@ -27,6 +27,7 @@ const USER_SETTINGS_NAME = formatMessage({defaultMessage: 'User Settings'});
 const CLOUD_BACKUP_NAME = formatMessage({defaultMessage: 'Cloud Backup'});
 const CLOUD_BACKUP_DESCRIPTION = formatMessage({defaultMessage: 'Backup your settings to the cloud.'});
 const SIGN_IN_NAME = formatMessage({defaultMessage: 'Sign In to BetterTTV'});
+const SIGN_OUT_NAME = formatMessage({defaultMessage: 'Sign Out'});
 const BACKUP_SETTINGS_NAME = formatMessage({defaultMessage: 'Backup Settings'});
 const BACKUP_SETTINGS_DESCRIPTION = formatMessage({defaultMessage: 'Download a copy of your settings to a JSON file.'});
 const RESTORE_BACKUP_DESCRIPTION = formatMessage({defaultMessage: 'Restore your settings from a backup file.'});
@@ -152,7 +153,7 @@ function SignInButton() {
   return (
     <SettingWrapper
       reverse
-      name={formatMessage({defaultMessage: 'Sign Out'})}
+      name={SIGN_OUT_NAME}
       description={formatMessage({defaultMessage: 'Unlink account from extension.'})}>
       <Button size="lg" onClick={handleSignOut}>
         {formatMessage({defaultMessage: 'Sign Out'})}
@@ -161,13 +162,11 @@ function SignInButton() {
   );
 }
 
-function openUserSettings({setPage}) {
-  setPage(PageTypes.USER_SETTINGS);
-}
+function acceptSignIn({goToPageSetting}) {
+  const signedOut = useAuthStore.getState().user == null;
 
-function acceptSignIn(navigation) {
-  openUserSettings(navigation);
-  if (useAuthStore.getState().user == null) {
+  goToPageSetting(PageTypes.USER_SETTINGS, signedOut ? SIGN_IN_NAME : SIGN_OUT_NAME);
+  if (signedOut) {
     executeSignIn();
   }
 }
@@ -200,7 +199,11 @@ for (const entry of [
     keywords: ['defaults', 'clear'],
   },
 ]) {
-  registerSearchEntry({icon: UserCog, onAccept: openUserSettings, ...entry});
+  registerSearchEntry({
+    icon: UserCog,
+    onAccept: ({goToPageSetting}) => goToPageSetting(PageTypes.USER_SETTINGS, entry.query),
+    ...entry,
+  });
 }
 
 function UserSettings() {
