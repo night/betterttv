@@ -142,7 +142,10 @@ registerSearchEntry({
 registerSearchEntry({
   query: formatMessage({defaultMessage: 'Include explicit 7TV emotes'}),
   keywords: ['seventv', 'seven tv', 'unlisted', 'approved', 'nsfw'],
-  onAccept: ({goToSetting}) => goToSetting(SettingPanelIds.EMOTES, SHOW_7TV_EMOTES_NAME),
+  onAccept: ({goToSetting, flashSetting}) => {
+    goToSetting(SettingPanelIds.EMOTES);
+    flashSetting(SHOW_7TV_EMOTES_NAME);
+  },
   settingPanelId: SettingPanelIds.EMOTES,
 });
 

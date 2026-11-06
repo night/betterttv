@@ -146,8 +146,7 @@ const SearchRow = React.memo(function SearchRow({id, row, index, selected, press
 
 // The sidebar header's search. Until it's used it's a ghost field, with the logo in place of the search icon.
 function SettingsSearch({onAccept}) {
-  const {setPage, setSidenavOpen, categories, handleGotoCategory, handleGotoSettingPanel, handleGotoPageSetting} =
-    use(PageContext);
+  const {setPage, setSidenavOpen, categories, handleGotoCategory} = use(PageContext);
   const portalRef = usePortalRef();
   const listId = useId();
   const inputRef = useRef(null);
@@ -201,12 +200,12 @@ function SettingsSearch({onAccept}) {
       acceptSearchEntry(entry, {
         setPage,
         goToCategory: handleGotoCategory,
-        goToSetting: handleGotoSettingPanel,
-        goToPageSetting: handleGotoPageSetting,
+        goToSetting: (settingPanelId) =>
+          handleGotoCategory(SettingStore.settings[settingPanelId]?.settingCategoryId ?? null),
       });
       onAccept();
     },
-    [updateQuery, setPage, handleGotoCategory, handleGotoSettingPanel, handleGotoPageSetting, onAccept]
+    [updateQuery, setPage, handleGotoCategory, onAccept]
   );
 
   function handleKeyDown(event) {

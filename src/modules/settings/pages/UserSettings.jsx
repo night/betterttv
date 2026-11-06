@@ -162,10 +162,11 @@ function SignInButton() {
   );
 }
 
-function acceptSignIn({goToPageSetting}) {
+function acceptSignIn({setPage, flashSetting}) {
   const signedOut = useAuthStore.getState().user == null;
 
-  goToPageSetting(PageTypes.USER_SETTINGS, signedOut ? SIGN_IN_NAME : SIGN_OUT_NAME);
+  setPage(PageTypes.USER_SETTINGS);
+  flashSetting(signedOut ? SIGN_IN_NAME : SIGN_OUT_NAME);
   if (signedOut) {
     executeSignIn();
   }
@@ -201,7 +202,10 @@ for (const entry of [
 ]) {
   registerSearchEntry({
     icon: UserCog,
-    onAccept: ({goToPageSetting}) => goToPageSetting(PageTypes.USER_SETTINGS, entry.query),
+    onAccept: ({setPage, flashSetting}) => {
+      setPage(PageTypes.USER_SETTINGS);
+      flashSetting(entry.query);
+    },
     ...entry,
   });
 }
