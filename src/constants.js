@@ -162,12 +162,14 @@ export const PageTypes = {
   SELF_BOT_COMMANDS: 6,
   SELF_BOT_TIMERS: 7,
   PRO_HOME: 8,
+  TEXT_REPLACEMENTS: 9,
 };
 
 export const PageDecendants = {
   [PageTypes.SETTINGS]: [
     PageTypes.HIGHLIGHT_KEYWORDS,
     PageTypes.BLACKLIST_KEYWORDS,
+    PageTypes.TEXT_REPLACEMENTS,
     PageTypes.SELF_BOT_COMMANDS,
     PageTypes.SELF_BOT_TIMERS,
   ],
