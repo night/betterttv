@@ -3,8 +3,7 @@
   flex-shrink: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(264px, 100%), 1fr));
-  /* twice the gap above a label, so each one reads with its own card */
-  gap: 24px 12px;
+  gap: 20px;
 }
 
 /* the bake has extra headroom above; the nudge recenters it and the live tilt stays crisp */
