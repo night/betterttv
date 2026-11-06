@@ -1,7 +1,8 @@
 import {Kbd, Popover, TextInput} from '@mantine/core';
+import {useWindowEvent} from '@mantine/hooks';
 import classNames from 'classnames';
 import {Search, SquareArrowOutUpRight} from 'lucide-react';
-import React, {use, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {use, useCallback, useId, useMemo, useRef, useState} from 'react';
 import usePortalRef from '@/common/hooks/PortalRef';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
@@ -32,10 +33,6 @@ const NO_CATEGORY_IDS = new Set();
 const searchClassNames = {wrapper: styles.wrapper};
 const searchHintClassNames = {wrapper: classNames(styles.wrapper, styles.wrapperHint)};
 
-function getCategoryId({categoryId, settingPanelId}) {
-  return categoryId ?? SettingStore.settings[settingPanelId]?.settingCategoryId ?? null;
-}
-
 // the matches as the list shows them: each category's row with its matches under it, and everything
 // else on its own, ordered by the best match in each. A long category collapses into a row that
 // expands it
@@ -44,7 +41,7 @@ function buildRows(results, categories, expandedCategoryIds) {
   const categoryRows = new Map();
 
   for (const result of results) {
-    const categoryId = getCategoryId(result.entry);
+    const categoryId = result.entry.categoryId ?? SettingStore.settings[result.entry.settingPanelId]?.settingCategoryId;
     const category = categories.find(({id}) => id === categoryId);
 
     if (category == null) {
@@ -54,8 +51,8 @@ function buildRows(results, categories, expandedCategoryIds) {
 
     let group = categoryRows.get(categoryId);
     if (group == null) {
-      const {id, label, icon, onAccept} = category;
-      group = [{entry: {id: `category-${id}`, query: label, onAccept}, icon, unmatched: true}];
+      const {id, label, icon} = category;
+      group = [{entry: {id: `category-${id}`, query: label, categoryId: id}, icon, unmatched: true}];
       categoryRows.set(categoryId, group);
       rows.push(group);
     }
@@ -113,7 +110,7 @@ function scrollIntoView(element) {
   element?.scrollIntoView({block: 'nearest'});
 }
 
-const SearchRow = React.memo(function SearchRow({row, index, selected, pressed, onHover, onAccept}) {
+const SearchRow = React.memo(function SearchRow({id, row, index, selected, pressed, onHover, onAccept}) {
   const {entry, icon: Icon, more, nested, queryRanges, descriptionRanges} = row;
   const handleHover = useCallback(() => onHover(index), [onHover, index]);
   const handleClick = useCallback(() => onAccept(entry), [onAccept, entry]);
@@ -123,6 +120,7 @@ const SearchRow = React.memo(function SearchRow({row, index, selected, pressed, 
   return (
     <button
       type="button"
+      id={id}
       role="option"
       aria-selected={selected}
       ref={selected ? scrollIntoView : undefined}
@@ -151,8 +149,9 @@ const SearchRow = React.memo(function SearchRow({row, index, selected, pressed, 
 });
 
 function SettingsSearch({onAccept}) {
-  const {setPage, categories, handleGotoCategory, handleGotoSettingPanel} = use(PageContext);
+  const {setPage, setSidenavOpen, categories, handleGotoCategory, handleGotoSettingPanel} = use(PageContext);
   const portalRef = usePortalRef();
+  const listId = useId();
   const inputRef = useRef(null);
   const [query, setQuery] = useState('');
   const [focused, setFocused] = useState(false);
@@ -160,10 +159,6 @@ function SettingsSearch({onAccept}) {
   const [enterHeld, setEnterHeld] = useState(false);
   const [expandedCategoryIds, setExpandedCategoryIds] = useState(NO_CATEGORY_IDS);
 
-  const navigation = useMemo(
-    () => ({setPage, goToCategory: handleGotoCategory, goToSetting: handleGotoSettingPanel}),
-    [setPage, handleGotoCategory, handleGotoSettingPanel]
-  );
   const supportedPanelIds = useMemo(
     () => new Set(SettingStore.getSupportedSettings().map(({settingPanelId}) => settingPanelId)),
     []
@@ -205,10 +200,10 @@ function SettingsSearch({onAccept}) {
 
       updateQuery('');
       inputRef.current?.blur();
-      acceptSearchEntry(entry, navigation);
+      acceptSearchEntry(entry, {setPage, goToCategory: handleGotoCategory, goToSetting: handleGotoSettingPanel});
       onAccept();
     },
-    [updateQuery, navigation, onAccept]
+    [updateQuery, setPage, handleGotoCategory, handleGotoSettingPanel, onAccept]
   );
 
   function handleKeyDown(event) {
@@ -253,43 +248,42 @@ function SettingsSearch({onAccept}) {
     setEnterHeld(false);
   }, []);
 
-  // the capture phase gets it ahead of twitch's own shortcuts, and of the modal stopping keys that
-  // start inside it
-  useEffect(() => {
-    function handleShortcut(event) {
+  // the capture phase gets it ahead of twitch's own shortcuts, and of the shadow root stopping keys
+  // that start inside it
+  const handleShortcut = useCallback(
+    (event) => {
       if (event.key.toLowerCase() !== 'k' || !(isMac() ? event.metaKey : event.ctrlKey)) {
         return;
       }
 
       event.preventDefault();
       event.stopPropagation();
+      // the input is in the sidebar, which a narrow window keeps closed
+      setSidenavOpen(true);
       inputRef.current?.focus();
       inputRef.current?.select();
-    }
+    },
+    [setSidenavOpen]
+  );
+  useWindowEvent('keydown', handleShortcut, true);
 
-    window.addEventListener('keydown', handleShortcut, true);
-    return () => window.removeEventListener('keydown', handleShortcut, true);
-  }, []);
-
-  const hasQuery = query.trim() !== '';
+  const opened = focused && query.trim() !== '';
   const showShortcut = !focused && query === '';
   const showEnter = focused && rows.length > 0;
 
   return (
     <div className={styles.root}>
+      {opened ? <div className={styles.dim} /> : null}
       <Popover
-        opened={focused && hasQuery}
+        id={listId}
+        opened={opened}
         position="bottom-start"
-        offset={8}
+        width="32rem"
         radius="lg"
         shadow="lg"
-        trapFocus={false}
-        returnFocus={false}
-        closeOnEscape={false}
-        closeOnClickOutside={false}
         portalProps={{target: portalRef?.current}}>
         <Popover.Target>
-          <div>
+          <div className={styles.field}>
             <TextInput
               ref={inputRef}
               // the modal's focus trap starts here; on a narrow screen the sidebar is closed
@@ -305,6 +299,11 @@ function SettingsSearch({onAccept}) {
               onBlur={handleBlur}
               placeholder={formatMessage({defaultMessage: 'Search…'})}
               aria-label={formatMessage({defaultMessage: 'Search settings'})}
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={opened}
+              aria-controls={`${listId}-dropdown`}
+              aria-activedescendant={opened && rows.length > 0 ? `${listId}-${activeIndex}` : undefined}
               leftSection={<Search size={18} />}
               rightSection={
                 showShortcut ? (
@@ -324,22 +323,26 @@ function SettingsSearch({onAccept}) {
             />
           </div>
         </Popover.Target>
-        <Popover.Dropdown className={styles.dropdown} role="listbox">
-          {rows.map((row, index) => (
-            <SearchRow
-              key={row.entry.id}
-              row={row}
-              index={index}
-              selected={index === activeIndex}
-              pressed={enterHeld && index === activeIndex}
-              onHover={setSelectedIndex}
-              onAccept={handleAccept}
-            />
-          ))}
-          {rows.length === 0 ? (
-            <div className={styles.empty}>{formatMessage({defaultMessage: 'No results'})}</div>
-          ) : null}
-        </Popover.Dropdown>
+        {/* unmounted rather than faded, or an emptied search shows No results on its way out */}
+        {opened ? (
+          <Popover.Dropdown className={styles.dropdown} role="listbox">
+            {rows.map((row, index) => (
+              <SearchRow
+                key={row.entry.id}
+                id={`${listId}-${index}`}
+                row={row}
+                index={index}
+                selected={index === activeIndex}
+                pressed={enterHeld && index === activeIndex}
+                onHover={setSelectedIndex}
+                onAccept={handleAccept}
+              />
+            ))}
+            {rows.length === 0 ? (
+              <div className={styles.empty}>{formatMessage({defaultMessage: 'No results'})}</div>
+            ) : null}
+          </Popover.Dropdown>
+        ) : null}
       </Popover>
     </div>
   );

@@ -9,6 +9,9 @@ import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Anon Chat'});
+const SETTING_DESCRIPTION = formatMessage({
+  defaultMessage: 'Anonymously read chat without appearing in the user list.',
+});
 
 function AnonChat({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.ANON_CHAT);
@@ -18,12 +21,7 @@ function AnonChat({ref, ...props}) {
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
-      <SettingSwitch
-        name={SETTING_NAME}
-        description={formatMessage({defaultMessage: 'Anonymously read chat without appearing in the user list.'})}
-        value={value}
-        onChange={setValue}
-      />
+      <SettingSwitch name={SETTING_NAME} description={SETTING_DESCRIPTION} value={value} onChange={setValue} />
       <SettingTagInput
         name={
           value
@@ -46,7 +44,8 @@ function AnonChat({ref, ...props}) {
 
 registerSearchEntry({
   query: SETTING_NAME,
-  description: formatMessage({defaultMessage: 'Anonymously read chat without appearing in the user list.'}),
+  description: SETTING_DESCRIPTION,
+  keywords: ['blacklist channels', 'whitelist channels'],
   settingPanelId: SettingPanelIds.ANON_CHAT,
 });
 

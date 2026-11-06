@@ -19,6 +19,26 @@
   border-color: var(--mantine-primary-color-filled);
 }
 
+/* dims the settings around an open search; Mantine's popover overlay portals out of the shadow root */
+.dim {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background-color: rgb(0 0 0 / 40%);
+  animation: dimIn 100ms ease-out;
+}
+
+@keyframes dimIn {
+  from {
+    opacity: 0;
+  }
+}
+
+.field {
+  position: relative;
+  z-index: 2;
+}
+
 .wrapper {
   --input-left-section-width: 40px;
 }
@@ -72,13 +92,11 @@
 .kbdEnter[data-pressed] {
   color: var(--mantine-color-text);
   background-color: var(--mantine-color-elevated-active);
-  border-color: var(--mantine-color-dark-3);
+  border-color: var(--mantine-color-dimmed);
   transform: translateY(1px);
 }
 
-/* Mantine writes the popover's width inline, hence !important */
 .dropdown {
-  width: 320px !important;
   max-height: 400px;
   padding: 4px;
   overflow-y: auto;

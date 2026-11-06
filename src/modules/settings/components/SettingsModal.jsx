@@ -1,5 +1,5 @@
 import {Modal} from '@mantine/core';
-import {useDisclosure, useViewportSize} from '@mantine/hooks';
+import {useDisclosure, useViewportSize, useWindowEvent} from '@mantine/hooks';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
 import {PageDecendants, PageTypes} from '@/constants';
@@ -53,6 +53,18 @@ function PageContainer({children, className, scrollRef, onMount}) {
   );
 }
 
+function flashRow(row) {
+  function handleAnimationEnd(event) {
+    if (event.target === row) {
+      row.removeAttribute('data-flash');
+      row.removeEventListener('animationend', handleAnimationEnd);
+    }
+  }
+
+  row.addEventListener('animationend', handleAnimationEnd);
+  row.setAttribute('data-flash', '');
+}
+
 function SettingsModal({setHandleOpen}) {
   const {width} = useViewportSize();
   const [page, setPage] = useState(PageTypes.SETTINGS);
@@ -60,7 +72,7 @@ function SettingsModal({setHandleOpen}) {
   const [open, modalHandlers] = useDisclosure(false);
   const [sidenavOpen, setSidenavOpen] = useState(false);
   const settingRefsRef = useRef({});
-  const pendingScrollToSettingPanelIdRef = useRef(null);
+  const pendingScrollTargetRef = useRef(null);
   const pageContentRef = useRef(null);
   const pageColumnRef = useRef(null);
   const lastParentDataRef = useRef({scrollTop: 0, page: null});
@@ -68,9 +80,19 @@ function SettingsModal({setHandleOpen}) {
   const categories = useMemo(() => groupSettingsByCategory(SettingStore.getSupportedSettings()), []);
   const activeCategory = categories.find((category) => category.id === categoryId) ?? categories[0];
 
-  // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView.
-  const scrollToPanel = useCallback((settingPanelId) => {
-    settingRefsRef.current[settingPanelId]?.scrollIntoView({block: 'start'});
+  // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView. A named
+  // row can sit far down a long panel, so it's centred instead, and flashed to mark it out.
+  const scrollToPanel = useCallback((settingPanelId, settingName) => {
+    const panel = settingRefsRef.current[settingPanelId];
+    const row = settingName != null ? panel?.querySelector(`[data-setting-name="${CSS.escape(settingName)}"]`) : null;
+
+    if (row == null) {
+      panel?.scrollIntoView({block: 'start'});
+      return;
+    }
+
+    row.scrollIntoView({block: 'center'});
+    flashRow(row);
   }, []);
 
   function handlePageChange(newPage) {
@@ -84,8 +106,11 @@ function SettingsModal({setHandleOpen}) {
     // When navigating into a descendant page, remember the parent's scroll position
     // so it can be restored when returning.
     if (currentPageDecendants != null && currentPageDecendants.includes(newPage)) {
+      const parentCategoryId = SettingStore.settings[PageSettingPanelIds[newPage]]?.settingCategoryId;
       lastParentDataRef.current.page = page;
-      lastParentDataRef.current.scrollTop = pageContentRef.current.scrollTop;
+      // search can come in from another category, whose scroll position means nothing on the way back
+      lastParentDataRef.current.scrollTop =
+        parentCategoryId === activeCategory.id ? pageContentRef.current.scrollTop : 0;
     }
 
     // a descendant page belongs to a setting, so its category stays active and back returns there
@@ -107,18 +132,18 @@ function SettingsModal({setHandleOpen}) {
     settingRefsRef.current[settingPanelId] = ref;
   }, []);
 
-  function handleGotoSettingPanel(settingPanelId) {
+  function handleGotoSettingPanel(settingPanelId, settingName) {
     if (settingPanelId == null) {
       return;
     }
 
     if (settingRefsRef.current[settingPanelId] != null) {
-      scrollToPanel(settingPanelId);
+      scrollToPanel(settingPanelId, settingName);
       return;
     }
 
     handleGotoCategory(SettingStore.settings[settingPanelId]?.settingCategoryId ?? null);
-    pendingScrollToSettingPanelIdRef.current = settingPanelId;
+    pendingScrollTargetRef.current = {settingPanelId, settingName};
   }
 
   useEffect(() => {
@@ -151,6 +176,8 @@ function SettingsModal({setHandleOpen}) {
     },
     [closeModal]
   );
+  // keys pressed inside stop at the shadow root, so this only sees focus that's left the modal
+  useWindowEvent('keydown', handleKeyDown);
 
   // Runs when a page mounts: scroll to a pending setting panel, otherwise restore the
   // parent page's scroll position (or start at the top).
@@ -160,11 +187,15 @@ function SettingsModal({setHandleOpen}) {
       return;
     }
 
-    const pendingPanelId = pendingScrollToSettingPanelIdRef.current;
-    pendingScrollToSettingPanelIdRef.current = null;
+    const pendingTarget = pendingScrollTargetRef.current;
+    pendingScrollTargetRef.current = null;
 
-    if (page === PageTypes.SETTINGS && pendingPanelId != null && settingRefsRef.current[pendingPanelId] != null) {
-      scrollToPanel(pendingPanelId);
+    if (
+      page === PageTypes.SETTINGS &&
+      pendingTarget != null &&
+      settingRefsRef.current[pendingTarget.settingPanelId] != null
+    ) {
+      scrollToPanel(pendingTarget.settingPanelId, pendingTarget.settingName);
       return;
     }
 

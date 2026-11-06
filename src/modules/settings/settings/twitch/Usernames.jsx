@@ -8,6 +8,18 @@ import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Usernames'});
+const LOCALIZED_USERNAMES_NAME = formatMessage({defaultMessage: 'Localized Usernames'});
+const LOCALIZED_USERNAMES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Show localized display names in the chat window.',
+});
+const USERNAME_COLORS_NAME = formatMessage({defaultMessage: 'Username Colors'});
+const USERNAME_COLORS_DESCRIPTION = formatMessage({defaultMessage: 'Show username colors in the chat window.'});
+const READABLE_COLORS_NAME = formatMessage({defaultMessage: 'Readable Colors'});
+const READABLE_COLORS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Show username colors with higher contrast (prevents hard to read names).',
+});
+const BADGES_NAME = formatMessage({defaultMessage: 'Badges'});
+const BADGES_DESCRIPTION = formatMessage({defaultMessage: 'Show chat badges next to usernames.'});
 
 function UsernamesModule({ref, ...props}) {
   const [usernames, setUsernames] = useStorageState(SettingIds.USERNAMES);
@@ -22,55 +34,45 @@ function UsernamesModule({ref, ...props}) {
       flags={Object.values(UsernameFlags)}>
       <SettingCheckbox
         value={UsernameFlags.LOCALIZED}
-        name={formatMessage({defaultMessage: 'Localized Usernames'})}
-        description={formatMessage({
-          defaultMessage: 'Show localized display names in the chat window.',
-        })}
+        name={LOCALIZED_USERNAMES_NAME}
+        description={LOCALIZED_USERNAMES_DESCRIPTION}
       />
       <SettingCheckbox
         value={UsernameFlags.COLORS}
-        name={formatMessage({defaultMessage: 'Username Colors'})}
-        description={formatMessage({defaultMessage: 'Show username colors in the chat window.'})}
+        name={USERNAME_COLORS_NAME}
+        description={USERNAME_COLORS_DESCRIPTION}
       />
       <SettingCheckbox
         value={UsernameFlags.READABLE}
-        name={formatMessage({defaultMessage: 'Readable Colors'})}
-        description={formatMessage({
-          defaultMessage: 'Show username colors with higher contrast (prevents hard to read names).',
-        })}
+        name={READABLE_COLORS_NAME}
+        description={READABLE_COLORS_DESCRIPTION}
       />
-      <SettingCheckbox
-        value={UsernameFlags.BADGES}
-        name={formatMessage({defaultMessage: 'Badges'})}
-        description={formatMessage({defaultMessage: 'Show chat badges next to usernames.'})}
-      />
+      <SettingCheckbox value={UsernameFlags.BADGES} name={BADGES_NAME} description={BADGES_DESCRIPTION} />
     </SettingCheckboxGroup>
   );
 }
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Localized Usernames'}),
-  description: formatMessage({defaultMessage: 'Show localized display names in the chat window.'}),
+  query: LOCALIZED_USERNAMES_NAME,
+  description: LOCALIZED_USERNAMES_DESCRIPTION,
   settingPanelId: SettingPanelIds.USERNAMES,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Username Colors'}),
-  description: formatMessage({defaultMessage: 'Show username colors in the chat window.'}),
+  query: USERNAME_COLORS_NAME,
+  description: USERNAME_COLORS_DESCRIPTION,
   settingPanelId: SettingPanelIds.USERNAMES,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Readable Colors'}),
-  description: formatMessage({
-    defaultMessage: 'Show username colors with higher contrast (prevents hard to read names).',
-  }),
+  query: READABLE_COLORS_NAME,
+  description: READABLE_COLORS_DESCRIPTION,
   settingPanelId: SettingPanelIds.USERNAMES,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Badges'}),
-  description: formatMessage({defaultMessage: 'Show chat badges next to usernames.'}),
+  query: BADGES_NAME,
+  description: BADGES_DESCRIPTION,
   settingPanelId: SettingPanelIds.USERNAMES,
 });
 

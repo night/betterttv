@@ -17,7 +17,7 @@ function SettingWrapper({
   controlClassName = '',
 }) {
   return (
-    <div className={classNames(styles.root, {[styles.shouldWrap]: wrap})}>
+    <div className={classNames(styles.root, {[styles.shouldWrap]: wrap})} data-setting-name={name}>
       {!reverse ? <div className={classNames(styles.control, controlClassName)}>{children}</div> : null}
       {icon}
       <div className={styles.text}>

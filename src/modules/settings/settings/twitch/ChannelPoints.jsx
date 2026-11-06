@@ -8,6 +8,13 @@ import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Channel Points'});
+const CHANNEL_POINTS_DESCRIPTION = formatMessage({defaultMessage: 'Show channel points in the chat window.'});
+const AUTO_CLAIM_NAME = formatMessage({defaultMessage: 'Auto Claim'});
+const AUTO_CLAIM_DESCRIPTION = formatMessage({defaultMessage: 'Claim bonus channel points when available.'});
+const MESSAGE_HIGHLIGHT_REWARDS_NAME = formatMessage({defaultMessage: 'Message Highlight Rewards'});
+const MESSAGE_HIGHLIGHT_REWARDS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Show channel point highlighted messages in the chat window.',
+});
 
 function ChannelPointsModule({ref, ...props}) {
   const [channelPoints, setChannelPoints] = useStorageState(SettingIds.CHANNEL_POINTS);
@@ -22,40 +29,38 @@ function ChannelPointsModule({ref, ...props}) {
       flags={Object.values(ChannelPointsFlags)}>
       <SettingCheckbox
         value={ChannelPointsFlags.CHANNEL_POINTS}
-        name={formatMessage({defaultMessage: 'Channel Points'})}
-        description={formatMessage({defaultMessage: 'Show channel points in the chat window.'})}
+        name={SETTING_NAME}
+        description={CHANNEL_POINTS_DESCRIPTION}
       />
       <SettingCheckbox
         value={ChannelPointsFlags.AUTO_CLAIM}
-        name={formatMessage({defaultMessage: 'Auto Claim'})}
-        description={formatMessage({defaultMessage: 'Claim bonus channel points when available.'})}
+        name={AUTO_CLAIM_NAME}
+        description={AUTO_CLAIM_DESCRIPTION}
       />
       <SettingCheckbox
         value={ChannelPointsFlags.MESSAGE_HIGHLIGHTS}
-        name={formatMessage({defaultMessage: 'Message Highlight Rewards'})}
-        description={formatMessage({
-          defaultMessage: 'Show channel point highlighted messages in the chat window.',
-        })}
+        name={MESSAGE_HIGHLIGHT_REWARDS_NAME}
+        description={MESSAGE_HIGHLIGHT_REWARDS_DESCRIPTION}
       />
     </SettingCheckboxGroup>
   );
 }
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Channel Points'}),
-  description: formatMessage({defaultMessage: 'Show channel points in the chat window.'}),
+  query: SETTING_NAME,
+  description: CHANNEL_POINTS_DESCRIPTION,
   settingPanelId: SettingPanelIds.CHANNEL_POINTS,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Auto Claim'}),
-  description: formatMessage({defaultMessage: 'Claim bonus channel points when available.'}),
+  query: AUTO_CLAIM_NAME,
+  description: AUTO_CLAIM_DESCRIPTION,
   settingPanelId: SettingPanelIds.CHANNEL_POINTS,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Message Highlight Rewards'}),
-  description: formatMessage({defaultMessage: 'Show channel point highlighted messages in the chat window.'}),
+  query: MESSAGE_HIGHLIGHT_REWARDS_NAME,
+  description: MESSAGE_HIGHLIGHT_REWARDS_DESCRIPTION,
   settingPanelId: SettingPanelIds.CHANNEL_POINTS,
 });
 

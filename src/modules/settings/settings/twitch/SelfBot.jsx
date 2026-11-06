@@ -16,6 +16,13 @@ import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/setti
 import useAuthStore from '@/stores/auth';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Self Bot'});
+const SELF_BOT_DESCRIPTION = formatMessage({
+  defaultMessage: 'Automatically send and reply to messages on your own channel.',
+});
+const COMMANDS_NAME = formatMessage({defaultMessage: 'Commands'});
+const COMMANDS_DESCRIPTION = formatMessage({defaultMessage: 'Configure command triggers and responses.'});
+const TIMERS_NAME = formatMessage({defaultMessage: 'Timers'});
+const TIMERS_DESCRIPTION = formatMessage({defaultMessage: 'Automatically send messages on an interval.'});
 
 function openEnableSelfBotModal(setEnabled) {
   openConfirmModal({
@@ -62,25 +69,22 @@ function SelfBot({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Self Bot'})}
-        description={formatMessage({defaultMessage: 'Automatically send and reply to messages on your own channel.'})}
+        name={SETTING_NAME}
+        description={SELF_BOT_DESCRIPTION}
         value={displayEnabled}
         onChange={handleEnabledChange}
       />
-      <SettingWrapper
-        name={formatMessage({defaultMessage: 'Commands'})}
-        reverse
-        description={formatMessage({defaultMessage: 'Configure command triggers and responses.'})}>
+      <SettingWrapper name={COMMANDS_NAME} reverse description={COMMANDS_DESCRIPTION}>
         <Button size="lg" onClick={() => setPage(PageTypes.SELF_BOT_COMMANDS)}>
           {formatMessage({defaultMessage: 'Edit'})}
         </Button>
       </SettingWrapper>
       <SettingWrapper
-        name={formatMessage({defaultMessage: 'Timers'})}
+        name={TIMERS_NAME}
         reverse
         showProBadge
         showNewBadge={hasPromotion}
-        description={formatMessage({defaultMessage: 'Automatically send messages on an interval.'})}>
+        description={TIMERS_DESCRIPTION}>
         <Button size="lg" onClick={() => setPage(PageTypes.SELF_BOT_TIMERS)}>
           {formatMessage({defaultMessage: 'Edit'})}
         </Button>
@@ -90,22 +94,22 @@ function SelfBot({ref, ...props}) {
 }
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Self Bot'}),
-  description: formatMessage({defaultMessage: 'Automatically send and reply to messages on your own channel.'}),
+  query: SETTING_NAME,
+  description: SELF_BOT_DESCRIPTION,
   settingPanelId: SettingPanelIds.SELF_BOT,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Commands'}),
-  description: formatMessage({defaultMessage: 'Configure command triggers and responses.'}),
+  query: COMMANDS_NAME,
+  description: COMMANDS_DESCRIPTION,
   keywords: ['self bot'],
   settingPanelId: SettingPanelIds.SELF_BOT,
   onAccept: ({setPage}) => setPage(PageTypes.SELF_BOT_COMMANDS),
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Timers'}),
-  description: formatMessage({defaultMessage: 'Automatically send messages on an interval.'}),
+  query: TIMERS_NAME,
+  description: TIMERS_DESCRIPTION,
   keywords: ['self bot'],
   settingPanelId: SettingPanelIds.SELF_BOT,
   onAccept: ({setPage}) => setPage(PageTypes.SELF_BOT_TIMERS),

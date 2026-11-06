@@ -8,6 +8,11 @@ import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Accessibility'});
+const REDUCE_MOTION_NAME = formatMessage({defaultMessage: 'Reduce Motion'});
+const REDUCE_MOTION_DESCRIPTION = formatMessage({
+  defaultMessage:
+    "Disables animations, such as animated username effects. When off, animations follow your browser's reduced motion preference.",
+});
 
 function Accessibility({ref, ...props}) {
   const [reducedMotion, setReducedMotion] = useStorageState(SettingIds.REDUCED_MOTION);
@@ -15,11 +20,8 @@ function Accessibility({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Reduce Motion'})}
-        description={formatMessage({
-          defaultMessage:
-            "Disables animations, such as animated username effects. When off, animations follow your browser's reduced motion preference.",
-        })}
+        name={REDUCE_MOTION_NAME}
+        description={REDUCE_MOTION_DESCRIPTION}
         value={reducedMotion}
         onChange={setReducedMotion}
       />
@@ -28,11 +30,8 @@ function Accessibility({ref, ...props}) {
 }
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Reduce Motion'}),
-  description: formatMessage({
-    defaultMessage:
-      "Disables animations, such as animated username effects. When off, animations follow your browser's reduced motion preference.",
-  }),
+  query: REDUCE_MOTION_NAME,
+  description: REDUCE_MOTION_DESCRIPTION,
   settingPanelId: SettingPanelIds.ACCESSIBILITY,
 });
 

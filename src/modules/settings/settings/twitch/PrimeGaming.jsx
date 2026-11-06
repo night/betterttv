@@ -8,6 +8,10 @@ import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Prime Gaming'});
+const PRIME_PROMOTIONS_NAME = formatMessage({defaultMessage: 'Prime Promotions'});
+const PRIME_PROMOTIONS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Show Prime Gaming loot notices, like the ones in the sidebar.',
+});
 
 function PrimeGaming({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.PRIME_PROMOTIONS);
@@ -15,8 +19,8 @@ function PrimeGaming({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Prime Promotions'})}
-        description={formatMessage({defaultMessage: 'Show Prime Gaming loot notices, like the ones in the sidebar.'})}
+        name={PRIME_PROMOTIONS_NAME}
+        description={PRIME_PROMOTIONS_DESCRIPTION}
         value={value}
         onChange={setValue}
       />
@@ -25,8 +29,8 @@ function PrimeGaming({ref, ...props}) {
 }
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Prime Promotions'}),
-  description: formatMessage({defaultMessage: 'Show Prime Gaming loot notices, like the ones in the sidebar.'}),
+  query: PRIME_PROMOTIONS_NAME,
+  description: PRIME_PROMOTIONS_DESCRIPTION,
   settingPanelId: SettingPanelIds.PRIME_GAMING,
 });
 

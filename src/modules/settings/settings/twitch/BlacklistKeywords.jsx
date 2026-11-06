@@ -9,16 +9,16 @@ import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Blacklist Keywords'});
+const BLACKLIST_KEYWORDS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Remove certain words, phrases or users from your chat.',
+});
 
 function BlacklistKeywords({ref, ...props}) {
   const {setPage} = use(PageContext);
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
-      <SettingWrapper
-        name={formatMessage({defaultMessage: 'Blacklist Keywords'})}
-        reverse
-        description={formatMessage({defaultMessage: 'Remove certain words, phrases or users from your chat.'})}>
+      <SettingWrapper name={SETTING_NAME} reverse description={BLACKLIST_KEYWORDS_DESCRIPTION}>
         <Button size="lg" onClick={() => setPage(PageTypes.BLACKLIST_KEYWORDS)}>
           {formatMessage({defaultMessage: 'Edit'})}
         </Button>
@@ -28,8 +28,8 @@ function BlacklistKeywords({ref, ...props}) {
 }
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Blacklist Keywords'}),
-  description: formatMessage({defaultMessage: 'Remove certain words, phrases or users from your chat.'}),
+  query: SETTING_NAME,
+  description: BLACKLIST_KEYWORDS_DESCRIPTION,
   settingPanelId: SettingPanelIds.BLACKLIST_KEYWORDS,
   onAccept: ({setPage}) => setPage(PageTypes.BLACKLIST_KEYWORDS),
 });

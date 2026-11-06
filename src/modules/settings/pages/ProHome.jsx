@@ -19,13 +19,17 @@ import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
 import styles from './ProHome.module.css';
 
+const BETTERTTV_PRO_NAME = formatMessage({defaultMessage: 'BetterTTV Pro'});
+const SUBSCRIBE_NAME = formatMessage({defaultMessage: 'Subscribe'});
+const GIFT_PRO_NAME = formatMessage({defaultMessage: 'Gift Pro'});
+
 // authenticate the socket before the tab opens so the purchase reflects here without a refresh
 function handleUpgradeClick() {
   socketClient.ensureAuthentication();
 }
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'BetterTTV Pro'}),
+  query: BETTERTTV_PRO_NAME,
   description: formatMessage({defaultMessage: 'Perks for subscribers.'}),
   keywords: ['bttv'],
   icon: Flame,
@@ -33,7 +37,7 @@ registerSearchEntry({
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Subscribe'}),
+  query: SUBSCRIBE_NAME,
   description: formatMessage({defaultMessage: 'Get BetterTTV Pro, or manage your subscription.'}),
   keywords: ['upgrade', 'plan', 'billing', 'payment', 'cancel'],
   icon: CreditCard,
@@ -42,7 +46,7 @@ registerSearchEntry({
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Gift Pro'}),
+  query: GIFT_PRO_NAME,
   description: formatMessage({defaultMessage: 'Give BetterTTV Pro to someone else.'}),
   keywords: ['gift', 'present', 'give'],
   icon: Gift,
@@ -60,7 +64,7 @@ function GiftProButton({primary = false}) {
       vars={primary ? undefined : flatButtonVars}
       leftSection={<Gift size={16} />}
       onClick={openGiftProModal}>
-      {formatMessage({defaultMessage: 'Gift Pro'})}
+      {GIFT_PRO_NAME}
     </Button>
   );
 }
@@ -72,12 +76,7 @@ function ProHome() {
   return (
     <PageScrollBody
       header={
-        <PageHeader
-          breadcrumbs={[
-            {label: formatMessage({defaultMessage: 'BetterTTV Pro'})},
-            {label: formatMessage({defaultMessage: 'Perks'})},
-          ]}
-        />
+        <PageHeader breadcrumbs={[{label: BETTERTTV_PRO_NAME}, {label: formatMessage({defaultMessage: 'Perks'})}]} />
       }
       footer={
         <div className={styles.premiumActions}>
@@ -102,9 +101,7 @@ function ProHome() {
               vars={isPro ? flatButtonVars : undefined}
               rightSection={isPro ? <SquareArrowOutUpRight size={16} /> : <ChevronRight size={16} />}
               onClick={handleUpgradeClick}>
-              {isPro
-                ? formatMessage({defaultMessage: 'Manage Subscription'})
-                : formatMessage({defaultMessage: 'Subscribe'})}
+              {isPro ? formatMessage({defaultMessage: 'Manage Subscription'}) : SUBSCRIBE_NAME}
             </Button>
           </div>
         </div>

@@ -14,6 +14,14 @@ import {hasFlag, setFlag} from '@/utils/flags';
 import styles from './Emotes.module.css';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Providers'});
+const SHOW_BETTERTTV_EMOTES_NAME = formatMessage({defaultMessage: 'Show BetterTTV emotes'});
+const SHOW_BETTERTTV_EMOTES_DESCRIPTION = formatMessage({defaultMessage: 'Adds extra cool emotes for you to use.'});
+const SHOW_FRANKERFACEZ_EMOTES_NAME = formatMessage({defaultMessage: 'Show FrankerFaceZ emotes'});
+const THIRD_PARTY_EMOTES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Adds emotes from this third party extension.',
+});
+const SHOW_7TV_EMOTES_NAME = formatMessage({defaultMessage: 'Show 7TV emotes'});
+
 const PROVIDER_FLAGS = [EmoteTypeFlags.BTTV_EMOTES, EmoteTypeFlags.FFZ_EMOTES, EmoteTypeFlags.SEVENTV_EMOTES];
 const SEVENTV_LISTED = 'listed';
 const SEVENTV_UNLISTED = 'unlisted';
@@ -78,16 +86,14 @@ function EmoteProviders({ref, ...props}) {
       <SettingCheckbox
         value={EmoteTypeFlags.BTTV_EMOTES}
         icon={<ProviderLogo provider={EmoteProviderIds.BETTERTTV} />}
-        name={formatMessage({defaultMessage: 'Show BetterTTV emotes'})}
-        description={formatMessage({defaultMessage: 'Adds extra cool emotes for you to use.'})}
+        name={SHOW_BETTERTTV_EMOTES_NAME}
+        description={SHOW_BETTERTTV_EMOTES_DESCRIPTION}
       />
       <SettingCheckbox
         value={EmoteTypeFlags.FFZ_EMOTES}
         icon={<ProviderLogo provider={EmoteProviderIds.FRANKERFACEZ} />}
-        name={formatMessage({defaultMessage: 'Show FrankerFaceZ emotes'})}
-        description={formatMessage({
-          defaultMessage: 'Adds emotes from this third party extension.',
-        })}
+        name={SHOW_FRANKERFACEZ_EMOTES_NAME}
+        description={THIRD_PARTY_EMOTES_DESCRIPTION}
       />
       <SettingCheckbox
         value={EmoteTypeFlags.SEVENTV_EMOTES}
@@ -102,34 +108,32 @@ function EmoteProviders({ref, ...props}) {
             disabled={!hasFlag(emotes, EmoteTypeFlags.SEVENTV_EMOTES)}
           />
         }
-        name={formatMessage({defaultMessage: 'Show 7TV emotes'})}
-        description={formatMessage({
-          defaultMessage: 'Adds emotes from this third party extension.',
-        })}
+        name={SHOW_7TV_EMOTES_NAME}
+        description={THIRD_PARTY_EMOTES_DESCRIPTION}
       />
     </SettingCheckboxGroup>
   );
 }
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Show BetterTTV emotes'}),
-  description: formatMessage({defaultMessage: 'Adds extra cool emotes for you to use.'}),
+  query: SHOW_BETTERTTV_EMOTES_NAME,
+  description: SHOW_BETTERTTV_EMOTES_DESCRIPTION,
   keywords: ['bttv'],
   icon: searchIconFor(EmoteProviderIds.BETTERTTV),
   settingPanelId: SettingPanelIds.EMOTES,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Show FrankerFaceZ emotes'}),
-  description: formatMessage({defaultMessage: 'Adds emotes from this third party extension.'}),
+  query: SHOW_FRANKERFACEZ_EMOTES_NAME,
+  description: THIRD_PARTY_EMOTES_DESCRIPTION,
   keywords: ['ffz'],
   icon: searchIconFor(EmoteProviderIds.FRANKERFACEZ),
   settingPanelId: SettingPanelIds.EMOTES,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Show 7TV emotes'}),
-  description: formatMessage({defaultMessage: 'Adds emotes from this third party extension.'}),
+  query: SHOW_7TV_EMOTES_NAME,
+  description: THIRD_PARTY_EMOTES_DESCRIPTION,
   keywords: ['seventv', 'seven tv'],
   icon: searchIconFor(EmoteProviderIds.SEVENTV),
   settingPanelId: SettingPanelIds.EMOTES,
@@ -138,6 +142,7 @@ registerSearchEntry({
 registerSearchEntry({
   query: formatMessage({defaultMessage: 'Include explicit 7TV emotes'}),
   keywords: ['seventv', 'seven tv', 'unlisted', 'approved', 'nsfw'],
+  onAccept: ({goToSetting}) => goToSetting(SettingPanelIds.EMOTES, SHOW_7TV_EMOTES_NAME),
   settingPanelId: SettingPanelIds.EMOTES,
 });
 

@@ -2,9 +2,10 @@ const entries = [];
 
 // Adds a result to the settings search. Call it from the file that owns what the result leads to.
 //   query: the title it's found by
-//   description: optional, searched and shown under the title when it matches
+//   description: optional, searched and shown under the title; a result under a category only shows
+//     it when it matches
 //   keywords: optional, other words it's found by
-//   icon: shown on results that stand alone; a setting's result sits under its category instead
+//   icon: optional, shown beside the title
 //   settingPanelId: the setting it belongs to, which places it under that category and hides it
 //     where the setting isn't supported. Accepting it goes to the setting unless onAccept says else
 //   categoryId: a category's own result
@@ -99,14 +100,16 @@ export function searchEntries(text, isAvailable) {
       descriptionRanges: findRanges(entry.description ?? '', terms),
     }))
     .filter(({score}) => score > 0)
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => b.score - a.score || (a.entry.href != null) - (b.entry.href != null));
 }
 
-export function acceptSearchEntry({href, settingPanelId, onAccept}, navigation) {
+export function acceptSearchEntry({query, categoryId, href, settingPanelId, onAccept}, navigation) {
   if (onAccept != null) {
     onAccept(navigation);
+  } else if (categoryId != null) {
+    navigation.goToCategory(categoryId);
   } else if (href == null) {
-    navigation.goToSetting(settingPanelId);
+    navigation.goToSetting(settingPanelId, query);
   }
 
   if (href != null) {

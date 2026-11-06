@@ -4,7 +4,6 @@ import {
   Bug,
   CircleUserRound,
   CodeXml,
-  Coins,
   CreditCard,
   Globe,
   History,
@@ -19,7 +18,7 @@ import {
   Users,
 } from 'lucide-react';
 import React, {use} from 'react';
-import {CrowdinMark, DiscordMark, GithubMark, XMark} from '@/common/components/BrandMarks';
+import {ChannelPointsGlyph, CrowdinMark, DiscordMark, GithubMark, XMark} from '@/common/components/BrandMarks';
 import usePortalRef from '@/common/hooks/PortalRef';
 import {EXT_VER, ExternalLinks, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
@@ -110,29 +109,62 @@ const DASHBOARD_LINKS = [
     href: ExternalLinks.DASHBOARD_CHANNEL_EMOTES,
     icon: Smile,
     label: formatMessage({defaultMessage: 'Channel Emotes'}),
+    description: formatMessage({defaultMessage: 'Manage the emotes in your channel.'}),
   },
   {
     href: ExternalLinks.DASHBOARD_PERSONAL_EMOTES,
     icon: CircleUserRound,
     label: formatMessage({defaultMessage: 'Personal Emotes'}),
+    description: formatMessage({defaultMessage: 'Manage your emotes for every chat.'}),
   },
-  {href: ExternalLinks.DASHBOARD_UPLOADS, icon: Upload, label: formatMessage({defaultMessage: 'Emote Uploads'})},
+  {
+    href: ExternalLinks.DASHBOARD_UPLOADS,
+    icon: Upload,
+    label: formatMessage({defaultMessage: 'Emote Uploads'}),
+    description: formatMessage({defaultMessage: 'Upload and manage your emotes.'}),
+  },
   {
     href: ExternalLinks.DASHBOARD_APPEARANCE,
     icon: PaintbrushVertical,
     label: formatMessage({defaultMessage: 'Appearance'}),
+    description: formatMessage({defaultMessage: 'Your badge, effects and font.'}),
   },
-  {href: ExternalLinks.DASHBOARD_CONNECTIONS, icon: Link, label: formatMessage({defaultMessage: 'Connections'})},
-  {href: ExternalLinks.PRO, icon: CreditCard, label: formatMessage({defaultMessage: 'Subscription'})},
-  {href: ExternalLinks.DASHBOARD_EDITORS, icon: Users, label: formatMessage({defaultMessage: 'Editors'})},
-  {href: ExternalLinks.DASHBOARD_BOTS, icon: Bot, label: formatMessage({defaultMessage: 'Chat Bots'})},
-  {href: ExternalLinks.DASHBOARD_CHANNEL_POINTS, icon: Coins, label: formatMessage({defaultMessage: 'Channel Points'})},
+  {
+    href: ExternalLinks.DASHBOARD_CONNECTIONS,
+    icon: Link,
+    label: formatMessage({defaultMessage: 'Connections'}),
+    description: formatMessage({defaultMessage: 'Your linked accounts and apps.'}),
+  },
+  {
+    href: ExternalLinks.PRO,
+    icon: CreditCard,
+    label: formatMessage({defaultMessage: 'Subscription'}),
+    description: formatMessage({defaultMessage: 'Manage your Pro subscription.'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_EDITORS,
+    icon: Users,
+    label: formatMessage({defaultMessage: 'Editors'}),
+    description: formatMessage({defaultMessage: 'Choose who manages your emotes.'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_BOTS,
+    icon: Bot,
+    label: formatMessage({defaultMessage: 'Chat Bots'}),
+    description: formatMessage({defaultMessage: 'Badge the bots on your channel.'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_CHANNEL_POINTS,
+    icon: ChannelPointsGlyph,
+    label: formatMessage({defaultMessage: 'Channel Points'}),
+    description: formatMessage({defaultMessage: 'Let viewers redeem emotes.'}),
+  },
 ];
 
-for (const {href, icon, label} of DASHBOARD_LINKS) {
+for (const {href, icon, label, description} of DASHBOARD_LINKS) {
   registerSearchEntry({
     query: label,
-    description: formatMessage({defaultMessage: 'Opens in your BetterTTV dashboard.'}),
+    description,
     keywords: ['dashboard'],
     href,
     icon,

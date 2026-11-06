@@ -8,6 +8,10 @@ import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Tab Completion'});
+const PRIORITIZE_EMOTES_NAME = formatMessage({defaultMessage: 'Prioritize Emotes'});
+const PRIORITIZE_EMOTES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Prefer emotes over usernames when using tab completion.',
+});
 
 function TabCompletion({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.TAB_COMPLETION_EMOTE_PRIORITY);
@@ -15,8 +19,8 @@ function TabCompletion({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Prioritize Emotes'})}
-        description={formatMessage({defaultMessage: 'Prefer emotes over usernames when using tab completion.'})}
+        name={PRIORITIZE_EMOTES_NAME}
+        description={PRIORITIZE_EMOTES_DESCRIPTION}
         value={value}
         onChange={setValue}
       />
@@ -25,8 +29,8 @@ function TabCompletion({ref, ...props}) {
 }
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Prioritize Emotes'}),
-  description: formatMessage({defaultMessage: 'Prefer emotes over usernames when using tab completion.'}),
+  query: PRIORITIZE_EMOTES_NAME,
+  description: PRIORITIZE_EMOTES_DESCRIPTION,
   settingPanelId: SettingPanelIds.TAB_COMPLETION,
 });
 

@@ -46,3 +46,24 @@ export function TwitchMark(props) {
 export function YoutubeMark(props) {
   return <Mark d={YOUTUBE} {...props} />;
 }
+
+// Twitch's channel points glyph (a ring with a quarter-turn inside it), redrawn the way Lucide draws:
+// on a 24px grid, a 2px stroke with round caps, in the current colour
+export function ChannelPointsGlyph({size = 24, className}) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 8a4 4 0 0 1 4 4" />
+    </svg>
+  );
+}

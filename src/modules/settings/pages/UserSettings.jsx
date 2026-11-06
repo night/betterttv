@@ -134,7 +134,7 @@ function SignInButton() {
         name={formatMessage({defaultMessage: 'Sign In to BetterTTV'})}
         description={formatMessage({defaultMessage: 'Authenticated users gain access to additional features.'})}>
         <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
-          {formatMessage({defaultMessage: 'Connect Account'})}
+          {formatMessage({defaultMessage: 'Sign In'})}
         </Button>
       </SettingWrapper>
     );

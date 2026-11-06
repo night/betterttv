@@ -12,6 +12,28 @@ import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Highlights'});
+const HIGHLIGHT_KEYWORDS_NAME = formatMessage({defaultMessage: 'Highlight Keywords'});
+const HIGHLIGHT_KEYWORDS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Highlight certain words, phrases or users in your chat.',
+});
+const PINNED_HIGHLIGHTS_NAME = formatMessage({defaultMessage: 'Pinned Highlights'});
+const PINNED_HIGHLIGHTS_DESCRIPTION = formatMessage({defaultMessage: 'Pin your highlighted messages above chat.'});
+const EXPIRE_PINNED_HIGHLIGHTS_NAME = formatMessage({defaultMessage: 'Expire Pinned Highlights'});
+const EXPIRE_PINNED_HIGHLIGHTS_DESCRIPTION = formatMessage({defaultMessage: 'Hide pinned highlights after 1 minute.'});
+const MAXIMUM_PINNED_HIGHLIGHTS_NAME = formatMessage({defaultMessage: 'Maximum Pinned highlights'});
+const MAXIMUM_PINNED_HIGHLIGHTS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Number of pinned highlights that can be displayed.',
+});
+const PLAY_A_SOUND_NAME = formatMessage({defaultMessage: 'Play A Sound'});
+const PLAY_A_SOUND_DESCRIPTION = formatMessage({defaultMessage: 'Play a sound for messages directed at you.'});
+const HIGHLIGHT_FIRST_TIME_CHATTERS_NAME = formatMessage({defaultMessage: 'Highlight First-Time Chatters'});
+const HIGHLIGHT_FIRST_TIME_CHATTERS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Highlight messages from viewers chatting in the channel for the first time.',
+});
+const HIGHLIGHT_DELETED_MESSAGES_NAME = formatMessage({defaultMessage: 'Highlight Deleted Messages'});
+const HIGHLIGHT_DELETED_MESSAGES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Highlight and prevent deletion of messages.',
+});
 
 function Highlights({ref, ...props}) {
   const {setPage} = use(PageContext);
@@ -26,32 +48,29 @@ function Highlights({ref, ...props}) {
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
-      <SettingWrapper
-        name={formatMessage({defaultMessage: 'Highlight Keywords'})}
-        reverse
-        description={formatMessage({defaultMessage: 'Highlight certain words, phrases or users in your chat.'})}>
+      <SettingWrapper name={HIGHLIGHT_KEYWORDS_NAME} reverse description={HIGHLIGHT_KEYWORDS_DESCRIPTION}>
         <Button size="lg" onClick={() => setPage(PageTypes.HIGHLIGHT_KEYWORDS)}>
           {formatMessage({defaultMessage: 'Edit'})}
         </Button>
       </SettingWrapper>
       <SettingSwitch
         reverse
-        name={formatMessage({defaultMessage: 'Pinned Highlights'})}
-        description={formatMessage({defaultMessage: 'Pin your highlighted messages above chat.'})}
+        name={PINNED_HIGHLIGHTS_NAME}
+        description={PINNED_HIGHLIGHTS_DESCRIPTION}
         value={value}
         onChange={setValue}
       />
       <SettingSwitch
         reverse
-        name={formatMessage({defaultMessage: 'Expire Pinned Highlights'})}
-        description={formatMessage({defaultMessage: 'Hide pinned highlights after 1 minute.'})}
+        name={EXPIRE_PINNED_HIGHLIGHTS_NAME}
+        description={EXPIRE_PINNED_HIGHLIGHTS_DESCRIPTION}
         value={timeoutHighlightsValue}
         onChange={setTimeoutHighlightsValue}
         disabled={!value}
       />
       <SettingNumberInput
-        name={formatMessage({defaultMessage: 'Maximum Pinned highlights'})}
-        description={formatMessage({defaultMessage: 'Number of pinned highlights that can be displayed.'})}
+        name={MAXIMUM_PINNED_HIGHLIGHTS_NAME}
+        description={MAXIMUM_PINNED_HIGHLIGHTS_DESCRIPTION}
         value={maxPinnedHighlights}
         onChange={setMaxPinnedHighlights}
         min={1}
@@ -60,24 +79,22 @@ function Highlights({ref, ...props}) {
       />
       <SettingSwitch
         reverse
-        name={formatMessage({defaultMessage: 'Play A Sound'})}
-        description={formatMessage({defaultMessage: 'Play a sound for messages directed at you.'})}
+        name={PLAY_A_SOUND_NAME}
+        description={PLAY_A_SOUND_DESCRIPTION}
         value={highlightFeedback}
         onChange={setHighlightFeedback}
       />
       <SettingSwitch
         reverse
-        name={formatMessage({defaultMessage: 'Highlight First-Time Chatters'})}
-        description={formatMessage({
-          defaultMessage: 'Highlight messages from viewers chatting in the channel for the first time.',
-        })}
+        name={HIGHLIGHT_FIRST_TIME_CHATTERS_NAME}
+        description={HIGHLIGHT_FIRST_TIME_CHATTERS_DESCRIPTION}
         value={highlightFirstTimeChatters}
         onChange={setHighlightFirstTimeChatters}
       />
       <SettingSwitch
         reverse
-        name={formatMessage({defaultMessage: 'Highlight Deleted Messages'})}
-        description={formatMessage({defaultMessage: 'Highlight and prevent deletion of messages.'})}
+        name={HIGHLIGHT_DELETED_MESSAGES_NAME}
+        description={HIGHLIGHT_DELETED_MESSAGES_DESCRIPTION}
         value={deletedMessages === DeletedMessageTypes.HIGHLIGHT}
         onChange={(value) => setDeletedMessages(value ? DeletedMessageTypes.HIGHLIGHT : DeletedMessageTypes.DEFAULT)}
       />
@@ -86,47 +103,45 @@ function Highlights({ref, ...props}) {
 }
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Highlight Keywords'}),
-  description: formatMessage({defaultMessage: 'Highlight certain words, phrases or users in your chat.'}),
+  query: HIGHLIGHT_KEYWORDS_NAME,
+  description: HIGHLIGHT_KEYWORDS_DESCRIPTION,
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
   onAccept: ({setPage}) => setPage(PageTypes.HIGHLIGHT_KEYWORDS),
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Pinned Highlights'}),
-  description: formatMessage({defaultMessage: 'Pin your highlighted messages above chat.'}),
+  query: PINNED_HIGHLIGHTS_NAME,
+  description: PINNED_HIGHLIGHTS_DESCRIPTION,
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Expire Pinned Highlights'}),
-  description: formatMessage({defaultMessage: 'Hide pinned highlights after 1 minute.'}),
+  query: EXPIRE_PINNED_HIGHLIGHTS_NAME,
+  description: EXPIRE_PINNED_HIGHLIGHTS_DESCRIPTION,
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Maximum Pinned highlights'}),
-  description: formatMessage({defaultMessage: 'Number of pinned highlights that can be displayed.'}),
+  query: MAXIMUM_PINNED_HIGHLIGHTS_NAME,
+  description: MAXIMUM_PINNED_HIGHLIGHTS_DESCRIPTION,
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Play A Sound'}),
-  description: formatMessage({defaultMessage: 'Play a sound for messages directed at you.'}),
+  query: PLAY_A_SOUND_NAME,
+  description: PLAY_A_SOUND_DESCRIPTION,
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Highlight First-Time Chatters'}),
-  description: formatMessage({
-    defaultMessage: 'Highlight messages from viewers chatting in the channel for the first time.',
-  }),
+  query: HIGHLIGHT_FIRST_TIME_CHATTERS_NAME,
+  description: HIGHLIGHT_FIRST_TIME_CHATTERS_DESCRIPTION,
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
 });
 
 registerSearchEntry({
-  query: formatMessage({defaultMessage: 'Highlight Deleted Messages'}),
-  description: formatMessage({defaultMessage: 'Highlight and prevent deletion of messages.'}),
+  query: HIGHLIGHT_DELETED_MESSAGES_NAME,
+  description: HIGHLIGHT_DELETED_MESSAGES_DESCRIPTION,
   settingPanelId: SettingPanelIds.HIGHLIGHTS,
 });
 

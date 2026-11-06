@@ -32,7 +32,6 @@ for (const [categoryId, label] of Object.entries(CATEGORY_LABELS)) {
   registerSearchEntry({
     query: label,
     categoryId,
-    onAccept: ({goToCategory}) => goToCategory(categoryId),
   });
 }
 
@@ -52,7 +51,6 @@ export function groupSettingsByCategory(settings) {
       id: categoryId,
       label: CATEGORY_LABELS[categoryId],
       icon: CATEGORY_ICONS[categoryId],
-      onAccept: ({goToCategory}) => goToCategory(categoryId),
       settings: categorySettings,
     });
   }
