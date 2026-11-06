@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {addPersonalEmote, addSharedEmote, getEmoteAvailability} from '@/actions/emotes';
+import {addPersonalEmote, addSharedEmote, getEmoteAvailability, getEmoteSets} from '@/actions/emotes';
 import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
 import {AsyncStatuses, EmoteAddDestinations, EmoteAvailabilityRestrictionTypes} from '@/constants';
 import useAuthStore from '@/stores/auth';
@@ -15,10 +15,13 @@ const IDLE_ADD_STATUSES = {
 export const UNKNOWN_AVAILABILITY = {};
 
 const useEmoteModalStore = create(() => ({
-  // availabilityKey -> {channel: {canAdd, restriction}, personal: {canAdd, restriction}}
+  // availabilityKey -> {channel: {canAdd, restriction}, personal: {canAdd, restriction}, and one per
+  // emote set id}
   availability: {},
-  // add destination -> AsyncStatuses value
+  // add destination (an emote set's id for a set) -> AsyncStatuses value
   addStatuses: {...IDLE_ADD_STATUSES},
+  // user id -> the user's emote sets besides their channel's own
+  emoteSets: {},
 }));
 
 // in-flight requests, keyed like the cache, so concurrent callers share one request
@@ -51,6 +54,7 @@ async function loadAvailability(emoteId, userId, key) {
   try {
     const destinations = await getEmoteAvailability(emoteId);
     result = {
+      ...destinations,
       [EmoteAddDestinations.CHANNEL]: destinations[userId],
       [EmoteAddDestinations.PERSONAL]: destinations.personal,
     };
@@ -67,6 +71,25 @@ async function loadAvailability(emoteId, userId, key) {
     return {availability: {...state.availability, [key]: merged}};
   });
   return result;
+}
+
+// sets can change on the website between opens, so each open reads them again. a failed read keeps
+// what's known: the menu just offers fewer destinations
+export async function fetchEmoteSets(userId) {
+  try {
+    const emoteSets = await getEmoteSets(userId);
+    useEmoteModalStore.setState((state) => ({emoteSets: {...state.emoteSets, [userId]: emoteSets}}));
+  } catch {
+    // the menu keeps its other destinations
+  }
+}
+
+function addToDestination(emoteId, userId, destination) {
+  if (destination === EmoteAddDestinations.PERSONAL) {
+    return addPersonalEmote(emoteId, userId);
+  }
+
+  return addSharedEmote(emoteId, userId, destination === EmoteAddDestinations.CHANNEL ? userId : destination);
 }
 
 // pending rounds up to this so fast requests still read as work. the timer runs alongside the
@@ -101,7 +124,6 @@ export async function performAdd(emoteId, destination) {
     return;
   }
 
-  const addEmote = destination === EmoteAddDestinations.PERSONAL ? addPersonalEmote : addSharedEmote;
   const epoch = addEpoch;
 
   function setStatus(status) {
@@ -117,7 +139,7 @@ export async function performAdd(emoteId, destination) {
   setStatus(AsyncStatuses.PENDING);
   const minimumPending = wait(MINIMUM_PENDING_DURATION);
   try {
-    await addEmote(emoteId, user.id);
+    await addToDestination(emoteId, user.id, destination);
     await minimumPending;
     const key = availabilityKey(user.id, emoteId);
     // the add consumed a slot, so every other emote's cached canAdd may now be stale. keep only

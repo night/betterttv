@@ -12,13 +12,17 @@ export async function getFrankerFaceZChannelEmotes(provider, userId) {
   return api.get(`cached/frankerfacez/users/${provider}/${userId}`);
 }
 
-export async function addSharedEmote(emoteId, userId) {
-  // the user's id doubles as their default channel emote set's id
-  return api.put(`emotes/${emoteId}/shared/${userId}/${userId}`);
+// the user's id doubles as their default channel emote set's id
+export async function addSharedEmote(emoteId, userId, emoteSetId = userId) {
+  return api.put(`emotes/${emoteId}/shared/${userId}/${emoteSetId}`);
 }
 
 export async function addPersonalEmote(emoteId, userId) {
   return api.put(`emotes/${emoteId}/personal/${userId}`);
+}
+
+export async function getEmoteSets(userId) {
+  return api.get(`users/${userId}/emote_sets`);
 }
 
 export async function getEmoteAvailability(emoteId) {

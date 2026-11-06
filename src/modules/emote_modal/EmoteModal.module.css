@@ -49,8 +49,49 @@
   padding-right: 0;
 }
 
+/* an inverted surface, at least as wide as the button */
 .menuDropdown {
+  min-width: 240px;
   padding: 2px;
+  color: var(--mantine-color-text-inverse);
+  background-color: var(--mantine-color-body-inverse);
+  border: 1px solid transparent;
+}
+
+/* lined up with the rows' labels */
+.menuTitle {
+  padding: 8px calc(var(--button-padding-x-lg, 16px) - 2px) 4px;
+  font-size: var(--mantine-font-size-md);
+  font-weight: 600;
+  color: color-mix(in srgb, var(--mantine-color-text-inverse) 55%, transparent);
+}
+
+/* edge to edge, through the dropdown's 2px padding */
+.menuDivider {
+  height: 1px;
+  margin: 4px -2px;
+  background-color: color-mix(in srgb, var(--mantine-color-text-inverse) 14%, transparent);
+}
+
+/* Mantine's disabled treatment paints a body-scheme fill, which is wrong on the inverted menu */
+.menuDropdown .menuItemButton:disabled,
+.menuDropdown .menuItemButton[data-disabled] {
+  background-color: transparent;
+  color: var(--mantine-color-text-inverse);
+  opacity: 0.35;
+}
+
+.globalNote {
+  color: var(--mantine-color-dimmed);
+}
+
+/* a set's name runs up to 64 characters; capped to the 240px menu, with room for the tick */
+.menuItemName {
+  display: block;
+  max-width: 176px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* the radius and left padding are the button's minus the dropdown's 2px gap, so the corners stay
@@ -99,7 +140,8 @@
   transition: opacity 100ms ease-in-out;
 }
 
-.imageLink:hover .image {
+.imageLink:hover .image,
+.imageLink:focus-visible .image {
   opacity: 0.2;
 }
 
@@ -121,7 +163,8 @@
   transition: opacity 100ms ease-in-out;
 }
 
-.imageLink:hover .emotePageOverlay {
+.imageLink:hover .emotePageOverlay,
+.imageLink:focus-visible .emotePageOverlay {
   opacity: 1;
 }
 

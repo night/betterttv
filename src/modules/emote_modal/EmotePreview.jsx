@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import {SquareArrowOutUpRight} from 'lucide-react';
 import React from 'react';
 import formatMessage from '@/i18n/index';
-import {EmoteProviderMetadata, getEmotePageUrl} from '@/utils/emote';
+import {getEmotePageUrl} from '@/utils/emote';
 import {createSrc} from '@/utils/image';
 import styles from './EmoteModal.module.css';
 
@@ -36,11 +36,8 @@ export default function EmotePreview({emote}) {
       rel="noreferrer">
       <EmoteImage emote={emote} />
       <span className={styles.emotePageOverlay}>
-        {formatMessage(
-          {defaultMessage: 'Open on {provider}'},
-          {provider: EmoteProviderMetadata[emote.category?.provider]?.displayName}
-        )}
-        <SquareArrowOutUpRight size={12} />
+        {formatMessage({defaultMessage: 'Open emote page'})}
+        <SquareArrowOutUpRight size={16} />
       </span>
     </a>
   );
