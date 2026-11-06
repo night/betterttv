@@ -12,6 +12,8 @@ function Player({ref, ...props}) {
   const [clickToPlay, setClickToPlay] = useStorageState(SettingIds.CLICK_TO_PLAY);
   const [muteInvisiblePlayer, setMuteInvisiblePlayer] = useStorageState(SettingIds.MUTE_INVISIBLE_PLAYER);
   const [playerExtensions, setPlayerExtensions] = useStorageState(SettingIds.PLAYER_EXTENSIONS);
+  const [pipButton, setPipButton] = useStorageState(SettingIds.PIP_BUTTON);
+  const [resetButton, setResetButton] = useStorageState(SettingIds.RESET_BUTTON);
   const [scrollPlayerControls, setScrollPlayerControls] = useStorageState(SettingIds.SCROLL_PLAYER_CONTROLS);
   const [autoTheatreMode, setAutoTheatreMode] = useStorageState(SettingIds.AUTO_THEATRE_MODE);
 
@@ -36,6 +38,18 @@ function Player({ref, ...props}) {
         description={formatMessage({defaultMessage: "Show the interactive overlays on top of Twitch's video player."})}
         value={playerExtensions}
         onChange={setPlayerExtensions}
+      />
+      <SettingSwitch
+        name={formatMessage({defaultMessage: 'PiP Button'})}
+        description={formatMessage({defaultMessage: 'Show the picture-in-picture button.'})}
+        value={pipButton}
+        onChange={setPipButton}
+      />
+      <SettingSwitch
+        name={formatMessage({defaultMessage: 'Reset Button'})}
+        description={formatMessage({defaultMessage: 'Show the reset player button.'})}
+        value={resetButton}
+        onChange={setResetButton}
       />
       <SettingSwitch
         name={formatMessage({defaultMessage: 'Scroll Player Controls'})}
