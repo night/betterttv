@@ -39,6 +39,7 @@ import comboboxStyles from '@/modules/shadow_dom/styles/combobox.module.css';
 import inputStyles from '@/modules/shadow_dom/styles/input.module.css';
 import kbdStyles from '@/modules/shadow_dom/styles/kbd.module.css';
 import pillStyles from '@/modules/shadow_dom/styles/pill.module.css';
+import pressableStyles from '@/modules/shadow_dom/styles/pressable.module.css';
 import radioStyles from '@/modules/shadow_dom/styles/radio.module.css';
 import switchStyles from '@/modules/shadow_dom/styles/switch.module.css';
 
@@ -46,6 +47,8 @@ const mantineTheme = createTheme({
   primaryColor: DEFAULT_PRIMARY_COLOR,
   primaryShade: 6,
   cursorType: 'pointer',
+  // the press style: a dimmer step instead of Mantine's nudge down
+  activeClassName: pressableStyles.pressable,
   fontSizes: {
     xs: '0.75rem',
     sm: '1rem',

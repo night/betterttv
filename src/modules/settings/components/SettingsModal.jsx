@@ -183,11 +183,7 @@ function SettingsModal({setHandleOpen}) {
       withinPortal={false}
       fullScreen={width < 800}
       opened={open}
-      /* Events like keydown are sometimes prevented by twitch,
-      likely because it can't locate the focused element inside the shadow dom.
-      To prevent this we stop it from bubbling upstream */
-      onKeyDown={stopPropagation}
-      /* Same with youtube which will drop scroll events inside standalone window
+      /* youtube will drop scroll events inside standalone window
       that don't originate from the chat container */
       onWheel={stopPropagation}
       onTouchMove={stopPropagation}

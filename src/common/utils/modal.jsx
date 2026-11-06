@@ -1,5 +1,6 @@
 import {Text} from '@mantine/core';
 import {modals} from '@mantine/modals';
+import {ChevronRight} from 'lucide-react';
 import React from 'react';
 import DeviceCodeSignIn from '@/common/components/DeviceCodeSignIn';
 import {ExternalLinks} from '@/constants';
@@ -11,6 +12,9 @@ import {PopupBlockedError} from '@/utils/oauth';
 import {isUserPro} from '@/utils/pro';
 import {canOpenPopup} from '@/utils/window';
 import styles from './Modal.module.css';
+
+// forms and lists; rem so it isn't scaled, on Twitch's 10px root
+export const WIDE_MODAL_SIZE = '48rem';
 
 const DEFAULT_LOADING_TIMEOUT = 500;
 const DEFAULT_SUCCESS_TIMEOUT = 1000;
@@ -241,9 +245,10 @@ export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
       unsubscribeUserUpdated?.();
     },
     labels: {
-      confirm: formatMessage({defaultMessage: 'Upgrade'}),
+      confirm: formatMessage({defaultMessage: 'Subscribe'}),
       cancel: formatMessage({defaultMessage: 'Cancel'}),
     },
     ...props,
+    confirmProps: {...DEFAULT_CONFIRM_PROPS, ...props.confirmProps, rightSection: <ChevronRight size={16} />},
   });
 }
