@@ -26,19 +26,19 @@ function SplitChat({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={SETTING_NAME}
+        name={formatMessage({defaultMessage: 'Stripe messages'})}
         reverse
         description={formatMessage({
-          defaultMessage: 'Alternate backgrounds between messages in chat to improve readability.',
+          defaultMessage: 'Alternate backgrounds in chat to improve readability.',
         })}
         value={value}
         onChange={setValue}
       />
       <SettingColorPicker
         reverse
-        name={formatMessage({defaultMessage: 'Alternate Background Color'})}
+        name={formatMessage({defaultMessage: 'Set the stripe color'})}
         description={formatMessage({
-          defaultMessage: 'The color of the alternate background.',
+          defaultMessage: 'Used on every other message.',
         })}
         value={colorValue}
         defaultValue={defaultColor}

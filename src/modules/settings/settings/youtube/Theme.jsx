@@ -24,8 +24,8 @@ function Theme({ref, ...props}) {
         showProBadge
         value={normalizedValue}
         onChange={setNormalizedValue}
-        name={formatMessage({defaultMessage: 'Accent Color'})}
-        description={formatMessage({defaultMessage: 'The primary accent color of the theme.'})}
+        name={formatMessage({defaultMessage: 'Pick an accent color'})}
+        description={formatMessage({defaultMessage: 'Used for buttons, toggles and highlights across BetterTTV.'})}
       />
     </SettingGroup>
   );
@@ -33,7 +33,7 @@ function Theme({ref, ...props}) {
 
 SettingStore.registerSetting(Theme, {
   settingPanelId: SettingPanelIds.THEME,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.INTERFACE,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });

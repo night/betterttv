@@ -14,9 +14,9 @@ function ModerationView({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Auto-Enter'})}
+        name={formatMessage({defaultMessage: 'Enter automatically'})}
         description={formatMessage({
-          defaultMessage: 'Automatically enter moderation view on channels you moderate.',
+          defaultMessage: 'Opens moderation view on channels you moderate.',
         })}
         value={value}
         onChange={setValue}

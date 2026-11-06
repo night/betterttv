@@ -13,6 +13,7 @@ import useAuthStore from '@/stores/auth';
 import useFeatureEligibilityStore, {fetchEligibility} from '@/stores/feature-eligibility';
 import {getCurrentChannel} from '@/utils/channel';
 import {isUserPro} from '@/utils/pro';
+import SettingGroup from './SettingGroup';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import SettingSwitch from './SettingSwitch';
@@ -49,7 +50,7 @@ function BadgeImage({src}) {
   );
 }
 
-function SubscriptionBadgeSetting() {
+function SubscriptionBadgeSetting({name, ref, ...props}) {
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
 
   // persisted eligibility may belong to a previous session's account; only use it for the current user
@@ -176,29 +177,24 @@ function SubscriptionBadgeSetting() {
         )
       : null;
 
+  const hasBadgeChoices = isPro && eligibleBadges != null && eligibleBadges.length > 0;
+  const badgeTitle = formatMessage({defaultMessage: 'Display your badge'});
+  const badgeDescription = formatMessage({
+    defaultMessage: 'Everyone using BetterTTV sees it when you type in chat.',
+  });
+
   return (
-    <React.Fragment>
-      {isPro ? (
-        <SettingWrapper
-          reverse
-          showProBadge
-          name={formatMessage({defaultMessage: 'Subscriber Badge'})}
-          description={formatMessage({
-            defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
-          })}
-        />
-      ) : (
+    <SettingGroup ref={ref} {...props} name={name} withPane={!hasBadgeChoices}>
+      {!isPro ? (
         <SettingSwitch
-          showProBadge
-          name={formatMessage({defaultMessage: 'Subscriber Badge'})}
-          description={formatMessage({
-            defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
-          })}
+          name={badgeTitle}
+          description={badgeDescription}
           value={badgeEnabled}
           onChange={setBadgeEnabled}
         />
-      )}
-      {isPro && eligibleBadges != null && eligibleBadges.length > 0 ? (
+      ) : null}
+      {isPro && !hasBadgeChoices ? <SettingWrapper reverse name={badgeTitle} description={badgeDescription} /> : null}
+      {hasBadgeChoices ? (
         <SettingRadioCardGroup
           value={!badgeEnabled ? DISABLED : selectedBadgeId}
           onChange={handleBadgeChange}
@@ -255,7 +251,7 @@ function SubscriptionBadgeSetting() {
           ) : null}
         </SettingRadioCardGroup>
       ) : null}
-    </React.Fragment>
+    </SettingGroup>
   );
 }
 

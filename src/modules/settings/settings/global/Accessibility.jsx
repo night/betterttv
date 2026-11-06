@@ -14,7 +14,7 @@ function Accessibility({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Reduce Motion'})}
+        name={formatMessage({defaultMessage: 'Reduce motion'})}
         description={formatMessage({
           defaultMessage:
             "Disables animations, such as animated username effects. When off, animations follow your browser's reduced motion preference.",

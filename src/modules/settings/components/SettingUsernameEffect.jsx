@@ -11,13 +11,13 @@ import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/uti
 import {CHAT_COLOR_USERNAME_EFFECTS, UsernameEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
 import useAuthStore from '../../../stores/auth';
+import {useUsernameLook} from '../../../stores/username-looks';
 import {isUserPro} from '../../../utils/pro';
 import twitch from '../../../utils/twitch';
 import {getCurrentUser, getPreviewDisplayName} from '../../../utils/user';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import styles from './SettingUsernameEffect.module.css';
-import SettingWrapper from './SettingWrapper';
 
 function getChatColorStyle(effect, chatColor) {
   if (!CHAT_COLOR_USERNAME_EFFECTS.includes(effect) || chatColor == null) {
@@ -155,9 +155,10 @@ function openUsernameEffectSignInModal(value, callback) {
 function SettingUsernameEffect() {
   const currentUser = useCurrentUser();
   const user = useAuthStore((state) => state.user);
+  const usernameFont = useUsernameLook('usernameFont');
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
 
-  const [value, handleChange] = useUsernameEffectSetting({
+  const [value, handleChange, isLocked] = useUsernameEffectSetting({
     userField: 'usernameEffect',
     saveEffect: updateUsernameEffect,
     isEligible: isEligibleForUsernameEffect,
@@ -166,47 +167,37 @@ function SettingUsernameEffect() {
   });
 
   return (
-    <React.Fragment>
-      <SettingWrapper
-        reverse
-        name={formatMessage({defaultMessage: 'Username effect'})}
-        description={formatMessage({defaultMessage: 'Choose how your username is styled in chat.'})}
-        showProBadge
-      />
-      <div className={styles.cards}>
-        <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+    <div className={styles.cards}>
+      <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+        <SettingRadioCard
+          key={NONE}
+          value={NONE}
+          className={styles.usernameCard}
+          tooltip={formatMessage({defaultMessage: 'Disable effect'})}
+          ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
+          withIndicators={false}>
+          <X className={styles.cardIcon} />
+        </SettingRadioCard>
+        {EFFECT_CARDS.map(({value: effectValue, label}) => (
           <SettingRadioCard
-            key={NONE}
-            value={NONE}
+            key={effectValue}
+            value={effectValue}
+            locked={isLocked(effectValue)}
             className={styles.usernameCard}
-            tooltip={formatMessage({defaultMessage: 'Disable effect'})}
-            ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
+            tooltip={label}
+            ariaLabel={label}
             withIndicators={false}>
-            <X className={styles.cardIcon} />
+            <Text
+              truncate
+              size="xl"
+              style={getChatColorStyle(effectValue, chatColor)}
+              className={classNames(UsernameEffectRequirementClassNamesByEffect[effectValue], fonts[usernameFont])}>
+              {getPreviewDisplayName(currentUser, user)}
+            </Text>
           </SettingRadioCard>
-          {EFFECT_CARDS.map(({value: effectValue, label}) => (
-            <SettingRadioCard
-              key={effectValue}
-              value={effectValue}
-              className={styles.usernameCard}
-              tooltip={label}
-              ariaLabel={label}
-              withIndicators={false}>
-              <Text
-                truncate
-                size="xl"
-                style={getChatColorStyle(effectValue, chatColor)}
-                className={classNames(
-                  UsernameEffectRequirementClassNamesByEffect[effectValue],
-                  fonts[user?.usernameFont]
-                )}>
-                {getPreviewDisplayName(currentUser, user)}
-              </Text>
-            </SettingRadioCard>
-          ))}
-        </SettingRadioCardGroup>
-      </div>
-    </React.Fragment>
+        ))}
+      </SettingRadioCardGroup>
+    </div>
   );
 }
 

@@ -11,14 +11,12 @@ import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/uti
 import {UsernameHoverEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
 import useAuthStore from '../../../stores/auth';
+import {useUsernameLook} from '../../../stores/username-looks';
 import {isUserPro} from '../../../utils/pro';
 import {getCurrentUser, getPreviewDisplayName} from '../../../utils/user';
-import {useHasPromotion} from '../stores/promotion-store';
-import {SettingPanelIds} from '../stores/setting-store';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import styles from './SettingUsernameEffect.module.css';
-import SettingWrapper from './SettingWrapper';
 
 const EFFECT_CARDS = [
   {value: UsernameHoverEffects.WAVE, label: formatMessage({defaultMessage: 'Wave'})},
@@ -43,8 +41,8 @@ function isEligibleForUsernameHoverEffect(eligibility, value) {
 }
 
 function UsernameHoverEffectPreviewText({value, className, children}) {
-  const usernameEffect = useAuthStore((state) => state.user?.usernameEffect ?? null);
-  const usernameFont = useAuthStore((state) => state.user?.usernameFont ?? null);
+  const usernameEffect = useUsernameLook('usernameEffect');
+  const usernameFont = useUsernameLook('usernameFont');
 
   return (
     <Text truncate size="xl" className={classNames(className, styles.flavorUsername)}>
@@ -101,9 +99,8 @@ function SettingUsernameHoverEffect() {
   const currentUser = useCurrentUser();
   const user = useAuthStore((state) => state.user);
   const previewDisplayName = getPreviewDisplayName(currentUser, user);
-  const hasPromotion = useHasPromotion(SettingPanelIds.USERNAME_HOVER_EFFECT);
 
-  const [value, handleChange] = useUsernameEffectSetting({
+  const [value, handleChange, isLocked] = useUsernameEffectSetting({
     userField: 'usernameHoverEffect',
     saveEffect: updateUsernameHoverEffect,
     isEligible: isEligibleForUsernameHoverEffect,
@@ -112,41 +109,31 @@ function SettingUsernameHoverEffect() {
   });
 
   return (
-    <React.Fragment>
-      <SettingWrapper
-        reverse
-        name={formatMessage({defaultMessage: 'Hover effect'})}
-        description={formatMessage({
-          defaultMessage: 'Choose an animation that plays while your username is hovered in chat.',
-        })}
-        showNewBadge={hasPromotion}
-        showProBadge
-      />
-      <div className={styles.cards}>
-        <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+    <div className={styles.cards}>
+      <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+        <SettingRadioCard
+          key={NONE}
+          value={NONE}
+          className={styles.usernameCard}
+          tooltip={formatMessage({defaultMessage: 'Disable effect'})}
+          ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
+          withIndicators={false}>
+          <X className={styles.cardIcon} />
+        </SettingRadioCard>
+        {EFFECT_CARDS.map(({value: effectValue, label}) => (
           <SettingRadioCard
-            key={NONE}
-            value={NONE}
-            className={styles.usernameCard}
-            tooltip={formatMessage({defaultMessage: 'Disable effect'})}
-            ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
+            key={effectValue}
+            value={effectValue}
+            locked={isLocked(effectValue)}
+            className={classNames(styles.usernameCard, effects.hoverTrigger)}
+            tooltip={label}
+            ariaLabel={label}
             withIndicators={false}>
-            <X className={styles.cardIcon} />
+            <UsernameHoverEffectPreviewText value={effectValue}>{previewDisplayName}</UsernameHoverEffectPreviewText>
           </SettingRadioCard>
-          {EFFECT_CARDS.map(({value: effectValue, label}) => (
-            <SettingRadioCard
-              key={effectValue}
-              value={effectValue}
-              className={classNames(styles.usernameCard, effects.hoverTrigger)}
-              tooltip={label}
-              ariaLabel={label}
-              withIndicators={false}>
-              <UsernameHoverEffectPreviewText value={effectValue}>{previewDisplayName}</UsernameHoverEffectPreviewText>
-            </SettingRadioCard>
-          ))}
-        </SettingRadioCardGroup>
-      </div>
-    </React.Fragment>
+        ))}
+      </SettingRadioCardGroup>
+    </div>
   );
 }
 

@@ -107,7 +107,7 @@ function ImportSetting({description, disabled, importing, setImporting}) {
   }
 
   return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Import Settings'})} description={description}>
+    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Restore a backup'})} description={description}>
       <input
         type="file"
         hidden

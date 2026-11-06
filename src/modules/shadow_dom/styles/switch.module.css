@@ -10,3 +10,56 @@
     --switch-thumb-size: 24px !important;
   }
 }
+
+/* Mantine's background-color fade runs on the main thread and dropped frames beside other page
+   work, so the accent fades in as an overlay's opacity, on the compositor */
+.track {
+  position: relative;
+  background-color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-5));
+  transition: none;
+}
+
+.track::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--switch-color);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.input:checked + .track::after {
+  opacity: 1;
+}
+
+.input:disabled + .track {
+  background-color: var(--switch-disabled-color);
+}
+
+.input:disabled + .track::after {
+  display: none;
+}
+
+/* likewise the thumb slides with a transform instead of Mantine's inset transition; the travel
+   lands on Mantine's own end position */
+.thumb {
+  inset-inline-start: var(--switch-track-label-padding);
+  transition: transform 150ms ease;
+  will-change: transform;
+}
+
+.input:checked + .track > .thumb {
+  transform: translateX(calc(var(--switch-width) - var(--switch-thumb-size) - 2 * var(--switch-track-label-padding)));
+}
+
+[dir='rtl'] .input:checked + .track > .thumb {
+  transform: translateX(
+    calc(-1 * (var(--switch-width) - var(--switch-thumb-size) - 2 * var(--switch-track-label-padding)))
+  );
+}
+
+/* Mantine doesn't transition the thumb's dot, which snapped ahead of the track's fade */
+.thumb::before {
+  transition: background-color 150ms ease;
+}

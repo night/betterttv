@@ -23,3 +23,9 @@
 .scroll::-webkit-scrollbar-thumb:hover {
   background: var(--mantine-color-dimmed);
 }
+
+/* the same look for everything in the shadow root that scrolls without the Scrollbar component */
+:global(.bttv-mantine-scope) * {
+  scrollbar-color: var(--mantine-color-dimmed) transparent;
+  scrollbar-width: thin;
+}

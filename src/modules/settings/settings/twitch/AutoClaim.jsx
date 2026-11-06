@@ -16,17 +16,17 @@ function AutoClaim({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingCheckbox
-        name={formatMessage({defaultMessage: 'Bonus Channel Points'})}
+        name={formatMessage({defaultMessage: 'Claim bonus points'})}
         description={formatMessage({
-          defaultMessage: 'Claim bonus channel points when available.',
+          defaultMessage: "Collects them as soon as they're available.",
         })}
         checked={hasFlag(channelPoints, ChannelPointsFlags.AUTO_CLAIM)}
         onChange={(checked) => setChannelPoints(setFlag(channelPoints, ChannelPointsFlags.AUTO_CLAIM, checked))}
       />
       <SettingCheckbox
-        name={formatMessage({defaultMessage: 'Drops'})}
+        name={formatMessage({defaultMessage: 'Claim drops'})}
         description={formatMessage({
-          defaultMessage: 'Claim all drops once you earn them.',
+          defaultMessage: 'Collects them as soon as you earn them.',
         })}
         checked={hasFlag(autoClaim, AutoClaimFlags.DROPS)}
         onChange={(checked) => setAutoClaim(setFlag(autoClaim, AutoClaimFlags.DROPS, checked))}

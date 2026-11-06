@@ -265,12 +265,8 @@ export const SettingsPromotions = {
   // CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
   // SELF_BOT: 'settingsPromotionDismissedSelfBot',
   // SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
-  SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
-  USERNAME_HOVER_EFFECT: 'settingsPromotionDismissedUsernameHoverEffect',
-};
-
-export const SettingsPrompts = {
-  SIGN_IN: 'settingsSignInPromptSeen',
+  // SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
+  // USERNAME_HOVER_EFFECT: 'settingsPromotionDismissedUsernameHoverEffect',
 };
 
 /** Default Mantine `theme.primaryColor` key when unset or invalid. */

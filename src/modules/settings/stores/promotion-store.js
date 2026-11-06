@@ -1,20 +1,20 @@
 import {useState} from 'react';
-import {SettingsPromotions} from '@/constants';
-import {SettingPanelIds} from '@/modules/settings/stores/setting-store';
+// import {SettingsPromotions} from '@/constants';
+// import {SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import storage from '@/storage';
 import SafeEventEmitter from '@/utils/safe-event-emitter';
 
 // A promotion marks its setting panel with a dot in the settings navigation until the user scrolls
 // the panel into view.
 const PROMOTION_SLOTS = [
-  {
-    storageKey: SettingsPromotions.SELF_BOT_TIMERS,
-    settingPanelId: SettingPanelIds.SELF_BOT,
-  },
-  {
-    storageKey: SettingsPromotions.USERNAME_HOVER_EFFECT,
-    settingPanelId: SettingPanelIds.USERNAME_HOVER_EFFECT,
-  },
+  // {
+  //   storageKey: SettingsPromotions.SELF_BOT_TIMERS,
+  //   settingPanelId: SettingPanelIds.SELF_BOT,
+  // },
+  // {
+  //   storageKey: SettingsPromotions.USERNAME_HOVER_EFFECT,
+  //   settingPanelId: SettingPanelIds.USERNAME_HOVER_EFFECT,
+  // },
 ];
 
 function isPromotionSlotSeen(storageKey) {

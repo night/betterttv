@@ -12,8 +12,8 @@ import formatMessage from '@/i18n/index';
 import SettingRadioCard from '@/modules/settings/components/SettingRadioCard';
 import SettingRadioCardGroup from '@/modules/settings/components/SettingRadioCardGroup';
 import styles from '@/modules/settings/components/SettingUsernameEffect.module.css';
-import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import useAuthStore from '@/stores/auth';
+import {useUsernameLook} from '@/stores/username-looks';
 import {isUserPro} from '@/utils/pro';
 import {getCurrentUser, getPreviewDisplayName} from '@/utils/user';
 
@@ -30,7 +30,7 @@ function isEligibleForUsernameFont(eligibility, value) {
 }
 
 function UsernameFontPreviewText({value, className, children}) {
-  const usernameEffect = useAuthStore((state) => state.user?.usernameEffect ?? null);
+  const usernameEffect = useUsernameLook('usernameEffect');
 
   return (
     <Text truncate size="xl" className={classNames(className, styles.flavorUsername)}>
@@ -88,7 +88,7 @@ function SettingUsernameFont() {
   const user = useAuthStore((state) => state.user);
   const previewDisplayName = getPreviewDisplayName(currentUser, user);
 
-  const [value, handleChange] = useUsernameEffectSetting({
+  const [value, handleChange, isLocked] = useUsernameEffectSetting({
     userField: 'usernameFont',
     saveEffect: updateUsernameFont,
     isEligible: isEligibleForUsernameFont,
@@ -97,40 +97,31 @@ function SettingUsernameFont() {
   });
 
   return (
-    <React.Fragment>
-      <SettingWrapper
-        reverse
-        name={formatMessage({defaultMessage: 'Font'})}
-        description={formatMessage({
-          defaultMessage: 'Choose the font your username is shown in for everyone in chat.',
-        })}
-        showProBadge
-      />
-      <div className={styles.cards}>
-        <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+    <div className={styles.cards}>
+      <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+        <SettingRadioCard
+          key={NONE}
+          value={NONE}
+          className={styles.usernameCard}
+          tooltip={formatMessage({defaultMessage: 'Default font'})}
+          ariaLabel={formatMessage({defaultMessage: 'Default font'})}
+          withIndicators={false}>
+          <X className={styles.cardIcon} />
+        </SettingRadioCard>
+        {FONT_CARDS.map(({value: fontValue, label}) => (
           <SettingRadioCard
-            key={NONE}
-            value={NONE}
+            key={fontValue}
+            value={fontValue}
+            locked={isLocked(fontValue)}
             className={styles.usernameCard}
-            tooltip={formatMessage({defaultMessage: 'Default font'})}
-            ariaLabel={formatMessage({defaultMessage: 'Default font'})}
+            tooltip={label}
+            ariaLabel={label}
             withIndicators={false}>
-            <X className={styles.cardIcon} />
+            <UsernameFontPreviewText value={fontValue}>{previewDisplayName}</UsernameFontPreviewText>
           </SettingRadioCard>
-          {FONT_CARDS.map(({value: fontValue, label}) => (
-            <SettingRadioCard
-              key={fontValue}
-              value={fontValue}
-              className={styles.usernameCard}
-              tooltip={label}
-              ariaLabel={label}
-              withIndicators={false}>
-              <UsernameFontPreviewText value={fontValue}>{previewDisplayName}</UsernameFontPreviewText>
-            </SettingRadioCard>
-          ))}
-        </SettingRadioCardGroup>
-      </div>
-    </React.Fragment>
+        ))}
+      </SettingRadioCardGroup>
+    </div>
   );
 }
 

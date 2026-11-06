@@ -21,40 +21,40 @@ function SidebarComponent({ref, ...props}) {
       flags={Object.values(SidebarFlags)}>
       <SettingCheckbox
         value={SidebarFlags.RECENTLY_WATCHED_CHANNELS}
-        name={formatMessage({defaultMessage: 'Recently Watched Channels'})}
-        description={formatMessage({defaultMessage: 'Show recently watched channels in the sidebar.'})}
+        name={formatMessage({defaultMessage: 'Show recently watched channels'})}
+        description={formatMessage({defaultMessage: 'Keeps this list in the sidebar.'})}
       />
       <SettingCheckbox
         value={SidebarFlags.RECOMMENDED_CHANNELS}
-        name={formatMessage({defaultMessage: 'Recommended Channels'})}
-        description={formatMessage({defaultMessage: 'Show recommended channels in the sidebar.'})}
+        name={formatMessage({defaultMessage: 'Show recommended channels'})}
+        description={formatMessage({defaultMessage: 'Keeps this list in the sidebar.'})}
       />
       <SettingCheckbox
         value={SidebarFlags.RECOMMENDED_CATEGORIES}
-        name={formatMessage({defaultMessage: 'Recommended Categories'})}
-        description={formatMessage({defaultMessage: 'Show recommended categories in the sidebar.'})}
+        name={formatMessage({defaultMessage: 'Show recommended categories'})}
+        description={formatMessage({defaultMessage: 'Keeps this list in the sidebar.'})}
       />
       <SettingCheckbox
         value={SidebarFlags.SIMILAR_CHANNELS}
-        name={formatMessage({defaultMessage: 'Similar Channels'})}
-        description={formatMessage({defaultMessage: 'Show similar channels in the sidebar.'})}
+        name={formatMessage({defaultMessage: 'Show similar channels'})}
+        description={formatMessage({defaultMessage: 'Keeps this list in the sidebar.'})}
       />
       <SettingCheckbox
         value={SidebarFlags.OFFLINE_FOLLOWED_CHANNELS}
-        name={formatMessage({defaultMessage: 'Offline Followed Channels'})}
-        description={formatMessage({defaultMessage: 'Show offline followed channels in the sidebar.'})}
+        name={formatMessage({defaultMessage: 'Show offline followed channels'})}
+        description={formatMessage({defaultMessage: 'Keeps this list in the sidebar.'})}
       />
       <SettingCheckbox
         value={SidebarFlags.AUTO_EXPAND_CHANNELS}
-        name={formatMessage({defaultMessage: 'Auto-Expand Channels'})}
+        name={formatMessage({defaultMessage: 'Expand channels automatically'})}
         description={formatMessage({
           defaultMessage: 'Clicks the Load More followed channels button in the sidebar for you.',
         })}
       />
       <SettingCheckbox
         value={SidebarFlags.STORIES}
-        name={formatMessage({defaultMessage: 'Stories'})}
-        description={formatMessage({defaultMessage: 'Show stories in the sidebar.'})}
+        name={formatMessage({defaultMessage: 'Show stories'})}
+        description={formatMessage({defaultMessage: 'Keeps them in the sidebar.'})}
       />
     </SettingCheckboxGroup>
   );

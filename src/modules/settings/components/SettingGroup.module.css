@@ -1,10 +1,30 @@
-.settingGroup {
+.section {
+  display: flex;
+  flex-direction: column;
   --setting-panel-padding: 0;
+  gap: 12px;
+  /* with the page's 20px gap, 40px between groups; the checkbox and radio groups wrap their section,
+     so a sibling selector wouldn't reach them */
+  padding-bottom: 20px;
+  scroll-margin-top: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.settingGroup {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.panelContainer {
-  scroll-margin-top: 20px;
 }

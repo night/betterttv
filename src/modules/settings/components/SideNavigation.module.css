@@ -18,8 +18,9 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* equal padding on all sides of the scrollable list */
-  padding: var(--sidenav-h-padding);
+  gap: 4px;
+  /* the logo's row already spaces the first category */
+  padding: 0 var(--sidenav-h-padding) var(--sidenav-h-padding);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -67,24 +68,12 @@
   border: 1px solid transparent;
 }
 
-/* the scroll list scrolls rather than squashing its rows (category buttons and collapse wrappers) */
+/* the scroll list scrolls rather than squashing its category buttons */
 .settingsScrollArea > * {
   flex-shrink: 0;
 }
 
-/* top-level nav items for each individual setting. These use
-   Mantine's transparent variant, so there's no background fill in any state (rest, hover, or
-   active) — hovering only undims the label (see the hover rule below), Discord-style, and the
-   pill treatment stays exclusive to the category rows. */
-.settingNavigationButton {
-  height: 40px;
-  font-weight: 400;
-  /* match the list's top/bottom padding when scrolled into view */
-  scroll-margin-top: var(--sidenav-h-padding);
-  scroll-margin-bottom: var(--sidenav-h-padding);
-}
-
-/* dot on the right of a setting (or its collapsed category) with an unseen promotion */
+/* dot on the right of a category with an unseen promotion */
 .promotionDot {
   width: 8px;
   height: 8px;
@@ -93,8 +82,8 @@
 }
 
 /* category header: reuses the settings button component and the shared clickable container,
-   styled as a dimmed, uppercase section header. Clickable to collapse/expand its settings; sits
-   flat (no background) until hovered, pressed, or active. */
+   styled as a dimmed, uppercase row. Opens its category's page; sits flat (no background) until
+   hovered, pressed, or active. */
 .categoryButton {
   height: 40px;
   font-size: 11px;
@@ -102,9 +91,6 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--mantine-color-dimmed);
-  /* match the list's top/bottom padding when scrolled into view */
-  scroll-margin-top: var(--sidenav-h-padding);
-  scroll-margin-bottom: var(--sidenav-h-padding);
   --surface-bg: transparent;
   transition: none;
 }
@@ -125,12 +111,6 @@
 .categoryButton[data-active='true'] {
   color: var(--button-color);
   box-shadow: var(--mantine-shadow-xs);
-}
-
-/* wraps a category's settings inside the Mantine <Collapse> so they keep stacking full-width */
-.categorySettings {
-  display: flex;
-  flex-direction: column;
 }
 
 .navigationLabel {
@@ -154,7 +134,7 @@
   color: var(--mantine-color-dimmed);
 }
 
-/* the user-settings card shows the display name at full strength, not dimmed like the other rows */
+/* the user-settings row shows the display name at full strength, not dimmed like the other rows */
 .userSettingsNavigationButton[data-active='false'] .navigationLabel {
   color: var(--mantine-color-text);
 }
@@ -192,28 +172,23 @@
   padding-left: var(--mantine-spacing-xs);
 }
 
-/* fixed above the scrollable settings list; spans the full sidebar width (the container has no
-   horizontal padding of its own) so its bottom-border divider reaches edge to edge. The left
-   padding optically lines the logo up with the nav icons below it. */
+/* fixed above the scrollable settings list. The left padding optically lines the logo up with the
+   nav icons below it. */
 .logoContainer {
   display: flex;
   align-items: center;
   height: 64px;
   flex-shrink: 0;
   padding: 0 24px;
-  border-bottom: 1px solid var(--mantine-color-default-border);
 }
 
-/* fixed below the scrollable settings list; spans the full sidebar width so its top-border
-   divider reaches edge to edge, with horizontal padding matching the list above */
+/* fixed below the scrollable settings list, with horizontal padding matching the list above */
 .userSettingsContainer {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-top: 8px;
   padding-left: var(--sidenav-h-padding);
   padding-right: var(--sidenav-h-padding);
-  border-top: 1px solid var(--mantine-color-default-border);
 }
 
 /* the user-settings card reuses the shared clickable container (see ClickableContainer.module.css)
@@ -235,10 +210,16 @@
 }
 
 .closeButtonIcon {
-  width: 24px;
-  height: 24px;
-  transform: rotate(180deg);
+  width: 18px;
+  height: 18px;
   color: var(--mantine-color-dimmed);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidenavContainer,
+  .overlay {
+    transition: none !important;
+  }
 }
 
 @media (min-width: 800px) {

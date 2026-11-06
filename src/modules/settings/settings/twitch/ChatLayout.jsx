@@ -15,13 +15,13 @@ function ChatLayout({ref, ...props}) {
     <SettingRadioGroup ref={ref} {...props} name={SETTING_NAME} value={value} onChange={setValue}>
       <SettingRadio
         optionValue={ChatLayoutTypes.RIGHT}
-        name={formatMessage({defaultMessage: 'Right'})}
-        description={formatMessage({defaultMessage: 'Moves the chat to the right of the player.'})}
+        name={formatMessage({defaultMessage: 'Keep on the right'})}
+        description={formatMessage({defaultMessage: 'Chat stays on its usual side of the player.'})}
       />
       <SettingRadio
         optionValue={ChatLayoutTypes.LEFT}
-        name={formatMessage({defaultMessage: 'Left'})}
-        description={formatMessage({defaultMessage: 'Moves the chat to the left of the player.'})}
+        name={formatMessage({defaultMessage: 'Move to the left'})}
+        description={formatMessage({defaultMessage: 'Chat moves to the opposite side of the player.'})}
       />
     </SettingRadioGroup>
   );

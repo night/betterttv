@@ -21,21 +21,21 @@ function AutoplayModule({ref, ...props}) {
       flags={Object.values(AutoPlayFlags)}>
       <SettingCheckbox
         value={AutoPlayFlags.FP_VIDEO}
-        name={formatMessage({defaultMessage: 'Front Page Player'})}
-        description={formatMessage({defaultMessage: 'Automatically play videos on the front page.'})}
+        name={formatMessage({defaultMessage: 'Autoplay on the homepage'})}
+        description={formatMessage({defaultMessage: 'Starts videos as soon as the page loads.'})}
       />
       <SettingCheckbox
         value={AutoPlayFlags.OFFLINE_CHANNEL_VIDEO}
-        name={formatMessage({defaultMessage: 'Offline Channel Player'})}
+        name={formatMessage({defaultMessage: 'Autoplay on offline channels'})}
         description={formatMessage({
-          defaultMessage: 'Automatically play the welcome video or last stream on offline channels.',
+          defaultMessage: 'Starts the welcome video or last stream automatically.',
         })}
       />
       <SettingCheckbox
         value={AutoPlayFlags.VOD_RECOMMENDATION_AUTOPLAY}
-        name={formatMessage({defaultMessage: 'VOD Player'})}
+        name={formatMessage({defaultMessage: 'Autoplay on VODs'})}
         description={formatMessage({
-          defaultMessage: 'Automatically play recommended videos on VoDs.',
+          defaultMessage: 'Starts recommended videos.',
         })}
       />
     </SettingCheckboxGroup>

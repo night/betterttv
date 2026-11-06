@@ -5,7 +5,7 @@ import {useShallow} from 'zustand/react/shallow';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import {executeSignIn, openConfirmModal} from '@/common/utils/modal';
-import {EXT_VER, SettingsPrompts} from '@/constants';
+import {EXT_VER} from '@/constants';
 import formatMessage from '@/i18n/index';
 import Alert from '@/modules/settings/components/Alert';
 import Footer from '@/modules/settings/components/Footer';
@@ -40,7 +40,7 @@ function BackupSetting({description, disabled}) {
   }
 
   return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Backup Settings'})} description={description}>
+    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Download a backup'})} description={description}>
       <Button size="lg" onClick={backupFile} disabled={disabled}>
         {formatMessage({defaultMessage: 'Backup'})}
       </Button>
@@ -60,8 +60,8 @@ function CloudBackupSetting() {
   return (
     <SettingSwitch
       showProBadge
-      name={formatMessage({defaultMessage: 'Cloud Backup'})}
-      description={formatMessage({defaultMessage: 'Backup your settings to the cloud.'})}
+      name={formatMessage({defaultMessage: 'Back up to the cloud'})}
+      description={formatMessage({defaultMessage: 'Stores your settings with your account.'})}
       value={normalizedCloudBackupSettings.enabled}
       onChange={(enabled) => setNormalizedCloudBackupSettings({enabled})}
     />
@@ -94,7 +94,7 @@ function SignInAlert() {
       description={formatMessage({defaultMessage: 'Some features are unavailable until you sign in.'})}
       rightContent={
         <Anchor component="button" type="button" underline="always" c="inherit" onClick={signIn} disabled={signingIn}>
-          {formatMessage({defaultMessage: 'Connect Account'})}
+          {formatMessage({defaultMessage: 'Sign In'})}
         </Anchor>
       }
     />
@@ -111,8 +111,6 @@ function SignInButton() {
     await revokeAccessToken(accessToken);
     setCredentials(null);
     setCloudBackupSettings({enabled: false});
-    // Re-arm the one-time settings sign-in prompt so the user is nudged again next time.
-    storage.set(SettingsPrompts.SIGN_IN, false);
   }
 
   function handleSignOut() {
@@ -131,7 +129,7 @@ function SignInButton() {
     return (
       <SettingWrapper
         reverse
-        name={formatMessage({defaultMessage: 'Sign In to BetterTTV'})}
+        name={formatMessage({defaultMessage: 'Sign in to BetterTTV'})}
         description={formatMessage({defaultMessage: 'Authenticated users gain access to additional features.'})}>
         <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
           {formatMessage({defaultMessage: 'Sign In'})}
@@ -143,7 +141,7 @@ function SignInButton() {
   return (
     <SettingWrapper
       reverse
-      name={formatMessage({defaultMessage: 'Sign Out'})}
+      name={formatMessage({defaultMessage: 'Sign out'})}
       description={formatMessage({defaultMessage: 'Unlink account from extension.'})}>
       <Button size="lg" onClick={handleSignOut}>
         {formatMessage({defaultMessage: 'Sign Out'})}
@@ -162,11 +160,11 @@ function UserSettings() {
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />
         <BackupSetting
-          description={formatMessage({defaultMessage: 'Download a copy of your settings to a JSON file.'})}
+          description={formatMessage({defaultMessage: 'Saves your settings to a JSON file.'})}
           disabled={resetting}
         />
         <ImportSetting
-          description={formatMessage({defaultMessage: 'Restore your settings from a backup file.'})}
+          description={formatMessage({defaultMessage: 'Loads your settings from a JSON file.'})}
           disabled={resetting}
           importing={importing}
           setImporting={setImporting}

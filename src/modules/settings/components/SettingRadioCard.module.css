@@ -1,7 +1,3 @@
-.tooltip {
-  font-size: var(--mantine-font-size-md);
-}
-
 /* surface + checked treatment comes from the shared clickable container
    (see ClickableContainer.module.css); this file keeps the card-only layout */
 .card {
@@ -14,10 +10,19 @@
   padding: 16px;
   border-radius: var(--mantine-radius-lg);
   color: var(--mantine-color-dimmed);
+  --surface-bg: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
 }
 
 .card[data-checked='true'] {
-  color: var(--mantine-primary-color-3);
+  color: var(--mantine-primary-color-light-color);
+}
+
+/* a locked card keeps its resting background under the pointer; a click explains how to unlock it */
+.card[data-locked] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  --surface-bg-hover: var(--surface-bg);
+  --surface-bg-active: var(--surface-bg);
 }
 
 .iconIndicator {
@@ -27,12 +32,16 @@
   opacity: 0;
   color: currentColor;
   scale: 0;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   transition: all 100ms ease-in-out;
 }
 
 .card[data-checked='true'] .checkIcon {
   opacity: 1;
   scale: 1;
+}
+
+.tooltip {
+  font-size: var(--mantine-font-size-md);
 }

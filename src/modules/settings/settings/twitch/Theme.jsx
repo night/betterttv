@@ -24,14 +24,14 @@ function Theme({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Dark theme'})}
-        description={formatMessage({defaultMessage: 'Use a dark color scheme.'})}
+        name={formatMessage({defaultMessage: 'Use a dark theme'})}
+        description={formatMessage({defaultMessage: 'Easier on the eyes in low light.'})}
         value={darkThemeValue}
         onChange={setDarkThemeValue}
         disabled={autoThemeValue}
       />
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Auto theme'})}
+        name={formatMessage({defaultMessage: 'Match your system'})}
         description={formatMessage({
           defaultMessage: "Automatically set dark theme from your system's theme.",
         })}
@@ -42,8 +42,8 @@ function Theme({ref, ...props}) {
         showProBadge
         value={normalizedThemeColorValue}
         onChange={setNormalizedThemeColorValue}
-        name={formatMessage({defaultMessage: 'Accent Color'})}
-        description={formatMessage({defaultMessage: 'The primary accent color of the theme.'})}
+        name={formatMessage({defaultMessage: 'Pick an accent color'})}
+        description={formatMessage({defaultMessage: 'Used for buttons, toggles and highlights across BetterTTV.'})}
       />
     </SettingGroup>
   );
@@ -51,7 +51,7 @@ function Theme({ref, ...props}) {
 
 SettingStore.registerSetting(Theme, {
   settingPanelId: SettingPanelIds.THEME,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.INTERFACE,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });

@@ -14,6 +14,7 @@ import {
   Input,
   Kbd,
   MantineProvider,
+  Menu,
   parseThemeColor,
   Pill,
   Radio,
@@ -38,6 +39,7 @@ import closeButtonStyles from '@/modules/shadow_dom/styles/close-button.module.c
 import comboboxStyles from '@/modules/shadow_dom/styles/combobox.module.css';
 import inputStyles from '@/modules/shadow_dom/styles/input.module.css';
 import kbdStyles from '@/modules/shadow_dom/styles/kbd.module.css';
+import menuStyles from '@/modules/shadow_dom/styles/menu.module.css';
 import pillStyles from '@/modules/shadow_dom/styles/pill.module.css';
 import pressableStyles from '@/modules/shadow_dom/styles/pressable.module.css';
 import radioStyles from '@/modules/shadow_dom/styles/radio.module.css';
@@ -49,12 +51,17 @@ const mantineTheme = createTheme({
   cursorType: 'pointer',
   // the press style: a dimmer step instead of Mantine's nudge down
   activeClassName: pressableStyles.pressable,
+  // Mantine's own transitions (modals, popovers) follow the OS setting
+  respectReducedMotion: true,
   fontSizes: {
     xs: '0.75rem',
     sm: '1rem',
     md: '1.25rem',
     lg: '1.5rem',
     xl: '1.75rem',
+    // the small-caps labels (table heads, footer headings), 11px: sm is too small for letter-spaced
+    // capitals
+    label: '1.1rem',
   },
   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   headings: {
@@ -127,8 +134,25 @@ const mantineTheme = createTheme({
     Switch: Switch.extend({classNames: switchStyles}),
     Checkbox: Checkbox.extend({classNames: checkboxStyles}),
     Radio: Radio.extend({classNames: radioStyles}),
+    Input: Input.extend({
+      classNames: {wrapper: inputStyles.wrapper},
+      vars: (_theme, props) => ({
+        wrapper: {'--input-radius': props.radius == null ? 'var(--mantine-radius-lg)' : undefined},
+      }),
+    }),
+    InputWrapper: Input.Wrapper.extend({
+      classNames: {label: inputStyles.label, description: inputStyles.description},
+    }),
+    Menu: Menu.extend({
+      classNames: {
+        dropdown: menuStyles.dropdown,
+        item: menuStyles.item,
+        itemLabel: menuStyles.itemLabel,
+        itemSection: menuStyles.itemSection,
+      },
+      defaultProps: {radius: 'lg', shadow: 'lg'},
+    }),
     CloseButton: CloseButton.extend({defaultProps: {icon: <X className={closeButtonStyles.icon} />}}),
-    Input: Input.extend({classNames: inputStyles}),
     Autocomplete: Autocomplete.extend({
       classNames: comboboxStyles,
       defaultProps: {scrollAreaProps: {classNames: {content: comboboxStyles.scrollAreaContent}}},
@@ -188,6 +212,10 @@ const resolver = (theme) => ({
   },
   dark: {
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
+    // Mantine's dark-2 (#828282) misses WCAG AA's 4.5:1 on every surface lighter than the deepest
+    '--mantine-color-dimmed': '#999999',
+    // one red for every error: Mantine's red-8 default misses 4.5:1 on the dialog surface
+    '--mantine-color-error': 'var(--mantine-color-red-5)',
     '--mantine-color-text-inverse': 'var(--mantine-color-gray-9)',
     '--mantine-color-dimmed-inverse': 'var(--mantine-color-gray-6)',
     '--mantine-color-default-border': 'var(--mantine-color-dark-6)',

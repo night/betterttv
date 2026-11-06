@@ -2,7 +2,7 @@ import {RadioCard, Tooltip} from '@mantine/core';
 import classNames from 'classnames';
 import {CircleCheck} from 'lucide-react';
 import React from 'react';
-import usePortalRef from '../../../common/hooks/PortalRef';
+import usePortalRef from '@/common/hooks/PortalRef';
 import clickableStyles from './ClickableContainer.module.css';
 import styles from './SettingRadioCard.module.css';
 
@@ -11,6 +11,7 @@ function SettingRadioCard({
   tooltip,
   ariaLabel,
   className,
+  locked = false,
   radioCardProps = {},
   withIndicators = true,
   children,
@@ -23,6 +24,8 @@ function SettingRadioCard({
       radius="lg"
       className={classNames(clickableStyles.clickableContainer, styles.card, className)}
       aria-label={ariaLabel}
+      aria-disabled={locked || undefined}
+      data-locked={locked || undefined}
       {...radioCardProps}>
       {children}
       {withIndicators ? <CircleCheck className={classNames(styles.iconIndicator, styles.checkIcon)} /> : null}

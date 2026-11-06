@@ -20,20 +20,20 @@ function ChannelPointsModule({ref, ...props}) {
       onChange={setChannelPoints}
       flags={Object.values(ChannelPointsFlags)}>
       <SettingCheckbox
+        name={formatMessage({defaultMessage: 'Show in chat'})}
         value={ChannelPointsFlags.CHANNEL_POINTS}
-        name={formatMessage({defaultMessage: 'Channel Points'})}
-        description={formatMessage({defaultMessage: 'Show channel points in the chat window.'})}
+        description={formatMessage({defaultMessage: 'Keeps your balance visible in the chat window.'})}
       />
       <SettingCheckbox
         value={ChannelPointsFlags.AUTO_CLAIM}
-        name={formatMessage({defaultMessage: 'Auto Claim'})}
-        description={formatMessage({defaultMessage: 'Claim bonus channel points when available.'})}
+        name={formatMessage({defaultMessage: 'Claim automatically'})}
+        description={formatMessage({defaultMessage: "Collects them as soon as they're available."})}
       />
       <SettingCheckbox
         value={ChannelPointsFlags.MESSAGE_HIGHLIGHTS}
-        name={formatMessage({defaultMessage: 'Message Highlight Rewards'})}
+        name={formatMessage({defaultMessage: 'Show highlighted rewards'})}
         description={formatMessage({
-          defaultMessage: 'Show channel point highlighted messages in the chat window.',
+          defaultMessage: 'Messages paid for with channel points in the chat window.',
         })}
       />
     </SettingCheckboxGroup>

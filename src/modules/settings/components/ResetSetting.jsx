@@ -58,7 +58,7 @@ function ResetSetting({description, disabled, resetting, setResetting}) {
   }
 
   return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Reset to Default'})} description={description}>
+    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Reset your settings'})} description={description}>
       <Button size="lg" color="red" disabled={disabled} loading={resetting} onClick={handleReset}>
         {formatMessage({defaultMessage: 'Reset'})}
       </Button>

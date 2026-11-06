@@ -18,16 +18,16 @@ function AutoJoinRaids({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Auto Join'})}
-        description={formatMessage({defaultMessage: 'Join raids when possible.'})}
+        name={formatMessage({defaultMessage: 'Join automatically'})}
+        description={formatMessage({defaultMessage: 'Follows raids when possible.'})}
         value={value}
         onChange={setValue}
       />
       <SettingTagInput
         name={
           value
-            ? formatMessage({defaultMessage: 'Blacklist Channels'})
-            : formatMessage({defaultMessage: 'Whitelist Channels'})
+            ? formatMessage({defaultMessage: 'Skip these channels'})
+            : formatMessage({defaultMessage: 'Only join these channels'})
         }
         description={
           value

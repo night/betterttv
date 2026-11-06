@@ -15,26 +15,26 @@ function DeletedMessagesModule({ref, ...props}) {
     <SettingRadioGroup ref={ref} {...props} name={SETTING_NAME} value={value} onChange={setValue}>
       <SettingRadio
         optionValue={DeletedMessageTypes.DEFAULT}
-        name={formatMessage({defaultMessage: 'Default'})}
+        name={formatMessage({defaultMessage: 'Use the default'})}
         description={formatMessage({defaultMessage: 'Do what Twitch normally does.'})}
       />
       <SettingRadio
         optionValue={DeletedMessageTypes.HIDE}
-        name={formatMessage({defaultMessage: 'Hide Deleted Messages'})}
+        name={formatMessage({defaultMessage: 'Hide deleted messages'})}
         description={formatMessage({defaultMessage: 'Remove timed out messages from view.'})}
       />
       <SettingRadio
         optionValue={DeletedMessageTypes.SHOW}
-        name={formatMessage({defaultMessage: 'Restore Deleted Messages'})}
+        name={formatMessage({defaultMessage: 'Restore deleted messages'})}
         description={formatMessage({
-          defaultMessage: "Changes '<'message deleted'>' back to users' original messages.",
+          defaultMessage: "Changes '<'message deleted'>' back to what the user wrote.",
         })}
       />
       <SettingRadio
         optionValue={DeletedMessageTypes.HIGHLIGHT}
-        name={formatMessage({defaultMessage: 'Restore and Highlight Deleted Messages'})}
+        name={formatMessage({defaultMessage: 'Restore and highlight deleted messages'})}
         description={formatMessage({
-          defaultMessage: "Changes '<'message deleted'>' back to users' original messages and highlights them.",
+          defaultMessage: "Changes '<'message deleted'>' back to what the user wrote and marks it.",
         })}
       />
     </SettingRadioGroup>

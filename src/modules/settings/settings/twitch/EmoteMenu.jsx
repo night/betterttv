@@ -18,22 +18,22 @@ function EmoteMenu({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Emote Menu'})}
-        description={formatMessage({defaultMessage: 'Enables a more advanced emote menu for chat.'})}
+        name={formatMessage({defaultMessage: "Use BetterTTV's emote menu"})}
+        description={formatMessage({defaultMessage: 'A fuller picker for chat, with search and categories.'})}
         value={toggled}
         onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.NONE)}
       />
       <SettingSwitch
         disabled={!toggled}
-        name={formatMessage({defaultMessage: 'Replace Native'})}
-        description={formatMessage({defaultMessage: "Replace Twitch's native emote menu."})}
+        name={formatMessage({defaultMessage: 'Replace the native emote menu button'})}
+        description={formatMessage({defaultMessage: "Opens BetterTTV's emote menu in place of Twitch's."})}
         value={value === EmoteMenuTypes.ENABLED}
         onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.LEGACY_ENABLED)}
       />
       <SettingNumberInput
         disabled={!toggled}
-        name={formatMessage({defaultMessage: 'Max Width'})}
-        description={formatMessage({defaultMessage: 'Maximum width of the emote menu, measured in pixels.'})}
+        name={formatMessage({defaultMessage: 'Set a maximum width'})}
+        description={formatMessage({defaultMessage: 'Measured in pixels.'})}
         value={width}
         onChange={setWidth}
         placeholder={SettingDefaultValues[SettingIds.EMOTE_MENU_WIDTH]}

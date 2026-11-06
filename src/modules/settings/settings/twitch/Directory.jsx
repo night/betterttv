@@ -14,8 +14,8 @@ function ShowDirectoryLiveTab({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Default to Live Tab'})}
-        description={formatMessage({defaultMessage: 'Default to live tab on the following page.'})}
+        name={formatMessage({defaultMessage: 'Default to the live tab'})}
+        description={formatMessage({defaultMessage: 'Opens the Following page on channels that are live.'})}
         value={value}
         onChange={setValue}
       />

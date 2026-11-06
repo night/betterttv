@@ -14,8 +14,8 @@ function ChatDirection({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Reverse Chat Direction'})}
-        description={formatMessage({defaultMessage: 'Move new chat messages from top to bottom of chat.'})}
+        name={formatMessage({defaultMessage: 'Reverse the chat direction'})}
+        description={formatMessage({defaultMessage: 'New messages move from top to bottom.'})}
         value={value}
         onChange={setValue}
       />

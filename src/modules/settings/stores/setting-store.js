@@ -4,6 +4,7 @@ import {isStandaloneWindow} from '@/utils/window';
 
 export const SettingPanelIds = {
   EMOTES: 'emotes',
+  EMOTE_DISPLAY: 'emoteDisplay',
   THEME: 'theme',
   EMOTE_MENU: 'emoteMenu',
   EMOTE_AUTOCOMPLETE: 'emoteAutocomplete',

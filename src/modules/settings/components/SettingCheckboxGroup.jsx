@@ -8,7 +8,9 @@ function SettingCheckboxGroup({name, value, onChange, flags, disabled, children,
 
   function handleChange(stringArray) {
     const newBitmask = stringArray.map(Number).reduce((a, b) => a | b, 0);
-    onChange(newBitmask);
+    const groupBitmask = flags.reduce((a, b) => a | b, 0);
+    // a setting's flags can be split across groups, so leave the ones outside this group alone
+    onChange((value & ~groupBitmask) | newBitmask);
   }
 
   return (
