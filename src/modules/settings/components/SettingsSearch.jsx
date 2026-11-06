@@ -144,7 +144,7 @@ const SearchRow = React.memo(function SearchRow({id, row, index, selected, press
 });
 
 function SettingsSearch({onAccept}) {
-  const {setPage, setSidenavOpen, categories, handleGotoCategory, handleGotoSettingPanel} = use(PageContext);
+  const {setPage, setSidenavOpen, categories, handleGotoCategory} = use(PageContext);
   const portalRef = usePortalRef();
   const listId = useId();
   const inputRef = useRef(null);
@@ -186,6 +186,11 @@ function SettingsSearch({onAccept}) {
   const handleChange = useCallback(({currentTarget}) => updateQuery(currentTarget.value), [updateQuery]);
   const activeIndex = selectedIndex === -1 ? firstMatchIndex : selectedIndex;
 
+  const handleGotoSetting = useCallback(
+    (settingPanelId) => handleGotoCategory(SettingStore.settings[settingPanelId]?.settingCategoryId ?? null),
+    [handleGotoCategory]
+  );
+
   const handleAccept = useCallback(
     (entry) => {
       if (entry.expandCategoryId != null) {
@@ -195,10 +200,10 @@ function SettingsSearch({onAccept}) {
 
       updateQuery('');
       inputRef.current?.blur();
-      acceptSearchEntry(entry, {setPage, goToCategory: handleGotoCategory, goToSetting: handleGotoSettingPanel});
+      acceptSearchEntry(entry, {setPage, goToCategory: handleGotoCategory, goToSetting: handleGotoSetting});
       onAccept();
     },
-    [updateQuery, setPage, handleGotoCategory, handleGotoSettingPanel, onAccept]
+    [updateQuery, setPage, handleGotoCategory, handleGotoSetting, onAccept]
   );
 
   function handleKeyDown(event) {

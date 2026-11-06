@@ -17,6 +17,11 @@ registerSearchEntry({
   query: DISPLAY_BADGE_NAME,
   description: DISPLAY_BADGE_DESCRIPTION,
   keywords: ['subscriber', 'pro'],
+  // the row is replaced by the badges for anyone who has a choice of them
+  onAccept: ({goToSetting, flashSetting}) => {
+    goToSetting(SettingPanelIds.SUBSCRIPTION_BADGE);
+    flashSetting(SETTING_NAME);
+  },
   settingPanelId: SettingPanelIds.SUBSCRIPTION_BADGE,
 });
 
