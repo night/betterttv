@@ -53,11 +53,6 @@ function PageContainer({children, className, scrollRef, onMount}) {
   );
 }
 
-function flashElement(element) {
-  element.addEventListener('animationend', () => element.removeAttribute('data-flash'), {once: true});
-  element.setAttribute('data-flash', '');
-}
-
 function SettingsModal({setHandleOpen}) {
   const {width} = useViewportSize();
   const [page, setPage] = useState(PageTypes.SETTINGS);
@@ -73,25 +68,9 @@ function SettingsModal({setHandleOpen}) {
   const categories = useMemo(() => groupSettingsByCategory(SettingStore.getSupportedSettings()), []);
   const activeCategory = categories.find((category) => category.id === categoryId) ?? categories[0];
 
-  // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView. A named
-  // row can sit far down a long panel, so it's centred instead. Passing a name flashes what it lands
-  // on: the row, or the panel when the name is the panel's own. Without a panel, the row is looked
-  // for across the page.
-  const scrollToSetting = useCallback((settingPanelId, settingName) => {
-    const panel = settingRefsRef.current[settingPanelId];
-    const root = panel ?? pageContentRef.current;
-    const row = settingName != null ? root?.querySelector(`[data-setting-name="${CSS.escape(settingName)}"]`) : null;
-
-    if (row != null) {
-      row.scrollIntoView({block: 'center'});
-    } else {
-      panel?.scrollIntoView({block: 'start'});
-    }
-
-    const target = row ?? panel;
-    if (settingName != null && target != null) {
-      flashElement(target);
-    }
+  // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView.
+  const scrollToPanel = useCallback((settingPanelId) => {
+    settingRefsRef.current[settingPanelId]?.scrollIntoView({block: 'start'});
   }, []);
 
   function handlePageChange(newPage) {
@@ -131,29 +110,18 @@ function SettingsModal({setHandleOpen}) {
     settingRefsRef.current[settingPanelId] = ref;
   }, []);
 
-  function handleGotoSettingPanel(settingPanelId, settingName) {
+  function handleGotoSettingPanel(settingPanelId) {
     if (settingPanelId == null) {
       return;
     }
 
     if (settingRefsRef.current[settingPanelId] != null) {
-      scrollToSetting(settingPanelId, settingName);
+      scrollToPanel(settingPanelId);
       return;
     }
 
     handleGotoCategory(SettingStore.settings[settingPanelId]?.settingCategoryId ?? null);
-    pendingScrollTargetRef.current = {settingPanelId, settingName};
-  }
-
-  // for pages outside the categories, whose rows don't belong to a setting panel
-  function handleGotoPageSetting(newPage, settingName) {
-    if (newPage === page) {
-      scrollToSetting(null, settingName);
-      return;
-    }
-
-    handlePageChange(newPage);
-    pendingScrollTargetRef.current = {settingName};
+    pendingScrollTargetRef.current = settingPanelId;
   }
 
   useEffect(() => {
@@ -189,24 +157,27 @@ function SettingsModal({setHandleOpen}) {
   // keys pressed inside stop at the shadow root, so this only sees focus that's left the modal
   useWindowEvent('keydown', handleKeyDown);
 
-  // Runs when a page mounts: scroll to a pending setting, otherwise restore the parent page's
-  // scroll position (or start at the top).
+  // Runs when a page mounts: scroll to a pending setting panel, otherwise restore the
+  // parent page's scroll position. Any other page stays where it is, which is the top unless a
+  // flashing setting has already scrolled to itself.
   const handlePageMount = useCallback(() => {
     const scroller = pageContentRef.current;
     if (scroller == null) {
       return;
     }
 
-    const pendingTarget = pendingScrollTargetRef.current;
+    const pendingPanelId = pendingScrollTargetRef.current;
     pendingScrollTargetRef.current = null;
 
-    if (pendingTarget != null) {
-      scrollToSetting(pendingTarget.settingPanelId, pendingTarget.settingName);
+    if (page === PageTypes.SETTINGS && pendingPanelId != null && settingRefsRef.current[pendingPanelId] != null) {
+      scrollToPanel(pendingPanelId);
       return;
     }
 
-    scroller.scrollTop = lastParentDataRef.current.page === page ? lastParentDataRef.current.scrollTop : 0;
-  }, [page, scrollToSetting]);
+    if (lastParentDataRef.current.page === page) {
+      scroller.scrollTop = lastParentDataRef.current.scrollTop;
+    }
+  }, [page, scrollToPanel]);
 
   return (
     <Modal
@@ -235,8 +206,6 @@ function SettingsModal({setHandleOpen}) {
           categories,
           activeCategory,
           handleGotoCategory,
-          handleGotoSettingPanel,
-          handleGotoPageSetting,
           closeModal: modalHandlers.close,
         }}>
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />

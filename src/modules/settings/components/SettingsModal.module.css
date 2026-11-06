@@ -61,6 +61,11 @@
   animation: flash 1400ms ease-out;
 }
 
+/* a group can share its name with a row inside it */
+.pageContent [data-flash] [data-flash]::after {
+  display: none;
+}
+
 @keyframes flash {
   0%,
   30% {
