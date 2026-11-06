@@ -7,6 +7,16 @@ import {flatButtonVars} from '@/modules/shadow_dom/vars';
 import isPressOn from '@/utils/press';
 import styles from './SelectMenu.module.css';
 
+// the fill and border of the website's select, Mantine's default input
+const filledTriggerVars = () => ({
+  root: {
+    '--button-padding-x': '16px',
+    '--button-bg': 'var(--mantine-color-default)',
+    '--button-hover': 'var(--mantine-color-default-hover)',
+    '--button-bd': '1px solid var(--mantine-color-default-border)',
+  },
+});
+
 function SelectMenuOption({option, active, onPick}) {
   const handleClick = useCallback(() => onPick(option.value), [onPick, option.value]);
 
@@ -51,7 +61,7 @@ function SelectMenu({value, options, onChange, disabled = false, variant = 'fill
           color="dark.8"
           size="lg"
           radius="lg"
-          vars={flatButtonVars}
+          vars={variant === 'filled' ? filledTriggerVars : flatButtonVars}
           disabled={disabled}
           className={className}
           classNames={{inner: styles.triggerInner}}
