@@ -24,6 +24,12 @@
   background-color: var(--page-bg);
 }
 
+.premiumButtons {
+  display: flex;
+  flex-shrink: 0;
+  gap: 12px;
+}
+
 .premiumThanks {
   display: flex;
   align-items: center;

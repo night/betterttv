@@ -1,5 +1,5 @@
 import {Anchor, Button, Text} from '@mantine/core';
-import {ChevronRight, Heart, SquareArrowOutUpRight} from 'lucide-react';
+import {ChevronRight, Gift, Heart, SquareArrowOutUpRight} from 'lucide-react';
 import React from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import {ExternalLinks} from '@/constants';
@@ -7,9 +7,11 @@ import formatMessage from '@/i18n/index';
 import PageHeader from '@/modules/settings/components/PageHeader';
 import PageScrollBody from '@/modules/settings/components/PageScrollBody';
 import CloudBackupShowcaseCard from '@/modules/settings/components/pro/CloudBackupShowcaseCard';
+import openGiftProModal from '@/modules/settings/components/pro/GiftProModal';
 import ProBadgeShowcaseCard from '@/modules/settings/components/pro/ProBadgeShowcaseCard';
 import ShowcaseImageCard from '@/modules/settings/components/pro/ShowcaseImageCard';
 import UsernameEffectShowcaseCard from '@/modules/settings/components/pro/UsernameEffectShowcaseCard';
+import {flatButtonVars} from '@/modules/shadow_dom/vars';
 import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
@@ -42,22 +44,30 @@ function ProHome() {
               ? formatMessage({defaultMessage: 'Thank you for supporting BetterTTV'})
               : formatMessage({defaultMessage: 'Pro directly supports BetterTTV development'})}
           </Text>
-          <Button
-            component={Anchor}
-            href={ExternalLinks.PRO}
-            target="_blank"
-            rel="noopener noreferrer"
-            underline="never"
-            size="lg"
-            radius="xl"
-            variant="elevated"
-            color="contrast"
-            rightSection={isPro ? <SquareArrowOutUpRight size={16} /> : <ChevronRight size={16} />}
-            onClick={handleUpgradeClick}>
-            {isPro
-              ? formatMessage({defaultMessage: 'Manage Subscription'})
-              : formatMessage({defaultMessage: 'Subscribe'})}
-          </Button>
+          <div className={styles.premiumButtons}>
+            <Button
+              component={Anchor}
+              href={ExternalLinks.PRO}
+              target="_blank"
+              rel="noopener noreferrer"
+              underline="never"
+              size="lg"
+              radius="lg"
+              variant={isPro ? 'filled' : 'elevated'}
+              color={isPro ? 'dark.8' : 'contrast'}
+              vars={isPro ? flatButtonVars : undefined}
+              rightSection={isPro ? <SquareArrowOutUpRight size={16} /> : <ChevronRight size={16} />}
+              onClick={handleUpgradeClick}>
+              {isPro
+                ? formatMessage({defaultMessage: 'Manage Subscription'})
+                : formatMessage({defaultMessage: 'Subscribe'})}
+            </Button>
+            {isPro ? (
+              <Button size="lg" color="contrast" leftSection={<Gift size={16} />} onClick={openGiftProModal}>
+                {formatMessage({defaultMessage: 'Gift Pro'})}
+              </Button>
+            ) : null}
+          </div>
         </div>
       }>
       <div className={styles.featureGrid}>
