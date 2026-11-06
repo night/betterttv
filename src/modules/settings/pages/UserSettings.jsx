@@ -162,14 +162,9 @@ function SignInButton() {
   );
 }
 
-function acceptSignIn({setPage, flashSetting}) {
-  const signedOut = useAuthStore.getState().user == null;
-
+function openUserSetting({setPage, flashSetting}, name) {
   setPage(PageTypes.USER_SETTINGS);
-  flashSetting(signedOut ? SIGN_IN_NAME : SIGN_OUT_NAME);
-  if (signedOut) {
-    executeSignIn();
-  }
+  flashSetting(name);
 }
 
 for (const entry of [
@@ -182,7 +177,8 @@ for (const entry of [
   {
     query: SIGN_IN_NAME,
     keywords: ['log in', 'login', 'log out', 'logout', 'sign out', 'account'],
-    onAccept: acceptSignIn,
+    onAccept: (navigation) =>
+      openUserSetting(navigation, useAuthStore.getState().user == null ? SIGN_IN_NAME : SIGN_OUT_NAME),
   },
   {
     query: BACKUP_SETTINGS_NAME,
@@ -200,14 +196,7 @@ for (const entry of [
     keywords: ['defaults', 'clear'],
   },
 ]) {
-  registerSearchEntry({
-    icon: UserCog,
-    onAccept: ({setPage, flashSetting}) => {
-      setPage(PageTypes.USER_SETTINGS);
-      flashSetting(entry.query);
-    },
-    ...entry,
-  });
+  registerSearchEntry({icon: UserCog, onAccept: (navigation) => openUserSetting(navigation, entry.query), ...entry});
 }
 
 function UserSettings() {

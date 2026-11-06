@@ -3,16 +3,15 @@ import {create} from 'zustand';
 // matches the flash in SettingsModal.module.css
 const FLASH_DURATION = 1400;
 
-// The setting a search jumped to, by name. Its row or group scrolls to itself and flashes while it's
-// here, so it doesn't matter that the page it's on may not have rendered yet.
+// The setting a search jumped to, by name, so a row or group can flash on a page that's yet to render
 const useSettingFlashStore = create(() => ({settingName: null}));
 
-let clearTimeoutId = null;
+let timeout = null;
 
 export function flashSetting(settingName) {
-  clearTimeout(clearTimeoutId);
+  clearTimeout(timeout);
   useSettingFlashStore.setState({settingName});
-  clearTimeoutId = setTimeout(() => useSettingFlashStore.setState({settingName: null}), FLASH_DURATION);
+  timeout = setTimeout(() => useSettingFlashStore.setState({settingName: null}), FLASH_DURATION);
 }
 
 export function useSettingFlash(name) {
