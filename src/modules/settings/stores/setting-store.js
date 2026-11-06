@@ -1,5 +1,6 @@
 import React from 'react';
 import {PageTypes} from '@/constants';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import {isStandaloneWindow} from '@/utils/window';
 
 export const SettingPanelIds = {
@@ -85,6 +86,8 @@ class SettingStore {
       supportsStandaloneWindow,
       render: ({...props}) => React.createElement(Component, {key: settingPanelId, ...props}),
     };
+
+    registerSearchEntry({query: name, settingPanelId});
   }
 
   getSupportedSettings() {

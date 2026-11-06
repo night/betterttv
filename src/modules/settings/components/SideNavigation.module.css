@@ -19,7 +19,8 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: var(--sidenav-h-padding);
+  /* the search above already spaces the first category */
+  padding: 0 var(--sidenav-h-padding) var(--sidenav-h-padding);
   overflow-y: auto;
   overflow-x: hidden;
 }

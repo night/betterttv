@@ -2,10 +2,13 @@ import React, {useEffect} from 'react';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import extension from '@/utils/extension';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'YouTube (beta)'});
+const SETTING_DESCRIPTION = formatMessage({defaultMessage: 'Show BetterTTV emotes on YouTube Live Chat.'});
+
 const browser = window.chrome || window.browser;
 
 function sendExtensionCommand(commandData, callback = undefined) {
@@ -97,7 +100,7 @@ function YouTube({ref, ...props}) {
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
         name={SETTING_NAME}
-        description={formatMessage({defaultMessage: 'Show BetterTTV emotes on YouTube Live Chat.'})}
+        description={SETTING_DESCRIPTION}
         value={value}
         onChange={() => requestPermission()}
         disabled={loading || value}
@@ -110,6 +113,12 @@ function maybeRegisterComponent() {
   if (extension.getExtension() == null) {
     return null;
   }
+
+  registerSearchEntry({
+    query: SETTING_NAME,
+    description: SETTING_DESCRIPTION,
+    settingPanelId: SettingPanelIds.YOUTUBE,
+  });
 
   SettingStore.registerSetting(YouTube, {
     settingPanelId: SettingPanelIds.YOUTUBE,

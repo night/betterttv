@@ -9,6 +9,15 @@
   border-radius: 8px;
 }
 
+.providerSearchLogo {
+  width: 20px;
+  height: 20px;
+}
+
+.providerSearchLogo.ffzLogo {
+  border-radius: 4px;
+}
+
 .seventvListing {
   flex-shrink: 0;
   width: 160px;

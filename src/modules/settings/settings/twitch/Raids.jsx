@@ -5,9 +5,12 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingTagInput from '@/modules/settings/components/SettingTagInput';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Raids'});
+const AUTO_JOIN_NAME = formatMessage({defaultMessage: 'Auto Join'});
+const AUTO_JOIN_DESCRIPTION = formatMessage({defaultMessage: 'Join raids when possible.'});
 
 function AutoJoinRaids({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.AUTO_JOIN_RAIDS);
@@ -17,12 +20,7 @@ function AutoJoinRaids({ref, ...props}) {
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
-      <SettingSwitch
-        name={formatMessage({defaultMessage: 'Auto Join'})}
-        description={formatMessage({defaultMessage: 'Join raids when possible.'})}
-        value={value}
-        onChange={setValue}
-      />
+      <SettingSwitch name={AUTO_JOIN_NAME} description={AUTO_JOIN_DESCRIPTION} value={value} onChange={setValue} />
       <SettingTagInput
         name={
           value
@@ -42,6 +40,13 @@ function AutoJoinRaids({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: AUTO_JOIN_NAME,
+  description: AUTO_JOIN_DESCRIPTION,
+  keywords: ['blacklist channels', 'whitelist channels'],
+  settingPanelId: SettingPanelIds.RAIDS,
+});
 
 SettingStore.registerSetting(AutoJoinRaids, {
   settingPanelId: SettingPanelIds.RAIDS,

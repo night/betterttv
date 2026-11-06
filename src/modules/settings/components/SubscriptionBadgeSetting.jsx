@@ -20,6 +20,11 @@ import SettingSwitch from './SettingSwitch';
 import SettingWrapper from './SettingWrapper';
 import styles from './SubscriptionBadgeSetting.module.css';
 
+export const DISPLAY_BADGE_NAME = formatMessage({defaultMessage: 'Display your badge'});
+export const DISPLAY_BADGE_DESCRIPTION = formatMessage({
+  defaultMessage: 'Everyone using BetterTTV sees it when you type in chat.',
+});
+
 const LATEST = 'latest';
 const NEXT = 'next';
 const DISABLED = 'disabled';
@@ -178,22 +183,20 @@ function SubscriptionBadgeSetting({name, ref, ...props}) {
       : null;
 
   const hasBadgeChoices = isPro && eligibleBadges != null && eligibleBadges.length > 0;
-  const badgeTitle = formatMessage({defaultMessage: 'Display your badge'});
-  const badgeDescription = formatMessage({
-    defaultMessage: 'Everyone using BetterTTV sees it when you type in chat.',
-  });
 
   return (
     <SettingGroup ref={ref} {...props} name={name} withPane={!hasBadgeChoices}>
       {!isPro ? (
         <SettingSwitch
-          name={badgeTitle}
-          description={badgeDescription}
+          name={DISPLAY_BADGE_NAME}
+          description={DISPLAY_BADGE_DESCRIPTION}
           value={badgeEnabled}
           onChange={setBadgeEnabled}
         />
       ) : null}
-      {isPro && !hasBadgeChoices ? <SettingWrapper reverse name={badgeTitle} description={badgeDescription} /> : null}
+      {isPro && !hasBadgeChoices ? (
+        <SettingWrapper reverse name={DISPLAY_BADGE_NAME} description={DISPLAY_BADGE_DESCRIPTION} />
+      ) : null}
       {hasBadgeChoices ? (
         <SettingRadioCardGroup
           value={!badgeEnabled ? DISABLED : selectedBadgeId}

@@ -1,24 +1,35 @@
 import {Anchor, Button} from '@mantine/core';
 import {saveAs} from 'file-saver';
+import {UserCog} from 'lucide-react';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import {executeSignIn, openConfirmModal} from '@/common/utils/modal';
-import {EXT_VER} from '@/constants';
+import {EXT_VER, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import Alert from '@/modules/settings/components/Alert';
 import Footer from '@/modules/settings/components/Footer';
-import ImportSetting from '@/modules/settings/components/ImportSetting';
+import ImportSetting, {IMPORT_SETTING_NAME} from '@/modules/settings/components/ImportSetting';
 import PageHeader from '@/modules/settings/components/PageHeader';
 import PageScrollBody from '@/modules/settings/components/PageScrollBody';
-import ResetSetting from '@/modules/settings/components/ResetSetting';
+import ResetSetting, {RESET_SETTING_NAME} from '@/modules/settings/components/ResetSetting';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import storage from '@/storage';
 import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
 import {revokeAccessToken} from '@/utils/oauth';
+
+const USER_SETTINGS_NAME = formatMessage({defaultMessage: 'User Settings'});
+const CLOUD_BACKUP_NAME = formatMessage({defaultMessage: 'Cloud Backup'});
+const CLOUD_BACKUP_DESCRIPTION = formatMessage({defaultMessage: 'Backup your settings to the cloud.'});
+const SIGN_IN_NAME = formatMessage({defaultMessage: 'Sign In to BetterTTV'});
+const BACKUP_SETTINGS_NAME = formatMessage({defaultMessage: 'Backup Settings'});
+const BACKUP_SETTINGS_DESCRIPTION = formatMessage({defaultMessage: 'Download a copy of your settings to a JSON file.'});
+const RESTORE_BACKUP_DESCRIPTION = formatMessage({defaultMessage: 'Restore your settings from a backup file.'});
+const RESET_SETTINGS_DESCRIPTION = formatMessage({defaultMessage: 'Clear all settings and restore defaults.'});
 
 function BackupSetting({description, disabled}) {
   function backupFile() {
@@ -40,7 +51,7 @@ function BackupSetting({description, disabled}) {
   }
 
   return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Backup Settings'})} description={description}>
+    <SettingWrapper reverse name={BACKUP_SETTINGS_NAME} description={description}>
       <Button size="lg" onClick={backupFile} disabled={disabled}>
         {formatMessage({defaultMessage: 'Backup'})}
       </Button>
@@ -60,8 +71,8 @@ function CloudBackupSetting() {
   return (
     <SettingSwitch
       showProBadge
-      name={formatMessage({defaultMessage: 'Cloud Backup'})}
-      description={formatMessage({defaultMessage: 'Backup your settings to the cloud.'})}
+      name={CLOUD_BACKUP_NAME}
+      description={CLOUD_BACKUP_DESCRIPTION}
       value={normalizedCloudBackupSettings.enabled}
       onChange={(enabled) => setNormalizedCloudBackupSettings({enabled})}
     />
@@ -129,7 +140,7 @@ function SignInButton() {
     return (
       <SettingWrapper
         reverse
-        name={formatMessage({defaultMessage: 'Sign In to BetterTTV'})}
+        name={SIGN_IN_NAME}
         description={formatMessage({defaultMessage: 'Authenticated users gain access to additional features.'})}>
         <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
           {formatMessage({defaultMessage: 'Sign In'})}
@@ -150,27 +161,66 @@ function SignInButton() {
   );
 }
 
+function openUserSettings({setPage}) {
+  setPage(PageTypes.USER_SETTINGS);
+}
+
+function acceptSignIn(navigation) {
+  openUserSettings(navigation);
+  if (useAuthStore.getState().user == null) {
+    executeSignIn();
+  }
+}
+
+for (const entry of [
+  {query: USER_SETTINGS_NAME, keywords: ['account', 'profile']},
+  {
+    query: CLOUD_BACKUP_NAME,
+    description: CLOUD_BACKUP_DESCRIPTION,
+    keywords: ['sync'],
+  },
+  {
+    query: SIGN_IN_NAME,
+    keywords: ['log in', 'login', 'log out', 'logout', 'sign out', 'account'],
+    onAccept: acceptSignIn,
+  },
+  {
+    query: BACKUP_SETTINGS_NAME,
+    description: BACKUP_SETTINGS_DESCRIPTION,
+    keywords: ['export', 'download'],
+  },
+  {
+    query: IMPORT_SETTING_NAME,
+    description: RESTORE_BACKUP_DESCRIPTION,
+    keywords: ['import', 'upload'],
+  },
+  {
+    query: RESET_SETTING_NAME,
+    description: RESET_SETTINGS_DESCRIPTION,
+    keywords: ['defaults', 'clear'],
+  },
+]) {
+  registerSearchEntry({icon: UserCog, onAccept: openUserSettings, ...entry});
+}
+
 function UserSettings() {
   const [importing, setImporting] = useState(false);
   const [resetting, setResetting] = useState(false);
 
   return (
-    <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'User Settings'})} />}>
+    <PageScrollBody header={<PageHeader leftContent={USER_SETTINGS_NAME} />}>
       <SignInAlert />
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />
-        <BackupSetting
-          description={formatMessage({defaultMessage: 'Download a copy of your settings to a JSON file.'})}
-          disabled={resetting}
-        />
+        <BackupSetting description={BACKUP_SETTINGS_DESCRIPTION} disabled={resetting} />
         <ImportSetting
-          description={formatMessage({defaultMessage: 'Restore your settings from a backup file.'})}
+          description={RESTORE_BACKUP_DESCRIPTION}
           disabled={resetting}
           importing={importing}
           setImporting={setImporting}
         />
         <ResetSetting
-          description={formatMessage({defaultMessage: 'Clear all settings and restore defaults.'})}
+          description={RESET_SETTINGS_DESCRIPTION}
           disabled={importing}
           resetting={resetting}
           setResetting={setResetting}

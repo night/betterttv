@@ -7,12 +7,23 @@ import formatMessage from '@/i18n/index';
 import globalEmotes from '@/modules/emotes/global-emotes';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import styles from './Emotes.module.css';
 // settings list in the order they register, and Emote Providers comes first
 import './EmoteProviders';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Display'});
+const ANIMATED_EMOTES_NAME = formatMessage({defaultMessage: 'Animated Emotes'});
+const ANIMATED_EMOTES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Autoplays animated emotes, otherwise only when hovered.',
+});
+const ANIMATED_PERSONAL_EMOTES_NAME = formatMessage({defaultMessage: 'Animated Personal Emotes'});
+const ANIMATED_PERSONAL_EMOTES_DESCRIPTION = formatMessage({
+  defaultMessage: 'Autoplays animated personal emotes, otherwise only when hovered.',
+});
+const EMOTE_MODIFIERS_NAME = formatMessage({defaultMessage: 'Emote Modifiers'});
+
 const DISPLAY_FLAGS = [
   EmoteTypeFlags.ANIMATED_EMOTES,
   EmoteTypeFlags.ANIMATED_PERSONAL_EMOTES,
@@ -73,7 +84,7 @@ function EmoteModifiersModalBody() {
 
 function openEmoteModifiersModal() {
   return openModal({
-    title: formatMessage({defaultMessage: 'Emote Modifiers'}),
+    title: EMOTE_MODIFIERS_NAME,
     size: WIDE_MODAL_SIZE,
     children: <EmoteModifiersModalBody />,
   });
@@ -92,21 +103,17 @@ function EmoteDisplay({ref, ...props}) {
       flags={DISPLAY_FLAGS}>
       <SettingCheckbox
         value={EmoteTypeFlags.ANIMATED_EMOTES}
-        name={formatMessage({defaultMessage: 'Animated Emotes'})}
-        description={formatMessage({
-          defaultMessage: 'Autoplays animated emotes, otherwise only when hovered.',
-        })}
+        name={ANIMATED_EMOTES_NAME}
+        description={ANIMATED_EMOTES_DESCRIPTION}
       />
       <SettingCheckbox
         value={EmoteTypeFlags.ANIMATED_PERSONAL_EMOTES}
-        name={formatMessage({defaultMessage: 'Animated Personal Emotes'})}
-        description={formatMessage({
-          defaultMessage: 'Autoplays animated personal emotes, otherwise only when hovered.',
-        })}
+        name={ANIMATED_PERSONAL_EMOTES_NAME}
+        description={ANIMATED_PERSONAL_EMOTES_DESCRIPTION}
       />
       <SettingCheckbox
         value={EmoteTypeFlags.EMOTE_MODIFIERS}
-        name={formatMessage({defaultMessage: 'Emote Modifiers'})}
+        name={EMOTE_MODIFIERS_NAME}
         description={formatMessage(
           {defaultMessage: '<link>Emote modifiers</link> allow you to transform emotes in realtime.'},
           {
@@ -121,6 +128,23 @@ function EmoteDisplay({ref, ...props}) {
     </SettingCheckboxGroup>
   );
 }
+
+registerSearchEntry({
+  query: ANIMATED_EMOTES_NAME,
+  description: ANIMATED_EMOTES_DESCRIPTION,
+  settingPanelId: SettingPanelIds.EMOTE_DISPLAY,
+});
+
+registerSearchEntry({
+  query: ANIMATED_PERSONAL_EMOTES_NAME,
+  description: ANIMATED_PERSONAL_EMOTES_DESCRIPTION,
+  settingPanelId: SettingPanelIds.EMOTE_DISPLAY,
+});
+
+registerSearchEntry({
+  query: EMOTE_MODIFIERS_NAME,
+  settingPanelId: SettingPanelIds.EMOTE_DISPLAY,
+});
 
 SettingStore.registerSetting(EmoteDisplay, {
   settingPanelId: SettingPanelIds.EMOTE_DISPLAY,
