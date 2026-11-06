@@ -165,6 +165,13 @@ function openUserSettings({setPage}) {
   setPage(PageTypes.USER_SETTINGS);
 }
 
+function acceptSignIn(navigation) {
+  openUserSettings(navigation);
+  if (useAuthStore.getState().user == null) {
+    executeSignIn();
+  }
+}
+
 for (const entry of [
   {query: USER_SETTINGS_NAME, keywords: ['account', 'profile']},
   {
@@ -175,6 +182,7 @@ for (const entry of [
   {
     query: SIGN_IN_NAME,
     keywords: ['log in', 'login', 'log out', 'logout', 'sign out', 'account'],
+    onAccept: acceptSignIn,
   },
   {
     query: BACKUP_SETTINGS_NAME,
@@ -192,7 +200,7 @@ for (const entry of [
     keywords: ['defaults', 'clear'],
   },
 ]) {
-  registerSearchEntry({...entry, icon: UserCog, onAccept: openUserSettings});
+  registerSearchEntry({icon: UserCog, onAccept: openUserSettings, ...entry});
 }
 
 function UserSettings() {
