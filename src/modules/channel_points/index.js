@@ -5,48 +5,14 @@ import {hasFlag} from '@/utils/flags';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import twitch from '@/utils/twitch';
 
-// twitch keeps the claim transition mounted and only renders the button into it when a bonus shows up,
-// so watch the points summary subtree rather than waiting for a new transition node
-const COMMUNITY_POINTS_SUMMARY_SELECTOR = '.community-points-summary';
-const CLAIM_BUTTON_SELECTOR = '.tw-transition button';
+// the classic claim button wraps a stable .claimable-bonus__icon, so it's caught however twitch inserts it.
+// the OneChat button has no stable class, so fall back to the transition twitch mounts around it.
+const CLAIM_BONUS_SELECTOR = '.claimable-bonus__icon, .tw-transition';
+const COMMUNITY_POINTS_SUMMARY_SELECTOR = '[data-test-selector="community-points-summary"]';
 
 let removeChannelPointsListener;
-const summaryObservers = new Map();
-// a claim can trigger several mutations before the button unmounts, so remember which buttons were already clicked
+// nested transitions and the icon emit together on mount, so remember which buttons were already clicked
 const clickedClaimButtons = new WeakSet();
-
-function claimBonus(summary) {
-  for (const claimButton of summary.querySelectorAll(CLAIM_BUTTON_SELECTOR)) {
-    if (clickedClaimButtons.has(claimButton)) continue;
-
-    const claimableBonus = twitch.getClaimableBonus(claimButton);
-    if (claimableBonus == null || claimableBonus.state.error) continue;
-
-    clickedClaimButtons.add(claimButton);
-    claimButton.click();
-  }
-}
-
-function observeSummary(summary) {
-  if (summaryObservers.has(summary)) return;
-
-  const observer = new window.MutationObserver(() => claimBonus(summary));
-  observer.observe(summary, {childList: true, subtree: true});
-  summaryObservers.set(summary, observer);
-
-  claimBonus(summary);
-}
-
-function unobserveSummary(summary) {
-  summaryObservers.get(summary)?.disconnect();
-  summaryObservers.delete(summary);
-}
-
-function unobserveAllSummaries() {
-  for (const summary of summaryObservers.keys()) {
-    unobserveSummary(summary);
-  }
-}
 
 class ChannelPoints {
   constructor() {
@@ -63,12 +29,17 @@ class ChannelPoints {
     if (hasFlag(settings.get(SettingIds.CHANNEL_POINTS), ChannelPointsFlags.AUTO_CLAIM)) {
       if (removeChannelPointsListener) return;
 
-      removeChannelPointsListener = domObserver.on(COMMUNITY_POINTS_SUMMARY_SELECTOR, (node, isConnected) => {
-        if (isConnected) {
-          observeSummary(node);
-        } else {
-          unobserveSummary(node);
-        }
+      removeChannelPointsListener = domObserver.on(CLAIM_BONUS_SELECTOR, (node, isConnected) => {
+        if (!isConnected || node.closest(COMMUNITY_POINTS_SUMMARY_SELECTOR) == null) return;
+
+        const claimButton = node.closest('button') ?? node.querySelector('button');
+        if (claimButton == null || clickedClaimButtons.has(claimButton)) return;
+
+        const claimableBonus = twitch.getClaimableBonus(claimButton);
+        if (claimableBonus == null || claimableBonus.state.error) return;
+
+        clickedClaimButtons.add(claimButton);
+        claimButton.click();
       });
 
       return;
@@ -78,7 +49,6 @@ class ChannelPoints {
 
     removeChannelPointsListener();
     removeChannelPointsListener = undefined;
-    unobserveAllSummaries();
   }
 
   loadHideChannelPoints() {
