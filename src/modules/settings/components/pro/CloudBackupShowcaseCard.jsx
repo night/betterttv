@@ -1,9 +1,8 @@
-import {Title} from '@mantine/core';
 import React, {useState} from 'react';
 import formatMessage from '@/i18n/index';
 import cdn from '@/utils/cdn';
 import styles from './CloudBackupShowcaseCard.module.css';
-import cardStyles from './ShowcaseCard.module.css';
+import ShowcaseCard from './ShowcaseCard';
 
 const DATA_STREAM_GLYPHS = ['0', '1', '<', '>', '{', '}', '#', '/', '$', '%', '&', '*'];
 
@@ -25,7 +24,7 @@ function CloudBackupShowcaseCard() {
   const [streamGlyphs] = useState(() => DATA_STREAMS.map(() => randomGlyphColumn(DATA_STREAM_SLOTS.length)));
 
   return (
-    <div className={cardStyles.showcaseCard}>
+    <ShowcaseCard label={formatMessage({defaultMessage: 'Cloud Backups & Synchronized Sessions'})}>
       {/* the cloud and beams are baked: their svg filter stack re-rasterized on every scroll frame */}
       <img className={styles.cloudBeams} src={cdn.url('assets/pro/cloud_beams.webp')} alt="" loading="lazy" />
       <div className={styles.cloudStreams} aria-hidden="true">
@@ -43,10 +42,7 @@ function CloudBackupShowcaseCard() {
         <img className={styles.cloudGraphic} src={cdn.url('assets/pro/cloud_bank.webp')} alt="" loading="lazy" />
       </span>
       <img className={styles.cloudAppIcon} src={cdn.url('assets/pro/cloud_server.webp')} alt="" loading="lazy" />
-      <Title order={3} className={cardStyles.showcaseLabel}>
-        {formatMessage({defaultMessage: 'Cloud Backups & Synchronized Sessions'})}
-      </Title>
-    </div>
+    </ShowcaseCard>
   );
 }
 

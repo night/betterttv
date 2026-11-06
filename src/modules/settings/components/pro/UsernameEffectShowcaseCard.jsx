@@ -1,10 +1,9 @@
-import {Title} from '@mantine/core';
 import React from 'react';
 import UsernameEffectText from '@/common/components/UsernameEffectText';
 import useCurrentUser from '@/common/hooks/CurrentUser';
 import {UsernameEffects} from '@/constants';
 import formatMessage from '@/i18n/index';
-import cardStyles from './ShowcaseCard.module.css';
+import ShowcaseCard from './ShowcaseCard';
 import styles from './UsernameEffectShowcaseCard.module.css';
 
 const SHOWCASE_EFFECTS = [
@@ -15,7 +14,7 @@ const SHOWCASE_EFFECTS = [
   UsernameEffects.INTERGALACTIC,
 ];
 
-const MARQUEE_ROW_COUNT = 5;
+const MARQUEE_ROW_COUNT = 3;
 const MARQUEE_GROUP_COUNT = 4;
 
 // each row starts the effect list at a different offset so no column repeats a color
@@ -49,7 +48,7 @@ function UsernameEffectShowcaseCard() {
   const displayName = currentUser?.displayName ?? formatMessage({defaultMessage: 'Your Username'});
 
   return (
-    <div className={cardStyles.showcaseCard}>
+    <ShowcaseCard label={formatMessage({defaultMessage: 'Username, Font & Hover Effects'})}>
       <div className={styles.showcaseMarqueeStack}>
         {Array.from({length: MARQUEE_ROW_COUNT}, (_, rowIndex) => (
           <ShowcaseMarqueeRow
@@ -60,10 +59,7 @@ function UsernameEffectShowcaseCard() {
           />
         ))}
       </div>
-      <Title order={3} className={cardStyles.showcaseLabel}>
-        {formatMessage({defaultMessage: 'Username, Font & Hover Effects'})}
-      </Title>
-    </div>
+    </ShowcaseCard>
   );
 }
 

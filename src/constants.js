@@ -417,7 +417,7 @@ export const ExternalLinks = {
   TERMS: 'https://betterttv.com/terms',
   PRIVACY: 'https://betterttv.com/privacy',
   DEVELOPER_API: 'https://betterttv.com/developers/api',
-  PRO: 'https://betterttv.com/dashboard/pro',
+  PRO: 'https://betterttv.com/dashboard/account/subscription',
 };
 
 export const CommandProviders = {

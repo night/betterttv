@@ -1,5 +1,6 @@
 import {Text} from '@mantine/core';
 import {modals} from '@mantine/modals';
+import {ChevronRight} from 'lucide-react';
 import React from 'react';
 import DeviceCodeSignIn from '@/common/components/DeviceCodeSignIn';
 import {ExternalLinks} from '@/constants';
@@ -241,9 +242,10 @@ export function openSubscriptionUpgradeModal(props = {}, callback = () => {}) {
       unsubscribeUserUpdated?.();
     },
     labels: {
-      confirm: formatMessage({defaultMessage: 'Upgrade'}),
+      confirm: formatMessage({defaultMessage: 'Subscribe'}),
       cancel: formatMessage({defaultMessage: 'Cancel'}),
     },
     ...props,
+    confirmProps: {...DEFAULT_CONFIRM_PROPS, ...props.confirmProps, rightSection: <ChevronRight size={16} />},
   });
 }

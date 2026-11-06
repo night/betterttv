@@ -1,5 +1,5 @@
 import {Anchor, Button, Text} from '@mantine/core';
-import {Heart, SquareArrowOutUpRight} from 'lucide-react';
+import {ChevronRight, Heart, SquareArrowOutUpRight} from 'lucide-react';
 import React from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import {ExternalLinks} from '@/constants';
@@ -37,7 +37,7 @@ function ProHome() {
       footer={
         <div className={styles.premiumActions}>
           <Text size="md" className={styles.premiumThanks}>
-            <Heart className={styles.premiumThanksHeart} />
+            <Heart size={16} className={styles.premiumThanksHeart} />
             {isPro
               ? formatMessage({defaultMessage: 'Thank you for supporting BetterTTV'})
               : formatMessage({defaultMessage: 'Pro directly supports BetterTTV development'})}
@@ -52,11 +52,11 @@ function ProHome() {
             radius="xl"
             variant="elevated"
             color="contrast"
-            rightSection={<SquareArrowOutUpRight size={14} />}
+            rightSection={isPro ? <SquareArrowOutUpRight size={16} /> : <ChevronRight size={16} />}
             onClick={handleUpgradeClick}>
             {isPro
               ? formatMessage({defaultMessage: 'Manage Subscription'})
-              : formatMessage({defaultMessage: 'Upgrade to Pro'})}
+              : formatMessage({defaultMessage: 'Subscribe'})}
           </Button>
         </div>
       }>
