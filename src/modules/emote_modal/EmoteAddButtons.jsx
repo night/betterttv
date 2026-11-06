@@ -119,11 +119,12 @@ export default function EmoteAddButtons({emote}) {
 
   const [menuOpened, {close: closeMenu, toggle: toggleMenu}] = useDisclosure(false);
   const {refs, context} = useFloating({open: menuOpened, onOpenChange: closeMenu});
-  // the press is seen on the document, where the closed shadow root hides its path, so it's placed by
-  // position; otherwise the chevron's press would close the menu and its click reopen it
-  const dismiss = useDismiss(context, {
-    outsidePress: (event) => !isPressOn(refs.floating.current, event) && !isPressOn(refs.reference.current, event),
-  });
+  // the closed shadow root hides the press's path from the document, so it's checked by position
+  const isOutsidePress = useCallback(
+    (event) => !isPressOn(refs.floating.current, event) && !isPressOn(refs.reference.current, event),
+    [refs]
+  );
+  const dismiss = useDismiss(context, {outsidePress: isOutsidePress});
   const {getReferenceProps, getFloatingProps} = useInteractions([dismiss]);
 
   const isBetterTTVEmote = emote.category?.provider === EmoteProviders.BETTERTTV;
@@ -204,8 +205,7 @@ export default function EmoteAddButtons({emote}) {
     );
   }
 
-  // the api won't add an uploader's emote to their own channel, so on theirs the control is the menu
-  // alone
+  // the api won't add an uploader's emote to their own channel, so the control is the menu alone
   const isUploader = channelRestriction === EmoteAvailabilityRestrictionTypes.OWN_EMOTE;
   const menuLabel = formatMessage({defaultMessage: 'Add to…'});
 

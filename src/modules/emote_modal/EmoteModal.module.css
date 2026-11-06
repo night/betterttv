@@ -60,7 +60,7 @@
 
 /* lined up with the rows' labels */
 .menuTitle {
-  padding: 8px calc(var(--button-padding-x-lg, 16px) - 2px) 4px;
+  padding: 8px 14px 4px;
   font-size: var(--mantine-font-size-md);
   font-weight: 600;
   color: color-mix(in srgb, var(--mantine-color-text-inverse) 55%, transparent);
@@ -74,7 +74,6 @@
 }
 
 /* Mantine's disabled treatment paints a body-scheme fill, which is wrong on the inverted menu */
-.menuDropdown .menuItemButton:disabled,
 .menuDropdown .menuItemButton[data-disabled] {
   background-color: transparent;
   color: var(--mantine-color-text-inverse);

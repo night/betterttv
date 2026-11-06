@@ -15,8 +15,7 @@ const IDLE_ADD_STATUSES = {
 export const UNKNOWN_AVAILABILITY = {};
 
 const useEmoteModalStore = create(() => ({
-  // availabilityKey -> {channel: {canAdd, restriction}, personal: {canAdd, restriction}, and one per
-  // emote set id}
+  // availabilityKey -> add destination (an emote set's id for a set) -> {canAdd, restriction}
   availability: {},
   // add destination (an emote set's id for a set) -> AsyncStatuses value
   addStatuses: {...IDLE_ADD_STATUSES},
@@ -53,11 +52,7 @@ async function loadAvailability(emoteId, userId, key) {
   let result = UNKNOWN_AVAILABILITY;
   try {
     const destinations = await getEmoteAvailability(emoteId);
-    result = {
-      ...destinations,
-      [EmoteAddDestinations.CHANNEL]: destinations[userId],
-      [EmoteAddDestinations.PERSONAL]: destinations.personal,
-    };
+    result = {...destinations, [EmoteAddDestinations.CHANNEL]: destinations[userId]};
   } catch {
     // settles as the retryable sentinel
   } finally {
@@ -73,14 +68,13 @@ async function loadAvailability(emoteId, userId, key) {
   return result;
 }
 
-// sets can change on the website between opens, so each open reads them again. a failed read keeps
-// what's known: the menu just offers fewer destinations
+// sets can change on the website between opens, so each open reads them again
 export async function fetchEmoteSets(userId) {
   try {
     const emoteSets = await getEmoteSets(userId);
     useEmoteModalStore.setState((state) => ({emoteSets: {...state.emoteSets, [userId]: emoteSets}}));
   } catch {
-    // the menu keeps its other destinations
+    // keeps what's known, the menu just offers fewer destinations
   }
 }
 
@@ -89,6 +83,7 @@ function addToDestination(emoteId, userId, destination) {
     return addPersonalEmote(emoteId, userId);
   }
 
+  // the user's id doubles as their default channel emote set's id
   return addSharedEmote(emoteId, userId, destination === EmoteAddDestinations.CHANNEL ? userId : destination);
 }
 

@@ -12,8 +12,7 @@ export async function getFrankerFaceZChannelEmotes(provider, userId) {
   return api.get(`cached/frankerfacez/users/${provider}/${userId}`);
 }
 
-// the user's id doubles as their default channel emote set's id
-export async function addSharedEmote(emoteId, userId, emoteSetId = userId) {
+export async function addSharedEmote(emoteId, userId, emoteSetId) {
   return api.put(`emotes/${emoteId}/shared/${userId}/${emoteSetId}`);
 }
 
