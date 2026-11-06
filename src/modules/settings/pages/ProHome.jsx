@@ -1,8 +1,7 @@
-import {faArrowUpRightFromSquare, faHeart} from '@fortawesome/free-solid-svg-icons';
 import {Anchor, Button, Text} from '@mantine/core';
+import {Heart, SquareArrowOutUpRight} from 'lucide-react';
 import React from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import Icon from '@/common/components/Icon';
 import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
 import PageHeader from '@/modules/settings/components/PageHeader';
@@ -38,7 +37,7 @@ function ProHome() {
       footer={
         <div className={styles.premiumActions}>
           <Text size="md" className={styles.premiumThanks}>
-            <Icon icon={faHeart} size={16} className={styles.premiumThanksHeart} />
+            <Heart className={styles.premiumThanksHeart} />
             {isPro
               ? formatMessage({defaultMessage: 'Thank you for supporting BetterTTV'})
               : formatMessage({defaultMessage: 'Pro directly supports BetterTTV development'})}
@@ -53,7 +52,7 @@ function ProHome() {
             radius="xl"
             variant="elevated"
             color="contrast"
-            rightSection={<Icon icon={faArrowUpRightFromSquare} size={14} />}
+            rightSection={<SquareArrowOutUpRight size={14} />}
             onClick={handleUpgradeClick}>
             {isPro
               ? formatMessage({defaultMessage: 'Manage Subscription'})

@@ -1,13 +1,4 @@
-import {
-  faComment,
-  faDisplay,
-  faEllipsis,
-  faFaceSmile,
-  faPalette,
-  faRobot,
-  faShieldHalved,
-  faTowerBroadcast,
-} from '@fortawesome/free-solid-svg-icons';
+import {Bot, Ellipsis, MessageSquare, Monitor, Palette, RadioTower, ShieldHalf, Smile} from 'lucide-react';
 import formatMessage from '@/i18n/index';
 import {SettingCategoryIds} from './stores/setting-store';
 
@@ -26,14 +17,14 @@ const CATEGORY_LABELS = {
 };
 
 const CATEGORY_ICONS = {
-  [SettingCategoryIds.APPEARANCE]: faPalette,
-  [SettingCategoryIds.EMOTES]: faFaceSmile,
-  [SettingCategoryIds.BOTS]: faRobot,
-  [SettingCategoryIds.CHAT]: faComment,
-  [SettingCategoryIds.CHANNEL]: faTowerBroadcast,
-  [SettingCategoryIds.MODERATION]: faShieldHalved,
-  [SettingCategoryIds.INTERFACE]: faDisplay,
-  [SettingCategoryIds.OTHER]: faEllipsis,
+  [SettingCategoryIds.APPEARANCE]: Palette,
+  [SettingCategoryIds.EMOTES]: Smile,
+  [SettingCategoryIds.BOTS]: Bot,
+  [SettingCategoryIds.CHAT]: MessageSquare,
+  [SettingCategoryIds.CHANNEL]: RadioTower,
+  [SettingCategoryIds.MODERATION]: ShieldHalf,
+  [SettingCategoryIds.INTERFACE]: Monitor,
+  [SettingCategoryIds.OTHER]: Ellipsis,
 };
 
 // Group the given settings into their categories (in category-defined order), dropping categories

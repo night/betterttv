@@ -1,8 +1,7 @@
-import {faGem, faShieldHalved, faStar, faUserCheck, faVideo} from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
+import {Gem, ShieldHalf, Star, UserCheck, Video} from 'lucide-react';
 import React, {useMemo} from 'react';
 import AutocompleteRow from '@/common/components/AutocompleteRow';
-import Icon from '@/common/components/Icon';
 import NightbotLogoIcon from '@/common/components/NightbotLogoIcon';
 import {CommandProviders, CommandAutocompleteArgumentTypes, UserLevels} from '@/constants';
 import formatMessage from '@/i18n/index';
@@ -19,27 +18,27 @@ const LogoByCommandProvider = {
 // UserLevels.EVERYONE is intentionally absent — commands anyone can use don't need a badge.
 const UserLevelBadges = {
   [UserLevels.SUBSCRIBER]: {
-    icon: faStar,
+    icon: Star,
     className: styles.subscriberBadge,
     label: formatMessage({defaultMessage: 'Subscriber'}),
   },
   [UserLevels.REGULAR]: {
-    icon: faUserCheck,
+    icon: UserCheck,
     className: styles.regularBadge,
     label: formatMessage({defaultMessage: 'Regular'}),
   },
   [UserLevels.TWITCH_VIP]: {
-    icon: faGem,
+    icon: Gem,
     className: styles.vipBadge,
     label: formatMessage({defaultMessage: 'VIP'}),
   },
   [UserLevels.MODERATOR]: {
-    icon: faShieldHalved,
+    icon: ShieldHalf,
     className: styles.moderatorBadge,
     label: formatMessage({defaultMessage: 'Moderator'}),
   },
   [UserLevels.OWNER]: {
-    icon: faVideo,
+    icon: Video,
     className: styles.ownerBadge,
     label: formatMessage({defaultMessage: 'Broadcaster'}),
   },
@@ -67,7 +66,7 @@ function CommandRow({item, active, selected, focusedWordIndex, onMouseOver, onCl
 
     return (
       <span title={badge.label} aria-label={badge.label} className={classNames(styles.userLevelBadge, badge.className)}>
-        <Icon icon={badge.icon} size={12} />
+        <badge.icon size={12} />
       </span>
     );
   }, [item.userLevel]);

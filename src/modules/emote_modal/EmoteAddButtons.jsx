@@ -1,10 +1,9 @@
 import {useDismiss, useFloating, useInteractions} from '@floating-ui/react';
-import {faChevronDown} from '@fortawesome/free-solid-svg-icons';
 import {Button, Popover, Tooltip} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
+import {ChevronDown} from 'lucide-react';
 import React, {useCallback} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import Icon from '@/common/components/Icon';
 import StatusButton from '@/common/components/StatusButton';
 import usePortalRef from '@/common/hooks/PortalRef';
 import {AsyncStatuses, EmoteAddDestinations, EmoteAvailabilityRestrictionTypes, EmoteProviders} from '@/constants';
@@ -48,7 +47,7 @@ function DisabledAddButtons() {
           className={styles.menuChevron}
           disabled
           aria-label={formatMessage({defaultMessage: 'More add options'})}>
-          <Icon icon={faChevronDown} />
+          <ChevronDown size={16} />
         </Button>
       </Button.Group>
     </div>
@@ -163,7 +162,7 @@ export default function EmoteAddButtons({emote}) {
               className={styles.menuChevron}
               onClick={toggleMenu}
               aria-label={formatMessage({defaultMessage: 'More add options'})}>
-              <Icon icon={faChevronDown} />
+              <ChevronDown size={16} />
             </Button>
           </Button.Group>
         </div>

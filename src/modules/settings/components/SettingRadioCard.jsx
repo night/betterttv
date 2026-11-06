@@ -1,8 +1,7 @@
-import {faCheckCircle} from '@fortawesome/free-solid-svg-icons';
 import {RadioCard, Tooltip} from '@mantine/core';
 import classNames from 'classnames';
+import {CircleCheck} from 'lucide-react';
 import React from 'react';
-import Icon from '../../../common/components/Icon';
 import usePortalRef from '../../../common/hooks/PortalRef';
 import clickableStyles from './ClickableContainer.module.css';
 import styles from './SettingRadioCard.module.css';
@@ -26,9 +25,7 @@ function SettingRadioCard({
       aria-label={ariaLabel}
       {...radioCardProps}>
       {children}
-      {withIndicators ? (
-        <Icon icon={faCheckCircle} className={classNames(styles.iconIndicator, styles.checkIcon)} />
-      ) : null}
+      {withIndicators ? <CircleCheck className={classNames(styles.iconIndicator, styles.checkIcon)} /> : null}
     </RadioCard>
   );
 

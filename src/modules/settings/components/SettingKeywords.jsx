@@ -1,4 +1,3 @@
-import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Autocomplete,
@@ -19,8 +18,8 @@ import {
 } from '@mantine/core';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
+import {Info, Trash2} from 'lucide-react';
 import React, {useCallback, useMemo, useState} from 'react';
-import Icon from '@/common/components/Icon';
 import useBadgeOptions from '@/common/hooks/BadgeOptions';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
 import useEntryListState from '@/common/hooks/EntryListState';
@@ -233,7 +232,7 @@ function KeywordRow({
           size="sm"
           classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
-          <Icon icon={faTrash} />
+          <Trash2 size={16} />
         </ActionIcon>
       </TableTd>
     </TableTr>
@@ -270,7 +269,7 @@ function KeywordsTable({
                 className={styles.infoButton}
                 aria-label={formatMessage({defaultMessage: 'Advanced keywords'})}
                 onClick={openRegexGuideModal}>
-                <Icon icon={faCircleInfo} />
+                <Info size={16} />
               </ActionIcon>
             </div>
           </TableTh>

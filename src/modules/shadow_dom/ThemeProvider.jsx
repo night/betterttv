@@ -5,6 +5,7 @@ import {
   Badge,
   Button,
   Checkbox,
+  CloseButton,
   alpha,
   createTheme,
   defaultVariantColorsResolver,
@@ -23,6 +24,7 @@ import {
 } from '@mantine/core';
 import {useMounted} from '@mantine/hooks';
 import {ModalsProvider} from '@mantine/modals';
+import {X} from 'lucide-react';
 import React, {useMemo, useRef} from 'react';
 import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '@/common/components/LoaderIcon';
 import {PortalContext} from '@/common/contexts/PortalContext';
@@ -32,6 +34,7 @@ import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
 import badgeStyles from '@/modules/shadow_dom/styles/badge.module.css';
 import buttonStyles from '@/modules/shadow_dom/styles/button.module.css';
 import checkboxStyles from '@/modules/shadow_dom/styles/checkbox.module.css';
+import closeButtonStyles from '@/modules/shadow_dom/styles/close-button.module.css';
 import comboboxStyles from '@/modules/shadow_dom/styles/combobox.module.css';
 import inputStyles from '@/modules/shadow_dom/styles/input.module.css';
 import kbdStyles from '@/modules/shadow_dom/styles/kbd.module.css';
@@ -121,6 +124,7 @@ const mantineTheme = createTheme({
     Switch: Switch.extend({classNames: switchStyles}),
     Checkbox: Checkbox.extend({classNames: checkboxStyles}),
     Radio: Radio.extend({classNames: radioStyles}),
+    CloseButton: CloseButton.extend({defaultProps: {icon: <X className={closeButtonStyles.icon} />}}),
     Input: Input.extend({classNames: inputStyles}),
     Autocomplete: Autocomplete.extend({
       classNames: comboboxStyles,

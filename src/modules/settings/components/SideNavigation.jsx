@@ -1,14 +1,8 @@
-import {
-  faArrowRight as faPanelLeftClose,
-  faFire,
-  faTriangleExclamation,
-  faUserGear,
-} from '@fortawesome/free-solid-svg-icons';
 import {ActionIcon, Avatar, Button, Overlay, useMantineTheme} from '@mantine/core';
 import classNames from 'classnames';
+import {Flame, PanelLeftClose, TriangleAlert, UserCog} from 'lucide-react';
 import React, {use, useCallback, useEffect, useMemo, useRef} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import Icon from '@/common/components/Icon';
 import ProBadge from '@/common/components/ProBadge';
 import Scrollbar from '@/common/components/Scrollbar';
 import UsernameEffectText from '@/common/components/UsernameEffectText';
@@ -40,7 +34,7 @@ function CloseMenuButton({onClick, className}) {
       onClick={onClick}
       aria-label={formatMessage({defaultMessage: 'Close'})}
       className={className}>
-      <Icon icon={faPanelLeftClose} className={styles.closeButtonIcon} />
+      <PanelLeftClose className={styles.closeButtonIcon} />
     </ActionIcon>
   );
 }
@@ -112,11 +106,7 @@ function UserSettingsNavigationButton({active, onClick}) {
         )
       }
       rightSection={
-        bttvUser == null ? (
-          <Icon icon={faTriangleExclamation} className={styles.warningIcon} />
-        ) : isUserPro(bttvUser) ? (
-          <ProBadge />
-        ) : null
+        bttvUser == null ? <TriangleAlert className={styles.warningIcon} /> : isUserPro(bttvUser) ? <ProBadge /> : null
       }>
       {avatarSrc != null ? (
         <Avatar
@@ -127,7 +117,7 @@ function UserSettingsNavigationButton({active, onClick}) {
           classNames={{image: styles.avatarImage}}
         />
       ) : (
-        <Icon icon={faUserGear} className={styles.navigationIcon} />
+        <UserCog className={styles.navigationIcon} />
       )}
     </NavigationButton>
   );
@@ -214,7 +204,7 @@ function SideNavigation({open, setOpen}) {
                   label={group.label}
                   rightSection={hasPromotion ? <span className={styles.promotionDot} /> : undefined}
                   buttonProps={{[CATEGORY_ID_ATTRIBUTE]: group.id}}>
-                  <Icon icon={group.icon} className={styles.navigationIcon} />
+                  <group.icon className={styles.navigationIcon} />
                 </NavigationButton>
                 {isOpen ? (
                   <div className={styles.categorySettings}>
@@ -239,7 +229,7 @@ function SideNavigation({open, setOpen}) {
             active={page === PageTypes.PRO_HOME}
             onClick={() => handleNavigate(PageTypes.PRO_HOME)}
             label={formatMessage({defaultMessage: 'BetterTTV Pro'})}>
-            <Icon icon={faFire} className={classNames(styles.navigationIcon, styles.fireIcon)} />
+            <Flame className={styles.navigationIcon} />
           </NavigationButton>
           <UserSettingsNavigationButton
             active={page === PageTypes.USER_SETTINGS}
