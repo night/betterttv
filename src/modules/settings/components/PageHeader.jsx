@@ -1,9 +1,8 @@
-import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {ActionIcon, Anchor, Avatar, Breadcrumbs, CloseButton, Title} from '@mantine/core';
 import classNames from 'classnames';
+import {Menu} from 'lucide-react';
 import React, {use} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import Icon from '@/common/components/Icon';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
 import useAuthStore from '@/stores/auth';
@@ -55,7 +54,7 @@ const PageHeader = ({className, leftContent, breadcrumbs, style, ref}) => {
         {currentUser != null ? (
           <Avatar src={currentUser.avatar} size="lg" />
         ) : (
-          <Icon className={styles.sidenavToggleButtonIcon} icon={faBars} />
+          <Menu className={styles.sidenavToggleButtonIcon} />
         )}
       </ActionIcon>
       <HeaderContent breadcrumbs={breadcrumbs} leftContent={leftContent} />

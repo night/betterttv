@@ -1,7 +1,6 @@
-import {faArrowUpRightFromSquare} from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
+import {SquareArrowOutUpRight} from 'lucide-react';
 import React from 'react';
-import Icon from '@/common/components/Icon';
 import formatMessage from '@/i18n/index';
 import {EmoteProviderMetadata, getEmotePageUrl} from '@/utils/emote';
 import {createSrc} from '@/utils/image';
@@ -41,7 +40,7 @@ export default function EmotePreview({emote}) {
           {defaultMessage: 'Open on {provider}'},
           {provider: EmoteProviderMetadata[emote.category?.provider]?.displayName}
         )}
-        <Icon icon={faArrowUpRightFromSquare} size={12} />
+        <SquareArrowOutUpRight size={12} />
       </span>
     </a>
   );

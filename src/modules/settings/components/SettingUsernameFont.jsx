@@ -1,9 +1,8 @@
-import {faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Text} from '@mantine/core';
 import classNames from 'classnames';
+import {X} from 'lucide-react';
 import React from 'react';
 import {updateUsernameFont} from '@/actions/account';
-import Icon from '@/common/components/Icon';
 import UsernameEffectText from '@/common/components/UsernameEffectText';
 import useCurrentUser from '@/common/hooks/CurrentUser';
 import useUsernameEffectSetting, {NONE} from '@/common/hooks/UsernameEffectSetting';
@@ -116,7 +115,7 @@ function SettingUsernameFont() {
             tooltip={formatMessage({defaultMessage: 'Default font'})}
             ariaLabel={formatMessage({defaultMessage: 'Default font'})}
             withIndicators={false}>
-            <Icon icon={faXmark} className={styles.cardIcon} />
+            <X className={styles.cardIcon} />
           </SettingRadioCard>
           {FONT_CARDS.map(({value: fontValue, label}) => (
             <SettingRadioCard

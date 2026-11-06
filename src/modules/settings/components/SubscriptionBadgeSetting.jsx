@@ -1,11 +1,10 @@
-import {faQuestion, faRepeat, faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Skeleton} from '@mantine/core';
 import classNames from 'classnames';
+import {CircleQuestionMark, Repeat, X} from 'lucide-react';
 import {DateTime} from 'luxon';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import {updateSubscriptionBadge, updateSubscriptionBadgeId} from '@/actions/account';
-import Icon from '@/common/components/Icon';
 import useDebouncedRemoteState from '@/common/hooks/DebouncedRemoteState';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import formatMessage from '@/i18n';
@@ -210,7 +209,7 @@ function SubscriptionBadgeSetting() {
             tooltip={disableBadgeLabel}
             ariaLabel={disableBadgeLabel}
             withIndicators={false}>
-            <Icon icon={faXmark} className={styles.cardIcon} />
+            <X className={styles.cardIcon} />
           </SettingRadioCard>
           <SettingRadioCard
             value={LATEST}
@@ -218,7 +217,7 @@ function SubscriptionBadgeSetting() {
             tooltip={latestBadgeLabel}
             ariaLabel={latestBadgeLabel}
             withIndicators={false}>
-            <Icon icon={faRepeat} className={styles.cardIcon} />
+            <Repeat className={styles.cardIcon} />
           </SettingRadioCard>
           {eligibleBadges.map(({badgeId, badgeUrl}) => (
             <SettingRadioCard
@@ -250,7 +249,7 @@ function SubscriptionBadgeSetting() {
               }
               ariaLabel={nextBadgeLabel}>
               <div className={classNames(styles.badge, styles.nextBadgePlaceholder)}>
-                <Icon icon={faQuestion} className={styles.nextBadgeIcon} />
+                <CircleQuestionMark className={styles.nextBadgeIcon} />
               </div>
             </SettingRadioCard>
           ) : null}

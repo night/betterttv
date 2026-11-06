@@ -1,4 +1,3 @@
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Button,
@@ -15,9 +14,9 @@ import {
   TextInput,
 } from '@mantine/core';
 import classNames from 'classnames';
+import {Trash2} from 'lucide-react';
 import React, {useCallback, useMemo, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import Icon from '@/common/components/Icon';
 import useEntryListState from '@/common/hooks/EntryListState';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
@@ -101,7 +100,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
           size="sm"
           classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
-          <Icon icon={faTrash} />
+          <Trash2 size={16} />
         </ActionIcon>
       </TableTd>
     </TableTr>
