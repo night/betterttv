@@ -24,8 +24,8 @@ function Theme({ref, ...props}) {
         showProBadge
         value={normalizedValue}
         onChange={setNormalizedValue}
-        name={formatMessage({defaultMessage: 'Pick an accent color'})}
-        description={formatMessage({defaultMessage: 'Used for buttons, toggles and highlights across BetterTTV.'})}
+        name={formatMessage({defaultMessage: 'Accent Color'})}
+        description={formatMessage({defaultMessage: 'The primary accent color of the theme.'})}
       />
     </SettingGroup>
   );

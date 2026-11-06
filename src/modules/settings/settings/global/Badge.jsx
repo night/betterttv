@@ -11,7 +11,7 @@ function Badge({ref, ...props}) {
 
 SettingStore.registerSetting(Badge, {
   settingPanelId: SettingPanelIds.SUBSCRIPTION_BADGE,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.USERNAME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });

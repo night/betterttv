@@ -61,21 +61,21 @@ function SelfBot({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Automatically respond and send messages'})}
-        description={formatMessage({defaultMessage: 'Only runs on your own channel.'})}
+        name={formatMessage({defaultMessage: 'Self Bot'})}
+        description={formatMessage({defaultMessage: 'Automatically send and reply to messages on your own channel.'})}
         value={displayEnabled}
         onChange={handleEnabledChange}
       />
       <SettingWrapper
-        name={formatMessage({defaultMessage: 'Set up commands'})}
+        name={formatMessage({defaultMessage: 'Commands'})}
         reverse
-        description={formatMessage({defaultMessage: 'Triggers and what they reply with.'})}>
+        description={formatMessage({defaultMessage: 'Configure command triggers and responses.'})}>
         <Button size="lg" onClick={() => setPage(PageTypes.SELF_BOT_COMMANDS)}>
           {formatMessage({defaultMessage: 'Edit'})}
         </Button>
       </SettingWrapper>
       <SettingWrapper
-        name={formatMessage({defaultMessage: 'Set up timers'})}
+        name={formatMessage({defaultMessage: 'Timers'})}
         reverse
         showProBadge
         showNewBadge={hasPromotion}

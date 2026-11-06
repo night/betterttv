@@ -215,13 +215,6 @@
   color: var(--mantine-color-dimmed);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .sidenavContainer,
-  .overlay {
-    transition: none !important;
-  }
-}
-
 @media (min-width: 800px) {
   .closeButton {
     display: none;

@@ -6,7 +6,7 @@ import {SettingCategoryIds} from './stores/setting-store';
 // opens its own page. Settings order within a category by registration order, and declare their
 // category via registerSetting's settingCategoryId.
 const CATEGORY_LABELS = {
-  [SettingCategoryIds.APPEARANCE]: formatMessage({defaultMessage: 'Username'}),
+  [SettingCategoryIds.USERNAME]: formatMessage({defaultMessage: 'Username'}),
   [SettingCategoryIds.EMOTES]: formatMessage({defaultMessage: 'Emotes'}),
   [SettingCategoryIds.BOTS]: formatMessage({defaultMessage: 'Bots'}),
   [SettingCategoryIds.CHAT]: formatMessage({defaultMessage: 'Chat'}),
@@ -17,7 +17,7 @@ const CATEGORY_LABELS = {
 };
 
 const CATEGORY_ICONS = {
-  [SettingCategoryIds.APPEARANCE]: PaintbrushVertical,
+  [SettingCategoryIds.USERNAME]: PaintbrushVertical,
   [SettingCategoryIds.EMOTES]: Smile,
   [SettingCategoryIds.BOTS]: Bot,
   [SettingCategoryIds.CHAT]: MessageSquare,

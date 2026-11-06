@@ -1,3 +1,7 @@
+.tooltip {
+  font-size: var(--mantine-font-size-md);
+}
+
 /* surface + checked treatment comes from the shared clickable container
    (see ClickableContainer.module.css); this file keeps the card-only layout */
 .card {
@@ -18,7 +22,7 @@
 }
 
 /* a locked card keeps its resting background under the pointer; a click explains how to unlock it */
-.card[data-locked] {
+.card[aria-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
   --surface-bg-hover: var(--surface-bg);
@@ -40,8 +44,4 @@
 .card[data-checked='true'] .checkIcon {
   opacity: 1;
   scale: 1;
-}
-
-.tooltip {
-  font-size: var(--mantine-font-size-md);
 }

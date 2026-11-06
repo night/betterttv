@@ -18,16 +18,16 @@ function AnonChat({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Hide from the user list'})}
-        description={formatMessage({defaultMessage: 'Read chat anonymously without anyone seeing you.'})}
+        name={SETTING_NAME}
+        description={formatMessage({defaultMessage: 'Anonymously read chat without appearing in the user list.'})}
         value={value}
         onChange={setValue}
       />
       <SettingTagInput
         name={
           value
-            ? formatMessage({defaultMessage: 'Skip these channels'})
-            : formatMessage({defaultMessage: 'Only use these channels'})
+            ? formatMessage({defaultMessage: 'Whitelist Channels'})
+            : formatMessage({defaultMessage: 'Blacklist Channels'})
         }
         description={
           value

@@ -19,7 +19,7 @@ function UsernameHoverEffect({ref, ...props}) {
 
 SettingStore.registerSetting(UsernameHoverEffect, {
   settingPanelId: SettingPanelIds.USERNAME_HOVER_EFFECT,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.USERNAME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });

@@ -14,8 +14,8 @@ function PrimeGaming({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Show Prime promotions'})}
-        description={formatMessage({defaultMessage: 'Prime Gaming loot notices, like the ones in the sidebar.'})}
+        name={formatMessage({defaultMessage: 'Prime Promotions'})}
+        description={formatMessage({defaultMessage: 'Show Prime Gaming loot notices, like the ones in the sidebar.'})}
         value={value}
         onChange={setValue}
       />

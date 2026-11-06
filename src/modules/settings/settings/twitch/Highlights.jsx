@@ -26,31 +26,31 @@ function Highlights({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingWrapper
-        name={formatMessage({defaultMessage: 'Highlight keywords'})}
+        name={formatMessage({defaultMessage: 'Highlight Keywords'})}
         reverse
-        description={formatMessage({defaultMessage: 'Make certain words, phrases or users stand out in your chat.'})}>
+        description={formatMessage({defaultMessage: 'Highlight certain words, phrases or users in your chat.'})}>
         <Button size="lg" onClick={() => setPage(PageTypes.HIGHLIGHT_KEYWORDS)}>
           {formatMessage({defaultMessage: 'Edit'})}
         </Button>
       </SettingWrapper>
       <SettingSwitch
         reverse
-        name={formatMessage({defaultMessage: 'Pin highlights'})}
-        description={formatMessage({defaultMessage: 'Keeps your highlighted messages above chat.'})}
+        name={formatMessage({defaultMessage: 'Pinned Highlights'})}
+        description={formatMessage({defaultMessage: 'Pin your highlighted messages above chat.'})}
         value={value}
         onChange={setValue}
       />
       <SettingSwitch
         reverse
-        name={formatMessage({defaultMessage: 'Expire pinned highlights'})}
-        description={formatMessage({defaultMessage: 'Removes them after 1 minute.'})}
+        name={formatMessage({defaultMessage: 'Expire Pinned Highlights'})}
+        description={formatMessage({defaultMessage: 'Hide pinned highlights after 1 minute.'})}
         value={timeoutHighlightsValue}
         onChange={setTimeoutHighlightsValue}
         disabled={!value}
       />
       <SettingNumberInput
-        name={formatMessage({defaultMessage: 'Limit pinned highlights'})}
-        description={formatMessage({defaultMessage: 'How many can show at once.'})}
+        name={formatMessage({defaultMessage: 'Maximum Pinned highlights'})}
+        description={formatMessage({defaultMessage: 'Number of pinned highlights that can be displayed.'})}
         value={maxPinnedHighlights}
         onChange={setMaxPinnedHighlights}
         min={1}
@@ -59,24 +59,24 @@ function Highlights({ref, ...props}) {
       />
       <SettingSwitch
         reverse
-        name={formatMessage({defaultMessage: 'Play a sound'})}
-        description={formatMessage({defaultMessage: 'For messages directed at you.'})}
+        name={formatMessage({defaultMessage: 'Play A Sound'})}
+        description={formatMessage({defaultMessage: 'Play a sound for messages directed at you.'})}
         value={highlightFeedback}
         onChange={setHighlightFeedback}
       />
       <SettingSwitch
         reverse
-        name={formatMessage({defaultMessage: 'Highlight first-time chatters'})}
+        name={formatMessage({defaultMessage: 'Highlight First-Time Chatters'})}
         description={formatMessage({
-          defaultMessage: 'Marks the first message a viewer sends in the channel.',
+          defaultMessage: 'Highlight messages from viewers chatting in the channel for the first time.',
         })}
         value={highlightFirstTimeChatters}
         onChange={setHighlightFirstTimeChatters}
       />
       <SettingSwitch
         reverse
-        name={formatMessage({defaultMessage: 'Highlight deleted messages'})}
-        description={formatMessage({defaultMessage: 'Keeps them in chat and makes them stand out.'})}
+        name={formatMessage({defaultMessage: 'Highlight Deleted Messages'})}
+        description={formatMessage({defaultMessage: 'Highlight and prevent deletion of messages.'})}
         value={deletedMessages === DeletedMessageTypes.HIGHLIGHT}
         onChange={(value) => setDeletedMessages(value ? DeletedMessageTypes.HIGHLIGHT : DeletedMessageTypes.DEFAULT)}
       />

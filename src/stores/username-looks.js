@@ -9,12 +9,8 @@ export function setUsernameLook(field, value) {
   useUsernameLooksStore.setState({[field]: value});
 }
 
-export function clearUsernameLook(field) {
-  useUsernameLooksStore.setState(({[field]: _cleared, ...looks}) => looks, true);
-}
-
 // the field's pick while it saves, otherwise what the account holds
 export function useUsernameLook(field) {
   const saved = useAuthStore((state) => state.user?.[field] ?? null);
-  return useUsernameLooksStore((state) => (field in state ? state[field] : saved));
+  return useUsernameLooksStore((state) => (state[field] !== undefined ? state[field] : saved));
 }

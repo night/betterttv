@@ -97,31 +97,29 @@ function SettingUsernameFont() {
   });
 
   return (
-    <div className={styles.cards}>
-      <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+    <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+      <SettingRadioCard
+        key={NONE}
+        value={NONE}
+        className={styles.usernameCard}
+        tooltip={formatMessage({defaultMessage: 'Default font'})}
+        ariaLabel={formatMessage({defaultMessage: 'Default font'})}
+        withIndicators={false}>
+        <X className={styles.cardIcon} />
+      </SettingRadioCard>
+      {FONT_CARDS.map(({value: fontValue, label}) => (
         <SettingRadioCard
-          key={NONE}
-          value={NONE}
+          key={fontValue}
+          value={fontValue}
+          locked={isLocked(fontValue)}
           className={styles.usernameCard}
-          tooltip={formatMessage({defaultMessage: 'Default font'})}
-          ariaLabel={formatMessage({defaultMessage: 'Default font'})}
+          tooltip={label}
+          ariaLabel={label}
           withIndicators={false}>
-          <X className={styles.cardIcon} />
+          <UsernameFontPreviewText value={fontValue}>{previewDisplayName}</UsernameFontPreviewText>
         </SettingRadioCard>
-        {FONT_CARDS.map(({value: fontValue, label}) => (
-          <SettingRadioCard
-            key={fontValue}
-            value={fontValue}
-            locked={isLocked(fontValue)}
-            className={styles.usernameCard}
-            tooltip={label}
-            ariaLabel={label}
-            withIndicators={false}>
-            <UsernameFontPreviewText value={fontValue}>{previewDisplayName}</UsernameFontPreviewText>
-          </SettingRadioCard>
-        ))}
-      </SettingRadioCardGroup>
-    </div>
+      ))}
+    </SettingRadioCardGroup>
   );
 }
 

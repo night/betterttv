@@ -109,31 +109,29 @@ function SettingUsernameHoverEffect() {
   });
 
   return (
-    <div className={styles.cards}>
-      <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+    <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+      <SettingRadioCard
+        key={NONE}
+        value={NONE}
+        className={styles.usernameCard}
+        tooltip={formatMessage({defaultMessage: 'Disable effect'})}
+        ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
+        withIndicators={false}>
+        <X className={styles.cardIcon} />
+      </SettingRadioCard>
+      {EFFECT_CARDS.map(({value: effectValue, label}) => (
         <SettingRadioCard
-          key={NONE}
-          value={NONE}
-          className={styles.usernameCard}
-          tooltip={formatMessage({defaultMessage: 'Disable effect'})}
-          ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
+          key={effectValue}
+          value={effectValue}
+          locked={isLocked(effectValue)}
+          className={classNames(styles.usernameCard, effects.hoverTrigger)}
+          tooltip={label}
+          ariaLabel={label}
           withIndicators={false}>
-          <X className={styles.cardIcon} />
+          <UsernameHoverEffectPreviewText value={effectValue}>{previewDisplayName}</UsernameHoverEffectPreviewText>
         </SettingRadioCard>
-        {EFFECT_CARDS.map(({value: effectValue, label}) => (
-          <SettingRadioCard
-            key={effectValue}
-            value={effectValue}
-            locked={isLocked(effectValue)}
-            className={classNames(styles.usernameCard, effects.hoverTrigger)}
-            tooltip={label}
-            ariaLabel={label}
-            withIndicators={false}>
-            <UsernameHoverEffectPreviewText value={effectValue}>{previewDisplayName}</UsernameHoverEffectPreviewText>
-          </SettingRadioCard>
-        ))}
-      </SettingRadioCardGroup>
-    </div>
+      ))}
+    </SettingRadioCardGroup>
   );
 }
 

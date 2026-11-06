@@ -167,37 +167,35 @@ function SettingUsernameEffect() {
   });
 
   return (
-    <div className={styles.cards}>
-      <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+    <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+      <SettingRadioCard
+        key={NONE}
+        value={NONE}
+        className={styles.usernameCard}
+        tooltip={formatMessage({defaultMessage: 'Disable effect'})}
+        ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
+        withIndicators={false}>
+        <X className={styles.cardIcon} />
+      </SettingRadioCard>
+      {EFFECT_CARDS.map(({value: effectValue, label}) => (
         <SettingRadioCard
-          key={NONE}
-          value={NONE}
+          key={effectValue}
+          value={effectValue}
+          locked={isLocked(effectValue)}
           className={styles.usernameCard}
-          tooltip={formatMessage({defaultMessage: 'Disable effect'})}
-          ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
+          tooltip={label}
+          ariaLabel={label}
           withIndicators={false}>
-          <X className={styles.cardIcon} />
+          <Text
+            truncate
+            size="xl"
+            style={getChatColorStyle(effectValue, chatColor)}
+            className={classNames(UsernameEffectRequirementClassNamesByEffect[effectValue], fonts[usernameFont])}>
+            {getPreviewDisplayName(currentUser, user)}
+          </Text>
         </SettingRadioCard>
-        {EFFECT_CARDS.map(({value: effectValue, label}) => (
-          <SettingRadioCard
-            key={effectValue}
-            value={effectValue}
-            locked={isLocked(effectValue)}
-            className={styles.usernameCard}
-            tooltip={label}
-            ariaLabel={label}
-            withIndicators={false}>
-            <Text
-              truncate
-              size="xl"
-              style={getChatColorStyle(effectValue, chatColor)}
-              className={classNames(UsernameEffectRequirementClassNamesByEffect[effectValue], fonts[usernameFont])}>
-              {getPreviewDisplayName(currentUser, user)}
-            </Text>
-          </SettingRadioCard>
-        ))}
-      </SettingRadioCardGroup>
-    </div>
+      ))}
+    </SettingRadioCardGroup>
   );
 }
 

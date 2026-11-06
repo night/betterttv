@@ -141,6 +141,17 @@ function SettingsModal({setHandleOpen}) {
     event.stopPropagation();
   }, []);
 
+  // Mantine's own Escape listener runs on window, before a menu open in the modal can claim the key
+  const closeModal = modalHandlers.close;
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    },
+    [closeModal]
+  );
+
   // Runs when a page mounts: scroll to a pending setting panel, otherwise restore the
   // parent page's scroll position (or start at the top).
   const handlePageMount = useCallback(() => {
@@ -168,6 +179,8 @@ function SettingsModal({setHandleOpen}) {
       withinPortal={false}
       fullScreen={width < 800}
       opened={open}
+      closeOnEscape={false}
+      onKeyDown={handleKeyDown}
       /* youtube will drop scroll events inside standalone window
       that don't originate from the chat container */
       onWheel={stopPropagation}

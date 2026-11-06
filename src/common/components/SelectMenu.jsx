@@ -12,10 +12,18 @@ const filledTriggerVars = () => ({
   root: {
     '--button-padding-x': '16px',
     '--button-bg': 'var(--mantine-color-default)',
+    '--button-color': 'var(--mantine-color-default-color)',
     '--button-hover': 'var(--mantine-color-default-hover)',
     '--button-bd': '1px solid var(--mantine-color-default-border)',
   },
 });
+
+// Escape closes the menu, so the modal it sits in doesn't close with it
+function keepEscapeInMenu(event) {
+  if (event.key === 'Escape') {
+    event.stopPropagation();
+  }
+}
 
 function SelectMenuOption({option, active, onPick}) {
   const handleClick = useCallback(() => onPick(option.value), [onPick, option.value]);
@@ -42,15 +50,24 @@ function SelectMenu({value, options, onChange, disabled = false, variant = 'fill
   });
   const {getReferenceProps, getFloatingProps} = useInteractions([dismiss]);
   const current = options.find((option) => option.value === value);
+  // Mantine's returnFocus only finds the shadow host, since that's all document.activeElement shows
+  const handleChange = useCallback(
+    (isOpen) => {
+      setOpened(isOpen);
+      if (!isOpen) {
+        refs.domReference.current?.focus();
+      }
+    },
+    [refs]
+  );
 
   return (
     <Menu
       opened={opened}
-      onChange={setOpened}
+      onChange={handleChange}
       position="bottom-end"
       offset={8}
       disabled={disabled}
-      trapFocus={false}
       closeOnClickOutside={false}
       portalProps={{target: portalRef?.current}}>
       <Menu.Target>
@@ -66,11 +83,11 @@ function SelectMenu({value, options, onChange, disabled = false, variant = 'fill
           className={className}
           classNames={{inner: styles.triggerInner}}
           rightSection={<ChevronDown size={16} className={styles.triggerIcon} />}
-          aria-label={ariaLabel}>
+          aria-label={`${ariaLabel}: ${current?.label}`}>
           {current?.label}
         </Button>
       </Menu.Target>
-      <Menu.Dropdown ref={refs.setFloating} {...getFloatingProps()}>
+      <Menu.Dropdown ref={refs.setFloating} {...getFloatingProps({onKeyDown: keepEscapeInMenu})}>
         {options.map((option) => (
           <SelectMenuOption key={option.value} option={option} active={option.value === value} onPick={onChange} />
         ))}

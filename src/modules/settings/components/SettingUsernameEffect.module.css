@@ -36,10 +36,6 @@
   padding: 16px;
 }
 
-.cards {
-  padding: 0 var(--setting-panel-padding, 20px) var(--setting-panel-padding, 20px);
-}
-
 .usernamePreview .previewUsername {
   font-size: 24px;
 }

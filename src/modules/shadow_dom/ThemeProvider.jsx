@@ -51,8 +51,6 @@ const mantineTheme = createTheme({
   cursorType: 'pointer',
   // the press style: a dimmer step instead of Mantine's nudge down
   activeClassName: pressableStyles.pressable,
-  // Mantine's own transitions (modals, popovers) follow the OS setting
-  respectReducedMotion: true,
   fontSizes: {
     xs: '0.75rem',
     sm: '1rem',
@@ -136,9 +134,7 @@ const mantineTheme = createTheme({
     Radio: Radio.extend({classNames: radioStyles}),
     Input: Input.extend({
       classNames: {wrapper: inputStyles.wrapper},
-      vars: (_theme, props) => ({
-        wrapper: {'--input-radius': props.radius == null ? 'var(--mantine-radius-lg)' : undefined},
-      }),
+      defaultProps: {radius: 'lg'},
     }),
     InputWrapper: Input.Wrapper.extend({
       classNames: {label: inputStyles.label, description: inputStyles.description},

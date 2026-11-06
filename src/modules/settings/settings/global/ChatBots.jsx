@@ -21,9 +21,9 @@ function ChatBots({ref, ...props}) {
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
         showProBadge
-        name={formatMessage({defaultMessage: 'Autocomplete commands'})}
+        name={formatMessage({defaultMessage: 'Command Autocomplete'})}
         description={formatMessage({
-          defaultMessage: 'Suggests commands from supported chatbots as you type.',
+          defaultMessage: 'Enable command autocomplete for supported chatbot commands.',
         })}
         value={normalizedValue}
         onChange={setNormalizedValue}

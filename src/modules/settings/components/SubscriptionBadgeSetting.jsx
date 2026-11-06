@@ -201,7 +201,6 @@ function SubscriptionBadgeSetting({name, ref, ...props}) {
           fixedCardWidth>
           <SettingRadioCard
             value={DISABLED}
-            className={styles.badgeCard}
             tooltip={disableBadgeLabel}
             ariaLabel={disableBadgeLabel}
             withIndicators={false}>
@@ -209,19 +208,13 @@ function SubscriptionBadgeSetting({name, ref, ...props}) {
           </SettingRadioCard>
           <SettingRadioCard
             value={LATEST}
-            className={styles.badgeCard}
             tooltip={latestBadgeLabel}
             ariaLabel={latestBadgeLabel}
             withIndicators={false}>
             <Repeat className={styles.cardIcon} />
           </SettingRadioCard>
           {eligibleBadges.map(({badgeId, badgeUrl}) => (
-            <SettingRadioCard
-              key={badgeId}
-              value={badgeId}
-              className={styles.badgeCard}
-              ariaLabel={badgeLabel}
-              withIndicators={false}>
+            <SettingRadioCard key={badgeId} value={badgeId} ariaLabel={badgeLabel} withIndicators={false}>
               <BadgeImage src={badgeUrl} />
             </SettingRadioCard>
           ))}
@@ -229,7 +222,7 @@ function SubscriptionBadgeSetting({name, ref, ...props}) {
             <SettingRadioCard
               value={NEXT}
               withIndicators={false}
-              className={classNames(styles.badgeCard, styles.nextBadgeCard)}
+              className={styles.nextBadgeCard}
               tooltip={
                 <div className={styles.countdownTooltip}>
                   {formatMessage(

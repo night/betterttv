@@ -19,14 +19,14 @@ function EmoteMenu({ref, ...props}) {
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
         name={formatMessage({defaultMessage: "Use BetterTTV's emote menu"})}
-        description={formatMessage({defaultMessage: 'A fuller picker for chat, with search and categories.'})}
+        description={formatMessage({defaultMessage: 'Enables a more advanced emote menu for chat.'})}
         value={isEnabled}
         onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.NONE)}
       />
       <SettingNumberInput
         disabled={!isEnabled}
-        name={formatMessage({defaultMessage: 'Set a maximum width'})}
-        description={formatMessage({defaultMessage: 'Measured in pixels.'})}
+        name={formatMessage({defaultMessage: 'Max Width'})}
+        description={formatMessage({defaultMessage: 'Maximum width of the emote menu, measured in pixels.'})}
         value={width}
         onChange={setWidth}
         placeholder={SettingDefaultValues[SettingIds.EMOTE_MENU_WIDTH]}

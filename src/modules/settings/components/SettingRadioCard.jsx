@@ -25,7 +25,6 @@ function SettingRadioCard({
       className={classNames(clickableStyles.clickableContainer, styles.card, className)}
       aria-label={ariaLabel}
       aria-disabled={locked || undefined}
-      data-locked={locked || undefined}
       {...radioCardProps}>
       {children}
       {withIndicators ? <CircleCheck className={classNames(styles.iconIndicator, styles.checkIcon)} /> : null}

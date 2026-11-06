@@ -103,7 +103,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
           size="sm"
           classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
-          <Trash2 size={14} />
+          <Trash2 size={16} />
         </ActionIcon>
       </TableTd>
     </TableTr>

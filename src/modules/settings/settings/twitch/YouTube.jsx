@@ -96,8 +96,8 @@ function YouTube({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Show emotes in live chat'})}
-        description={formatMessage({defaultMessage: 'Brings BetterTTV to YouTube streams.'})}
+        name={SETTING_NAME}
+        description={formatMessage({defaultMessage: 'Show BetterTTV emotes on YouTube Live Chat.'})}
         value={value}
         onChange={() => requestPermission()}
         disabled={loading || value}

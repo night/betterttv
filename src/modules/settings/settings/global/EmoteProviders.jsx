@@ -22,14 +22,10 @@ const SEVENTV_LISTING_OPTIONS = [
 ];
 
 // the title names the provider, so the logo is only there for scanning the list
-function ProviderLogo({provider, className}) {
+function ProviderLogo({provider}) {
   return (
     <img
-      className={classNames(
-        styles.providerLogo,
-        {[styles.ffzLogo]: provider === EmoteProviderIds.FRANKERFACEZ},
-        className
-      )}
+      className={classNames(styles.providerLogo, {[styles.ffzLogo]: provider === EmoteProviderIds.FRANKERFACEZ})}
       src={EmoteProviderMetadata[provider].logoUrl}
       alt=""
     />

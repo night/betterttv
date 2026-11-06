@@ -9,18 +9,12 @@
   scroll-margin-top: 20px;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
 .name {
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 600;
+  color: var(--mantine-color-dimmed);
 }
 
 .settingGroup {

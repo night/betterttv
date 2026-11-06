@@ -14,9 +14,9 @@ function EmoteAutocomplete({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Suggest while typing'})}
+        name={SETTING_NAME}
         description={formatMessage({
-          defaultMessage: 'Start with : to autocomplete an emote.',
+          defaultMessage: 'Typing : before text will attempt to autocomplete your emote.',
         })}
         value={value}
         onChange={setValue}

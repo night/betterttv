@@ -92,23 +92,23 @@ function EmoteDisplay({ref, ...props}) {
       flags={DISPLAY_FLAGS}>
       <SettingCheckbox
         value={EmoteTypeFlags.ANIMATED_EMOTES}
-        name={formatMessage({defaultMessage: 'Animate emotes'})}
+        name={formatMessage({defaultMessage: 'Animated Emotes'})}
         description={formatMessage({
-          defaultMessage: 'Play automatically rather than only when hovered.',
+          defaultMessage: 'Autoplays animated emotes, otherwise only when hovered.',
         })}
       />
       <SettingCheckbox
         value={EmoteTypeFlags.ANIMATED_PERSONAL_EMOTES}
-        name={formatMessage({defaultMessage: 'Animate personal emotes'})}
+        name={formatMessage({defaultMessage: 'Animated Personal Emotes'})}
         description={formatMessage({
-          defaultMessage: 'Play automatically rather than only when hovered.',
+          defaultMessage: 'Autoplays animated personal emotes, otherwise only when hovered.',
         })}
       />
       <SettingCheckbox
         value={EmoteTypeFlags.EMOTE_MODIFIERS}
-        name={formatMessage({defaultMessage: 'Use emote modifiers'})}
+        name={formatMessage({defaultMessage: 'Emote Modifiers'})}
         description={formatMessage(
-          {defaultMessage: '<link>Transform emotes</link> in realtime as you use them.'},
+          {defaultMessage: '<link>Emote modifiers</link> allow you to transform emotes in realtime.'},
           {
             link: (string) => (
               <Anchor key="emoteModifiersLink" component="button" onClick={openEmoteModifiersModal}>

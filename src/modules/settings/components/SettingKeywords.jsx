@@ -236,7 +236,7 @@ function KeywordRow({
           size="sm"
           classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
-          <Trash2 size={14} />
+          <Trash2 size={16} />
         </ActionIcon>
       </TableTd>
     </TableTr>
@@ -273,7 +273,7 @@ function KeywordsTable({
                 className={styles.infoButton}
                 aria-label={formatMessage({defaultMessage: 'Advanced keywords'})}
                 onClick={openRegexGuideModal}>
-                <Info size={14} />
+                <Info size={16} />
               </ActionIcon>
             </div>
           </TableTh>

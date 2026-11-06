@@ -40,7 +40,7 @@ function BackupSetting({description, disabled}) {
   }
 
   return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Download a backup'})} description={description}>
+    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Backup Settings'})} description={description}>
       <Button size="lg" onClick={backupFile} disabled={disabled}>
         {formatMessage({defaultMessage: 'Backup'})}
       </Button>
@@ -60,8 +60,8 @@ function CloudBackupSetting() {
   return (
     <SettingSwitch
       showProBadge
-      name={formatMessage({defaultMessage: 'Back up to the cloud'})}
-      description={formatMessage({defaultMessage: 'Stores your settings with your account.'})}
+      name={formatMessage({defaultMessage: 'Cloud Backup'})}
+      description={formatMessage({defaultMessage: 'Backup your settings to the cloud.'})}
       value={normalizedCloudBackupSettings.enabled}
       onChange={(enabled) => setNormalizedCloudBackupSettings({enabled})}
     />
@@ -94,7 +94,7 @@ function SignInAlert() {
       description={formatMessage({defaultMessage: 'Some features are unavailable until you sign in.'})}
       rightContent={
         <Anchor component="button" type="button" underline="always" c="inherit" onClick={signIn} disabled={signingIn}>
-          {formatMessage({defaultMessage: 'Sign In'})}
+          {formatMessage({defaultMessage: 'Connect Account'})}
         </Anchor>
       }
     />
@@ -129,7 +129,7 @@ function SignInButton() {
     return (
       <SettingWrapper
         reverse
-        name={formatMessage({defaultMessage: 'Sign in to BetterTTV'})}
+        name={formatMessage({defaultMessage: 'Sign In to BetterTTV'})}
         description={formatMessage({defaultMessage: 'Authenticated users gain access to additional features.'})}>
         <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
           {formatMessage({defaultMessage: 'Sign In'})}
@@ -141,7 +141,7 @@ function SignInButton() {
   return (
     <SettingWrapper
       reverse
-      name={formatMessage({defaultMessage: 'Sign out'})}
+      name={formatMessage({defaultMessage: 'Sign Out'})}
       description={formatMessage({defaultMessage: 'Unlink account from extension.'})}>
       <Button size="lg" onClick={handleSignOut}>
         {formatMessage({defaultMessage: 'Sign Out'})}
@@ -160,11 +160,11 @@ function UserSettings() {
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />
         <BackupSetting
-          description={formatMessage({defaultMessage: 'Saves your settings to a JSON file.'})}
+          description={formatMessage({defaultMessage: 'Download a copy of your settings to a JSON file.'})}
           disabled={resetting}
         />
         <ImportSetting
-          description={formatMessage({defaultMessage: 'Loads your settings from a JSON file.'})}
+          description={formatMessage({defaultMessage: 'Restore your settings from a backup file.'})}
           disabled={resetting}
           importing={importing}
           setImporting={setImporting}

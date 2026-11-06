@@ -16,7 +16,7 @@ function UsernameFont({ref, ...props}) {
 
 SettingStore.registerSetting(UsernameFont, {
   settingPanelId: SettingPanelIds.USERNAME_FONT,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.USERNAME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });

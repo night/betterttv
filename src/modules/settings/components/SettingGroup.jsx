@@ -7,31 +7,14 @@ import styles from './SettingGroup.module.css';
 
 // A section of the settings page: its heading over a pane of settings. A grid of cards is its own
 // surface, so one can leave the pane out with withPane={false}.
-function SettingGroup({
-  children,
-  name,
-  rightContent,
-  showProBadge = false,
-  showNewBadge = false,
-  withPane = true,
-  className,
-  ref,
-  ...restProps
-}) {
+function SettingGroup({children, name, showNewBadge = false, withPane = true, ref, ...restProps}) {
   return (
     <section ref={ref} className={styles.section} {...restProps}>
-      <div className={styles.header}>
-        {typeof name === 'string' ? (
-          <Title order={2} className={styles.name}>
-            {name}
-            <SettingBadges showProBadge={showProBadge} showNewBadge={showNewBadge} />
-          </Title>
-        ) : (
-          name
-        )}
-        {rightContent}
-      </div>
-      <div className={classNames({[panelStyles.panel]: withPane}, styles.settingGroup, className)}>{children}</div>
+      <Title order={2} className={styles.name}>
+        {name}
+        <SettingBadges showNewBadge={showNewBadge} />
+      </Title>
+      <div className={classNames({[panelStyles.panel]: withPane}, styles.settingGroup)}>{children}</div>
     </section>
   );
 }

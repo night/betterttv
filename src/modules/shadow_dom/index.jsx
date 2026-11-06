@@ -74,7 +74,9 @@ function toggleDarkModeClass() {
 }
 
 function toggleReducedMotionClass() {
-  mountNode.classList.toggle(effects.reducedMotion, shouldReduceMotion());
+  const reduceMotion = shouldReduceMotion();
+  mountNode.classList.toggle(effects.reducedMotion, reduceMotion);
+  mountNode.toggleAttribute('data-reduced-motion', reduceMotion);
 }
 
 function setAdoptedStyleSheet(cssList) {

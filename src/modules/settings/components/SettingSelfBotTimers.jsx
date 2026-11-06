@@ -146,13 +146,13 @@ function TimerNumberInput({value, min, max = Infinity, onCommit, formatValue, un
 }
 
 function TimerRow({id, data, updateHandler, deleteHandler, messageInputRefCallback, ...props}) {
-  const portalRef = usePortalRef();
   const onUpdate = useCallback((newData) => updateHandler(id, newData), [updateHandler, id]);
   const onDelete = useCallback(() => deleteHandler(id), [deleteHandler, id]);
   const onIntervalCommit = useCallback((intervalMinutes) => onUpdate({intervalMinutes}), [onUpdate]);
   const onLinesCommit = useCallback((lines) => onUpdate({lines}), [onUpdate]);
   const handleEnabledChange = useCallback(({target: {checked}}) => onUpdate({enabled: checked}), [onUpdate]);
   const messageInputRef = useCallback((ref) => messageInputRefCallback(id, ref), [messageInputRefCallback, id]);
+  const portalRef = usePortalRef();
   const commandError = useMemo(() => validateTimerMessage(data.message), [data.message]);
 
   return (
@@ -216,7 +216,7 @@ function TimerRow({id, data, updateHandler, deleteHandler, messageInputRefCallba
           size="sm"
           classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
-          <Trash2 size={14} />
+          <Trash2 size={16} />
         </ActionIcon>
       </TableTd>
     </TableTr>
@@ -251,7 +251,7 @@ function TimersTable({entryList, updateHandler, deleteHandler, messageInputRefCa
                 className={styles.infoButton}
                 aria-label={formatMessage({defaultMessage: 'About chat lines'})}
                 onClick={openChatLinesGuideModal}>
-                <Info size={14} />
+                <Info size={16} />
               </ActionIcon>
             </div>
           </TableTh>

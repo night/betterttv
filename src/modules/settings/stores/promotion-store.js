@@ -4,8 +4,8 @@ import {useState} from 'react';
 import storage from '@/storage';
 import SafeEventEmitter from '@/utils/safe-event-emitter';
 
-// A promotion marks its setting panel with a dot in the settings navigation until the user scrolls
-// the panel into view.
+// A promotion marks its setting's category with a dot in the settings navigation until the user
+// scrolls the panel into view.
 const PROMOTION_SLOTS = [
   // {
   //   storageKey: SettingsPromotions.SELF_BOT_TIMERS,

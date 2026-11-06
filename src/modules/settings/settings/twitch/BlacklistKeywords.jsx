@@ -15,9 +15,9 @@ function BlacklistKeywords({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingWrapper
-        name={formatMessage({defaultMessage: 'Remove words and users'})}
+        name={formatMessage({defaultMessage: 'Blacklist Keywords'})}
         reverse
-        description={formatMessage({defaultMessage: 'Anything matching these keywords stays out of your chat.'})}>
+        description={formatMessage({defaultMessage: 'Remove certain words, phrases or users from your chat.'})}>
         <Button size="lg" onClick={() => setPage(PageTypes.BLACKLIST_KEYWORDS)}>
           {formatMessage({defaultMessage: 'Edit'})}
         </Button>

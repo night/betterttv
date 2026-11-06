@@ -14,8 +14,8 @@ function TabCompletion({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Prioritize emotes'})}
-        description={formatMessage({defaultMessage: 'Suggests them ahead of usernames when you press Tab.'})}
+        name={formatMessage({defaultMessage: 'Prioritize Emotes'})}
+        description={formatMessage({defaultMessage: 'Prefer emotes over usernames when using tab completion.'})}
         value={value}
         onChange={setValue}
       />

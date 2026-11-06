@@ -18,13 +18,13 @@ function Player({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Click to play'})}
-        description={formatMessage({defaultMessage: 'Pauses and resumes when you click the video.'})}
+        name={formatMessage({defaultMessage: 'Click to Play'})}
+        description={formatMessage({defaultMessage: 'Clicking the player will pause/resume playback.'})}
         value={clickToPlay}
         onChange={setClickToPlay}
       />
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Mute when hidden'})}
+        name={formatMessage({defaultMessage: 'Mute Invisible Player'})}
         description={formatMessage({
           defaultMessage: 'Toggle sound when you change browser tab or window.',
         })}
@@ -32,22 +32,22 @@ function Player({ref, ...props}) {
         onChange={setMuteInvisiblePlayer}
       />
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Show player extensions'})}
-        description={formatMessage({defaultMessage: "Interactive overlays on top of Twitch's video player."})}
+        name={formatMessage({defaultMessage: 'Player Extensions'})}
+        description={formatMessage({defaultMessage: "Show the interactive overlays on top of Twitch's video player."})}
         value={playerExtensions}
         onChange={setPlayerExtensions}
       />
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Scroll to control the player'})}
+        name={formatMessage({defaultMessage: 'Scroll Player Controls'})}
         description={formatMessage({
-          defaultMessage: 'The mouse wheel changes the volume. Hold ALT while scrolling to seek.',
+          defaultMessage: 'Enable scrolling to change the player volume. Hold ALT when scrolling to seek.',
         })}
         value={scrollPlayerControls}
         onChange={setScrollPlayerControls}
       />
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Use theatre mode automatically'})}
-        description={formatMessage({defaultMessage: 'Switches to the wider layout when possible.'})}
+        name={formatMessage({defaultMessage: 'Auto Theatre Mode'})}
+        description={formatMessage({defaultMessage: 'Enable theatre mode when possible.'})}
         value={autoTheatreMode}
         onChange={setAutoTheatreMode}
       />

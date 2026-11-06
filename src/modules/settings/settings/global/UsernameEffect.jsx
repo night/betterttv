@@ -16,7 +16,7 @@ function UsernameEffect({ref, ...props}) {
 
 SettingStore.registerSetting(UsernameEffect, {
   settingPanelId: SettingPanelIds.USERNAME_EFFECT,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.USERNAME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });

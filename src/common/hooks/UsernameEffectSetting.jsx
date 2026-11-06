@@ -3,7 +3,7 @@ import {useShallow} from 'zustand/react/shallow';
 import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import useFeatureEligibilityStore, {fetchEligibility} from '@/stores/feature-eligibility';
-import {clearUsernameLook, setUsernameLook} from '@/stores/username-looks';
+import {setUsernameLook} from '@/stores/username-looks';
 import {getCurrentChannel} from '@/utils/channel';
 import useDebouncedRemoteState from './DebouncedRemoteState';
 
@@ -35,7 +35,7 @@ export default function useUsernameEffectSetting({
       } finally {
         // a newer pick owns the look now, so a superseded save leaves it alone
         if (!isStale()) {
-          clearUsernameLook(userField);
+          setUsernameLook(userField, undefined);
         }
       }
 
@@ -79,8 +79,8 @@ export default function useUsernameEffectSetting({
         return userId === currentAuthUser.id && isEligible(eligibility, newValue);
       };
 
-      // eligibility is fetched on mount, so an allowed pick shows at once; only a refusal is worth
-      // checking again, and the api stays the enforcer
+      // eligibility is fetched on mount, so an allowed pick shows at once; a refusal waits for that
+      // fetch, and the api stays the enforcer
       if (!isAllowed()) {
         await fetchEligibility();
       }

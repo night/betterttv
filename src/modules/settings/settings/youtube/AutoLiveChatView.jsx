@@ -14,9 +14,9 @@ function EmoteAutoLiveChatView({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Open when chat loads'})}
+        name={formatMessage({defaultMessage: 'Auto Live Chat View'})}
         description={formatMessage({
-          defaultMessage: 'Switches to the Live Chat view automatically.',
+          defaultMessage: 'Switch to the Live Chat view when chat loads.',
         })}
         value={value}
         onChange={setValue}

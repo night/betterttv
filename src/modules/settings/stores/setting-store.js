@@ -40,7 +40,7 @@ export const SettingPanelIds = {
 };
 
 export const SettingCategoryIds = {
-  APPEARANCE: 'appearance',
+  USERNAME: 'username',
   EMOTES: 'emotes',
   BOTS: 'bots',
   CHAT: 'chat',
@@ -50,7 +50,7 @@ export const SettingCategoryIds = {
   OTHER: 'other',
 };
 
-// Descendant pages belong to a setting panel; while one is open its panel's nav entry stays active.
+// Descendant pages belong to a setting panel, so its category stays active while one is open.
 export const PageSettingPanelIds = {
   [PageTypes.HIGHLIGHT_KEYWORDS]: SettingPanelIds.HIGHLIGHTS,
   [PageTypes.BLACKLIST_KEYWORDS]: SettingPanelIds.BLACKLIST_KEYWORDS,
