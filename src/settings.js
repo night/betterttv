@@ -50,7 +50,7 @@ class Settings extends SafeEventEmitter {
       storage.set(SETTINGS_STORAGE_KEY, settings);
     }
 
-    this.upgrade(settings.version);
+    this.upgrade(settings.version, oldSettings != null);
   }
 
   getSettings() {
@@ -113,7 +113,7 @@ class Settings extends SafeEventEmitter {
     return value;
   }
 
-  upgrade(version) {
+  upgrade(version, hadPersistedSettings) {
     if (semver.lt(version, '7.5.5')) {
       // now storing emote menu as an enum rather than a boolean
       const oldEmoteMenuValue = this.get(SettingIds.LEGACY_EMOTE_MENU);
@@ -132,6 +132,18 @@ class Settings extends SafeEventEmitter {
     }
 
     this.applyFlagDefaults();
+
+    const [chatFlags, changedChatFlags] = settings[SettingIds.CHAT];
+    if (hadPersistedSettings && !hasFlag(changedChatFlags, ChatFlags.CHAT_WATCH_STREAKS)) {
+      // WATCH_STREAKS previously controlled both the sidebar badges and chat
+      // milestone messages. Preserve that choice when splitting the controls.
+      const newChatFlags = setFlag(
+        chatFlags,
+        ChatFlags.CHAT_WATCH_STREAKS,
+        hasFlag(chatFlags, ChatFlags.WATCH_STREAKS)
+      );
+      this.set(SettingIds.CHAT, [newChatFlags, changedChatFlags | ChatFlags.CHAT_WATCH_STREAKS]);
+    }
   }
 
   applyFlagDefaults() {
