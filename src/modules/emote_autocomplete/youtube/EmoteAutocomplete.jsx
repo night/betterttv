@@ -6,7 +6,7 @@ import EmoteRow from '@/modules/emote_autocomplete/components/EmoteRow';
 import shadowDom from '@/modules/shadow_dom/index';
 import domObserver from '@/observers/dom';
 import settings from '@/settings';
-import {createYoutubeEmojiNode, findFocusedWord} from '@/utils/youtube';
+import {createYoutubeEmojiNode, findFocusedWord, getYoutubeChatInputText} from '@/utils/youtube';
 import styles from './EmoteAutocomplete.module.css';
 
 const CHAT_TEXT_AREA = '.yt-live-chat-renderer #input-container';
@@ -120,8 +120,9 @@ export default class EmoteAutocomplete {
       range.setStartAfter(node);
       range.setEndAfter(node);
     } else {
-      anchorNode.textContent = `${prefix}${emote.code}${suffix}`;
-      const endSelection = prefix.length + emote.code.length;
+      const text = getYoutubeChatInputText(emote);
+      anchorNode.textContent = `${prefix}${text}${suffix}`;
+      const endSelection = prefix.length + text.length;
 
       range.setEnd(anchorNode, endSelection);
       range.setStart(anchorNode, endSelection);
