@@ -158,8 +158,7 @@ function SettingsModal({setHandleOpen}) {
   useWindowEvent('keydown', handleKeyDown);
 
   // Runs when a page mounts: scroll to a pending setting panel, otherwise restore the
-  // parent page's scroll position. Any other page stays where it is, which is the top unless a
-  // flashing setting has already scrolled to itself.
+  // parent page's scroll position.
   const handlePageMount = useCallback(() => {
     const scroller = pageContentRef.current;
     if (scroller == null) {

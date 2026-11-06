@@ -46,8 +46,7 @@
   overflow: hidden;
 }
 
-/* points out what a search jumped to. It's laid over the row or group, or a group's pane would hide
-   it, and spreads past their tight box */
+/* laid over what a search jumped to, since a group's pane would hide a fill behind it */
 .pageContent [data-flash] {
   position: relative;
 }

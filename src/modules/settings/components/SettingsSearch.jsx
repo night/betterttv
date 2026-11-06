@@ -186,6 +186,11 @@ function SettingsSearch({onAccept}) {
   const handleChange = useCallback(({currentTarget}) => updateQuery(currentTarget.value), [updateQuery]);
   const activeIndex = selectedIndex === -1 ? firstMatchIndex : selectedIndex;
 
+  const handleGotoSetting = useCallback(
+    (settingPanelId) => handleGotoCategory(SettingStore.settings[settingPanelId]?.settingCategoryId ?? null),
+    [handleGotoCategory]
+  );
+
   const handleAccept = useCallback(
     (entry) => {
       if (entry.expandCategoryId != null) {
@@ -195,15 +200,10 @@ function SettingsSearch({onAccept}) {
 
       updateQuery('');
       inputRef.current?.blur();
-      acceptSearchEntry(entry, {
-        setPage,
-        goToCategory: handleGotoCategory,
-        goToSetting: (settingPanelId) =>
-          handleGotoCategory(SettingStore.settings[settingPanelId]?.settingCategoryId ?? null),
-      });
+      acceptSearchEntry(entry, {setPage, goToCategory: handleGotoCategory, goToSetting: handleGotoSetting});
       onAccept();
     },
-    [updateQuery, setPage, handleGotoCategory, onAccept]
+    [updateQuery, setPage, handleGotoCategory, handleGotoSetting, onAccept]
   );
 
   function handleKeyDown(event) {
