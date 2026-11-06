@@ -33,7 +33,7 @@ function Theme({ref, ...props}) {
 
 SettingStore.registerSetting(Theme, {
   settingPanelId: SettingPanelIds.THEME,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.INTERFACE,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });

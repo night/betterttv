@@ -20,7 +20,7 @@ import ProBadge from '@/common/components/ProBadge';
 import useEntryListState from '@/common/hooks/EntryListState';
 import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
-import {openModal, openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
+import {openModal, openSignInModal, openSubscriptionUpgradeModal, WIDE_MODAL_SIZE} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
 import {
   DEFAULT_TIMER_INTERVAL_MINUTES,
@@ -58,6 +58,7 @@ function ChatLinesGuideModalBody() {
 function openChatLinesGuideModal() {
   return openModal({
     title: formatMessage({defaultMessage: 'Chat Lines'}),
+    size: WIDE_MODAL_SIZE,
     children: <ChatLinesGuideModalBody />,
   });
 }

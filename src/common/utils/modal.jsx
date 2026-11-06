@@ -13,7 +13,9 @@ import {isUserPro} from '@/utils/pro';
 import {canOpenPopup} from '@/utils/window';
 import styles from './Modal.module.css';
 
-// forms and lists; rem so it isn't scaled, on Twitch's 10px root
+// a question or one field; rem so it isn't scaled, on Twitch's 10px root
+const MODAL_SIZE = '42rem';
+// forms and lists
 export const WIDE_MODAL_SIZE = '48rem';
 
 const DEFAULT_LOADING_TIMEOUT = 500;
@@ -46,7 +48,7 @@ export function openConfirmModal({title, description, onConfirm, ...props}) {
     closeButtonProps: {size: 'xl', radius: 'md'},
     transitionProps: {transition: 'pop', duration: MODAL_TRANSITION_DURATION},
     radius: 'lg',
-    size: 'lg',
+    size: MODAL_SIZE,
     withinPortal: false,
     children:
       typeof description !== 'string' ? (
@@ -99,7 +101,7 @@ export function openModal({title, description, ...props}) {
     closeButtonProps: {size: 'xl', radius: 'md'},
     transitionProps: {transition: 'pop', duration: MODAL_TRANSITION_DURATION},
     radius: 'lg',
-    size: 'lg',
+    size: MODAL_SIZE,
     withinPortal: false,
     children:
       typeof description !== 'string' ? (

@@ -8,7 +8,7 @@ const SETTING_NAME = formatMessage({defaultMessage: 'Username Effect'});
 
 function UsernameEffect({ref, ...props}) {
   return (
-    <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
+    <SettingGroup ref={ref} {...props} name={SETTING_NAME} withPane={false}>
       <SettingUsernameEffect />
     </SettingGroup>
   );
@@ -16,7 +16,7 @@ function UsernameEffect({ref, ...props}) {
 
 SettingStore.registerSetting(UsernameEffect, {
   settingPanelId: SettingPanelIds.USERNAME_EFFECT,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.USERNAME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });

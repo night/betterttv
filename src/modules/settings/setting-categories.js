@@ -1,12 +1,12 @@
-import {Bot, Ellipsis, MessageSquare, Monitor, Palette, RadioTower, ShieldHalf, Smile} from 'lucide-react';
+import {Bot, Ellipsis, MessageSquare, Monitor, PaintbrushVertical, RadioTower, ShieldHalf, Smile} from 'lucide-react';
 import formatMessage from '@/i18n/index';
 import {SettingCategoryIds} from './stores/setting-store';
 
-// Key order defines the display order of the categories in both the side navigation and on the
-// settings page, so the two always match. Settings order within a category by registration order,
-// and declare their category via registerSetting's settingCategoryId.
+// Key order defines the display order of the categories in the side navigation, where each one
+// opens its own page. Settings order within a category by registration order, and declare their
+// category via registerSetting's settingCategoryId.
 const CATEGORY_LABELS = {
-  [SettingCategoryIds.APPEARANCE]: formatMessage({defaultMessage: 'Appearance'}),
+  [SettingCategoryIds.USERNAME]: formatMessage({defaultMessage: 'Username'}),
   [SettingCategoryIds.EMOTES]: formatMessage({defaultMessage: 'Emotes'}),
   [SettingCategoryIds.BOTS]: formatMessage({defaultMessage: 'Bots'}),
   [SettingCategoryIds.CHAT]: formatMessage({defaultMessage: 'Chat'}),
@@ -17,7 +17,7 @@ const CATEGORY_LABELS = {
 };
 
 const CATEGORY_ICONS = {
-  [SettingCategoryIds.APPEARANCE]: Palette,
+  [SettingCategoryIds.USERNAME]: PaintbrushVertical,
   [SettingCategoryIds.EMOTES]: Smile,
   [SettingCategoryIds.BOTS]: Bot,
   [SettingCategoryIds.CHAT]: MessageSquare,
@@ -48,10 +48,4 @@ export function groupSettingsByCategory(settings) {
   }
 
   return groups;
-}
-
-// Flat, category-ordered list of settings. The settings page renders in this order so its panels
-// line up with the side navigation.
-export function orderSettingsByCategory(settings) {
-  return groupSettingsByCategory(settings).flatMap((group) => group.settings);
 }

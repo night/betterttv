@@ -18,14 +18,14 @@ function EmoteMenu({ref, ...props}) {
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
       <SettingSwitch
-        name={formatMessage({defaultMessage: 'Emote Menu'})}
+        name={formatMessage({defaultMessage: "Use BetterTTV's emote menu"})}
         description={formatMessage({defaultMessage: 'Enables a more advanced emote menu for chat.'})}
         value={toggled}
         onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.NONE)}
       />
       <SettingSwitch
         disabled={!toggled}
-        name={formatMessage({defaultMessage: 'Replace Native'})}
+        name={formatMessage({defaultMessage: 'Replace the native emote menu button'})}
         description={formatMessage({defaultMessage: "Replace Twitch's native emote menu."})}
         value={value === EmoteMenuTypes.ENABLED}
         onChange={(state) => setValue(state ? EmoteMenuTypes.ENABLED : EmoteMenuTypes.LEGACY_ENABLED)}

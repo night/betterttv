@@ -8,7 +8,7 @@ const SETTING_NAME = formatMessage({defaultMessage: 'Username Font'});
 
 function UsernameFont({ref, ...props}) {
   return (
-    <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
+    <SettingGroup ref={ref} {...props} name={SETTING_NAME} withPane={false}>
       <SettingUsernameFont />
     </SettingGroup>
   );
@@ -16,7 +16,7 @@ function UsernameFont({ref, ...props}) {
 
 SettingStore.registerSetting(UsernameFont, {
   settingPanelId: SettingPanelIds.USERNAME_FONT,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.USERNAME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });

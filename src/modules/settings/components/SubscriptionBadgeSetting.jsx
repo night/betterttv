@@ -13,6 +13,7 @@ import useAuthStore from '@/stores/auth';
 import useFeatureEligibilityStore, {fetchEligibility} from '@/stores/feature-eligibility';
 import {getCurrentChannel} from '@/utils/channel';
 import {isUserPro} from '@/utils/pro';
+import SettingGroup from './SettingGroup';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import SettingSwitch from './SettingSwitch';
@@ -49,7 +50,7 @@ function BadgeImage({src}) {
   );
 }
 
-function SubscriptionBadgeSetting() {
+function SubscriptionBadgeSetting({name, ref, ...props}) {
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
 
   // persisted eligibility may belong to a previous session's account; only use it for the current user
@@ -176,36 +177,30 @@ function SubscriptionBadgeSetting() {
         )
       : null;
 
+  const hasBadgeChoices = isPro && eligibleBadges != null && eligibleBadges.length > 0;
+  const badgeTitle = formatMessage({defaultMessage: 'Display your badge'});
+  const badgeDescription = formatMessage({
+    defaultMessage: 'Everyone using BetterTTV sees it when you type in chat.',
+  });
+
   return (
-    <React.Fragment>
-      {isPro ? (
-        <SettingWrapper
-          reverse
-          showProBadge
-          name={formatMessage({defaultMessage: 'Subscriber Badge'})}
-          description={formatMessage({
-            defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
-          })}
-        />
-      ) : (
+    <SettingGroup ref={ref} {...props} name={name} withPane={!hasBadgeChoices}>
+      {!isPro ? (
         <SettingSwitch
-          showProBadge
-          name={formatMessage({defaultMessage: 'Subscriber Badge'})}
-          description={formatMessage({
-            defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
-          })}
+          name={badgeTitle}
+          description={badgeDescription}
           value={badgeEnabled}
           onChange={setBadgeEnabled}
         />
-      )}
-      {isPro && eligibleBadges != null && eligibleBadges.length > 0 ? (
+      ) : null}
+      {isPro && !hasBadgeChoices ? <SettingWrapper reverse name={badgeTitle} description={badgeDescription} /> : null}
+      {hasBadgeChoices ? (
         <SettingRadioCardGroup
           value={!badgeEnabled ? DISABLED : selectedBadgeId}
           onChange={handleBadgeChange}
           fixedCardWidth>
           <SettingRadioCard
             value={DISABLED}
-            className={styles.badgeCard}
             tooltip={disableBadgeLabel}
             ariaLabel={disableBadgeLabel}
             withIndicators={false}>
@@ -213,19 +208,13 @@ function SubscriptionBadgeSetting() {
           </SettingRadioCard>
           <SettingRadioCard
             value={LATEST}
-            className={styles.badgeCard}
             tooltip={latestBadgeLabel}
             ariaLabel={latestBadgeLabel}
             withIndicators={false}>
             <Repeat className={styles.cardIcon} />
           </SettingRadioCard>
           {eligibleBadges.map(({badgeId, badgeUrl}) => (
-            <SettingRadioCard
-              key={badgeId}
-              value={badgeId}
-              className={styles.badgeCard}
-              ariaLabel={badgeLabel}
-              withIndicators={false}>
+            <SettingRadioCard key={badgeId} value={badgeId} ariaLabel={badgeLabel} withIndicators={false}>
               <BadgeImage src={badgeUrl} />
             </SettingRadioCard>
           ))}
@@ -233,7 +222,7 @@ function SubscriptionBadgeSetting() {
             <SettingRadioCard
               value={NEXT}
               withIndicators={false}
-              className={classNames(styles.badgeCard, styles.nextBadgeCard)}
+              className={styles.nextBadgeCard}
               tooltip={
                 <div className={styles.countdownTooltip}>
                   {formatMessage(
@@ -255,7 +244,7 @@ function SubscriptionBadgeSetting() {
           ) : null}
         </SettingRadioCardGroup>
       ) : null}
-    </React.Fragment>
+    </SettingGroup>
   );
 }
 

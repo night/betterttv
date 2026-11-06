@@ -1,10 +1,8 @@
 import {Modal} from '@mantine/core';
 import {useDisclosure, useViewportSize} from '@mantine/hooks';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
-import {openSignInModal} from '@/common/utils/modal';
-import {PageDecendants, PageTypes, SettingsPrompts} from '@/constants';
-import formatMessage from '@/i18n/index';
+import {PageDecendants, PageTypes} from '@/constants';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
 import BlacklistKeywords from '@/modules/settings/pages/BlacklistKeywords';
 import Changelog from '@/modules/settings/pages/Changelog';
@@ -14,34 +12,13 @@ import SelfBotCommands from '@/modules/settings/pages/SelfBotCommands';
 import SelfBotTimers from '@/modules/settings/pages/SelfBotTimers';
 import Settings from '@/modules/settings/pages/Settings';
 import UserSettings from '@/modules/settings/pages/UserSettings';
-import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
-import storage from '@/storage';
-import {getCredentials} from '@/stores/auth';
+import {groupSettingsByCategory} from '@/modules/settings/setting-categories';
+import SettingStore, {PageSettingPanelIds} from '@/modules/settings/stores/setting-store';
 import {PageScrollContext} from './PageScrollBody';
 import styles from './SettingsModal.module.css';
 import SideNavigation from './SideNavigation';
 
-// The first time a signed-out user opens settings we nudge them to sign in, but only once ever.
-function maybePromptSignIn() {
-  // Gate on the persisted access token rather than the async-populated user so we don't burn the
-  // one-time flag on a signed-in user whose profile hasn't finished syncing yet.
-  if (getCredentials().accessToken != null) {
-    return;
-  }
-
-  if (storage.get(SettingsPrompts.SIGN_IN) === true) {
-    return;
-  }
-
-  storage.set(SettingsPrompts.SIGN_IN, true);
-
-  openSignInModal({
-    title: formatMessage({defaultMessage: 'Sign in to BetterTTV'}),
-    description: formatMessage({defaultMessage: 'Authenticate to unlock more features.'}),
-  });
-}
-
-function Page({page, handleSettingRefCallback}) {
+function Page({page, category, handleSettingRefCallback}) {
   switch (page) {
     case PageTypes.CHANGELOG:
       return <Changelog />;
@@ -56,7 +33,7 @@ function Page({page, handleSettingRefCallback}) {
     case PageTypes.PRO_HOME:
       return <ProHome />;
     case PageTypes.SETTINGS:
-      return <Settings handleSettingRefCallback={handleSettingRefCallback} />;
+      return <Settings category={category} handleSettingRefCallback={handleSettingRefCallback} />;
     case PageTypes.USER_SETTINGS:
     default:
       return <UserSettings />;
@@ -79,6 +56,7 @@ function PageContainer({children, className, scrollRef, onMount}) {
 function SettingsModal({setHandleOpen}) {
   const {width} = useViewportSize();
   const [page, setPage] = useState(PageTypes.SETTINGS);
+  const [categoryId, setCategoryId] = useState(null);
   const [open, modalHandlers] = useDisclosure(false);
   const [sidenavOpen, setSidenavOpen] = useState(false);
   const settingRefsRef = useRef({});
@@ -87,16 +65,13 @@ function SettingsModal({setHandleOpen}) {
   const pageColumnRef = useRef(null);
   const lastParentDataRef = useRef({scrollTop: 0, page: null});
 
-  const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
+  const categories = useMemo(() => groupSettingsByCategory(SettingStore.getSupportedSettings()), []);
+  const activeCategory = categories.find((category) => category.id === categoryId) ?? categories[0];
 
   // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView.
-  const scrollToPanel = useCallback(
-    (settingPanelId) => {
-      settingRefsRef.current[settingPanelId]?.scrollIntoView({block: 'start'});
-      setActivePanelId(settingPanelId);
-    },
-    [setActivePanelId]
-  );
+  const scrollToPanel = useCallback((settingPanelId) => {
+    settingRefsRef.current[settingPanelId]?.scrollIntoView({block: 'start'});
+  }, []);
 
   function handlePageChange(newPage) {
     if (lastParentDataRef.current.page !== newPage) {
@@ -113,12 +88,24 @@ function SettingsModal({setHandleOpen}) {
       lastParentDataRef.current.scrollTop = pageContentRef.current.scrollTop;
     }
 
+    // a descendant page belongs to a setting, so its category stays active and back returns there
+    const parentPanelId = PageSettingPanelIds[newPage];
+    if (parentPanelId != null) {
+      setCategoryId(SettingStore.settings[parentPanelId]?.settingCategoryId ?? null);
+    }
+
     setPage(newPage);
   }
 
-  function handleSettingRefCallback(settingPanelId, ref) {
-    settingRefsRef.current[settingPanelId] = ref;
+  function handleGotoCategory(newCategoryId) {
+    lastParentDataRef.current = {scrollTop: 0, page: null};
+    setCategoryId(newCategoryId);
+    setPage(PageTypes.SETTINGS);
   }
+
+  const handleSettingRefCallback = useCallback((settingPanelId, ref) => {
+    settingRefsRef.current[settingPanelId] = ref;
+  }, []);
 
   function handleGotoSettingPanel(settingPanelId) {
     if (settingPanelId == null) {
@@ -130,7 +117,7 @@ function SettingsModal({setHandleOpen}) {
       return;
     }
 
-    handlePageChange(PageTypes.SETTINGS);
+    handleGotoCategory(SettingStore.settings[settingPanelId]?.settingCategoryId ?? null);
     pendingScrollToSettingPanelIdRef.current = settingPanelId;
   }
 
@@ -138,8 +125,6 @@ function SettingsModal({setHandleOpen}) {
     setHandleOpen((isOpen, {scrollToSettingPanelId = null, page: openToPage = null} = {}) => {
       if (isOpen) {
         modalHandlers.open();
-        // Nudge signed-out users to sign in the first time they open settings.
-        maybePromptSignIn();
       } else {
         modalHandlers.close();
       }
@@ -155,6 +140,17 @@ function SettingsModal({setHandleOpen}) {
   const stopPropagation = useCallback((event) => {
     event.stopPropagation();
   }, []);
+
+  // Mantine's own Escape listener runs on window, before a menu open in the modal can claim the key
+  const closeModal = modalHandlers.close;
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    },
+    [closeModal]
+  );
 
   // Runs when a page mounts: scroll to a pending setting panel, otherwise restore the
   // parent page's scroll position (or start at the top).
@@ -183,6 +179,8 @@ function SettingsModal({setHandleOpen}) {
       withinPortal={false}
       fullScreen={width < 800}
       opened={open}
+      closeOnEscape={false}
+      onKeyDown={handleKeyDown}
       /* youtube will drop scroll events inside standalone window
       that don't originate from the chat container */
       onWheel={stopPropagation}
@@ -197,7 +195,9 @@ function SettingsModal({setHandleOpen}) {
           setPage: handlePageChange,
           sidenavOpen,
           setSidenavOpen,
-          handleGotoSettingPanel,
+          categories,
+          activeCategory,
+          handleGotoCategory,
           closeModal: modalHandlers.close,
         }}>
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />
@@ -205,10 +205,10 @@ function SettingsModal({setHandleOpen}) {
           <div className={styles.pageColumn} ref={pageColumnRef}>
             <PageContainer
               scrollRef={pageContentRef}
-              key={page}
+              key={`${page}-${activeCategory.id}`}
               className={styles.pageContent}
               onMount={handlePageMount}>
-              <Page page={page} handleSettingRefCallback={handleSettingRefCallback} />
+              <Page page={page} category={activeCategory} handleSettingRefCallback={handleSettingRefCallback} />
             </PageContainer>
           </div>
         </ScrollbarSizeTargetContext>
