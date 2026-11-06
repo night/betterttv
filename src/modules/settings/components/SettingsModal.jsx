@@ -198,6 +198,7 @@ function SettingsModal({setHandleOpen}) {
           categories,
           activeCategory,
           handleGotoCategory,
+          handleGotoSettingPanel,
           closeModal: modalHandlers.close,
         }}>
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />

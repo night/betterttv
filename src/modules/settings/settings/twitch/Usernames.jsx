@@ -4,6 +4,7 @@ import {SettingIds, UsernameFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Usernames'});
@@ -46,6 +47,32 @@ function UsernamesModule({ref, ...props}) {
     </SettingCheckboxGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Localized Usernames'}),
+  description: formatMessage({defaultMessage: 'Show localized display names in the chat window.'}),
+  settingPanelId: SettingPanelIds.USERNAMES,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Username Colors'}),
+  description: formatMessage({defaultMessage: 'Show username colors in the chat window.'}),
+  settingPanelId: SettingPanelIds.USERNAMES,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Readable Colors'}),
+  description: formatMessage({
+    defaultMessage: 'Show username colors with higher contrast (prevents hard to read names).',
+  }),
+  settingPanelId: SettingPanelIds.USERNAMES,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Badges'}),
+  description: formatMessage({defaultMessage: 'Show chat badges next to usernames.'}),
+  settingPanelId: SettingPanelIds.USERNAMES,
+});
 
 SettingStore.registerSetting(UsernamesModule, {
   settingPanelId: SettingPanelIds.USERNAMES,

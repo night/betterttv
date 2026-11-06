@@ -4,6 +4,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Directory'});
@@ -22,6 +23,12 @@ function ShowDirectoryLiveTab({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Default to Live Tab'}),
+  description: formatMessage({defaultMessage: 'Default to live tab on the following page.'}),
+  settingPanelId: SettingPanelIds.DIRECTORY,
+});
 
 SettingStore.registerSetting(ShowDirectoryLiveTab, {
   settingPanelId: SettingPanelIds.DIRECTORY,

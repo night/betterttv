@@ -5,6 +5,7 @@ import {SettingDefaultValues, SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingPrimaryColorRadio from '@/modules/settings/components/SettingPrimaryColorRadio';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Theme'});
@@ -30,6 +31,12 @@ function Theme({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Accent Color'}),
+  description: formatMessage({defaultMessage: 'The primary accent color of the theme.'}),
+  settingPanelId: SettingPanelIds.THEME,
+});
 
 SettingStore.registerSetting(Theme, {
   settingPanelId: SettingPanelIds.THEME,

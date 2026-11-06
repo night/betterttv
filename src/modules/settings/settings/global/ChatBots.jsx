@@ -5,6 +5,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Bots'});
@@ -31,6 +32,12 @@ function ChatBots({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Command Autocomplete'}),
+  description: formatMessage({defaultMessage: 'Enable command autocomplete for supported chatbot commands.'}),
+  settingPanelId: SettingPanelIds.CHATBOTS,
+});
 
 SettingStore.registerSetting(ChatBots, {
   settingPanelId: SettingPanelIds.CHATBOTS,

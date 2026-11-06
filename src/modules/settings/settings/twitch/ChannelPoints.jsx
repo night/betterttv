@@ -4,6 +4,7 @@ import {SettingIds, ChannelPointsFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Channel Points'});
@@ -39,6 +40,24 @@ function ChannelPointsModule({ref, ...props}) {
     </SettingCheckboxGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Channel Points'}),
+  description: formatMessage({defaultMessage: 'Show channel points in the chat window.'}),
+  settingPanelId: SettingPanelIds.CHANNEL_POINTS,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Auto Claim'}),
+  description: formatMessage({defaultMessage: 'Claim bonus channel points when available.'}),
+  settingPanelId: SettingPanelIds.CHANNEL_POINTS,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Message Highlight Rewards'}),
+  description: formatMessage({defaultMessage: 'Show channel point highlighted messages in the chat window.'}),
+  settingPanelId: SettingPanelIds.CHANNEL_POINTS,
+});
 
 SettingStore.registerSetting(ChannelPointsModule, {
   settingPanelId: SettingPanelIds.CHANNEL_POINTS,

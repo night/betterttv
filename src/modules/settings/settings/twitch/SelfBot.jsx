@@ -10,6 +10,7 @@ import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import {useHasPromotion} from '@/modules/settings/stores/promotion-store';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import useAuthStore from '@/stores/auth';
@@ -87,6 +88,26 @@ function SelfBot({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Self Bot'}),
+  description: formatMessage({defaultMessage: 'Automatically send and reply to messages on your own channel.'}),
+  settingPanelId: SettingPanelIds.SELF_BOT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Commands'}),
+  description: formatMessage({defaultMessage: 'Configure command triggers and responses.'}),
+  settingPanelId: SettingPanelIds.SELF_BOT,
+  onAccept: ({setPage}) => setPage(PageTypes.SELF_BOT_COMMANDS),
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Timers'}),
+  description: formatMessage({defaultMessage: 'Automatically send messages on an interval.'}),
+  settingPanelId: SettingPanelIds.SELF_BOT,
+  onAccept: ({setPage}) => setPage(PageTypes.SELF_BOT_TIMERS),
+});
 
 SettingStore.registerSetting(SelfBot, {
   settingPanelId: SettingPanelIds.SELF_BOT,

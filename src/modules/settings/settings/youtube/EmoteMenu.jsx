@@ -6,6 +6,7 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingNumberInput from '@/modules/settings/components/SettingNumberInput';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Emote Menu'});
@@ -35,6 +36,18 @@ function EmoteMenu({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: "Use BetterTTV's emote menu"}),
+  description: formatMessage({defaultMessage: 'Enables a more advanced emote menu for chat.'}),
+  settingPanelId: SettingPanelIds.EMOTE_MENU,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Max Width'}),
+  description: formatMessage({defaultMessage: 'Maximum width of the emote menu, measured in pixels.'}),
+  settingPanelId: SettingPanelIds.EMOTE_MENU,
+});
 
 SettingStore.registerSetting(EmoteMenu, {
   settingPanelId: SettingPanelIds.EMOTE_MENU,

@@ -4,6 +4,7 @@ import {SettingIds, AutoClaimFlags, ChannelPointsFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import {hasFlag, setFlag} from '@/utils/flags';
 
@@ -34,6 +35,18 @@ function AutoClaim({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Bonus Channel Points'}),
+  description: formatMessage({defaultMessage: 'Claim bonus channel points when available.'}),
+  settingPanelId: SettingPanelIds.AUTO_CLAIM,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Drops'}),
+  description: formatMessage({defaultMessage: 'Claim all drops once you earn them.'}),
+  settingPanelId: SettingPanelIds.AUTO_CLAIM,
+});
 
 SettingStore.registerSetting(AutoClaim, {
   settingPanelId: SettingPanelIds.AUTO_CLAIM,

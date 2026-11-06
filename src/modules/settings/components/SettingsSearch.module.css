@@ -1,0 +1,141 @@
+/* the website's browse search (betterttv-web/src/components/emotes/EmoteSearch.module.css) */
+.root {
+  flex-shrink: 0;
+  padding: var(--sidenav-h-padding) var(--sidenav-h-padding) 8px;
+}
+
+/* the site's field in px, since the extension's own sizes run smaller */
+.root input {
+  height: 40px;
+  min-height: 40px;
+  font-size: 15px;
+  border-width: 0.5px;
+  border-radius: 10px;
+  background-color: var(--mantine-color-body-secondary);
+  border-color: var(--mantine-color-default-border);
+}
+
+.root input:focus {
+  border-color: var(--mantine-primary-color-filled);
+}
+
+.wrapper {
+  --input-left-section-width: 40px;
+}
+
+/* room for the shortcut's two keys (Windows' Ctrl is the wider) */
+.wrapperHint {
+  --input-right-section-width: 72px;
+}
+
+/* the keys sit against the right edge, as far in as they are from the top and bottom */
+.wrapperHint [data-position='right'] {
+  justify-content: flex-end;
+  padding-inline-end: 10px;
+}
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* flat keycaps instead of Mantine's bevelled ones */
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--mantine-color-dimmed);
+  background-color: var(--mantine-color-elevated-hover);
+  border: 1px solid var(--mantine-color-body-raised-border);
+  border-radius: 5px;
+}
+
+.kbdEnter {
+  width: 20px;
+  padding: 0;
+}
+
+/* Mantine writes the popover's width inline, hence !important */
+.dropdown {
+  width: 320px !important;
+  max-height: 400px;
+  padding: 4px;
+  overflow-y: auto;
+  background-color: var(--mantine-color-body-secondary);
+  border: 1px solid var(--mantine-color-default-border);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: calc(var(--mantine-radius-lg) - 4px);
+  background: none;
+  font-family: inherit;
+  font-size: var(--mantine-font-size-lg);
+  color: var(--mantine-color-text);
+  text-align: start;
+  cursor: pointer;
+}
+
+.row[data-selected] {
+  background-color: var(--mantine-color-elevated-hover);
+}
+
+.rowIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 24px;
+}
+
+/* lined up with the title beside its category's icon */
+.rowIcon[data-empty] {
+  visibility: hidden;
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowTitle,
+.rowDescription {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowDescription {
+  font-size: var(--mantine-font-size-md);
+  color: var(--mantine-color-dimmed);
+}
+
+.rowExternal {
+  flex-shrink: 0;
+  color: var(--mantine-color-dimmed);
+}
+
+.match {
+  color: var(--mantine-primary-color-filled);
+  background: none;
+}
+
+.empty {
+  padding: 8px 12px;
+  font-size: var(--mantine-font-size-md);
+  color: var(--mantine-color-dimmed);
+}

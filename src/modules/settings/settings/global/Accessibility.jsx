@@ -4,6 +4,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Accessibility'});
@@ -25,6 +26,15 @@ function Accessibility({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Reduce Motion'}),
+  description: formatMessage({
+    defaultMessage:
+      "Disables animations, such as animated username effects. When off, animations follow your browser's reduced motion preference.",
+  }),
+  settingPanelId: SettingPanelIds.ACCESSIBILITY,
+});
 
 SettingStore.registerSetting(Accessibility, {
   settingPanelId: SettingPanelIds.ACCESSIBILITY,

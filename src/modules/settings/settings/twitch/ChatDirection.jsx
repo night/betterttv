@@ -4,6 +4,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Direction'});
@@ -22,6 +23,12 @@ function ChatDirection({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Reverse Chat Direction'}),
+  description: formatMessage({defaultMessage: 'Move new chat messages from top to bottom of chat.'}),
+  settingPanelId: SettingPanelIds.CHAT_DIRECTION,
+});
 
 SettingStore.registerSetting(ChatDirection, {
   settingPanelId: SettingPanelIds.CHAT_DIRECTION,

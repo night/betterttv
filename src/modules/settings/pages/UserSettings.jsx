@@ -1,11 +1,12 @@
 import {Anchor, Button} from '@mantine/core';
 import {saveAs} from 'file-saver';
+import {UserCog} from 'lucide-react';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import {executeSignIn, openConfirmModal} from '@/common/utils/modal';
-import {EXT_VER} from '@/constants';
+import {EXT_VER, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import Alert from '@/modules/settings/components/Alert';
 import Footer from '@/modules/settings/components/Footer';
@@ -16,6 +17,7 @@ import ResetSetting from '@/modules/settings/components/ResetSetting';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import storage from '@/storage';
 import useAuthStore, {getCredentials, setCredentials} from '@/stores/auth';
 import {revokeAccessToken} from '@/utils/oauth';
@@ -132,7 +134,7 @@ function SignInButton() {
         name={formatMessage({defaultMessage: 'Sign In to BetterTTV'})}
         description={formatMessage({defaultMessage: 'Authenticated users gain access to additional features.'})}>
         <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
-          {formatMessage({defaultMessage: 'Sign In'})}
+          {formatMessage({defaultMessage: 'Connect Account'})}
         </Button>
       </SettingWrapper>
     );
@@ -148,6 +150,40 @@ function SignInButton() {
       </Button>
     </SettingWrapper>
   );
+}
+
+function openUserSettings({setPage}) {
+  setPage(PageTypes.USER_SETTINGS);
+}
+
+for (const entry of [
+  {query: formatMessage({defaultMessage: 'User Settings'}), keywords: ['account', 'profile']},
+  {
+    query: formatMessage({defaultMessage: 'Cloud Backup'}),
+    description: formatMessage({defaultMessage: 'Backup your settings to the cloud.'}),
+    keywords: ['sync'],
+  },
+  {
+    query: formatMessage({defaultMessage: 'Sign In to BetterTTV'}),
+    keywords: ['log in', 'login', 'log out', 'logout', 'sign out', 'account'],
+  },
+  {
+    query: formatMessage({defaultMessage: 'Backup Settings'}),
+    description: formatMessage({defaultMessage: 'Download a copy of your settings to a JSON file.'}),
+    keywords: ['export', 'download'],
+  },
+  {
+    query: formatMessage({defaultMessage: 'Restore a backup'}),
+    description: formatMessage({defaultMessage: 'Restore your settings from a backup file.'}),
+    keywords: ['import', 'upload'],
+  },
+  {
+    query: formatMessage({defaultMessage: 'Reset your settings'}),
+    description: formatMessage({defaultMessage: 'Clear all settings and restore defaults.'}),
+    keywords: ['defaults', 'clear'],
+  },
+]) {
+  registerSearchEntry({...entry, icon: UserCog, onAccept: openUserSettings});
 }
 
 function UserSettings() {

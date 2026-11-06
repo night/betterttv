@@ -4,6 +4,7 @@ import {SettingIds, AutoPlayFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Auto Play'});
@@ -41,6 +42,26 @@ function AutoplayModule({ref, ...props}) {
     </SettingCheckboxGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Front Page Player'}),
+  description: formatMessage({defaultMessage: 'Automatically play videos on the front page.'}),
+  settingPanelId: SettingPanelIds.AUTO_PLAY,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Offline Channel Player'}),
+  description: formatMessage({
+    defaultMessage: 'Automatically play the welcome video or last stream on offline channels.',
+  }),
+  settingPanelId: SettingPanelIds.AUTO_PLAY,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'VOD Player'}),
+  description: formatMessage({defaultMessage: 'Automatically play recommended videos on VoDs.'}),
+  settingPanelId: SettingPanelIds.AUTO_PLAY,
+});
 
 SettingStore.registerSetting(AutoplayModule, {
   settingPanelId: SettingPanelIds.AUTO_PLAY,

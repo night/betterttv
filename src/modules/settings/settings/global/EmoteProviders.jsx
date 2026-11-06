@@ -7,6 +7,7 @@ import {SettingIds, EmoteProviders as EmoteProviderIds, EmoteTypeFlags} from '@/
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import {EmoteProviderMetadata} from '@/utils/emote';
 import {hasFlag, setFlag} from '@/utils/flags';
@@ -30,6 +31,12 @@ function ProviderLogo({provider}) {
       alt=""
     />
   );
+}
+
+function searchIconFor(provider) {
+  return function ProviderSearchIcon() {
+    return <ProviderLogo provider={provider} className={styles.providerSearchLogo} />;
+  };
 }
 
 function EmoteProviders({ref, ...props}) {
@@ -99,6 +106,33 @@ function EmoteProviders({ref, ...props}) {
     </SettingCheckboxGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Show BetterTTV emotes'}),
+  description: formatMessage({defaultMessage: 'Adds extra cool emotes for you to use.'}),
+  icon: searchIconFor(EmoteProviderIds.BETTERTTV),
+  settingPanelId: SettingPanelIds.EMOTES,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Show FrankerFaceZ emotes'}),
+  description: formatMessage({defaultMessage: 'Adds emotes from this third party extension.'}),
+  icon: searchIconFor(EmoteProviderIds.FRANKERFACEZ),
+  settingPanelId: SettingPanelIds.EMOTES,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Show 7TV emotes'}),
+  description: formatMessage({defaultMessage: 'Adds emotes from this third party extension.'}),
+  icon: searchIconFor(EmoteProviderIds.SEVENTV),
+  settingPanelId: SettingPanelIds.EMOTES,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Include explicit 7TV emotes'}),
+  keywords: ['unlisted', 'approved', 'nsfw'],
+  settingPanelId: SettingPanelIds.EMOTES,
+});
 
 SettingStore.registerSetting(EmoteProviders, {
   settingPanelId: SettingPanelIds.EMOTES,

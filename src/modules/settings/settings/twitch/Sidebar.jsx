@@ -4,6 +4,7 @@ import {SettingIds, SidebarFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Sidebar'});
@@ -59,6 +60,48 @@ function SidebarComponent({ref, ...props}) {
     </SettingCheckboxGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Recently Watched Channels'}),
+  description: formatMessage({defaultMessage: 'Show offline followed channels in the sidebar.'}),
+  settingPanelId: SettingPanelIds.SIDEBAR,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Recommended Channels'}),
+  description: formatMessage({defaultMessage: 'Show recommended channels in the sidebar.'}),
+  settingPanelId: SettingPanelIds.SIDEBAR,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Recommended Categories'}),
+  description: formatMessage({defaultMessage: 'Show recommended categories in the sidebar.'}),
+  settingPanelId: SettingPanelIds.SIDEBAR,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Similar Channels'}),
+  description: formatMessage({defaultMessage: 'Show similar channels in the sidebar.'}),
+  settingPanelId: SettingPanelIds.SIDEBAR,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Offline Followed Channels'}),
+  description: formatMessage({defaultMessage: 'Show offline followed channels in the sidebar.'}),
+  settingPanelId: SettingPanelIds.SIDEBAR,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Auto-Expand Channels'}),
+  description: formatMessage({defaultMessage: 'Clicks the Load More followed channels button in the sidebar for you.'}),
+  settingPanelId: SettingPanelIds.SIDEBAR,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Stories'}),
+  description: formatMessage({defaultMessage: 'Show stories in the sidebar.'}),
+  settingPanelId: SettingPanelIds.SIDEBAR,
+});
 
 SettingStore.registerSetting(SidebarComponent, {
   settingPanelId: SettingPanelIds.SIDEBAR,

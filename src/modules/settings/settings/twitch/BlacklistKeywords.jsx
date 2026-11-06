@@ -5,6 +5,7 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Blacklist Keywords'});
@@ -25,6 +26,12 @@ function BlacklistKeywords({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Blacklist Keywords'}),
+  description: formatMessage({defaultMessage: 'Remove certain words, phrases or users from your chat.'}),
+  settingPanelId: SettingPanelIds.BLACKLIST_KEYWORDS,
+});
 
 SettingStore.registerSetting(BlacklistKeywords, {
   settingPanelId: SettingPanelIds.BLACKLIST_KEYWORDS,

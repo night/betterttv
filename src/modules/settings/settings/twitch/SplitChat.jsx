@@ -5,6 +5,7 @@ import formatMessage from '@/i18n/index';
 import SettingColorPicker from '@/modules/settings/components/SettingColorPicker';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import SplitChatModule from '@/modules/split_chat/index';
 
@@ -47,6 +48,20 @@ function SplitChat({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: SETTING_NAME,
+  description: formatMessage({
+    defaultMessage: 'Alternate backgrounds between messages in chat to improve readability.',
+  }),
+  settingPanelId: SettingPanelIds.SPLIT_CHAT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Alternate Background Color'}),
+  description: formatMessage({defaultMessage: 'The color of the alternate background.'}),
+  settingPanelId: SettingPanelIds.SPLIT_CHAT,
+});
 
 SettingStore.registerSetting(SplitChat, {
   settingPanelId: SettingPanelIds.SPLIT_CHAT,

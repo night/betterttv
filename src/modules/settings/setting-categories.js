@@ -1,5 +1,6 @@
 import {Bot, Ellipsis, MessageSquare, Monitor, PaintbrushVertical, RadioTower, ShieldHalf, Smile} from 'lucide-react';
 import formatMessage from '@/i18n/index';
+import {registerSearchEntry} from './search-entries';
 import {SettingCategoryIds} from './stores/setting-store';
 
 // Key order defines the display order of the categories in the side navigation, where each one
@@ -27,6 +28,14 @@ const CATEGORY_ICONS = {
   [SettingCategoryIds.OTHER]: Ellipsis,
 };
 
+for (const [categoryId, label] of Object.entries(CATEGORY_LABELS)) {
+  registerSearchEntry({
+    query: label,
+    categoryId,
+    onAccept: ({goToCategory}) => goToCategory(categoryId),
+  });
+}
+
 // Group the given settings into their categories (in category-defined order), dropping categories
 // with no settings on the current platform.
 export function groupSettingsByCategory(settings) {
@@ -43,6 +52,7 @@ export function groupSettingsByCategory(settings) {
       id: categoryId,
       label: CATEGORY_LABELS[categoryId],
       icon: CATEGORY_ICONS[categoryId],
+      onAccept: ({goToCategory}) => goToCategory(categoryId),
       settings: categorySettings,
     });
   }

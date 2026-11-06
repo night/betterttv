@@ -17,6 +17,7 @@ import {isUserPro} from '@/utils/pro';
 import {getCurrentUserProfilePicture} from '@/utils/user';
 import AnimatedLogo from './AnimatedLogo';
 import clickableStyles from './ClickableContainer.module.css';
+import SettingsSearch from './SettingsSearch';
 import styles from './SideNavigation.module.css';
 
 function CloseMenuButton({onClick, className}) {
@@ -142,6 +143,7 @@ function SideNavigation({open, setOpen}) {
           <AnimatedLogo className={styles.logo} />
           <CloseMenuButton onClick={close} className={styles.closeButton} />
         </div>
+        <SettingsSearch onAccept={close} />
         <Scrollbar mirrorPadding className={styles.settingsScrollArea}>
           {categories.map((category) => (
             <CategoryButton

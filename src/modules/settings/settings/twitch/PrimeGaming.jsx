@@ -4,6 +4,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Prime Gaming'});
@@ -22,6 +23,12 @@ function PrimeGaming({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Prime Promotions'}),
+  description: formatMessage({defaultMessage: 'Show Prime Gaming loot notices, like the ones in the sidebar.'}),
+  settingPanelId: SettingPanelIds.PRIME_GAMING,
+});
 
 SettingStore.registerSetting(PrimeGaming, {
   settingPanelId: SettingPanelIds.PRIME_GAMING,

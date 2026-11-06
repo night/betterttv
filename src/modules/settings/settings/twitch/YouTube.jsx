@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import extension from '@/utils/extension';
 
@@ -110,6 +111,12 @@ function maybeRegisterComponent() {
   if (extension.getExtension() == null) {
     return null;
   }
+
+  registerSearchEntry({
+    query: SETTING_NAME,
+    description: formatMessage({defaultMessage: 'Show BetterTTV emotes on YouTube Live Chat.'}),
+    settingPanelId: SettingPanelIds.YOUTUBE,
+  });
 
   SettingStore.registerSetting(YouTube, {
     settingPanelId: SettingPanelIds.YOUTUBE,

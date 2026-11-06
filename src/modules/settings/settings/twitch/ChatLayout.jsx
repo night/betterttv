@@ -4,6 +4,7 @@ import {SettingIds, ChatLayoutTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingRadio from '@/modules/settings/components/SettingRadio';
 import SettingRadioGroup from '@/modules/settings/components/SettingRadioGroup';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Layout'});
@@ -26,6 +27,18 @@ function ChatLayout({ref, ...props}) {
     </SettingRadioGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Right'}),
+  description: formatMessage({defaultMessage: 'Moves the chat to the right of the player.'}),
+  settingPanelId: SettingPanelIds.CHAT_LAYOUT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Left'}),
+  description: formatMessage({defaultMessage: 'Moves the chat to the left of the player.'}),
+  settingPanelId: SettingPanelIds.CHAT_LAYOUT,
+});
 
 SettingStore.registerSetting(ChatLayout, {
   settingPanelId: SettingPanelIds.CHAT_LAYOUT,

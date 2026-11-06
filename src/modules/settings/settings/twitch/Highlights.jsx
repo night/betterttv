@@ -8,6 +8,7 @@ import SettingNumberInput from '@/modules/settings/components/SettingNumberInput
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingWrapper from '@/modules/settings/components/SettingWrapper';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Highlights'});
@@ -83,6 +84,50 @@ function Highlights({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Highlight Keywords'}),
+  description: formatMessage({defaultMessage: 'Highlight certain words, phrases or users in your chat.'}),
+  settingPanelId: SettingPanelIds.HIGHLIGHTS,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Pinned Highlights'}),
+  description: formatMessage({defaultMessage: 'Pin your highlighted messages above chat.'}),
+  settingPanelId: SettingPanelIds.HIGHLIGHTS,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Expire Pinned Highlights'}),
+  description: formatMessage({defaultMessage: 'Hide pinned highlights after 1 minute.'}),
+  settingPanelId: SettingPanelIds.HIGHLIGHTS,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Maximum Pinned highlights'}),
+  description: formatMessage({defaultMessage: 'Number of pinned highlights that can be displayed.'}),
+  settingPanelId: SettingPanelIds.HIGHLIGHTS,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Play A Sound'}),
+  description: formatMessage({defaultMessage: 'Play a sound for messages directed at you.'}),
+  settingPanelId: SettingPanelIds.HIGHLIGHTS,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Highlight First-Time Chatters'}),
+  description: formatMessage({
+    defaultMessage: 'Highlight messages from viewers chatting in the channel for the first time.',
+  }),
+  settingPanelId: SettingPanelIds.HIGHLIGHTS,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Highlight Deleted Messages'}),
+  description: formatMessage({defaultMessage: 'Highlight and prevent deletion of messages.'}),
+  settingPanelId: SettingPanelIds.HIGHLIGHTS,
+});
 
 SettingStore.registerSetting(Highlights, {
   settingPanelId: SettingPanelIds.HIGHLIGHTS,

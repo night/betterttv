@@ -5,6 +5,7 @@ import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
 import SettingTagInput from '@/modules/settings/components/SettingTagInput';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Anon Chat'});
@@ -42,6 +43,12 @@ function AnonChat({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: SETTING_NAME,
+  description: formatMessage({defaultMessage: 'Anonymously read chat without appearing in the user list.'}),
+  settingPanelId: SettingPanelIds.ANON_CHAT,
+});
 
 SettingStore.registerSetting(AnonChat, {
   settingPanelId: SettingPanelIds.ANON_CHAT,

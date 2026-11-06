@@ -7,6 +7,7 @@ import formatMessage from '@/i18n/index';
 import globalEmotes from '@/modules/emotes/global-emotes';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import styles from './Emotes.module.css';
 // settings list in the order they register, and Emote Providers comes first
@@ -121,6 +122,23 @@ function EmoteDisplay({ref, ...props}) {
     </SettingCheckboxGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Animated Emotes'}),
+  description: formatMessage({defaultMessage: 'Autoplays animated emotes, otherwise only when hovered.'}),
+  settingPanelId: SettingPanelIds.EMOTE_DISPLAY,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Animated Personal Emotes'}),
+  description: formatMessage({defaultMessage: 'Autoplays animated personal emotes, otherwise only when hovered.'}),
+  settingPanelId: SettingPanelIds.EMOTE_DISPLAY,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Emote Modifiers'}),
+  settingPanelId: SettingPanelIds.EMOTE_DISPLAY,
+});
 
 SettingStore.registerSetting(EmoteDisplay, {
   settingPanelId: SettingPanelIds.EMOTE_DISPLAY,

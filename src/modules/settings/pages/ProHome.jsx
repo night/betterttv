@@ -1,9 +1,9 @@
 import {Anchor, Button, Text} from '@mantine/core';
 import classNames from 'classnames';
-import {ChevronRight, Gift, Heart, SquareArrowOutUpRight} from 'lucide-react';
+import {ChevronRight, CreditCard, Flame, Gift, Heart, SquareArrowOutUpRight} from 'lucide-react';
 import React from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import {ExternalLinks} from '@/constants';
+import {ExternalLinks, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
 import PageHeader from '@/modules/settings/components/PageHeader';
 import PageScrollBody from '@/modules/settings/components/PageScrollBody';
@@ -12,6 +12,7 @@ import openGiftProModal from '@/modules/settings/components/pro/GiftProModal';
 import ProBadgeShowcaseCard from '@/modules/settings/components/pro/ProBadgeShowcaseCard';
 import ShowcaseImageCard from '@/modules/settings/components/pro/ShowcaseImageCard';
 import UsernameEffectShowcaseCard from '@/modules/settings/components/pro/UsernameEffectShowcaseCard';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import {flatButtonVars} from '@/modules/shadow_dom/vars';
 import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
@@ -22,6 +23,22 @@ import styles from './ProHome.module.css';
 function handleUpgradeClick() {
   socketClient.ensureAuthentication();
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'BetterTTV Pro'}),
+  description: formatMessage({defaultMessage: 'Perks for subscribers.'}),
+  icon: Flame,
+  onAccept: ({setPage}) => setPage(PageTypes.PRO_HOME),
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Subscribe'}),
+  description: formatMessage({defaultMessage: 'Get BetterTTV Pro, or manage your subscription.'}),
+  keywords: ['upgrade', 'plan', 'billing', 'payment', 'cancel'],
+  icon: CreditCard,
+  href: ExternalLinks.PRO,
+  onAccept: handleUpgradeClick,
+});
 
 // the page's main action for a subscriber; beside Subscribe it steps back to the flat style
 function GiftProButton({primary = false}) {

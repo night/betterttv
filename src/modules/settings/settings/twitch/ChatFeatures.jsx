@@ -4,6 +4,7 @@ import {SettingIds, ChatFlags} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Features'});
@@ -85,6 +86,70 @@ function ChatFeatures({ref, ...props}) {
     </SettingCheckboxGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Chat Replies'}),
+  description: formatMessage({defaultMessage: 'Show the reply button in chat.'}),
+  settingPanelId: SettingPanelIds.CHAT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Bits'}),
+  description: formatMessage({defaultMessage: 'Show bits in the chat window.'}),
+  settingPanelId: SettingPanelIds.CHAT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Viewer Greetings'}),
+  description: formatMessage({defaultMessage: 'Show new viewer greetings in the chat window.'}),
+  settingPanelId: SettingPanelIds.CHAT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Subscription Notices'}),
+  description: formatMessage({defaultMessage: 'Show subs, re-subs, and gift subs notices in the chat window.'}),
+  settingPanelId: SettingPanelIds.CHAT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Clip Embeds'}),
+  description: formatMessage({defaultMessage: 'Show clip previews in the chat window.'}),
+  settingPanelId: SettingPanelIds.CHAT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Community Highlights'}),
+  description: formatMessage({
+    defaultMessage: 'Show alerts above chat window for hype trains, polls, predictions, drops, pinned messages, etc.',
+  }),
+  settingPanelId: SettingPanelIds.CHAT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Watch Streaks'}),
+  description: formatMessage({defaultMessage: 'Show watch streaks in chat and on followed channels in the sidebar.'}),
+  settingPanelId: SettingPanelIds.CHAT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Message History'}),
+  description: formatMessage({defaultMessage: 'Restore what you previously typed by pressing up/down arrow in chat.'}),
+  settingPanelId: SettingPanelIds.CHAT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'GIFs'}),
+  description: formatMessage({defaultMessage: 'Show GIFs sent by Tier 2 and Tier 3 subscribers in the chat window.'}),
+  settingPanelId: SettingPanelIds.CHAT,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'AI Stream Summaries'}),
+  description: formatMessage({
+    defaultMessage: "Show Twitch's AI-generated mid-stream summary recaps in the chat window.",
+  }),
+  settingPanelId: SettingPanelIds.CHAT,
+});
 
 SettingStore.registerSetting(ChatFeatures, {
   settingPanelId: SettingPanelIds.CHAT,

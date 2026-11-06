@@ -4,6 +4,7 @@ import {SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Player'});
@@ -54,6 +55,38 @@ function Player({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Click to Play'}),
+  description: formatMessage({defaultMessage: 'Clicking the player will pause/resume playback.'}),
+  settingPanelId: SettingPanelIds.PLAYER,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Mute Invisible Player'}),
+  description: formatMessage({defaultMessage: 'Toggle sound when you change browser tab or window.'}),
+  settingPanelId: SettingPanelIds.PLAYER,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Player Extensions'}),
+  description: formatMessage({defaultMessage: "Show the interactive overlays on top of Twitch's video player."}),
+  settingPanelId: SettingPanelIds.PLAYER,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Scroll Player Controls'}),
+  description: formatMessage({
+    defaultMessage: 'Enable scrolling to change the player volume. Hold ALT when scrolling to seek.',
+  }),
+  settingPanelId: SettingPanelIds.PLAYER,
+});
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Auto Theatre Mode'}),
+  description: formatMessage({defaultMessage: 'Enable theatre mode when possible.'}),
+  settingPanelId: SettingPanelIds.PLAYER,
+});
 
 SettingStore.registerSetting(Player, {
   settingPanelId: SettingPanelIds.PLAYER,
