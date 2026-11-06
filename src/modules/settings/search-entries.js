@@ -33,7 +33,21 @@ function scoreEntry({query, description = '', keywords = []}, phrase, terms) {
   return title.includes(phrase) ? 2 : 1;
 }
 
-// the entries matching the search, best first, with the words to highlight in them
+// the one match a result marks: its title before its description, and the whole search before a word
+function findHighlight({query, description = ''}, phrase, terms) {
+  const candidates = [phrase, ...terms];
+  const title = query.toLowerCase();
+  const body = description.toLowerCase();
+
+  const titleTerm = candidates.find((term) => title.includes(term));
+  if (titleTerm != null) {
+    return {titleTerm};
+  }
+
+  return {descriptionTerm: candidates.find((term) => body.includes(term))};
+}
+
+// the entries matching the search, best first, with what to highlight in them
 export function searchEntries(text, isAvailable) {
   const phrase = text.trim().toLowerCase();
   const terms = phrase.split(/\s+/).filter((term) => term.length > 0);
@@ -57,9 +71,9 @@ export function searchEntries(text, isAvailable) {
     })
     .map((entry) => ({
       entry,
-      terms,
       score: scoreEntry(entry, phrase, terms),
       descriptionMatches: terms.some((term) => entry.description?.toLowerCase().includes(term)),
+      ...findHighlight(entry, phrase, terms),
     }))
     .filter(({score}) => score > 0)
     .sort((a, b) => b.score - a.score || (a.entry.href != null) - (b.entry.href != null));

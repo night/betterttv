@@ -1,4 +1,4 @@
-import {Highlight, Kbd, Popover, TextInput} from '@mantine/core';
+import {Kbd, Popover, TextInput} from '@mantine/core';
 import {useWindowEvent} from '@mantine/hooks';
 import classNames from 'classnames';
 import {Search, SquareArrowOutUpRight} from 'lucide-react';
@@ -29,7 +29,6 @@ const RETURN_GLYPH = (
 
 const MAX_CATEGORY_MATCHES = 3;
 const NO_CATEGORY_IDS = new Set();
-const NO_TERMS = [];
 
 const searchClassNames = {wrapper: styles.wrapper};
 const searchHintClassNames = {wrapper: classNames(styles.wrapper, styles.wrapperHint)};
@@ -85,6 +84,22 @@ function buildRows(results, categories, expandedCategoryIds) {
   return rows.flat();
 }
 
+function HighlightedText({text, term}) {
+  const start = term != null ? text.toLowerCase().indexOf(term) : -1;
+  if (start === -1) {
+    return text;
+  }
+
+  const end = start + term.length;
+  return (
+    <React.Fragment>
+      {text.slice(0, start)}
+      <mark>{text.slice(start, end)}</mark>
+      {text.slice(end)}
+    </React.Fragment>
+  );
+}
+
 function keepInputFocused(event) {
   event.preventDefault();
 }
@@ -94,7 +109,7 @@ function scrollIntoView(element) {
 }
 
 const SearchRow = React.memo(function SearchRow({id, row, index, selected, pressed, onHover, onAccept}) {
-  const {entry, icon: Icon, more, nested, terms = NO_TERMS, descriptionMatches} = row;
+  const {entry, icon: Icon, more, nested, titleTerm, descriptionTerm, descriptionMatches} = row;
   const handleHover = useCallback(() => onHover(index), [onHover, index]);
   const handleClick = useCallback(() => onAccept(entry), [onAccept, entry]);
   // a setting's description is noise until it's why the setting matched
@@ -114,13 +129,13 @@ const SearchRow = React.memo(function SearchRow({id, row, index, selected, press
       onClick={handleClick}>
       <span className={styles.rowIcon}>{Icon != null ? <Icon size={18} /> : null}</span>
       <span className={styles.rowText}>
-        <Highlight unstyled component="span" className={styles.rowTitle} highlight={terms}>
-          {entry.query}
-        </Highlight>
+        <span className={styles.rowTitle}>
+          <HighlightedText text={entry.query} term={titleTerm} />
+        </span>
         {showDescription ? (
-          <Highlight unstyled component="span" className={styles.rowDescription} highlight={terms}>
-            {entry.description}
-          </Highlight>
+          <span className={styles.rowDescription}>
+            <HighlightedText text={entry.description} term={descriptionTerm} />
+          </span>
         ) : null}
       </span>
       {entry.href != null ? <SquareArrowOutUpRight size={14} className={styles.rowExternal} /> : null}
