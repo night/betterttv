@@ -4,7 +4,6 @@ import {useDisclosure} from '@mantine/hooks';
 import {Check, ChevronDown} from 'lucide-react';
 import React, {useCallback} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import StatusButton from '@/common/components/StatusButton';
 import usePortalRef from '@/common/hooks/PortalRef';
 import {
   AsyncStatuses,
@@ -72,30 +71,40 @@ function DisabledAddButtons() {
   );
 }
 
-// a destination in the menu, ticked once the emote is in it
-function AddMenuRow({label, state, onClick}) {
+// spins while adding, then stays disabled. data-disabled over a native disabled keeps the tooltip's hover
+function AddButton({state, tooltip, onClick, children, ...props}) {
   const portalRef = usePortalRef();
 
   return (
-    <Tooltip
-      label={state.tooltip}
-      disabled={state.tooltip == null}
-      withArrow
-      portalProps={{target: portalRef?.current}}>
-      <StatusButton
-        variant="subtle"
-        size="lg"
-        fullWidth
-        justify="space-between"
-        vars={inverseItemVars}
-        className={styles.menuItemButton}
-        rightSection={state.added ? <Check size={16} /> : null}
-        status={state.status}
-        disabled={state.disabled}
-        onClick={onClick}>
-        <span className={styles.menuItemName}>{label}</span>
-      </StatusButton>
+    <Tooltip label={tooltip} disabled={tooltip == null} withArrow portalProps={{target: portalRef?.current}}>
+      <Button
+        {...props}
+        loading={state.status === AsyncStatuses.PENDING}
+        data-disabled={state.disabled || undefined}
+        aria-disabled={state.disabled || undefined}
+        onClick={state.disabled || state.status !== AsyncStatuses.IDLE ? undefined : onClick}>
+        {state.status === AsyncStatuses.ERROR ? formatMessage({defaultMessage: "Couldn't add"}) : children}
+      </Button>
     </Tooltip>
+  );
+}
+
+// a destination in the menu, ticked once the emote is in it
+function AddMenuRow({label, state, onClick}) {
+  return (
+    <AddButton
+      variant="subtle"
+      size="lg"
+      fullWidth
+      justify="space-between"
+      vars={inverseItemVars}
+      className={styles.menuItemButton}
+      rightSection={state.added ? <Check size={16} /> : null}
+      state={state}
+      tooltip={state.tooltip}
+      onClick={onClick}>
+      <span className={styles.menuItemName}>{label}</span>
+    </AddButton>
   );
 }
 
@@ -232,21 +241,15 @@ export default function EmoteAddButtons({emote}) {
             </Button>
           ) : (
             <Button.Group>
-              <Tooltip
-                label={channelTooltip}
-                disabled={channelTooltip == null}
-                withArrow
-                portalProps={{target: portalRef?.current}}>
-                <StatusButton
-                  variant="elevated"
-                  color="contrast"
-                  size="lg"
-                  status={channel.status}
-                  disabled={channel.disabled}
-                  onClick={handleAddChannel}>
-                  {formatMessage({defaultMessage: 'Add to Channel'})}
-                </StatusButton>
-              </Tooltip>
+              <AddButton
+                variant="elevated"
+                color="contrast"
+                size="lg"
+                state={channel}
+                tooltip={channelTooltip}
+                onClick={handleAddChannel}>
+                {formatMessage({defaultMessage: 'Add to Channel'})}
+              </AddButton>
               <Button
                 variant="elevated"
                 color="contrast"

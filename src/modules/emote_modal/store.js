@@ -87,11 +87,8 @@ function addToDestination(emoteId, userId, destination) {
   return addSharedEmote(emoteId, userId, destination === EmoteAddDestinations.CHANNEL ? userId : destination);
 }
 
-// pending rounds up to this so fast requests still read as work. the timer runs alongside the
-// request, so slower requests add no extra wait.
-const MINIMUM_PENDING_DURATION = 500;
-// how long the settled success/error icon stays before the button returns to idle
-const SETTLED_STATUS_DURATION = 700;
+// how long a failed add shows before it can be tried again
+const ERROR_STATUS_DURATION = 2500;
 
 // bumped on every modal open so an add still in flight from a previous open can't repaint the
 // current modal's statuses
@@ -132,10 +129,8 @@ export async function performAdd(emoteId, destination) {
   }
 
   setStatus(AsyncStatuses.PENDING);
-  const minimumPending = wait(MINIMUM_PENDING_DURATION);
   try {
     await addToDestination(emoteId, user.id, destination);
-    await minimumPending;
     const key = availabilityKey(user.id, emoteId);
     // the add consumed a slot, so every other emote's cached canAdd may now be stale. keep only
     // this emote's entry, marking the added destination, and let the rest refetch on next open
@@ -147,14 +142,12 @@ export async function performAdd(emoteId, destination) {
         },
       },
     }));
-    setStatus(AsyncStatuses.SUCCESS);
+    setStatus(AsyncStatuses.IDLE);
   } catch {
-    await minimumPending;
     setStatus(AsyncStatuses.ERROR);
+    await wait(ERROR_STATUS_DURATION);
+    setStatus(AsyncStatuses.IDLE);
   }
-
-  await wait(SETTLED_STATUS_DURATION);
-  setStatus(AsyncStatuses.IDLE);
 }
 
 // statuses outlive the modal, so every open resets them and supersedes in-flight adds
