@@ -5,12 +5,13 @@ import {hasFlag} from '@/utils/flags';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import twitch from '@/utils/twitch';
 
-// the newer chat layout leaves no stable class on the claim button, so watch transitions and bail outside the points summary
-const CLAIM_BONUS_TRANSITION_SELECTOR = '.tw-transition';
+// the classic claim button wraps a stable .claimable-bonus__icon, so it's caught however twitch inserts it.
+// the OneChat button has no stable class, so fall back to the transition twitch mounts around it.
+const CLAIM_BONUS_SELECTOR = '.claimable-bonus__icon, .tw-transition';
 const COMMUNITY_POINTS_SUMMARY_SELECTOR = '[data-test-selector="community-points-summary"]';
 
 let removeChannelPointsListener;
-// nested transitions emit together on mount, so remember which buttons were already clicked
+// nested transitions and the icon emit together on mount, so remember which buttons were already clicked
 const clickedClaimButtons = new WeakSet();
 
 class ChannelPoints {
@@ -28,10 +29,10 @@ class ChannelPoints {
     if (hasFlag(settings.get(SettingIds.CHANNEL_POINTS), ChannelPointsFlags.AUTO_CLAIM)) {
       if (removeChannelPointsListener) return;
 
-      removeChannelPointsListener = domObserver.on(CLAIM_BONUS_TRANSITION_SELECTOR, (node, isConnected) => {
+      removeChannelPointsListener = domObserver.on(CLAIM_BONUS_SELECTOR, (node, isConnected) => {
         if (!isConnected || node.closest(COMMUNITY_POINTS_SUMMARY_SELECTOR) == null) return;
 
-        const claimButton = node.querySelector('button');
+        const claimButton = node.closest('button') ?? node.querySelector('button');
         if (claimButton == null || clickedClaimButtons.has(claimButton)) return;
 
         const claimableBonus = twitch.getClaimableBonus(claimButton);
