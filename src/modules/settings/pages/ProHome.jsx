@@ -22,6 +22,22 @@ function handleUpgradeClick() {
   socketClient.ensureAuthentication();
 }
 
+// the page's main action for a subscriber; beside Subscribe it steps back to the flat style
+function GiftProButton({primary = false}) {
+  return (
+    <Button
+      size="lg"
+      radius="lg"
+      variant={primary ? 'elevated' : 'filled'}
+      color={primary ? 'contrast' : 'dark.8'}
+      vars={primary ? undefined : flatButtonVars}
+      leftSection={<Gift size={16} />}
+      onClick={openGiftProModal}>
+      {formatMessage({defaultMessage: 'Gift Pro'})}
+    </Button>
+  );
+}
+
 function ProHome() {
   const user = useAuthStore(useShallow((state) => state.user));
   const isPro = isUserPro(user);
@@ -45,6 +61,7 @@ function ProHome() {
               : formatMessage({defaultMessage: 'Pro directly supports BetterTTV development'})}
           </Text>
           <div className={styles.premiumButtons}>
+            {!isPro ? <GiftProButton /> : null}
             <Button
               component={Anchor}
               href={ExternalLinks.PRO}
@@ -62,11 +79,7 @@ function ProHome() {
                 ? formatMessage({defaultMessage: 'Manage Subscription'})
                 : formatMessage({defaultMessage: 'Subscribe'})}
             </Button>
-            {isPro ? (
-              <Button size="lg" color="contrast" leftSection={<Gift size={16} />} onClick={openGiftProModal}>
-                {formatMessage({defaultMessage: 'Gift Pro'})}
-              </Button>
-            ) : null}
+            {isPro ? <GiftProButton primary /> : null}
           </div>
         </div>
       }>

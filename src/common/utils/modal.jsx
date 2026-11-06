@@ -13,6 +13,9 @@ import {isUserPro} from '@/utils/pro';
 import {canOpenPopup} from '@/utils/window';
 import styles from './Modal.module.css';
 
+// forms and lists; rem so it isn't scaled, on Twitch's 10px root
+export const WIDE_MODAL_SIZE = '48rem';
+
 const DEFAULT_LOADING_TIMEOUT = 500;
 const DEFAULT_SUCCESS_TIMEOUT = 1000;
 const MODAL_TRANSITION_DURATION = 100;

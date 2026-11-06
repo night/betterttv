@@ -1,5 +1,4 @@
-/* pressed: one step dimmer, the theme's activeClassName, so Mantine's buttons get it in place of
-   their nudge down */
+/* the theme's activeClassName: pressed is one step dimmer, in place of Mantine's nudge down */
 .pressable:active:not(:disabled, [data-disabled], [aria-disabled='true']) {
   filter: brightness(0.85);
 }

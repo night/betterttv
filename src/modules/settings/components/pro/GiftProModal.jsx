@@ -2,7 +2,7 @@ import {Button, TextInput} from '@mantine/core';
 import {modals} from '@mantine/modals';
 import {ChevronRight} from 'lucide-react';
 import React, {useCallback, useState} from 'react';
-import {openModal} from '@/common/utils/modal';
+import {openModal, WIDE_MODAL_SIZE} from '@/common/utils/modal';
 import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
 import styles from './GiftProModal.module.css';
@@ -10,24 +10,16 @@ import styles from './GiftProModal.module.css';
 const USERNAME_PLACEHOLDER = formatMessage({defaultMessage: 'Twitch username'});
 const INPUT_CLASS_NAMES = {input: styles.input};
 
-// how the name reads in a Twitch URL, however it was pasted in
-function normalizeUsername(username) {
-  return username.trim().replace(/^@/, '').toLowerCase();
-}
-
 function GiftProForm({onClose}) {
   const [username, setUsername] = useState('');
-  const recipient = normalizeUsername(username);
+  // how the name reads in a Twitch URL, however it was pasted in
+  const recipient = username.trim().replace(/^@/, '').toLowerCase();
 
   const handleChange = useCallback(({currentTarget}) => setUsername(currentTarget.value), []);
 
   const handleSubmit = useCallback(
     (event) => {
       event.preventDefault();
-      if (recipient === '') {
-        return;
-      }
-
       window.open(`${ExternalLinks.PRO}?gift=${encodeURIComponent(recipient)}`, '_blank', 'noopener,noreferrer');
       onClose();
     },
@@ -74,9 +66,7 @@ export default function openGiftProModal() {
 
   const modalId = openModal({
     title: formatMessage({defaultMessage: 'Gift Pro'}),
-    // the website's width for forms; rem so it isn't scaled, on Twitch's 10px root
-    size: '48rem',
+    size: WIDE_MODAL_SIZE,
     description: <GiftProForm onClose={handleClose} />,
   });
-  return modalId;
 }
