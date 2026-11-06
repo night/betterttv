@@ -29,6 +29,11 @@
   gap: 12px;
 }
 
+/* the main action always sits on the right */
+.premiumButtonsReversed {
+  flex-direction: row-reverse;
+}
+
 .premiumThanks {
   display: flex;
   align-items: center;

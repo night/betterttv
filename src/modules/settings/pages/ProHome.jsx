@@ -1,4 +1,5 @@
 import {Anchor, Button, Text} from '@mantine/core';
+import classNames from 'classnames';
 import {ChevronRight, Gift, Heart, SquareArrowOutUpRight} from 'lucide-react';
 import React from 'react';
 import {useShallow} from 'zustand/react/shallow';
@@ -60,8 +61,8 @@ function ProHome() {
               ? formatMessage({defaultMessage: 'Thank you for supporting BetterTTV'})
               : formatMessage({defaultMessage: 'Pro directly supports BetterTTV development'})}
           </Text>
-          <div className={styles.premiumButtons}>
-            {!isPro ? <GiftProButton /> : null}
+          <div className={classNames(styles.premiumButtons, {[styles.premiumButtonsReversed]: isPro})}>
+            <GiftProButton primary={isPro} />
             <Button
               component={Anchor}
               href={ExternalLinks.PRO}
@@ -79,7 +80,6 @@ function ProHome() {
                 ? formatMessage({defaultMessage: 'Manage Subscription'})
                 : formatMessage({defaultMessage: 'Subscribe'})}
             </Button>
-            {isPro ? <GiftProButton primary /> : null}
           </div>
         </div>
       }>
