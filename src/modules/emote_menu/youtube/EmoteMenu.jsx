@@ -5,7 +5,7 @@ import shadowDOM from '@/modules/shadow_dom/index';
 import domObserver from '@/observers/dom';
 import settings from '@/settings';
 import {getCurrentUser} from '@/utils/user';
-import {createYoutubeEmojiNode} from '@/utils/youtube';
+import {createYoutubeEmojiNode, getYoutubeChatInputText} from '@/utils/youtube';
 import watcher from '@/watcher';
 import styles from './EmoteMenu.module.css';
 
@@ -54,7 +54,7 @@ function appendToChat(emote, shouldFocus = true) {
   if (emote.category.provider === EmoteProviders.YOUTUBE) {
     newNode = createYoutubeEmojiNode(emote);
   } else {
-    newNode = document.createTextNode(`${prefixSuffixText}${emote.code}`);
+    newNode = document.createTextNode(`${prefixSuffixText}${getYoutubeChatInputText(emote)}`);
     prefixSuffixText = '';
   }
 
