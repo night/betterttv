@@ -1,0 +1,10 @@
+/* an input sits 8px under its label or description (Mantine's gap shrinks to ~3px on Twitch's 10px
+   root); a bare input gets none, so it stays centred in its row */
+.label + .wrapper,
+.description + .wrapper {
+  margin-top: 8px;
+}
+
+.description {
+  margin-top: 2px;
+}

@@ -1,11 +1,9 @@
-import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Autocomplete,
   Avatar,
   Button,
   Kbd,
-  NativeSelect,
   Pill,
   Table,
   TableTbody,
@@ -19,14 +17,15 @@ import {
 } from '@mantine/core';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
+import {Info, Trash2} from 'lucide-react';
 import React, {useCallback, useMemo, useState} from 'react';
-import Icon from '@/common/components/Icon';
+import SelectMenu from '@/common/components/SelectMenu';
 import useBadgeOptions from '@/common/hooks/BadgeOptions';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
 import useEntryListState from '@/common/hooks/EntryListState';
 import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
-import {openModal} from '@/common/utils/modal';
+import {openModal, WIDE_MODAL_SIZE} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
 import {KeywordTypes} from '@/utils/keywords';
 import ColorPicker from './ColorPicker';
@@ -92,9 +91,16 @@ function RegexGuideModalBody() {
 function openRegexGuideModal() {
   return openModal({
     title: formatMessage({defaultMessage: 'Advanced Keywords'}),
+    size: WIDE_MODAL_SIZE,
     children: <RegexGuideModalBody />,
   });
 }
+
+const KEYWORD_TYPE_OPTIONS = [
+  {label: formatMessage({defaultMessage: 'Message'}), value: KeywordTypes.MESSAGE},
+  {label: formatMessage({defaultMessage: 'Username'}), value: KeywordTypes.USER},
+  {label: formatMessage({defaultMessage: 'Badge'}), value: KeywordTypes.BADGE},
+];
 
 function renderBadgeOption({option}) {
   return (
@@ -118,6 +124,7 @@ function KeywordRow({
   const portalRef = usePortalRef();
   const onUpdate = useCallback((newKeywordData) => updateHandler(id, newKeywordData), [updateHandler, id]);
   const onDelete = useCallback(() => deleteHandler(id), [deleteHandler, id]);
+  const handleTypeChange = useCallback((type) => onUpdate({type}), [onUpdate]);
   const keywordInputRef = useCallback((ref) => keywordInputRefCallback(id, ref), [keywordInputRefCallback, id]);
   const [opened, {open, close}] = useDisclosure(false);
   const channels = data?.channels ?? [];
@@ -142,17 +149,13 @@ function KeywordRow({
         </TableTd>
       ) : null}
       <TableTd className={classNames(tableStyles.dataCell, tableStyles.selectColumn)}>
-        <NativeSelect
-          variant="unstyled"
-          classNames={{input: tableStyles.selectInput}}
+        <SelectMenu
+          variant="transparent"
+          className={tableStyles.selectTrigger}
+          ariaLabel={formatMessage({defaultMessage: 'Keyword target'})}
+          options={KEYWORD_TYPE_OPTIONS}
           value={data.type}
-          data={[
-            {label: formatMessage({defaultMessage: 'Message'}), value: KeywordTypes.MESSAGE},
-            {label: formatMessage({defaultMessage: 'Username'}), value: KeywordTypes.USER},
-            {label: formatMessage({defaultMessage: 'Badge'}), value: KeywordTypes.BADGE},
-          ]}
-          size="lg"
-          onChange={({target: {value}}) => onUpdate({type: parseInt(value, 10)})}
+          onChange={handleTypeChange}
         />
       </TableTd>
       <TableTd className={tableStyles.dataCell}>
@@ -233,7 +236,7 @@ function KeywordRow({
           size="sm"
           classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
-          <Icon icon={faTrash} />
+          <Trash2 size={16} />
         </ActionIcon>
       </TableTd>
     </TableTr>
@@ -270,7 +273,7 @@ function KeywordsTable({
                 className={styles.infoButton}
                 aria-label={formatMessage({defaultMessage: 'Advanced keywords'})}
                 onClick={openRegexGuideModal}>
-                <Icon icon={faCircleInfo} />
+                <Info size={16} />
               </ActionIcon>
             </div>
           </TableTh>

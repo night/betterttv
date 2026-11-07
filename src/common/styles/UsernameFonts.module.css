@@ -1,0 +1,12 @@
+/* web-safe stacks named by style, each ending in a generic family */
+.formal {
+  font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+}
+
+.typewriter {
+  font-family: 'Courier New', Courier, 'Liberation Mono', monospace;
+}
+
+.comic {
+  font-family: 'Comic Sans MS', 'Comic Sans', 'Chalkboard SE', 'Comic Neue', sans-serif;
+}

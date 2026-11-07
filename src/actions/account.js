@@ -16,6 +16,10 @@ export function updateUsernameHoverEffect(effect, {signal} = {}) {
   return api.patch('account/subscription/username_hover_effect', {body: {effect}, signal});
 }
 
+export function updateUsernameFont(font, {signal} = {}) {
+  return api.patch('account/subscription/username_font', {body: {font}, signal});
+}
+
 export function getFeatureEligibility() {
   return api.get('account/subscription/feature_eligibility');
 }

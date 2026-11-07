@@ -25,7 +25,7 @@
   flex-wrap: wrap;
   align-items: center;
   column-gap: 12px;
-  row-gap: 2px;
+  row-gap: 4px;
 }
 
 .message {

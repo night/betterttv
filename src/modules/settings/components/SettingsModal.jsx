@@ -1,10 +1,8 @@
 import {Modal} from '@mantine/core';
-import {useDisclosure, useViewportSize} from '@mantine/hooks';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useDisclosure, useViewportSize, useWindowEvent} from '@mantine/hooks';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollbarSizeTargetContext} from '@/common/components/Scrollbar';
-import {openSignInModal} from '@/common/utils/modal';
-import {PageDecendants, PageTypes, SettingsPrompts} from '@/constants';
-import formatMessage from '@/i18n/index';
+import {PageDecendants, PageTypes} from '@/constants';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
 import BlacklistKeywords from '@/modules/settings/pages/BlacklistKeywords';
 import Changelog from '@/modules/settings/pages/Changelog';
@@ -14,34 +12,13 @@ import SelfBotCommands from '@/modules/settings/pages/SelfBotCommands';
 import SelfBotTimers from '@/modules/settings/pages/SelfBotTimers';
 import Settings from '@/modules/settings/pages/Settings';
 import UserSettings from '@/modules/settings/pages/UserSettings';
-import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
-import storage from '@/storage';
-import {getCredentials} from '@/stores/auth';
+import {groupSettingsByCategory} from '@/modules/settings/setting-categories';
+import SettingStore, {PageSettingPanelIds} from '@/modules/settings/stores/setting-store';
 import {PageScrollContext} from './PageScrollBody';
 import styles from './SettingsModal.module.css';
 import SideNavigation from './SideNavigation';
 
-// The first time a signed-out user opens settings we nudge them to sign in, but only once ever.
-function maybePromptSignIn() {
-  // Gate on the persisted access token rather than the async-populated user so we don't burn the
-  // one-time flag on a signed-in user whose profile hasn't finished syncing yet.
-  if (getCredentials().accessToken != null) {
-    return;
-  }
-
-  if (storage.get(SettingsPrompts.SIGN_IN) === true) {
-    return;
-  }
-
-  storage.set(SettingsPrompts.SIGN_IN, true);
-
-  openSignInModal({
-    title: formatMessage({defaultMessage: 'Sign in to BetterTTV'}),
-    description: formatMessage({defaultMessage: 'Authenticate to unlock more features.'}),
-  });
-}
-
-function Page({page, handleSettingRefCallback}) {
+function Page({page, category, handleSettingRefCallback}) {
   switch (page) {
     case PageTypes.CHANGELOG:
       return <Changelog />;
@@ -56,7 +33,7 @@ function Page({page, handleSettingRefCallback}) {
     case PageTypes.PRO_HOME:
       return <ProHome />;
     case PageTypes.SETTINGS:
-      return <Settings handleSettingRefCallback={handleSettingRefCallback} />;
+      return <Settings category={category} handleSettingRefCallback={handleSettingRefCallback} />;
     case PageTypes.USER_SETTINGS:
     default:
       return <UserSettings />;
@@ -76,27 +53,40 @@ function PageContainer({children, className, scrollRef, onMount}) {
   );
 }
 
+function flashRow(row) {
+  row.addEventListener('animationend', () => row.removeAttribute('data-flash'), {once: true});
+  row.setAttribute('data-flash', '');
+}
+
 function SettingsModal({setHandleOpen}) {
   const {width} = useViewportSize();
   const [page, setPage] = useState(PageTypes.SETTINGS);
+  const [categoryId, setCategoryId] = useState(null);
   const [open, modalHandlers] = useDisclosure(false);
   const [sidenavOpen, setSidenavOpen] = useState(false);
   const settingRefsRef = useRef({});
-  const pendingScrollToSettingPanelIdRef = useRef(null);
+  const pendingScrollTargetRef = useRef(null);
   const pageContentRef = useRef(null);
   const pageColumnRef = useRef(null);
   const lastParentDataRef = useRef({scrollTop: 0, page: null});
 
-  const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
+  const categories = useMemo(() => groupSettingsByCategory(SettingStore.getSupportedSettings()), []);
+  const activeCategory = categories.find((category) => category.id === categoryId) ?? categories[0];
 
-  // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView.
-  const scrollToPanel = useCallback(
-    (settingPanelId) => {
-      settingRefsRef.current[settingPanelId]?.scrollIntoView({block: 'start'});
-      setActivePanelId(settingPanelId);
-    },
-    [setActivePanelId]
-  );
+  // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView. A named
+  // row can sit far down a long panel, so it's centred instead, and flashed to mark it out.
+  const scrollToPanel = useCallback((settingPanelId, settingName) => {
+    const panel = settingRefsRef.current[settingPanelId];
+    const row = settingName != null ? panel?.querySelector(`[data-setting-name="${CSS.escape(settingName)}"]`) : null;
+
+    if (row == null) {
+      panel?.scrollIntoView({block: 'start'});
+      return;
+    }
+
+    row.scrollIntoView({block: 'center'});
+    flashRow(row);
+  }, []);
 
   function handlePageChange(newPage) {
     if (lastParentDataRef.current.page !== newPage) {
@@ -105,41 +95,54 @@ function SettingsModal({setHandleOpen}) {
     }
 
     const currentPageDecendants = PageDecendants[page];
+    const parentPanelId = PageSettingPanelIds[newPage];
+    const parentCategoryId = SettingStore.settings[parentPanelId]?.settingCategoryId;
 
     // When navigating into a descendant page, remember the parent's scroll position
     // so it can be restored when returning.
     if (currentPageDecendants != null && currentPageDecendants.includes(newPage)) {
       lastParentDataRef.current.page = page;
-      lastParentDataRef.current.scrollTop = pageContentRef.current.scrollTop;
+      // search can come in from another category, whose scroll position means nothing on the way back
+      lastParentDataRef.current.scrollTop =
+        parentCategoryId === activeCategory.id ? pageContentRef.current.scrollTop : 0;
+    }
+
+    // a descendant page belongs to a setting, so its category stays active and back returns there
+    if (parentPanelId != null) {
+      setCategoryId(parentCategoryId ?? null);
     }
 
     setPage(newPage);
   }
 
-  function handleSettingRefCallback(settingPanelId, ref) {
-    settingRefsRef.current[settingPanelId] = ref;
+  function handleGotoCategory(newCategoryId) {
+    lastParentDataRef.current = {scrollTop: 0, page: null};
+    setCategoryId(newCategoryId);
+    setPage(PageTypes.SETTINGS);
   }
 
-  function handleGotoSettingPanel(settingPanelId) {
+  const handleSettingRefCallback = useCallback((settingPanelId, ref) => {
+    settingRefsRef.current[settingPanelId] = ref;
+  }, []);
+
+  function handleGotoSettingPanel(settingPanelId, settingName) {
     if (settingPanelId == null) {
       return;
     }
 
     if (settingRefsRef.current[settingPanelId] != null) {
-      scrollToPanel(settingPanelId);
+      scrollToPanel(settingPanelId, settingName);
       return;
     }
 
-    handlePageChange(PageTypes.SETTINGS);
-    pendingScrollToSettingPanelIdRef.current = settingPanelId;
+    handleGotoCategory(SettingStore.settings[settingPanelId]?.settingCategoryId ?? null);
+    pendingScrollTargetRef.current = {settingPanelId, settingName};
   }
 
   useEffect(() => {
     setHandleOpen((isOpen, {scrollToSettingPanelId = null, page: openToPage = null} = {}) => {
       if (isOpen) {
         modalHandlers.open();
-        // Nudge signed-out users to sign in the first time they open settings.
-        maybePromptSignIn();
       } else {
         modalHandlers.close();
       }
@@ -156,6 +159,19 @@ function SettingsModal({setHandleOpen}) {
     event.stopPropagation();
   }, []);
 
+  // Mantine's own Escape listener runs on window, before a menu open in the modal can claim the key
+  const closeModal = modalHandlers.close;
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    },
+    [closeModal]
+  );
+  // keys pressed inside stop at the shadow root, so this only sees focus that's left the modal
+  useWindowEvent('keydown', handleKeyDown);
+
   // Runs when a page mounts: scroll to a pending setting panel, otherwise restore the
   // parent page's scroll position (or start at the top).
   const handlePageMount = useCallback(() => {
@@ -164,11 +180,15 @@ function SettingsModal({setHandleOpen}) {
       return;
     }
 
-    const pendingPanelId = pendingScrollToSettingPanelIdRef.current;
-    pendingScrollToSettingPanelIdRef.current = null;
+    const pendingTarget = pendingScrollTargetRef.current;
+    pendingScrollTargetRef.current = null;
 
-    if (page === PageTypes.SETTINGS && pendingPanelId != null && settingRefsRef.current[pendingPanelId] != null) {
-      scrollToPanel(pendingPanelId);
+    if (
+      page === PageTypes.SETTINGS &&
+      pendingTarget != null &&
+      settingRefsRef.current[pendingTarget.settingPanelId] != null
+    ) {
+      scrollToPanel(pendingTarget.settingPanelId, pendingTarget.settingName);
       return;
     }
 
@@ -183,11 +203,9 @@ function SettingsModal({setHandleOpen}) {
       withinPortal={false}
       fullScreen={width < 800}
       opened={open}
-      /* Events like keydown are sometimes prevented by twitch,
-      likely because it can't locate the focused element inside the shadow dom.
-      To prevent this we stop it from bubbling upstream */
-      onKeyDown={stopPropagation}
-      /* Same with youtube which will drop scroll events inside standalone window
+      closeOnEscape={false}
+      onKeyDown={handleKeyDown}
+      /* youtube will drop scroll events inside standalone window
       that don't originate from the chat container */
       onWheel={stopPropagation}
       onTouchMove={stopPropagation}
@@ -201,6 +219,9 @@ function SettingsModal({setHandleOpen}) {
           setPage: handlePageChange,
           sidenavOpen,
           setSidenavOpen,
+          categories,
+          activeCategory,
+          handleGotoCategory,
           handleGotoSettingPanel,
           closeModal: modalHandlers.close,
         }}>
@@ -209,10 +230,10 @@ function SettingsModal({setHandleOpen}) {
           <div className={styles.pageColumn} ref={pageColumnRef}>
             <PageContainer
               scrollRef={pageContentRef}
-              key={page}
+              key={`${page}-${activeCategory.id}`}
               className={styles.pageContent}
               onMount={handlePageMount}>
-              <Page page={page} handleSettingRefCallback={handleSettingRefCallback} />
+              <Page page={page} category={activeCategory} handleSettingRefCallback={handleSettingRefCallback} />
             </PageContainer>
           </div>
         </ScrollbarSizeTargetContext>

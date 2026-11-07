@@ -10,3 +10,8 @@
 .hideStories div:has(> div > button > div[class*='storiesLeftNavSectionCollapsedButton']) {
   display: none !important;
 }
+
+/* Match the group by its streak rows so this works in every locale. */
+.hideSaveYourStreak [role='group']:has(> [class*='saveYourStreakSideNavRow--']) {
+  display: none !important;
+}

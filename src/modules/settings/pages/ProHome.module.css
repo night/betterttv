@@ -3,7 +3,7 @@
   flex-shrink: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(264px, 100%), 1fr));
-  gap: 12px;
+  gap: 20px;
 }
 
 /* the bake has extra headroom above; the nudge recenters it and the live tilt stays crisp */
@@ -21,6 +21,17 @@
   padding: 12px 20px;
   border-top: 1px solid var(--mantine-color-default-border);
   background-color: var(--page-bg);
+}
+
+.premiumButtons {
+  display: flex;
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+/* the main action always sits on the right */
+.premiumButtonsReversed {
+  flex-direction: row-reverse;
 }
 
 .premiumThanks {

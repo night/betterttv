@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {addPersonalEmote, addSharedEmote, getEmoteAvailability} from '@/actions/emotes';
+import {addPersonalEmote, addSharedEmote, getEmoteAvailability, getEmoteSets} from '@/actions/emotes';
 import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
 import {AsyncStatuses, EmoteAddDestinations, EmoteAvailabilityRestrictionTypes} from '@/constants';
 import useAuthStore from '@/stores/auth';
@@ -15,10 +15,12 @@ const IDLE_ADD_STATUSES = {
 export const UNKNOWN_AVAILABILITY = {};
 
 const useEmoteModalStore = create(() => ({
-  // availabilityKey -> {channel: {canAdd, restriction}, personal: {canAdd, restriction}}
+  // availabilityKey -> add destination (an emote set's id for a set) -> {canAdd, restriction}
   availability: {},
-  // add destination -> AsyncStatuses value
+  // add destination (an emote set's id for a set) -> AsyncStatuses value
   addStatuses: {...IDLE_ADD_STATUSES},
+  // user id -> the user's emote sets besides their channel's own
+  emoteSets: {},
 }));
 
 // in-flight requests, keyed like the cache, so concurrent callers share one request
@@ -50,10 +52,7 @@ async function loadAvailability(emoteId, userId, key) {
   let result = UNKNOWN_AVAILABILITY;
   try {
     const destinations = await getEmoteAvailability(emoteId);
-    result = {
-      [EmoteAddDestinations.CHANNEL]: destinations[userId],
-      [EmoteAddDestinations.PERSONAL]: destinations.personal,
-    };
+    result = {...destinations, [EmoteAddDestinations.CHANNEL]: destinations[userId]};
   } catch {
     // settles as the retryable sentinel
   } finally {
@@ -69,11 +68,27 @@ async function loadAvailability(emoteId, userId, key) {
   return result;
 }
 
-// pending rounds up to this so fast requests still read as work. the timer runs alongside the
-// request, so slower requests add no extra wait.
-const MINIMUM_PENDING_DURATION = 500;
-// how long the settled success/error icon stays before the button returns to idle
-const SETTLED_STATUS_DURATION = 700;
+// sets can change on the website between opens, so each open reads them again
+export async function fetchEmoteSets(userId) {
+  try {
+    const emoteSets = await getEmoteSets(userId);
+    useEmoteModalStore.setState((state) => ({emoteSets: {...state.emoteSets, [userId]: emoteSets}}));
+  } catch {
+    // keeps what's known, the menu just offers fewer destinations
+  }
+}
+
+function addToDestination(emoteId, userId, destination) {
+  if (destination === EmoteAddDestinations.PERSONAL) {
+    return addPersonalEmote(emoteId, userId);
+  }
+
+  // the user's id doubles as their default channel emote set's id
+  return addSharedEmote(emoteId, userId, destination === EmoteAddDestinations.CHANNEL ? userId : destination);
+}
+
+// how long a failed add shows before it can be tried again
+const ERROR_STATUS_DURATION = 2500;
 
 // bumped on every modal open so an add still in flight from a previous open can't repaint the
 // current modal's statuses
@@ -101,7 +116,6 @@ export async function performAdd(emoteId, destination) {
     return;
   }
 
-  const addEmote = destination === EmoteAddDestinations.PERSONAL ? addPersonalEmote : addSharedEmote;
   const epoch = addEpoch;
 
   function setStatus(status) {
@@ -115,10 +129,8 @@ export async function performAdd(emoteId, destination) {
   }
 
   setStatus(AsyncStatuses.PENDING);
-  const minimumPending = wait(MINIMUM_PENDING_DURATION);
   try {
-    await addEmote(emoteId, user.id);
-    await minimumPending;
+    await addToDestination(emoteId, user.id, destination);
     const key = availabilityKey(user.id, emoteId);
     // the add consumed a slot, so every other emote's cached canAdd may now be stale. keep only
     // this emote's entry, marking the added destination, and let the rest refetch on next open
@@ -130,14 +142,12 @@ export async function performAdd(emoteId, destination) {
         },
       },
     }));
-    setStatus(AsyncStatuses.SUCCESS);
+    setStatus(AsyncStatuses.IDLE);
   } catch {
-    await minimumPending;
     setStatus(AsyncStatuses.ERROR);
+    await wait(ERROR_STATUS_DURATION);
+    setStatus(AsyncStatuses.IDLE);
   }
-
-  await wait(SETTLED_STATUS_DURATION);
-  setStatus(AsyncStatuses.IDLE);
 }
 
 // statuses outlive the modal, so every open resets them and supersedes in-flight adds

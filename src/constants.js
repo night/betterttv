@@ -102,6 +102,8 @@ export const SidebarFlags = {
   SIMILAR_CHANNELS: 1 << 6,
   STORIES: 1 << 7,
   RECOMMENDED_CATEGORIES: 1 << 8,
+  WATCH_STREAKS: 1 << 9,
+  SAVE_YOUR_STREAK: 1 << 10,
 };
 
 export const EmoteTypeFlags = {
@@ -125,8 +127,6 @@ export const ChatFlags = {
   AI_STREAM_SUMMARY: 1 << 7,
   WATCH_STREAKS: 1 << 8,
   CHAT_GIFS: 1 << 9,
-  SAVE_YOUR_STREAK: 1 << 10,
-  CHAT_WATCH_STREAKS: 1 << 11,
 };
 
 export const ChannelPointsFlags = {
@@ -210,7 +210,6 @@ export const EmoteAvailabilityRestrictionTypes = {
 export const AsyncStatuses = {
   IDLE: 'idle',
   PENDING: 'pending',
-  SUCCESS: 'success',
   ERROR: 'error',
 };
 
@@ -267,12 +266,8 @@ export const SettingsPromotions = {
   // CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
   // SELF_BOT: 'settingsPromotionDismissedSelfBot',
   // SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
-  SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
-  USERNAME_HOVER_EFFECT: 'settingsPromotionDismissedUsernameHoverEffect',
-};
-
-export const SettingsPrompts = {
-  SIGN_IN: 'settingsSignInPromptSeen',
+  // SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
+  // USERNAME_HOVER_EFFECT: 'settingsPromotionDismissedUsernameHoverEffect',
 };
 
 /** Default Mantine `theme.primaryColor` key when unset or invalid. */
@@ -318,7 +313,9 @@ export const SettingDefaultValues = {
       SidebarFlags.RECENTLY_WATCHED_CHANNELS |
       SidebarFlags.SIMILAR_CHANNELS |
       SidebarFlags.STORIES |
-      SidebarFlags.RECOMMENDED_CATEGORIES,
+      SidebarFlags.RECOMMENDED_CATEGORIES |
+      SidebarFlags.WATCH_STREAKS |
+      SidebarFlags.SAVE_YOUR_STREAK,
     0,
   ],
   [SettingIds.EMOTES]: [
@@ -339,9 +336,7 @@ export const SettingDefaultValues = {
       ChatFlags.CHAT_MESSAGE_HISTORY |
       ChatFlags.AI_STREAM_SUMMARY |
       ChatFlags.WATCH_STREAKS |
-      ChatFlags.CHAT_GIFS |
-      ChatFlags.SAVE_YOUR_STREAK |
-      ChatFlags.CHAT_WATCH_STREAKS,
+      ChatFlags.CHAT_GIFS,
     0,
   ],
   [SettingIds.AUTO_PLAY]: [
@@ -421,7 +416,15 @@ export const ExternalLinks = {
   TERMS: 'https://betterttv.com/terms',
   PRIVACY: 'https://betterttv.com/privacy',
   DEVELOPER_API: 'https://betterttv.com/developers/api',
-  PRO: 'https://betterttv.com/dashboard/pro',
+  PRO: 'https://betterttv.com/dashboard/account/subscription',
+  DASHBOARD_CHANNEL_EMOTES: 'https://betterttv.com/dashboard/emotes/channel',
+  DASHBOARD_PERSONAL_EMOTES: 'https://betterttv.com/dashboard/emotes/personal',
+  DASHBOARD_UPLOADS: 'https://betterttv.com/dashboard/emotes/upload',
+  DASHBOARD_APPEARANCE: 'https://betterttv.com/dashboard/account/appearance',
+  DASHBOARD_CONNECTIONS: 'https://betterttv.com/dashboard/account/connections',
+  DASHBOARD_EDITORS: 'https://betterttv.com/dashboard/editors',
+  DASHBOARD_BOTS: 'https://betterttv.com/dashboard/bots',
+  DASHBOARD_CHANNEL_POINTS: 'https://betterttv.com/dashboard/twitch_channel_points_reward',
 };
 
 export const CommandProviders = {
@@ -491,4 +494,11 @@ export const UsernameHoverEffects = {
   FLIP: 'flip',
   BOUNCE: 'bounce',
   WAVE: 'wave',
+};
+
+// api contract strings, keep in sync with betterttv-private
+export const UsernameFonts = {
+  FORMAL: 'formal',
+  TYPEWRITER: 'typewriter',
+  COMIC: 'comic',
 };

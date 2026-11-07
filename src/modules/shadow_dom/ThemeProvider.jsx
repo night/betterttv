@@ -5,6 +5,7 @@ import {
   Badge,
   Button,
   Checkbox,
+  CloseButton,
   alpha,
   createTheme,
   defaultVariantColorsResolver,
@@ -13,6 +14,7 @@ import {
   Input,
   Kbd,
   MantineProvider,
+  Menu,
   parseThemeColor,
   Pill,
   Radio,
@@ -23,6 +25,7 @@ import {
 } from '@mantine/core';
 import {useMounted} from '@mantine/hooks';
 import {ModalsProvider} from '@mantine/modals';
+import {X} from 'lucide-react';
 import React, {useMemo, useRef} from 'react';
 import {LoaderIconError, LoaderIconIndicator, LoaderIconSuccess} from '@/common/components/LoaderIcon';
 import {PortalContext} from '@/common/contexts/PortalContext';
@@ -32,10 +35,13 @@ import {DEFAULT_PRIMARY_COLOR, SettingIds} from '@/constants';
 import badgeStyles from '@/modules/shadow_dom/styles/badge.module.css';
 import buttonStyles from '@/modules/shadow_dom/styles/button.module.css';
 import checkboxStyles from '@/modules/shadow_dom/styles/checkbox.module.css';
+import closeButtonStyles from '@/modules/shadow_dom/styles/close-button.module.css';
 import comboboxStyles from '@/modules/shadow_dom/styles/combobox.module.css';
 import inputStyles from '@/modules/shadow_dom/styles/input.module.css';
 import kbdStyles from '@/modules/shadow_dom/styles/kbd.module.css';
+import menuStyles from '@/modules/shadow_dom/styles/menu.module.css';
 import pillStyles from '@/modules/shadow_dom/styles/pill.module.css';
+import pressableStyles from '@/modules/shadow_dom/styles/pressable.module.css';
 import radioStyles from '@/modules/shadow_dom/styles/radio.module.css';
 import switchStyles from '@/modules/shadow_dom/styles/switch.module.css';
 
@@ -43,12 +49,17 @@ const mantineTheme = createTheme({
   primaryColor: DEFAULT_PRIMARY_COLOR,
   primaryShade: 6,
   cursorType: 'pointer',
+  // the press style: a dimmer step instead of Mantine's nudge down
+  activeClassName: pressableStyles.pressable,
   fontSizes: {
     xs: '0.75rem',
     sm: '1rem',
     md: '1.25rem',
     lg: '1.5rem',
     xl: '1.75rem',
+    // the small-caps labels (table heads, footer headings), 11px: sm is too small for letter-spaced
+    // capitals
+    label: '1.1rem',
   },
   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   headings: {
@@ -121,7 +132,23 @@ const mantineTheme = createTheme({
     Switch: Switch.extend({classNames: switchStyles}),
     Checkbox: Checkbox.extend({classNames: checkboxStyles}),
     Radio: Radio.extend({classNames: radioStyles}),
-    Input: Input.extend({classNames: inputStyles}),
+    Input: Input.extend({
+      classNames: {wrapper: inputStyles.wrapper},
+      defaultProps: {radius: 'lg'},
+    }),
+    InputWrapper: Input.Wrapper.extend({
+      classNames: {label: inputStyles.label, description: inputStyles.description},
+    }),
+    Menu: Menu.extend({
+      classNames: {
+        dropdown: menuStyles.dropdown,
+        item: menuStyles.item,
+        itemLabel: menuStyles.itemLabel,
+        itemSection: menuStyles.itemSection,
+      },
+      defaultProps: {radius: 'lg', shadow: 'lg'},
+    }),
+    CloseButton: CloseButton.extend({defaultProps: {icon: <X className={closeButtonStyles.icon} />}}),
     Autocomplete: Autocomplete.extend({
       classNames: comboboxStyles,
       defaultProps: {scrollAreaProps: {classNames: {content: comboboxStyles.scrollAreaContent}}},
@@ -181,6 +208,10 @@ const resolver = (theme) => ({
   },
   dark: {
     '--mantine-color-text': 'var(--mantine-color-dark-0)',
+    // Mantine's dark-2 (#828282) misses WCAG AA's 4.5:1 on every surface lighter than the deepest
+    '--mantine-color-dimmed': '#999999',
+    // one red for every error: Mantine's red-8 default misses 4.5:1 on the dialog surface
+    '--mantine-color-error': 'var(--mantine-color-red-5)',
     '--mantine-color-text-inverse': 'var(--mantine-color-gray-9)',
     '--mantine-color-dimmed-inverse': 'var(--mantine-color-gray-6)',
     '--mantine-color-default-border': 'var(--mantine-color-dark-6)',

@@ -45,12 +45,12 @@ class Settings extends SafeEventEmitter {
     const oldSettings = storage.get(SETTINGS_STORAGE_KEY);
     settings = {...defaultSettings, ...oldSettings};
 
-    if (oldSettings == null || (oldSettings != null && oldSettings.version == null)) {
+    this.upgrade(settings.version ?? EXT_VER, oldSettings);
+
+    if (settings.version == null) {
       settings = {...settings, version: EXT_VER};
       storage.set(SETTINGS_STORAGE_KEY, settings);
     }
-
-    this.upgrade(settings.version, oldSettings != null);
   }
 
   getSettings() {
@@ -113,7 +113,7 @@ class Settings extends SafeEventEmitter {
     return value;
   }
 
-  upgrade(version, hadPersistedSettings) {
+  upgrade(version, oldSettings) {
     if (semver.lt(version, '7.5.5')) {
       // now storing emote menu as an enum rather than a boolean
       const oldEmoteMenuValue = this.get(SettingIds.LEGACY_EMOTE_MENU);
@@ -131,19 +131,30 @@ class Settings extends SafeEventEmitter {
       }
     }
 
-    this.applyFlagDefaults();
-
-    const [chatFlags, changedChatFlags] = settings[SettingIds.CHAT];
-    if (hadPersistedSettings && !hasFlag(changedChatFlags, ChatFlags.CHAT_WATCH_STREAKS)) {
-      // WATCH_STREAKS previously controlled both the sidebar badges and chat
-      // milestone messages. Preserve that choice when splitting the controls.
-      const newChatFlags = setFlag(
-        chatFlags,
-        ChatFlags.CHAT_WATCH_STREAKS,
-        hasFlag(chatFlags, ChatFlags.WATCH_STREAKS)
-      );
-      this.set(SettingIds.CHAT, [newChatFlags, changedChatFlags | ChatFlags.CHAT_WATCH_STREAKS]);
+    if (oldSettings != null) {
+      this.migrateSidebarWatchStreaks(oldSettings);
     }
+    this.applyFlagDefaults();
+  }
+
+  migrateSidebarWatchStreaks(oldSettings) {
+    const newSidebarFlags = SidebarFlags.WATCH_STREAKS | SidebarFlags.SAVE_YOUR_STREAK;
+    const [defaultSidebarFlags] = SettingDefaultValues[SettingIds.SIDEBAR];
+    const oldDefaults = defaultSidebarFlags & ~newSidebarFlags;
+    const sidebar = oldSettings[SettingIds.SIDEBAR] == null ? oldDefaults : settings[SettingIds.SIDEBAR];
+    const [flags, changedFlags] = Array.isArray(sidebar) ? sidebar : [sidebar, getChangedFlags(oldDefaults, sidebar)];
+
+    // An enabled bit or an explicit override means the sidebar choice is already independent.
+    if (hasFlag(flags | changedFlags, SidebarFlags.WATCH_STREAKS)) return;
+
+    const chat = oldSettings[SettingIds.CHAT];
+    const [chatFlags, changedChatFlags] = typeof chat === 'number' ? [chat, ChatFlags.WATCH_STREAKS] : (chat ?? [0, 0]);
+    const hideWatchStreaks =
+      hasFlag(changedChatFlags, ChatFlags.WATCH_STREAKS) && !hasFlag(chatFlags, ChatFlags.WATCH_STREAKS);
+    this.set(SettingIds.SIDEBAR, [
+      setFlag(flags | (newSidebarFlags & ~changedFlags), SidebarFlags.WATCH_STREAKS, !hideWatchStreaks),
+      changedFlags | (hideWatchStreaks ? SidebarFlags.WATCH_STREAKS : 0),
+    ]);
   }
 
   applyFlagDefaults() {

@@ -80,3 +80,9 @@ export function isStandaloneWindow() {
 
   return false;
 }
+
+// obs (window.obsstudio) and streamlabs (electron) send window.open to the system browser, where
+// the popup can't message back
+export function canOpenPopup() {
+  return window.obsstudio == null && !navigator.userAgent.includes('Electron/');
+}

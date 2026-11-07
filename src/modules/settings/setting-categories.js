@@ -1,21 +1,13 @@
-import {
-  faComment,
-  faDisplay,
-  faEllipsis,
-  faFaceSmile,
-  faPalette,
-  faRobot,
-  faShieldHalved,
-  faTowerBroadcast,
-} from '@fortawesome/free-solid-svg-icons';
+import {Bot, Ellipsis, MessageSquare, Monitor, PaintbrushVertical, RadioTower, ShieldHalf, Smile} from 'lucide-react';
 import formatMessage from '@/i18n/index';
+import {registerSearchEntry} from './search-entries';
 import {SettingCategoryIds} from './stores/setting-store';
 
-// Key order defines the display order of the categories in both the side navigation and on the
-// settings page, so the two always match. Settings order within a category by registration order,
-// and declare their category via registerSetting's settingCategoryId.
+// Key order defines the display order of the categories in the side navigation, where each one
+// opens its own page. Settings order within a category by registration order, and declare their
+// category via registerSetting's settingCategoryId.
 const CATEGORY_LABELS = {
-  [SettingCategoryIds.APPEARANCE]: formatMessage({defaultMessage: 'Appearance'}),
+  [SettingCategoryIds.USERNAME]: formatMessage({defaultMessage: 'Username'}),
   [SettingCategoryIds.EMOTES]: formatMessage({defaultMessage: 'Emotes'}),
   [SettingCategoryIds.BOTS]: formatMessage({defaultMessage: 'Bots'}),
   [SettingCategoryIds.CHAT]: formatMessage({defaultMessage: 'Chat'}),
@@ -26,15 +18,19 @@ const CATEGORY_LABELS = {
 };
 
 const CATEGORY_ICONS = {
-  [SettingCategoryIds.APPEARANCE]: faPalette,
-  [SettingCategoryIds.EMOTES]: faFaceSmile,
-  [SettingCategoryIds.BOTS]: faRobot,
-  [SettingCategoryIds.CHAT]: faComment,
-  [SettingCategoryIds.CHANNEL]: faTowerBroadcast,
-  [SettingCategoryIds.MODERATION]: faShieldHalved,
-  [SettingCategoryIds.INTERFACE]: faDisplay,
-  [SettingCategoryIds.OTHER]: faEllipsis,
+  [SettingCategoryIds.USERNAME]: PaintbrushVertical,
+  [SettingCategoryIds.EMOTES]: Smile,
+  [SettingCategoryIds.BOTS]: Bot,
+  [SettingCategoryIds.CHAT]: MessageSquare,
+  [SettingCategoryIds.CHANNEL]: RadioTower,
+  [SettingCategoryIds.MODERATION]: ShieldHalf,
+  [SettingCategoryIds.INTERFACE]: Monitor,
+  [SettingCategoryIds.OTHER]: Ellipsis,
 };
+
+for (const [categoryId, label] of Object.entries(CATEGORY_LABELS)) {
+  registerSearchEntry({query: label, categoryId});
+}
 
 // Group the given settings into their categories (in category-defined order), dropping categories
 // with no settings on the current platform.
@@ -57,10 +53,4 @@ export function groupSettingsByCategory(settings) {
   }
 
   return groups;
-}
-
-// Flat, category-ordered list of settings. The settings page renders in this order so its panels
-// line up with the side navigation.
-export function orderSettingsByCategory(settings) {
-  return groupSettingsByCategory(settings).flatMap((group) => group.settings);
 }

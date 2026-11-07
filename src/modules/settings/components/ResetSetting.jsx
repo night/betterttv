@@ -12,6 +12,8 @@ import useAuthStore from '@/stores/auth';
 import {isUserPro} from '@/utils/pro';
 import SettingWrapper from './SettingWrapper';
 
+export const RESET_SETTING_NAME = formatMessage({defaultMessage: 'Reset your settings'});
+
 function ResetSetting({description, disabled, resetting, setResetting}) {
   const [cloudBackupSettings, setCloudBackupSettings] = useCloudBackupSettings();
   const currentUser = useAuthStore(useShallow((state) => state.user));
@@ -58,7 +60,7 @@ function ResetSetting({description, disabled, resetting, setResetting}) {
   }
 
   return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Reset to Default'})} description={description}>
+    <SettingWrapper reverse name={RESET_SETTING_NAME} description={description}>
       <Button size="lg" color="red" disabled={disabled} loading={resetting} onClick={handleReset}>
         {formatMessage({defaultMessage: 'Reset'})}
       </Button>

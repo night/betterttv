@@ -1,9 +1,7 @@
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Button,
   Checkbox,
-  NativeSelect,
   Pill,
   Table,
   TableTbody,
@@ -15,9 +13,10 @@ import {
   TextInput,
 } from '@mantine/core';
 import classNames from 'classnames';
+import {Trash2} from 'lucide-react';
 import React, {useCallback, useMemo, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import Icon from '@/common/components/Icon';
+import SelectMenu from '@/common/components/SelectMenu';
 import useEntryListState from '@/common/hooks/EntryListState';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
@@ -30,10 +29,18 @@ import styles from './SettingSelfBotCommands.module.css';
 
 const FREE_COMMAND_LIMIT = 5;
 
+const USER_LEVEL_OPTIONS = [
+  {label: formatMessage({defaultMessage: 'Everyone'}), value: SelfBotUserLevels.EVERYONE},
+  {label: formatMessage({defaultMessage: 'VIP'}), value: SelfBotUserLevels.VIP},
+  {label: formatMessage({defaultMessage: 'Subscriber'}), value: SelfBotUserLevels.SUBSCRIBER},
+  {label: formatMessage({defaultMessage: 'Moderator'}), value: SelfBotUserLevels.MOD},
+];
+
 function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCallback, ...props}) {
   const onUpdate = useCallback((newData) => updateHandler(id, newData), [updateHandler, id]);
   const onDelete = useCallback(() => deleteHandler(id), [deleteHandler, id]);
   const handleEnabledChange = useCallback(({target: {checked}}) => onUpdate({enabled: checked}), [onUpdate]);
+  const handleUserLevelChange = useCallback((newUserLevel) => onUpdate({userLevel: newUserLevel}), [onUpdate]);
   const commandInputRef = useCallback((ref) => commandInputRefCallback(id, ref), [commandInputRefCallback, id]);
 
   const userLevel = data.userLevel ?? SelfBotUserLevels.EVERYONE;
@@ -79,18 +86,13 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
         />
       </TableTd>
       <TableTd className={classNames(tableStyles.dataCellMiddle, tableStyles.selectColumn, styles.userLevelColumn)}>
-        <NativeSelect
-          variant="unstyled"
-          classNames={{input: tableStyles.selectInput}}
+        <SelectMenu
+          variant="transparent"
+          className={tableStyles.selectTrigger}
+          ariaLabel={formatMessage({defaultMessage: 'Who can use this command'})}
+          options={USER_LEVEL_OPTIONS}
           value={userLevel}
-          data={[
-            {label: formatMessage({defaultMessage: 'Everyone'}), value: SelfBotUserLevels.EVERYONE},
-            {label: formatMessage({defaultMessage: 'VIP'}), value: SelfBotUserLevels.VIP},
-            {label: formatMessage({defaultMessage: 'Subscriber'}), value: SelfBotUserLevels.SUBSCRIBER},
-            {label: formatMessage({defaultMessage: 'Moderator'}), value: SelfBotUserLevels.MOD},
-          ]}
-          size="lg"
-          onChange={({target: {value}}) => onUpdate({userLevel: Number.parseInt(value, 10)})}
+          onChange={handleUserLevelChange}
         />
       </TableTd>
       <TableTd className={classNames(tableStyles.dataCellMiddle, tableStyles.actionsColumn)}>
@@ -101,7 +103,7 @@ function CommandRow({id, data, updateHandler, deleteHandler, commandInputRefCall
           size="sm"
           classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
-          <Icon icon={faTrash} />
+          <Trash2 size={16} />
         </ActionIcon>
       </TableTd>
     </TableTr>
