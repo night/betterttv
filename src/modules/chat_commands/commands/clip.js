@@ -42,9 +42,11 @@ async function waitForClip(slug) {
   for (let attempt = 0; attempt < CLIP_POLL_ATTEMPTS; attempt++) {
     await new Promise((resolve) => setTimeout(resolve, CLIP_POLL_INTERVAL_MS));
     const {data} = await twitch.graphqlQuery(clipThumbnailQuery, {slug});
-    if (data.clip?.thumbnailURL) {
-      return true;
+    // thumbnailURL is an empty string while the clip is processing
+    if (!data.clip?.thumbnailURL) {
+      continue;
     }
+    return true;
   }
 
   return false;
