@@ -34,6 +34,9 @@ const inverseItemVars = () => ({
 
 const NO_EMOTE_SETS = [];
 
+// the website's spinner
+const ADD_LOADER_PROPS = {type: 'oval'};
+
 // why a still-loaded emote can't be added to a destination, for the reasons the api reports
 function restrictionTooltip(restriction) {
   switch (restriction) {
@@ -80,6 +83,7 @@ function AddButton({state, tooltip, onClick, children, ...props}) {
       <Button
         {...props}
         loading={state.status === AsyncStatuses.PENDING}
+        loaderProps={ADD_LOADER_PROPS}
         data-disabled={state.disabled || undefined}
         aria-disabled={state.disabled || undefined}
         onClick={state.disabled || state.status !== AsyncStatuses.IDLE ? undefined : onClick}>
