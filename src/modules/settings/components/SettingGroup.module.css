@@ -3,9 +3,6 @@
   flex-direction: column;
   --setting-panel-padding: 0;
   gap: 12px;
-  /* with the page's 20px gap, 40px between groups; the checkbox and radio groups wrap their section,
-     so a sibling selector wouldn't reach them */
-  margin-bottom: 20px;
   scroll-margin-top: 20px;
 }
 

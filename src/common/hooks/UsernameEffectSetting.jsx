@@ -3,7 +3,7 @@ import {useShallow} from 'zustand/react/shallow';
 import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import useFeatureEligibilityStore, {fetchEligibility} from '@/stores/feature-eligibility';
-import {setTriedLook, setUsernameLook} from '@/stores/username-looks';
+import {setUsernameLook} from '@/stores/username-looks';
 import {getCurrentChannel} from '@/utils/channel';
 import useDebouncedRemoteState from './DebouncedRemoteState';
 
@@ -100,11 +100,5 @@ export default function useUsernameEffectSetting({
     [eligibilityUserId, user?.id, isEligible, eligibility]
   );
 
-  // a hovered card tries its value in the chat preview; leaving it passes undefined, which ends the try
-  const handlePreview = useCallback(
-    (newValue) => setTriedLook(userField, newValue === NONE ? null : newValue),
-    [userField]
-  );
-
-  return [value, handleChange, isLocked, handlePreview];
+  return [value, handleChange, isLocked];
 }

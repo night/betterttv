@@ -88,7 +88,7 @@ function SettingUsernameFont() {
   const user = useAuthStore((state) => state.user);
   const previewDisplayName = getPreviewDisplayName(currentUser, user);
 
-  const [value, handleChange, isLocked, handlePreview] = useUsernameEffectSetting({
+  const [value, handleChange, isLocked] = useUsernameEffectSetting({
     userField: 'usernameFont',
     saveEffect: updateUsernameFont,
     isEligible: isEligibleForUsernameFont,
@@ -101,7 +101,6 @@ function SettingUsernameFont() {
       <SettingRadioCard
         key={NONE}
         value={NONE}
-        onHover={handlePreview}
         className={styles.usernameCard}
         tooltip={formatMessage({defaultMessage: 'Default font'})}
         ariaLabel={formatMessage({defaultMessage: 'Default font'})}
@@ -112,7 +111,6 @@ function SettingUsernameFont() {
         <SettingRadioCard
           key={fontValue}
           value={fontValue}
-          onHover={handlePreview}
           locked={isLocked(fontValue)}
           className={styles.usernameCard}
           tooltip={label}
