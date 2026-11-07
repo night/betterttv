@@ -1,5 +1,4 @@
-/* the website's browse search (betterttv-web/src/components/emotes/EmoteSearch.module.css), filling the
-   sidebar header's row */
+/* the website's browse search (betterttv-web/src/components/emotes/EmoteSearch.module.css) */
 .root {
   flex: 1;
   min-width: 0;
@@ -25,8 +24,7 @@
   pointer-events: none;
 }
 
-/* the ghost field: a faint wash and no border until it's used, with the logo in place of the search
-   icon. only leaving the field fades, so focusing it, often by keyboard, is instant */
+/* until it's used: a faint wash, no border. only leaving fades, so focusing by keyboard is instant */
 .root[data-ghost] input {
   background-color: color-mix(in srgb, var(--mantine-color-text) 4%, transparent);
   border-color: transparent;

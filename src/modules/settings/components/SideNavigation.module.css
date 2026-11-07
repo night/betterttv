@@ -169,7 +169,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 64px;
+  box-sizing: border-box;
+  height: var(--header-height);
   flex-shrink: 0;
   padding: 0 var(--sidenav-h-padding);
   border-bottom: 1px solid var(--mantine-color-default-border);
