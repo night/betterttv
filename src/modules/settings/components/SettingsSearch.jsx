@@ -3,6 +3,7 @@ import {useWindowEvent} from '@mantine/hooks';
 import classNames from 'classnames';
 import {Search, SquareArrowOutUpRight} from 'lucide-react';
 import React, {use, useCallback, useId, useMemo, useRef, useState} from 'react';
+import LogoIcon from '@/common/components/LogoIcon';
 import usePortalRef from '@/common/hooks/PortalRef';
 import formatMessage from '@/i18n/index';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
@@ -12,7 +13,7 @@ import {isMac} from '@/utils/window';
 import styles from './SettingsSearch.module.css';
 
 const SIDEBAR_MIN_WIDTH = 800;
-const MOD_KEY_LABEL = isMac() ? '⌘' : 'Ctrl';
+const SHORTCUT_LABEL = isMac() ? '⌘K' : 'Ctrl K';
 
 // the return arrow, drawn at the letters' weight to match ⌘ and K
 const RETURN_GLYPH = (
@@ -143,6 +144,7 @@ const SearchRow = React.memo(function SearchRow({id, row, index, selected, press
   );
 });
 
+// The sidebar header's search. Until it's used it's a ghost field, with the logo in place of the search icon.
 function SettingsSearch({onAccept}) {
   const {setPage, setSidenavOpen, categories, handleGotoCategory, handleGotoSettingPanel} = use(PageContext);
   const portalRef = usePortalRef();
@@ -263,11 +265,11 @@ function SettingsSearch({onAccept}) {
   useWindowEvent('keydown', handleShortcut, true);
 
   const opened = focused && query.trim() !== '';
-  const showShortcut = !focused && query === '';
+  const ghosted = !focused && query === '';
   const showEnter = focused && rows.length > 0;
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-ghost={ghosted || undefined}>
       {opened ? <div className={styles.dim} /> : null}
       <div className={styles.field}>
         <Popover
@@ -285,7 +287,7 @@ function SettingsSearch({onAccept}) {
               data-autofocus={window.innerWidth >= SIDEBAR_MIN_WIDTH || undefined}
               size="lg"
               radius="lg"
-              classNames={showShortcut || showEnter ? searchHintClassNames : searchClassNames}
+              classNames={ghosted || showEnter ? searchHintClassNames : searchClassNames}
               value={query}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
@@ -297,13 +299,20 @@ function SettingsSearch({onAccept}) {
               role="combobox"
               aria-autocomplete="list"
               aria-activedescendant={opened && rows.length > 0 ? `${listId}-${activeIndex}` : undefined}
-              leftSection={<Search size={18} />}
-              rightSection={
-                showShortcut ? (
-                  <span className={styles.hint} aria-hidden="true">
-                    <Kbd className={styles.kbd}>{MOD_KEY_LABEL}</Kbd>
-                    <Kbd className={styles.kbd}>K</Kbd>
+              leftSection={
+                ghosted ? (
+                  <span className={styles.ghostLogo}>
+                    <LogoIcon width={20} height={20} />
                   </span>
+                ) : (
+                  <Search size={18} />
+                )
+              }
+              rightSection={
+                ghosted ? (
+                  <Kbd className={styles.kbd} aria-hidden="true">
+                    {SHORTCUT_LABEL}
+                  </Kbd>
                 ) : showEnter ? (
                   <Kbd
                     className={classNames(styles.kbd, styles.kbdEnter)}

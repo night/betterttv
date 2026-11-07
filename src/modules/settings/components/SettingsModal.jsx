@@ -198,7 +198,8 @@ function SettingsModal({setHandleOpen}) {
   return (
     <Modal
       size="xl"
-      radius="lg"
+      // 18px on twitch's 10px root (Mantine reads px against 16px), parallel to the 10px corners 8px inside
+      radius="1.8rem"
       centered
       withinPortal={false}
       fullScreen={width < 800}
