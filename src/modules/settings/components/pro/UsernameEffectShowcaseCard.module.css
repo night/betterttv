@@ -1,0 +1,64 @@
+/* out of flow so extra rows overflow the fixed-height preview and clip instead of growing it */
+.showcaseMarqueeStack {
+  position: absolute;
+  top: 50%;
+  left: -10%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 120%;
+  transform: translateY(-50%) rotate(-4deg);
+}
+
+/* safe as css only because the sweeps are frozen below; with them animating this ran at 23fps */
+.showcaseMarquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  /* 130s covers one ~780px group, matching the old marquee drift of roughly 6px/s */
+  animation: marquee-scroll 130s linear infinite;
+}
+
+.showcaseMarquee:nth-child(even) {
+  animation-direction: reverse;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    /* one of the four identical groups */
+    transform: translateX(-25%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcaseMarquee {
+    animation: none;
+  }
+}
+
+.showcaseMarqueeGroup {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding-right: 32px;
+}
+
+/* frozen: 100 sweeping gradient texts repaint every frame; two classes outweigh the effect
+   class without !important */
+.showcaseMarqueeGroup .showcaseName {
+  animation: none;
+}
+
+.showcaseName {
+  display: block;
+  overflow: hidden;
+  max-width: 280px;
+  font-size: 26px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

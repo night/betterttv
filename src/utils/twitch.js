@@ -1,11 +1,12 @@
-import cookies from 'cookies-js';
 import gql from 'graphql-tag';
+import {getCookie} from '@/utils/cookies';
 import watcher from '@/watcher';
 import {getCurrentChannel, setCurrentChannel} from './channel';
 import debug from './debug';
 import {getCurrentUser, setCurrentUser} from './user';
 
 const REACT_ROOT = '#root';
+const CHAT_INPUT_CONTAINER = '.chat-input';
 const CHAT_CONTAINER = 'section[data-test-selector="chat-room-component-layout"]';
 const VOD_CHAT_CONTAINER = '.qa-vod-chat,.va-vod-chat,.video-chat';
 const CHAT_LIST = '.chat-list,.chat-list--default,.chat-list--other';
@@ -105,7 +106,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 let chatClient;
 const profilePicturesByUserId = {};
 
-const userCookie = cookies.get('twilight-user');
+const userCookie = getCookie('twilight-user');
 if (userCookie) {
   try {
     const {id, login, displayName} = JSON.parse(userCookie);
@@ -172,6 +173,14 @@ export default {
       );
       chatColor = node.memoizedProps.data.currentUser.chatColor;
     } catch (_) {}
+
+    // the carousel is only on pages with a chat input; twitch's cache has the account everywhere
+    if (chatColor == null) {
+      try {
+        const store = this.getApolloClient().cache.data;
+        chatColor = store.lookup(store.lookup('ROOT_QUERY').currentUser.__ref).chatColor ?? null;
+      } catch (_) {}
+    }
 
     return chatColor;
   },
@@ -369,21 +378,6 @@ export default {
     } catch (_) {}
 
     return broadcaster;
-  },
-
-  getCurrentPlayerSource() {
-    const managers = searchReactParents(
-      getReactInstance(document.querySelector(PLAYER)),
-      (node) => node.type?.displayName === 'VideoPlayerCoreCommonManagers',
-      60
-    );
-    return searchReactChildren(
-      managers,
-      (node) =>
-        typeof node.stateNode?.setSrc === 'function' &&
-        typeof node.stateNode?.setInitialPlaybackSettings === 'function',
-      30
-    )?.stateNode;
   },
 
   getCurrentPlayer() {
@@ -695,6 +689,13 @@ export default {
     return currentUser.id === currentChannel.id;
   },
 
+  // the chat controller carries live status in both channel and popout chat;
+  // an unknown value reads as offline so consumers fail quiet
+  getCurrentChannelIsLive() {
+    const currentChat = this.getCurrentChat();
+    return currentChat?.props?.isLive === true;
+  },
+
   getChatInput(element = null) {
     let chatInput;
     try {
@@ -904,12 +905,30 @@ export default {
     return privateCalloutEvent;
   },
 
+  getClaimableBonus(element) {
+    let claimableBonus;
+    try {
+      const node = searchReactParents(
+        getReactInstance(element),
+        (n) => n.memoizedProps?.claimCommunityPoints != null && n.stateNode?.state != null,
+        30
+      );
+      claimableBonus = node.stateNode;
+    } catch (e) {}
+
+    return claimableBonus;
+  },
+
   graphqlQuery(query, variables, options = {}) {
     const client = this.getApolloClient();
     if (client == null) {
       return Promise.reject(new Error('unable to locate Twitch Apollo client'));
     }
-    return client.query({query, variables, ...options});
+    // our queries only read, so keep their results out of twitch's normalized cache. a selection
+    // that lacks the fields twitch keys an entity on (e.g. channel.self without id) is written
+    // inline over twitch's reference, orphaning everything it cached there and forcing it to
+    // refetch, which is what broke the native emote picker
+    return client.query({query, variables, fetchPolicy: 'no-cache', ...options});
   },
 
   graphqlMutation(mutation, variables) {
@@ -942,5 +961,21 @@ export default {
     } catch (_) {}
 
     return user;
+  },
+
+  getGifPickerController() {
+    let gifPickerController;
+    try {
+      // the controller sits in the chat input's subtree, wrapped in apollo hocs that expose its
+      // props before channelData is injected, so match the inner instance that already has it
+      const node = searchReactChildren(
+        getReactInstance(document.querySelector(CHAT_INPUT_CONTAINER)),
+        (n) => n.memoizedProps?.onSelectGif != null && n.memoizedProps?.channelData?.user != null,
+        50
+      );
+      gifPickerController = node.memoizedProps;
+    } catch (_) {}
+
+    return gifPickerController;
   },
 };

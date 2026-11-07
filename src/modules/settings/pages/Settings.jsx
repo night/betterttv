@@ -1,15 +1,13 @@
 import {Text, Button} from '@mantine/core';
 import {useInView} from 'framer-motion';
-import React, {use, useCallback, useEffect, useMemo, useRef} from 'react';
-import useScrollSpy from '@/common/hooks/ScrollSpy';
+import React, {useCallback, useEffect, useRef} from 'react';
 import formatMessage from '@/i18n/index';
 import PageHeader from '@/modules/settings/components/PageHeader';
-import PageScrollBody, {PageScrollContext} from '@/modules/settings/components/PageScrollBody';
+import PageScrollBody from '@/modules/settings/components/PageScrollBody';
 import Panel from '@/modules/settings/components/Panel';
-import {orderSettingsByCategory} from '@/modules/settings/setting-categories';
+import UsernameChatPreview from '@/modules/settings/components/UsernameChatPreview';
 import promotionStore from '@/modules/settings/stores/promotion-store';
-import SettingStore from '@/modules/settings/stores/setting-store';
-import useSettingsNavigationStore from '@/modules/settings/stores/settings-navigation';
+import {SettingCategoryIds} from '@/modules/settings/stores/setting-store';
 import extension from '@/utils/extension';
 import styles from './Settings.module.css';
 
@@ -79,44 +77,11 @@ const SettingsList = React.memo(function SettingsList({settings, handleSettingRe
   ));
 });
 
-function Settings({handleSettingRefCallback}) {
-  const settings = useMemo(() => orderSettingsByCategory(SettingStore.getSupportedSettings()), []);
-  const scrollRef = use(PageScrollContext);
-  const setActivePanelId = useSettingsNavigationStore((state) => state.setActivePanelId);
-
-  // Tag each panel with its id so the scroll spy can discover it and report which one is in view.
-  const handleSettingRef = useCallback(
-    (settingPanelId, element) => {
-      if (element != null) {
-        element.dataset.settingPanelId = settingPanelId;
-      }
-      handleSettingRefCallback(settingPanelId, element);
-    },
-    [handleSettingRefCallback]
-  );
-
-  // The page header is a (non-sticky) sibling above the scroll area, so the scroll area's own top
-  // already sits clear of it. The detection line only accounts for the panels' scroll-margin, so a
-  // panel activates once its top reaches the same offset scroll-into-view leaves it at.
-  const getScrollOffset = useCallback(() => {
-    const scroller = scrollRef?.current;
-    if (scroller == null) {
-      return 0;
-    }
-    return parseFloat(getComputedStyle(scroller).getPropertyValue('--page-scroll-margin-top')) || 0;
-  }, [scrollRef]);
-
-  useScrollSpy({
-    scrollHost: scrollRef,
-    selector: '[data-setting-panel-id]',
-    getValue: (element) => element.dataset.settingPanelId,
-    getOffset: getScrollOffset,
-    onActive: setActivePanelId,
-  });
-
+function Settings({category, handleSettingRefCallback}) {
   return (
-    <PageScrollBody header={<PageHeader leftContent={formatMessage({defaultMessage: 'Settings'})} />}>
-      <SettingsList settings={settings} handleSettingRefCallback={handleSettingRef} />
+    <PageScrollBody header={<PageHeader leftContent={category.label} />}>
+      {category.id === SettingCategoryIds.USERNAME ? <UsernameChatPreview /> : null}
+      <SettingsList settings={category.settings} handleSettingRefCallback={handleSettingRefCallback} />
     </PageScrollBody>
   );
 }

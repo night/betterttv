@@ -8,7 +8,7 @@ import SettingKeywords from '@/modules/settings/components/SettingKeywords';
 import {PageContext} from '@/modules/settings/contexts/PageContext';
 
 function BlacklistKeywords() {
-  const {setPage} = use(PageContext);
+  const {setPage, activeCategory} = use(PageContext);
   const [value, setValue] = useStorageState(SettingIds.BLACKLIST_KEYWORDS);
   const handleBack = useCallback(() => setPage(PageTypes.SETTINGS), [setPage]);
 
@@ -17,7 +17,7 @@ function BlacklistKeywords() {
       header={
         <PageHeader
           breadcrumbs={[
-            {label: formatMessage({defaultMessage: 'Settings'}), onClick: handleBack},
+            {label: activeCategory.label, onClick: handleBack},
             {label: formatMessage({defaultMessage: 'Blacklist Keywords'})},
           ]}
         />

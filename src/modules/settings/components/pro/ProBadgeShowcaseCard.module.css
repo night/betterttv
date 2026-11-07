@@ -1,0 +1,9 @@
+/* centered on the card; 300px is the smallest square that reaches its corners */
+.badgeBeams {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 300px);
+  height: auto;
+  transform: translate(-50%, -50%);
+}

@@ -1,0 +1,9 @@
+/* the chevron sits at the far edge however wide the trigger is */
+.triggerInner {
+  justify-content: space-between;
+}
+
+.triggerIcon {
+  flex-shrink: 0;
+  color: var(--mantine-color-dimmed);
+}

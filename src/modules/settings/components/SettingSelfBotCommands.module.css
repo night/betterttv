@@ -1,9 +1,3 @@
-.headerActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .limitPill {
   box-shadow: var(--mantine-shadow-xs);
   font-weight: 500;

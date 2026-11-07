@@ -5,10 +5,18 @@ import formatMessage from '@/i18n/index';
 import SettingColorPicker from '@/modules/settings/components/SettingColorPicker';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingSwitch from '@/modules/settings/components/SettingSwitch';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 import SplitChatModule from '@/modules/split_chat/index';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Split Chat'});
+const SETTING_DESCRIPTION = formatMessage({
+  defaultMessage: 'Alternate backgrounds between messages in chat to improve readability.',
+});
+const ALTERNATE_BACKGROUND_COLOR_NAME = formatMessage({defaultMessage: 'Alternate Background Color'});
+const ALTERNATE_BACKGROUND_COLOR_DESCRIPTION = formatMessage({
+  defaultMessage: 'The color of the alternate background.',
+});
 
 function SplitChat({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.SPLIT_CHAT);
@@ -25,21 +33,11 @@ function SplitChat({ref, ...props}) {
 
   return (
     <SettingGroup ref={ref} {...props} name={SETTING_NAME}>
-      <SettingSwitch
-        name={SETTING_NAME}
-        reverse
-        description={formatMessage({
-          defaultMessage: 'Alternate backgrounds between messages in chat to improve readability.',
-        })}
-        value={value}
-        onChange={setValue}
-      />
+      <SettingSwitch name={SETTING_NAME} reverse description={SETTING_DESCRIPTION} value={value} onChange={setValue} />
       <SettingColorPicker
         reverse
-        name={formatMessage({defaultMessage: 'Alternate Background Color'})}
-        description={formatMessage({
-          defaultMessage: 'The color of the alternate background.',
-        })}
+        name={ALTERNATE_BACKGROUND_COLOR_NAME}
+        description={ALTERNATE_BACKGROUND_COLOR_DESCRIPTION}
         value={colorValue}
         defaultValue={defaultColor}
         onChange={handleColorChange}
@@ -47,6 +45,18 @@ function SplitChat({ref, ...props}) {
     </SettingGroup>
   );
 }
+
+registerSearchEntry({
+  query: SETTING_NAME,
+  description: SETTING_DESCRIPTION,
+  settingPanelId: SettingPanelIds.SPLIT_CHAT,
+});
+
+registerSearchEntry({
+  query: ALTERNATE_BACKGROUND_COLOR_NAME,
+  description: ALTERNATE_BACKGROUND_COLOR_DESCRIPTION,
+  settingPanelId: SettingPanelIds.SPLIT_CHAT,
+});
 
 SettingStore.registerSetting(SplitChat, {
   settingPanelId: SettingPanelIds.SPLIT_CHAT,

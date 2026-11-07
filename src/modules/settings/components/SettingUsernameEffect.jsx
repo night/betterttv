@@ -1,48 +1,50 @@
-import {faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Text} from '@mantine/core';
 import classNames from 'classnames';
-import React, {useCallback, useEffect, useMemo} from 'react';
-import {useShallow} from 'zustand/react/shallow';
+import {X} from 'lucide-react';
+import React, {useMemo} from 'react';
 import {updateUsernameEffect} from '../../../actions/account';
-import Icon from '../../../common/components/Icon';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
-import useDebouncedRemoteState from '../../../common/hooks/DebouncedRemoteState';
+import useUsernameEffectSetting, {NONE} from '../../../common/hooks/UsernameEffectSetting';
 import effects from '../../../common/styles/UsernameEffects.module.css';
+import fonts from '../../../common/styles/UsernameFonts.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
-import {UsernameEffects} from '../../../constants';
+import {CHAT_COLOR_USERNAME_EFFECTS, UsernameEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
-import socketClient from '../../../socket-client';
 import useAuthStore from '../../../stores/auth';
-import useUsernameEffectEligibilityStore, {fetchEligibility} from '../../../stores/username-effect-eligibility';
-import {getCurrentChannel} from '../../../utils/channel';
+import {useUsernameLook} from '../../../stores/username-looks';
 import {isUserPro} from '../../../utils/pro';
 import twitch from '../../../utils/twitch';
-import {getCurrentUser} from '../../../utils/user';
+import {getCurrentUser, getPreviewDisplayName} from '../../../utils/user';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import styles from './SettingUsernameEffect.module.css';
-import SettingWrapper from './SettingWrapper';
-
-const NONE = 'none';
-
-// glow and flare render over the user's own chat color, so their previews use it too
-const CHAT_COLOR_EFFECTS = [UsernameEffects.GLOW, UsernameEffects.FLARE];
 
 function getChatColorStyle(effect, chatColor) {
-  if (!CHAT_COLOR_EFFECTS.includes(effect) || chatColor == null) {
+  if (!CHAT_COLOR_USERNAME_EFFECTS.includes(effect) || chatColor == null) {
     return undefined;
   }
 
   return {color: chatColor};
 }
 
+// unlocked by an annual subscription, so Pro users on a monthly plan can still upgrade for them
+const ANNUAL_EFFECTS = [UsernameEffects.IRIDESCENCE, UsernameEffects.ONYX];
+
 const EFFECT_CARDS = [
   {value: UsernameEffects.FLARE, label: formatMessage({defaultMessage: 'Flare'})},
+  {value: UsernameEffects.PEACH, label: formatMessage({defaultMessage: 'Peach'})},
   {value: UsernameEffects.GLACIER, label: formatMessage({defaultMessage: 'Glacier'})},
+  {value: UsernameEffects.ARCANE, label: formatMessage({defaultMessage: 'Arcane'})},
+  {value: UsernameEffects.PHOENIX, label: formatMessage({defaultMessage: 'Phoenix'})},
   {value: UsernameEffects.INTERGALACTIC, label: formatMessage({defaultMessage: 'Intergalactic'})},
+  {value: UsernameEffects.CRIMSON, label: formatMessage({defaultMessage: 'Crimson'})},
+  {value: UsernameEffects.ABYSS, label: formatMessage({defaultMessage: 'Abyss'})},
   {value: UsernameEffects.SUPERNOVA, label: formatMessage({defaultMessage: 'Supernova'})},
+  {value: UsernameEffects.EVERGREEN, label: formatMessage({defaultMessage: 'Evergreen'})},
+  {value: UsernameEffects.SAKURA, label: formatMessage({defaultMessage: 'Sakura'})},
   {value: UsernameEffects.MIDAS, label: formatMessage({defaultMessage: 'Midas'})},
   {value: UsernameEffects.IRIDESCENCE, label: formatMessage({defaultMessage: 'Iridescence'})},
+  {value: UsernameEffects.ONYX, label: formatMessage({defaultMessage: 'Onyx'})},
   {value: UsernameEffects.GLOW, label: formatMessage({defaultMessage: 'Glow'})},
 ];
 
@@ -54,6 +56,14 @@ const UsernameEffectRequirementDisplayTitleByEffect = {
   [UsernameEffects.MIDAS]: formatMessage({defaultMessage: 'Midas Effect'}),
   [UsernameEffects.GLACIER]: formatMessage({defaultMessage: 'Glacier Effect'}),
   [UsernameEffects.INTERGALACTIC]: formatMessage({defaultMessage: 'Intergalactic Effect'}),
+  [UsernameEffects.PEACH]: formatMessage({defaultMessage: 'Peach Effect'}),
+  [UsernameEffects.ABYSS]: formatMessage({defaultMessage: 'Abyss Effect'}),
+  [UsernameEffects.PHOENIX]: formatMessage({defaultMessage: 'Phoenix Effect'}),
+  [UsernameEffects.ARCANE]: formatMessage({defaultMessage: 'Arcane Effect'}),
+  [UsernameEffects.EVERGREEN]: formatMessage({defaultMessage: 'Evergreen Effect'}),
+  [UsernameEffects.SAKURA]: formatMessage({defaultMessage: 'Sakura Effect'}),
+  [UsernameEffects.ONYX]: formatMessage({defaultMessage: 'Onyx Effect'}),
+  [UsernameEffects.CRIMSON]: formatMessage({defaultMessage: 'Crimson Effect'}),
 };
 
 const UsernameEffectRequirementDisplayTextByEffect = {
@@ -64,6 +74,14 @@ const UsernameEffectRequirementDisplayTextByEffect = {
   [UsernameEffects.MIDAS]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 12 months.'}),
   [UsernameEffects.GLACIER]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 3 months.'}),
   [UsernameEffects.INTERGALACTIC]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 6 months.'}),
+  [UsernameEffects.PEACH]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 2 months.'}),
+  [UsernameEffects.ABYSS]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 8 months.'}),
+  [UsernameEffects.PHOENIX]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 5 months.'}),
+  [UsernameEffects.ARCANE]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 4 months.'}),
+  [UsernameEffects.EVERGREEN]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 10 months.'}),
+  [UsernameEffects.SAKURA]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 11 months.'}),
+  [UsernameEffects.ONYX]: formatMessage({defaultMessage: 'Rewarded to any annual Pro user.'}),
+  [UsernameEffects.CRIMSON]: formatMessage({defaultMessage: 'Rewarded after being subscribed for 7 months.'}),
 };
 
 const UsernameEffectRequirementClassNamesByEffect = {
@@ -74,12 +92,15 @@ const UsernameEffectRequirementClassNamesByEffect = {
   [UsernameEffects.MIDAS]: classNames(styles.flavorUsername, effects.midas),
   [UsernameEffects.GLACIER]: classNames(styles.flavorUsername, effects.glacier),
   [UsernameEffects.INTERGALACTIC]: classNames(styles.flavorUsername, effects.intergalactic),
+  [UsernameEffects.PEACH]: classNames(styles.flavorUsername, effects.peach),
+  [UsernameEffects.ABYSS]: classNames(styles.flavorUsername, effects.abyss),
+  [UsernameEffects.PHOENIX]: classNames(styles.flavorUsername, effects.phoenix),
+  [UsernameEffects.ARCANE]: classNames(styles.flavorUsername, effects.arcane),
+  [UsernameEffects.EVERGREEN]: classNames(styles.flavorUsername, effects.evergreen),
+  [UsernameEffects.SAKURA]: classNames(styles.flavorUsername, effects.sakura),
+  [UsernameEffects.ONYX]: classNames(styles.flavorUsername, effects.onyx),
+  [UsernameEffects.CRIMSON]: classNames(styles.flavorUsername, effects.crimson),
 };
-
-// The settings menu is reachable while logged out of Twitch, so previews need a fallback name.
-function getPreviewDisplayName(currentUser, authUser) {
-  return currentUser?.displayName ?? authUser?.displayName ?? formatMessage({defaultMessage: 'Username'});
-}
 
 function UsernameEffectRequirementDisplay({value, displayName, chatColor}) {
   return (
@@ -99,8 +120,14 @@ function UsernameEffectRequirementDisplay({value, displayName, chatColor}) {
   );
 }
 
-function openUsernameEffectSubscriptionUpgradeModal(callback = () => {}, {value, displayName, chatColor}) {
-  const upgradeDisabled = isUserPro(useAuthStore.getState().user) && value !== UsernameEffects.IRIDESCENCE;
+function isEligibleForUsernameEffect(eligibility, value) {
+  return eligibility?.usernameEffects?.[value] === true;
+}
+
+function openUsernameEffectSubscriptionUpgradeModal(value, callback) {
+  const displayName = getPreviewDisplayName(getCurrentUser(), useAuthStore.getState().user);
+  const chatColor = twitch.getCurrentUserChatColor();
+  const upgradeDisabled = isUserPro(useAuthStore.getState().user) && !ANNUAL_EFFECTS.includes(value);
 
   return openSubscriptionUpgradeModal(
     {
@@ -112,7 +139,10 @@ function openUsernameEffectSubscriptionUpgradeModal(callback = () => {}, {value,
   );
 }
 
-function openUsernameEffectSignInModal(callback = () => {}, {value, displayName, chatColor}) {
+function openUsernameEffectSignInModal(value, callback) {
+  const displayName = getPreviewDisplayName(getCurrentUser(), useAuthStore.getState().user);
+  const chatColor = twitch.getCurrentUserChatColor();
+
   return openSignInModal(
     {
       title: UsernameEffectRequirementDisplayTitleByEffect[value],
@@ -124,110 +154,50 @@ function openUsernameEffectSignInModal(callback = () => {}, {value, displayName,
 
 function SettingUsernameEffect() {
   const currentUser = useCurrentUser();
-  const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
+  const user = useAuthStore((state) => state.user);
+  const usernameFont = useUsernameLook('usernameFont');
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
 
-  useEffect(() => {
-    fetchEligibility();
-  }, [user]);
-
-  const [value, setValue] = useDebouncedRemoteState({
-    value: user?.usernameEffect ?? NONE,
-    onSave: async (newValue, {signal}) => {
-      const effect = newValue === NONE ? null : newValue;
-      await updateUsernameEffect(effect, {signal});
-      updateUser({...useAuthStore.getState().user, usernameEffect: effect});
-
-      const currentChannel = getCurrentChannel();
-      if (currentChannel == null) {
-        return;
-      }
-
-      socketClient.broadcastMe(currentChannel.provider, currentChannel.id);
-    },
+  const [value, handleChange, isLocked, handlePreview] = useUsernameEffectSetting({
+    userField: 'usernameEffect',
+    saveEffect: updateUsernameEffect,
+    isEligible: isEligibleForUsernameEffect,
+    openSignInModal: openUsernameEffectSignInModal,
+    openUpgradeModal: openUsernameEffectSubscriptionUpgradeModal,
   });
 
-  const handleChange = useCallback(
-    async (newValue) => {
-      const currentUser = getCurrentUser();
-      const {user: currentAuthUser} = useAuthStore.getState();
-
-      if (newValue === NONE && currentAuthUser == null) {
-        return;
-      }
-
-      if (newValue === NONE) {
-        setValue(newValue);
-        return;
-      }
-
-      if (currentAuthUser == null) {
-        openUsernameEffectSignInModal(() => handleChange(newValue), {
-          value: newValue,
-          displayName: getPreviewDisplayName(currentUser, currentAuthUser),
-          chatColor,
-        });
-
-        return;
-      }
-
-      await fetchEligibility();
-
-      const {userId, eligibility} = useUsernameEffectEligibilityStore.getState();
-      if (userId !== currentAuthUser.id || eligibility == null || eligibility[newValue] !== true) {
-        openUsernameEffectSubscriptionUpgradeModal(() => handleChange(newValue), {
-          value: newValue,
-          displayName: getPreviewDisplayName(currentUser, currentAuthUser),
-          chatColor,
-        });
-
-        return;
-      }
-
-      setValue(newValue);
-    },
-    [setValue, chatColor]
-  );
-
   return (
-    <React.Fragment>
-      <SettingWrapper
-        reverse
-        name={formatMessage({defaultMessage: 'Username effect'})}
-        description={formatMessage({defaultMessage: 'Choose how your username is styled in chat.'})}
-        showProBadge
-      />
-      <div className={styles.cards}>
-        <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
-          <SettingRadioCard
-            key={NONE}
-            value={NONE}
-            className={styles.usernameCard}
-            tooltip={formatMessage({defaultMessage: 'Disable effect'})}
-            ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
-            withIndicators={false}>
-            <Icon icon={faXmark} className={styles.cardIcon} />
-          </SettingRadioCard>
-          {EFFECT_CARDS.map(({value: effectValue, label}) => (
-            <SettingRadioCard
-              key={effectValue}
-              value={effectValue}
-              className={styles.usernameCard}
-              tooltip={label}
-              ariaLabel={label}
-              withIndicators={false}>
-              <Text
-                truncate
-                size="xl"
-                style={getChatColorStyle(effectValue, chatColor)}
-                className={UsernameEffectRequirementClassNamesByEffect[effectValue]}>
-                {getPreviewDisplayName(currentUser, user)}
-              </Text>
-            </SettingRadioCard>
-          ))}
-        </SettingRadioCardGroup>
-      </div>
-    </React.Fragment>
+    <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+      <SettingRadioCard
+        key={NONE}
+        value={NONE}
+        onHover={handlePreview}
+        className={styles.usernameCard}
+        tooltip={formatMessage({defaultMessage: 'Disable effect'})}
+        ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
+        withIndicators={false}>
+        <X className={styles.cardIcon} />
+      </SettingRadioCard>
+      {EFFECT_CARDS.map(({value: effectValue, label}) => (
+        <SettingRadioCard
+          key={effectValue}
+          value={effectValue}
+          onHover={handlePreview}
+          locked={isLocked(effectValue)}
+          className={styles.usernameCard}
+          tooltip={label}
+          ariaLabel={label}
+          withIndicators={false}>
+          <Text
+            truncate
+            size="xl"
+            style={getChatColorStyle(effectValue, chatColor)}
+            className={classNames(UsernameEffectRequirementClassNamesByEffect[effectValue], fonts[usernameFont])}>
+            {getPreviewDisplayName(currentUser, user)}
+          </Text>
+        </SettingRadioCard>
+      ))}
+    </SettingRadioCardGroup>
   );
 }
 

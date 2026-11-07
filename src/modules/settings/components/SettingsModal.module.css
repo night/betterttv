@@ -62,13 +62,7 @@
   flex-direction: column;
   gap: 20px;
   /* gap between the header and the first item */
-  padding: 20px 20px 24px;
-  --page-scroll-margin-top: 20px;
-}
-
-/* breathing room when a panel is scrolled into view */
-.pageScrollContent > * {
-  scroll-margin-top: var(--page-scroll-margin-top);
+  padding: 20px;
 }
 
 @media (max-width: 800px) {

@@ -3,11 +3,11 @@ import classNames from 'classnames';
 import React from 'react';
 import styles from './Panel.module.css';
 
-function Panel({title, rightContent, children, className, containerClassName, style, ref, ...restProps}) {
+function Panel({title, rightContent, children, className, style, ref, ...restProps}) {
   const hasHeader = title != null || rightContent != null;
 
   return (
-    <div ref={ref} className={classNames(styles.panelContainer, containerClassName)} style={style}>
+    <div ref={ref} className={styles.panelContainer} style={style}>
       {hasHeader ? (
         <div className={styles.panelHeader}>
           {typeof title === 'string' ? <Title order={2}>{title}</Title> : title}

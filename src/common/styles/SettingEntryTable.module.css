@@ -14,7 +14,11 @@
   font-size: var(--mantine-font-size-md);
 
   th {
-    font-weight: 500;
+    font-size: var(--mantine-font-size-label);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--mantine-color-dimmed);
   }
 
   th,
@@ -44,6 +48,11 @@
       width: 0;
       padding: 0;
     }
+
+    &.toggleColumn {
+      width: 0;
+      padding: 0;
+    }
   }
 
   --table-border-color: var(--mantine-color-default-border);
@@ -53,8 +62,12 @@
   }
 }
 
-.selectInput {
+.selectTrigger {
+  width: 100%;
+  padding: 0 12px;
   font-size: var(--mantine-font-size-md);
+  font-weight: 400;
+  color: var(--mantine-color-text);
 }
 
 .textInput {
@@ -85,8 +98,8 @@
 }
 
 .actionIconIcon {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
 }
 
 .emptyText {
@@ -95,8 +108,37 @@
 }
 
 td.actionsColumn,
-td.colorColumn {
+td.colorColumn,
+td.toggleColumn {
   width: 36px;
   min-width: 36px;
   max-width: 36px;
+}
+
+.toggleCell {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggleCell input {
+  cursor: pointer;
+}
+
+.toggleCell .toggleCheckbox {
+  --checkbox-size: 16px;
+}
+
+.toggleCell .toggleCheckboxBody {
+  gap: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

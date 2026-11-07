@@ -9,14 +9,18 @@
   flex-wrap: wrap;
 }
 
-.vertical {
-  flex-direction: column-reverse;
-  align-items: flex-start;
+/* points out the row a search jumped to; the shadow spreads the fill past the row's tight box */
+.root[data-flash] {
+  border-radius: var(--mantine-radius-md);
+  animation: flash 1400ms ease-out;
 }
 
-.reverse {
-  flex-direction: row-reverse;
-  flex-wrap: wrap;
+@keyframes flash {
+  0%,
+  30% {
+    background-color: color-mix(in srgb, var(--mantine-primary-color-filled) 20%, transparent);
+    box-shadow: 0 0 0 12px color-mix(in srgb, var(--mantine-primary-color-filled) 20%, transparent);
+  }
 }
 
 .text {

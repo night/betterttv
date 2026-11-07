@@ -1,30 +1,184 @@
-import {Anchor, Text} from '@mantine/core';
-import React from 'react';
-import {EXT_VER, ExternalLinks} from '@/constants';
+import {Anchor, Text, Tooltip} from '@mantine/core';
+import {
+  Bot,
+  Bug,
+  CircleUserRound,
+  CodeXml,
+  CreditCard,
+  Globe,
+  History,
+  Lightbulb,
+  Link,
+  Lock,
+  Mail,
+  PaintbrushVertical,
+  Scale,
+  Smile,
+  Upload,
+  Users,
+} from 'lucide-react';
+import React, {use} from 'react';
+import {ChannelPointsGlyph, CrowdinMark, DiscordMark, GithubMark, XMark} from '@/common/components/BrandMarks';
+import usePortalRef from '@/common/hooks/PortalRef';
+import {EXT_VER, ExternalLinks, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import styles from './Footer.module.css';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 const FOOTER_EXPLORE_LINKS = [
-  {href: ExternalLinks.WEBSITE, label: formatMessage({defaultMessage: 'Website'})},
-  {href: ExternalLinks.GITHUB_ISSUES, label: formatMessage({defaultMessage: 'Report Bugs'})},
-  {href: ExternalLinks.GITHUB_DISCUSSIONS, label: formatMessage({defaultMessage: 'Submit Ideas'})},
-  {href: ExternalLinks.CROWDIN, label: formatMessage({defaultMessage: 'Submit Translations'})},
+  {
+    href: ExternalLinks.WEBSITE,
+    keywords: ['home', 'betterttv.com'],
+    icon: Globe,
+    label: formatMessage({defaultMessage: 'Website'}),
+  },
+  {
+    href: ExternalLinks.GITHUB_ISSUES,
+    keywords: ['issue', 'problem', 'support'],
+    icon: Bug,
+    label: formatMessage({defaultMessage: 'Report Bugs'}),
+  },
+  {
+    href: ExternalLinks.GITHUB_DISCUSSIONS,
+    keywords: ['feature', 'request', 'suggestion'],
+    icon: Lightbulb,
+    label: formatMessage({defaultMessage: 'Submit Ideas'}),
+  },
+  {
+    href: ExternalLinks.CROWDIN,
+    keywords: ['language', 'localization'],
+    icon: CrowdinMark,
+    label: formatMessage({defaultMessage: 'Submit Translations'}),
+  },
 ];
 
 const FOOTER_COMMUNITY_LINKS = [
-  {href: ExternalLinks.DISCORD, label: formatMessage({defaultMessage: 'Discord'})},
-  {href: ExternalLinks.EMAIL, label: formatMessage({defaultMessage: 'Email Us'})},
-  {href: ExternalLinks.TWITTER, label: formatMessage({defaultMessage: 'Twitter'})},
-  {href: ExternalLinks.GITHUB, label: formatMessage({defaultMessage: 'GitHub'})},
+  {
+    href: ExternalLinks.DISCORD,
+    keywords: ['community', 'help', 'support'],
+    icon: DiscordMark,
+    label: formatMessage({defaultMessage: 'Discord'}),
+  },
+  {
+    href: ExternalLinks.EMAIL,
+    keywords: ['contact', 'support'],
+    icon: Mail,
+    label: formatMessage({defaultMessage: 'Email Us'}),
+  },
+  {
+    href: ExternalLinks.TWITTER,
+    keywords: ['x', 'social'],
+    icon: XMark,
+    label: formatMessage({defaultMessage: 'Twitter'}),
+  },
+  {
+    href: ExternalLinks.GITHUB,
+    keywords: ['source', 'code', 'open source'],
+    icon: GithubMark,
+    label: formatMessage({defaultMessage: 'GitHub'}),
+  },
 ];
 
 const FOOTER_OTHER_LINKS = [
-  {href: ExternalLinks.TERMS, label: formatMessage({defaultMessage: 'Terms of Service'})},
-  {href: ExternalLinks.PRIVACY, label: formatMessage({defaultMessage: 'Privacy Policy'})},
-  {href: ExternalLinks.DEVELOPER_API, label: formatMessage({defaultMessage: 'Developer API'})},
+  {
+    href: ExternalLinks.TERMS,
+    keywords: ['tos', 'legal'],
+    icon: Scale,
+    label: formatMessage({defaultMessage: 'Terms of Service'}),
+  },
+  {
+    href: ExternalLinks.PRIVACY,
+    keywords: ['data', 'legal', 'gdpr'],
+    icon: Lock,
+    label: formatMessage({defaultMessage: 'Privacy Policy'}),
+  },
+  {
+    href: ExternalLinks.DEVELOPER_API,
+    keywords: ['docs', 'developers'],
+    icon: CodeXml,
+    label: formatMessage({defaultMessage: 'Developer API'}),
+  },
 ];
+
+// the website's dashboard pages, which are only reached through search
+const DASHBOARD_LINKS = [
+  {
+    href: ExternalLinks.DASHBOARD_CHANNEL_EMOTES,
+    icon: Smile,
+    label: formatMessage({defaultMessage: 'Channel Emotes'}),
+    description: formatMessage({defaultMessage: 'Manage the emotes in your channel.'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_PERSONAL_EMOTES,
+    icon: CircleUserRound,
+    label: formatMessage({defaultMessage: 'Personal Emotes'}),
+    description: formatMessage({defaultMessage: 'Manage your emotes for every chat.'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_UPLOADS,
+    icon: Upload,
+    label: formatMessage({defaultMessage: 'Emote Uploads'}),
+    description: formatMessage({defaultMessage: 'Upload and manage your emotes.'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_APPEARANCE,
+    icon: PaintbrushVertical,
+    label: formatMessage({defaultMessage: 'Appearance'}),
+    description: formatMessage({defaultMessage: 'Your badge, effects and font.'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_CONNECTIONS,
+    icon: Link,
+    label: formatMessage({defaultMessage: 'Connections'}),
+    description: formatMessage({defaultMessage: 'Your linked accounts and apps.'}),
+  },
+  {
+    href: ExternalLinks.PRO,
+    icon: CreditCard,
+    label: formatMessage({defaultMessage: 'Subscription'}),
+    description: formatMessage({defaultMessage: 'Manage your Pro subscription.'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_EDITORS,
+    icon: Users,
+    label: formatMessage({defaultMessage: 'Editors'}),
+    description: formatMessage({defaultMessage: 'Choose who manages your emotes.'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_BOTS,
+    icon: Bot,
+    label: formatMessage({defaultMessage: 'Chat Bots'}),
+    description: formatMessage({defaultMessage: 'Badge the bots on your channel.'}),
+  },
+  {
+    href: ExternalLinks.DASHBOARD_CHANNEL_POINTS,
+    icon: ChannelPointsGlyph,
+    label: formatMessage({defaultMessage: 'Channel Points'}),
+    description: formatMessage({defaultMessage: 'Let viewers redeem emotes.'}),
+  },
+];
+
+for (const {href, icon, label, description} of DASHBOARD_LINKS) {
+  registerSearchEntry({query: label, description, keywords: ['dashboard'], href, icon});
+}
+
+for (const {href, keywords, icon, label} of [
+  ...FOOTER_EXPLORE_LINKS,
+  ...FOOTER_COMMUNITY_LINKS,
+  ...FOOTER_OTHER_LINKS,
+]) {
+  registerSearchEntry({query: label, keywords, href, icon});
+}
+
+registerSearchEntry({
+  query: formatMessage({defaultMessage: 'Changelog'}),
+  description: formatMessage({defaultMessage: "What's new in BetterTTV."}),
+  icon: History,
+  onAccept: ({setPage}) => setPage(PageTypes.CHANGELOG),
+});
 
 const EXPLORE_TITLE = formatMessage({defaultMessage: 'Explore'});
 const COMMUNITY_TITLE = formatMessage({defaultMessage: 'Community'});
@@ -47,6 +201,13 @@ function LinkColumn({title, links}) {
 }
 
 function Footer() {
+  const {setPage} = use(PageContext);
+  const portalRef = usePortalRef();
+
+  function handleVersionClick() {
+    setPage(PageTypes.CHANGELOG);
+  }
+
   return (
     <div className={styles.root}>
       <div className={styles.columns}>
@@ -61,9 +222,17 @@ function Footer() {
             {year: CURRENT_YEAR}
           )}
         </Text>
-        <Text c="dimmed" className={styles.version} order={4}>
-          {VERSION_TEXT}
-        </Text>
+        <Tooltip
+          openDelay={200}
+          withArrow
+          arrowSize={8}
+          radius="md"
+          label={<Text size="md">{formatMessage({defaultMessage: 'Read Changelog'})}</Text>}
+          portalProps={{target: portalRef.current}}>
+          <Anchor component="button" type="button" c="dimmed" onClick={handleVersionClick}>
+            {VERSION_TEXT}
+          </Anchor>
+        </Tooltip>
       </div>
     </div>
   );

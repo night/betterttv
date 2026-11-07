@@ -3,6 +3,7 @@ import iconButtonStyles from '@/common/styles/IconButton.module.css';
 import {ChatLayoutTypes, EmoteMenuTypes, SettingIds, ShadowDOMComponentIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import EmoteMenu from '@/modules/emote_menu/components/EmoteMenu';
+import {resetGifCooldown} from '@/modules/emote_menu/stores/gif-picker-store';
 import shadowDOM from '@/modules/shadow_dom/index';
 import {bindTooltip} from '@/modules/tooltip/index';
 import domObserver from '@/observers/dom';
@@ -218,7 +219,10 @@ class EmoteMenuModule {
 
       this.load();
     });
-    watcher.on('load.chat', () => this.load());
+    watcher.on('load.chat', () => {
+      resetGifCooldown();
+      this.load();
+    });
     settings.on(`changed.${SettingIds.EMOTE_MENU}`, () => this.load());
     settings.on(`changed.${SettingIds.CHAT_LAYOUT}`, () => this.load());
   }

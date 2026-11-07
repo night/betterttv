@@ -1,3 +1,28 @@
+.providerLogo {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+/* the only logo drawn on a square tile */
+.ffzLogo {
+  border-radius: 8px;
+}
+
+.providerSearchLogo {
+  width: 20px;
+  height: 20px;
+}
+
+.providerSearchLogo.ffzLogo {
+  border-radius: 4px;
+}
+
+.seventvListing {
+  flex-shrink: 0;
+  width: 160px;
+}
+
 .modifierImage {
   width: 20px;
   height: 20px;

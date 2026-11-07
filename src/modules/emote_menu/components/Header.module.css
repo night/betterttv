@@ -16,6 +16,34 @@
   background-color: var(--mantine-color-body-secondary);
 }
 
+/* 16px icon + 4px label padding + 2px root padding on each side matches the
+ * 28px search input height */
+.modeControl {
+  flex-shrink: 0;
+  padding: 2px;
+}
+
+.modeControlLabel {
+  padding: 4px 8px;
+}
+
+.modeControlIndicator {
+  /* concentric with the root's radius, inset by its 2px padding */
+  border-radius: calc(var(--mantine-radius-md) - 2px);
+}
+
+.modeLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
 .closeButton {
   --cb-icon-size: 90%;
   background-color: transparent;

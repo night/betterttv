@@ -2,7 +2,6 @@
 .glowUsername,
 .flavorUsername {
   font-weight: 700;
-  height: 100%;
   width: 100%;
   padding: 16px;
   text-align: center;
@@ -19,9 +18,10 @@
   text-shadow: 0 0 16px color-mix(in srgb, var(--mantine-color-dark-9) 20%, transparent);
 }
 
+/* a fixed height, as a font's line metrics would otherwise resize every row when it changes */
 .usernameCard {
+  height: 64px;
   padding: 0;
-  --surface-bg: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
 }
 
 .cardIcon {
@@ -34,10 +34,6 @@
   flex-direction: column;
   gap: 16px;
   padding: 16px;
-}
-
-.cards {
-  padding: 0 var(--setting-panel-padding, 20px) var(--setting-panel-padding, 20px);
 }
 
 .usernamePreview .previewUsername {

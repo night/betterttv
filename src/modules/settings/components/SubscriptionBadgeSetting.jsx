@@ -1,24 +1,30 @@
-import {faQuestion, faRepeat, faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Skeleton} from '@mantine/core';
 import classNames from 'classnames';
+import {CircleQuestionMark, Repeat, X} from 'lucide-react';
 import {DateTime} from 'luxon';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import {updateSubscriptionBadge, updateSubscriptionBadgeId} from '@/actions/account';
-import Icon from '@/common/components/Icon';
 import useDebouncedRemoteState from '@/common/hooks/DebouncedRemoteState';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import formatMessage from '@/i18n';
 import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
-import useSubscriptionBadgeEligibilityStore, {fetchEligibility} from '@/stores/subscription-badge-eligibility';
+import useFeatureEligibilityStore, {fetchEligibility} from '@/stores/feature-eligibility';
+import {setTriedLook} from '@/stores/username-looks';
 import {getCurrentChannel} from '@/utils/channel';
 import {isUserPro} from '@/utils/pro';
+import SettingGroup from './SettingGroup';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import SettingSwitch from './SettingSwitch';
 import SettingWrapper from './SettingWrapper';
 import styles from './SubscriptionBadgeSetting.module.css';
+
+export const DISPLAY_BADGE_NAME = formatMessage({defaultMessage: 'Display your badge'});
+export const DISPLAY_BADGE_DESCRIPTION = formatMessage({
+  defaultMessage: 'Everyone using BetterTTV sees it when you type in chat.',
+});
 
 const LATEST = 'latest';
 const NEXT = 'next';
@@ -50,15 +56,17 @@ function BadgeImage({src}) {
   );
 }
 
-function SubscriptionBadgeSetting() {
+function SubscriptionBadgeSetting({name, ref, ...props}) {
   const {user, updateUser} = useAuthStore(useShallow((state) => ({user: state.user, updateUser: state.updateUser})));
 
   // persisted eligibility may belong to a previous session's account; only use it for the current user
-  const {eligibleBadges, nextBadgeUnlocksAt} = useSubscriptionBadgeEligibilityStore(
-    useShallow((state) => ({
-      eligibleBadges: user != null && state.userId === user.id ? state.eligibleBadges : null,
-      nextBadgeUnlocksAt: user != null && state.userId === user.id ? state.nextBadgeUnlocksAt : null,
-    }))
+  const badgeEligibility = useFeatureEligibilityStore((state) =>
+    user != null && state.userId === user.id ? state.eligibility?.badges : null
+  );
+  const nextBadgeUnlocksAt = badgeEligibility?.nextBadgeUnlocksAt ?? null;
+  const eligibleBadges = useMemo(
+    () => (badgeEligibility?.eligibleBadges != null ? [...badgeEligibility.eligibleBadges].reverse() : null),
+    [badgeEligibility?.eligibleBadges]
   );
 
   useEffect(() => {
@@ -160,6 +168,23 @@ function SubscriptionBadgeSetting() {
     [badgeEnabled, setBadgeEnabled, setSelectedBadgeId]
   );
 
+  // a hovered card tries its badge in the chat preview; leaving it passes undefined, which ends the try
+  const handleBadgePreview = useCallback(
+    (newValue) => {
+      if (newValue === undefined) {
+        setTriedLook('subscriptionBadgeUrl', undefined);
+        return;
+      }
+
+      const badge =
+        newValue === LATEST
+          ? eligibleBadges?.[0]
+          : eligibleBadges?.find((eligibleBadge) => eligibleBadge.badgeId === newValue);
+      setTriedLook('subscriptionBadgeUrl', badge?.badgeUrl ?? null);
+    },
+    [eligibleBadges]
+  );
+
   const nextBadgeCountdown = nextBadgeUnlocksAt != null ? getUnlockCountdown(nextBadgeUnlocksAt, now) : null;
 
   const isPro = isUserPro(user);
@@ -175,54 +200,47 @@ function SubscriptionBadgeSetting() {
         )
       : null;
 
+  const hasBadgeChoices = isPro && eligibleBadges != null && eligibleBadges.length > 0;
+
   return (
-    <React.Fragment>
-      {isPro ? (
-        <SettingWrapper
-          reverse
-          showProBadge
-          name={formatMessage({defaultMessage: 'Subscriber Badge'})}
-          description={formatMessage({
-            defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
-          })}
-        />
-      ) : (
+    <SettingGroup ref={ref} {...props} name={name} withPane={!hasBadgeChoices}>
+      {!isPro ? (
         <SettingSwitch
-          showProBadge
-          name={formatMessage({defaultMessage: 'Subscriber Badge'})}
-          description={formatMessage({
-            defaultMessage: 'Show a BetterTTV Pro badge next to your name when you type in chat.',
-          })}
+          name={DISPLAY_BADGE_NAME}
+          description={DISPLAY_BADGE_DESCRIPTION}
           value={badgeEnabled}
           onChange={setBadgeEnabled}
         />
-      )}
-      {isPro && eligibleBadges != null && eligibleBadges.length > 0 ? (
+      ) : null}
+      {isPro && !hasBadgeChoices ? (
+        <SettingWrapper reverse name={DISPLAY_BADGE_NAME} description={DISPLAY_BADGE_DESCRIPTION} />
+      ) : null}
+      {hasBadgeChoices ? (
         <SettingRadioCardGroup
           value={!badgeEnabled ? DISABLED : selectedBadgeId}
           onChange={handleBadgeChange}
           fixedCardWidth>
           <SettingRadioCard
             value={DISABLED}
-            className={styles.badgeCard}
+            onHover={handleBadgePreview}
             tooltip={disableBadgeLabel}
             ariaLabel={disableBadgeLabel}
             withIndicators={false}>
-            <Icon icon={faXmark} className={styles.cardIcon} />
+            <X className={styles.cardIcon} />
           </SettingRadioCard>
           <SettingRadioCard
             value={LATEST}
-            className={styles.badgeCard}
+            onHover={handleBadgePreview}
             tooltip={latestBadgeLabel}
             ariaLabel={latestBadgeLabel}
             withIndicators={false}>
-            <Icon icon={faRepeat} className={styles.cardIcon} />
+            <Repeat className={styles.cardIcon} />
           </SettingRadioCard>
           {eligibleBadges.map(({badgeId, badgeUrl}) => (
             <SettingRadioCard
               key={badgeId}
               value={badgeId}
-              className={styles.badgeCard}
+              onHover={handleBadgePreview}
               ariaLabel={badgeLabel}
               withIndicators={false}>
               <BadgeImage src={badgeUrl} />
@@ -231,8 +249,9 @@ function SubscriptionBadgeSetting() {
           {nextBadgeUnlocksAt != null ? (
             <SettingRadioCard
               value={NEXT}
+              onHover={handleBadgePreview}
               withIndicators={false}
-              className={classNames(styles.badgeCard, styles.nextBadgeCard)}
+              className={styles.nextBadgeCard}
               tooltip={
                 <div className={styles.countdownTooltip}>
                   {formatMessage(
@@ -248,13 +267,13 @@ function SubscriptionBadgeSetting() {
               }
               ariaLabel={nextBadgeLabel}>
               <div className={classNames(styles.badge, styles.nextBadgePlaceholder)}>
-                <Icon icon={faQuestion} className={styles.nextBadgeIcon} />
+                <CircleQuestionMark className={styles.nextBadgeIcon} />
               </div>
             </SettingRadioCard>
           ) : null}
         </SettingRadioCardGroup>
       ) : null}
-    </React.Fragment>
+    </SettingGroup>
   );
 }
 

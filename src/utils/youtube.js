@@ -1,3 +1,4 @@
+import {EmoteCategories} from '@/constants';
 import {createSrc, createSrcSet} from './image';
 
 export function findFocusedWord(value, selectionStart = 0) {
@@ -68,6 +69,13 @@ export function setYoutubeChatInputValue(text, shouldFocus = true) {
     sel.removeAllRanges();
     sel.addRange(range);
   }
+}
+
+// The text a non-YouTube emote goes into YouTube's chat input as. Our emoji shortcodes only become
+// emoji in Twitch's send hook, and YouTube names some emoji differently (our :cheese: is its
+// :cheese_wedge:), so an emoji goes in as the emoji itself.
+export function getYoutubeChatInputText(emote) {
+  return emote.category?.id === EmoteCategories.BETTERTTV_EMOJI ? emote.id : emote.code;
 }
 
 export function createYoutubeEmojiNode(emote) {

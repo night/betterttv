@@ -17,6 +17,14 @@ const STROKE_FILTER_COLORS = {
   'stroke-text-svg-filter-glacier': '#166258', // from #6aecd7 (glacier.png)
   'stroke-text-svg-filter-intergalactic': '#4e316c', // from #cdb0e1 (intergalactic.png)
   'stroke-text-svg-filter-midas': '#674911', // from #f7d276 (midas.png)
+  'stroke-text-svg-filter-peach': '#5c2a14',
+  'stroke-text-svg-filter-abyss': '#14247a',
+  'stroke-text-svg-filter-phoenix': '#52000e',
+  'stroke-text-svg-filter-arcane': '#2c1e84',
+  'stroke-text-svg-filter-evergreen': '#0e4a1e',
+  'stroke-text-svg-filter-sakura': '#8c2a63',
+  'stroke-text-svg-filter-onyx': '#050506',
+  'stroke-text-svg-filter-crimson': '#3a0610',
 };
 
 function StrokeFilter({id, color}) {

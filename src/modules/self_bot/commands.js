@@ -24,12 +24,16 @@ export function computeSelfBotCommands(commandsMap) {
     return computed;
   }
 
-  for (const {command, response, userLevel} of Object.values(commandsMap)) {
-    if (command == null || command.trim().length === 0) {
+  for (const {command, response, userLevel, enabled} of Object.values(commandsMap)) {
+    if (enabled === false) {
       continue;
     }
 
-    if (response == null || response.trim().length === 0) {
+    if (typeof command !== 'string' || command.trim().length === 0) {
+      continue;
+    }
+
+    if (typeof response !== 'string' || response.trim().length === 0) {
       continue;
     }
 

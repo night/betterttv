@@ -1,0 +1,20 @@
+.body {
+  padding: 16px;
+}
+
+/* the website's field in px, since the extension's own sizes run smaller */
+.input {
+  height: 40px;
+  min-height: 40px;
+  font-size: 15px;
+}
+
+/* the dismiss button on the left, the action on the right */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border-top: 1px solid var(--mantine-color-default-border);
+}

@@ -45,8 +45,6 @@ export const SettingIds = {
   PRIME_PROMOTIONS: 'primePromotions',
   // HOST_BUTTON: 'hostButton', REMOVED, FOR REFERENCE ONLY
   PLAYER_EXTENSIONS: 'playerExtensions',
-  PIP_BUTTON: 'pipButton',
-  RESET_BUTTON: 'resetButton',
   CLICK_TO_PLAY: 'clickToPlay',
   EMOTE_AUTOCOMPLETE: 'emoteAutocomplete',
   MUTE_INVISIBLE_PLAYER: 'muteInvisiblePlayer',
@@ -66,6 +64,7 @@ export const SettingIds = {
   CHATBOT_COMMAND_AUTOCOMPLETE: 'chatbotCommandAutocomplete',
   SELF_BOT: 'selfBot',
   SELF_BOT_COMMANDS_LIST: 'selfBotCommandsList',
+  SELF_BOT_TIMERS_LIST: 'selfBotTimersList',
   REDUCED_MOTION: 'reducedMotion',
 };
 
@@ -125,6 +124,7 @@ export const ChatFlags = {
   CHAT_MESSAGE_HISTORY: 1 << 6,
   AI_STREAM_SUMMARY: 1 << 7,
   WATCH_STREAKS: 1 << 8,
+  CHAT_GIFS: 1 << 9,
 };
 
 export const ChannelPointsFlags = {
@@ -160,15 +160,27 @@ export const PageTypes = {
   HIGHLIGHT_KEYWORDS: 4,
   BLACKLIST_KEYWORDS: 5,
   SELF_BOT_COMMANDS: 6,
+  SELF_BOT_TIMERS: 7,
+  PRO_HOME: 8,
 };
 
 export const PageDecendants = {
-  [PageTypes.SETTINGS]: [PageTypes.HIGHLIGHT_KEYWORDS, PageTypes.BLACKLIST_KEYWORDS, PageTypes.SELF_BOT_COMMANDS],
+  [PageTypes.SETTINGS]: [
+    PageTypes.HIGHLIGHT_KEYWORDS,
+    PageTypes.BLACKLIST_KEYWORDS,
+    PageTypes.SELF_BOT_COMMANDS,
+    PageTypes.SELF_BOT_TIMERS,
+  ],
 };
 
 export const NavigationModeTypes = {
   MOUSE: 0,
   ARROW_KEYS: 1,
+};
+
+export const EmoteMenuModes = {
+  EMOTES: 'emotes',
+  GIFS: 'gifs',
 };
 
 export const EmoteProviders = {
@@ -177,6 +189,26 @@ export const EmoteProviders = {
   TWITCH: 'twitch',
   YOUTUBE: 'youtube',
   SEVENTV: 'seventv',
+};
+
+export const EmoteAddDestinations = {
+  CHANNEL: 'channel',
+  PERSONAL: 'personal',
+};
+
+export const EmoteAvailabilityRestrictionTypes = {
+  ALREADY_ADDED: 'ALREADY_ADDED',
+  OWN_EMOTE: 'OWN_EMOTE',
+  SHARING_DISABLED: 'SHARING_DISABLED',
+  NOT_LIVE: 'NOT_LIVE',
+  NOT_APPROVED: 'NOT_APPROVED',
+  NO_SLOTS: 'NO_SLOTS',
+};
+
+export const AsyncStatuses = {
+  IDLE: 'idle',
+  PENDING: 'pending',
+  ERROR: 'error',
 };
 
 export const EmoteCategories = {
@@ -232,10 +264,8 @@ export const SettingsPromotions = {
   // CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
   // SELF_BOT: 'settingsPromotionDismissedSelfBot',
   // SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
-};
-
-export const SettingsPrompts = {
-  SIGN_IN: 'settingsSignInPromptSeen',
+  // SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
+  // USERNAME_HOVER_EFFECT: 'settingsPromotionDismissedUsernameHoverEffect',
 };
 
 /** Default Mantine `theme.primaryColor` key when unset or invalid. */
@@ -269,8 +299,6 @@ export const SettingDefaultValues = {
   [SettingIds.DARKENED_MODE]: false,
   [SettingIds.PRIME_PROMOTIONS]: true,
   [SettingIds.PLAYER_EXTENSIONS]: true,
-  [SettingIds.PIP_BUTTON]: true,
-  [SettingIds.RESET_BUTTON]: true,
   [SettingIds.CLICK_TO_PLAY]: false,
   [SettingIds.MUTE_INVISIBLE_PLAYER]: false,
   [SettingIds.SCROLL_PLAYER_CONTROLS]: false,
@@ -303,7 +331,8 @@ export const SettingDefaultValues = {
       ChatFlags.VIEWER_GREETING |
       ChatFlags.CHAT_MESSAGE_HISTORY |
       ChatFlags.AI_STREAM_SUMMARY |
-      ChatFlags.WATCH_STREAKS,
+      ChatFlags.WATCH_STREAKS |
+      ChatFlags.CHAT_GIFS,
     0,
   ],
   [SettingIds.AUTO_PLAY]: [
@@ -323,6 +352,7 @@ export const SettingDefaultValues = {
   [SettingIds.CHATBOT_COMMAND_AUTOCOMPLETE]: true,
   [SettingIds.SELF_BOT]: false,
   [SettingIds.SELF_BOT_COMMANDS_LIST]: {},
+  [SettingIds.SELF_BOT_TIMERS_LIST]: {},
   [SettingIds.REDUCED_MOTION]: false,
 };
 
@@ -382,7 +412,15 @@ export const ExternalLinks = {
   TERMS: 'https://betterttv.com/terms',
   PRIVACY: 'https://betterttv.com/privacy',
   DEVELOPER_API: 'https://betterttv.com/developers/api',
-  PRO: 'https://betterttv.com/dashboard/pro',
+  PRO: 'https://betterttv.com/dashboard/account/subscription',
+  DASHBOARD_CHANNEL_EMOTES: 'https://betterttv.com/dashboard/emotes/channel',
+  DASHBOARD_PERSONAL_EMOTES: 'https://betterttv.com/dashboard/emotes/personal',
+  DASHBOARD_UPLOADS: 'https://betterttv.com/dashboard/emotes/upload',
+  DASHBOARD_APPEARANCE: 'https://betterttv.com/dashboard/account/appearance',
+  DASHBOARD_CONNECTIONS: 'https://betterttv.com/dashboard/account/connections',
+  DASHBOARD_EDITORS: 'https://betterttv.com/dashboard/editors',
+  DASHBOARD_BOTS: 'https://betterttv.com/dashboard/bots',
+  DASHBOARD_CHANNEL_POINTS: 'https://betterttv.com/dashboard/twitch_channel_points_reward',
 };
 
 export const CommandProviders = {
@@ -425,8 +463,7 @@ export const CommandAutocompleteArgumentTypes = {
   USER: 'user',
 };
 
-// The string values are the API/storage contract — sent to the BetterTTV API, used as eligibility
-// keys, and stored on the user — so they must be kept in sync with the backend (betterttv-private).
+// api contract strings, keep in sync with betterttv-private
 export const UsernameEffects = {
   GLOW: 'glow',
   FLARE: 'flare',
@@ -435,4 +472,29 @@ export const UsernameEffects = {
   MIDAS: 'midas',
   GLACIER: 'glacier',
   INTERGALACTIC: 'intergalactic',
+  PEACH: 'peach',
+  ABYSS: 'abyss',
+  PHOENIX: 'phoenix',
+  ARCANE: 'arcane',
+  EVERGREEN: 'evergreen',
+  SAKURA: 'sakura',
+  ONYX: 'onyx',
+  CRIMSON: 'crimson',
+};
+
+// glow and flare paint over the current text color; the rest paint the text themselves
+export const CHAT_COLOR_USERNAME_EFFECTS = [UsernameEffects.GLOW, UsernameEffects.FLARE];
+
+// api contract strings, keep in sync with betterttv-private
+export const UsernameHoverEffects = {
+  FLIP: 'flip',
+  BOUNCE: 'bounce',
+  WAVE: 'wave',
+};
+
+// api contract strings, keep in sync with betterttv-private
+export const UsernameFonts = {
+  FORMAL: 'formal',
+  TYPEWRITER: 'typewriter',
+  COMIC: 'comic',
 };

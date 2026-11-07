@@ -154,32 +154,6 @@ function togglePictureInPicture() {
   }
 }
 
-async function resetPlayer(event) {
-  const button = event.currentTarget;
-  if (button.disabled) return;
-
-  button.disabled = true;
-  try {
-    const source = twitch.getCurrentPlayerSource();
-    const player = twitch.getCurrentPlayer();
-    if (!source || !player) throw new Error('Player unavailable');
-    const duration = player.getDuration();
-    const position = Number.isFinite(duration) && duration > 0 ? player.getPosition() : null;
-    await source.setSrc({isNewMediaPlayerInstance: false});
-    if (Number.isFinite(position) && position >= 0) {
-      // Twitch needs time to load the source before restoring a VOD's position.
-      await new Promise((resolve) => setTimeout(resolve, 250));
-      if (twitch.getCurrentPlayer() === player) player.seekTo(position);
-    }
-  } catch (_) {
-    twitch.sendChatAdminMessage(
-      formatMessage({defaultMessage: 'Unable to reset the player. Try refreshing the page.'})
-    );
-  } finally {
-    button.disabled = false;
-  }
-}
-
 class VideoPlayerModule {
   constructor() {
     watcher.on('load.player', () => {
@@ -187,15 +161,11 @@ class VideoPlayerModule {
       watchPlayerRecommendationVodsAutoplay();
       this.loadScrollControl();
       this.loadPictureInPicture();
-      this.loadResetButton();
     });
     settings.on(`changed.${SettingIds.PLAYER_EXTENSIONS}`, () => this.toggleHidePlayerExtensions());
-    settings.on(`changed.${SettingIds.PIP_BUTTON}`, () => this.togglePlayerButtons());
-    settings.on(`changed.${SettingIds.RESET_BUTTON}`, () => this.togglePlayerButtons());
     settings.on(`changed.${SettingIds.VOD_RECOMMENDATION_AUTOPLAY}`, () => watchPlayerRecommendationVodsAutoplay());
     settings.on(`changed.${SettingIds.CLICK_TO_PLAY}`, () => this.clickToPause());
     this.toggleHidePlayerExtensions();
-    this.togglePlayerButtons();
     this.loadHidePlayerCursorFullscreen();
   }
 
@@ -208,44 +178,8 @@ class VideoPlayerModule {
     videoPlayerOverlay.addEventListener('wheel', handlePlayerScroll);
   }
 
-  loadResetButton() {
-    const controls = document.querySelector('.player-controls__right-control-group');
-    const anchor = controls?.querySelector(':scope > div:has(button[data-a-target="player-settings-button"])');
-    if (!anchor || controls.querySelector('#bttv-reset-player')) return;
-
-    const label = formatMessage({defaultMessage: 'Reset Player'});
-    const container = document.createElement('div');
-    container.id = 'bttv-reset-player';
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.setAttribute('aria-label', label);
-    button.addEventListener('click', resetPlayer);
-    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    icon.setAttribute('viewBox', '0 0 24 24');
-    icon.setAttribute('width', '100%');
-    icon.setAttribute('height', '100%');
-    icon.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M20 12a8 8 0 1 1-2.343-5.657L20 9M20 4v5h-5');
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', 'currentColor');
-    path.setAttribute('stroke-width', '2');
-    path.setAttribute('stroke-linecap', 'round');
-    path.setAttribute('stroke-linejoin', 'round');
-    icon.appendChild(path);
-    button.appendChild(icon);
-    container.appendChild(button);
-    bindTooltip(container, {content: label, alignment: 'end', className: 'bttv-player-tooltip'});
-    anchor.after(container);
-  }
-
   toggleHidePlayerExtensions() {
     document.body.classList.toggle('bttv-hide-player-extensions', !settings.get(SettingIds.PLAYER_EXTENSIONS));
-  }
-
-  togglePlayerButtons() {
-    document.body.classList.toggle('bttv-hide-pip-button', !settings.get(SettingIds.PIP_BUTTON));
-    document.body.classList.toggle('bttv-hide-reset-button', !settings.get(SettingIds.RESET_BUTTON));
   }
 
   clickToPause() {
@@ -285,11 +219,9 @@ class VideoPlayerModule {
       button.addEventListener('click', togglePictureInPicture);
     });
 
-    const anchor =
-      document.querySelector('#bttv-reset-player') ||
-      document.querySelector(
-        '.player-controls__right-control-group > div:has(button[data-a-target="player-settings-button"])'
-      );
+    const anchor = document.querySelector(
+      '.player-controls__right-control-group > div:has(button[data-a-target="player-settings-button"])'
+    );
     if (anchor == null) {
       return;
     }

@@ -1,0 +1,4 @@
+/* the theme's activeClassName: pressed is one step dimmer, in place of Mantine's nudge down */
+.pressable:active:not(:disabled, [data-disabled], [aria-disabled='true']) {
+  filter: brightness(0.85);
+}

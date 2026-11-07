@@ -1,0 +1,43 @@
+.showcaseItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.showcaseCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 232px;
+  user-select: none;
+  overflow: hidden;
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-lg);
+  /* painted on the bordered element so it runs flush under the rounded corners without a seam */
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
+}
+
+.showcasePreview {
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+}
+
+/* painted above absolute backdrops; scales with the card, ratio held by the size attributes */
+.showcaseArt {
+  position: relative;
+  flex-shrink: 0;
+  max-width: 100%;
+  height: auto;
+}
+
+.showcaseLabel {
+  color: var(--mantine-color-dimmed);
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .showcaseCard {
+    border-radius: var(--mantine-radius-md);
+  }
+}

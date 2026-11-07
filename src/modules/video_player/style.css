@@ -8,11 +8,6 @@
   }
 }
 
-.bttv-hide-pip-button #bttv-picture-in-picture,
-.bttv-hide-reset-button #bttv-reset-player {
-  display: none !important;
-}
-
 .bttv-hide-player-cursor {
   div[data-test-selector='video-player__video-container'] {
     cursor: none;
@@ -24,8 +19,7 @@ main[data-platform='twitch'] .bttv-player-tooltip {
   color: var(--color-text-tooltip, light-dark(white, black));
 }
 
-#bttv-picture-in-picture,
-#bttv-reset-player {
+#bttv-picture-in-picture {
   display: inline-flex !important;
 
   button {

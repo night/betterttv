@@ -59,7 +59,9 @@
     }
   }
 
+  /* twitch positions the collapsed toggle off the left edge, pull it back on screen */
   .right-column--collapsed .right-column__toggle-visibility {
+    left: 10px !important;
     transform: rotate(-180deg);
   }
 

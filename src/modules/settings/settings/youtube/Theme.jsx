@@ -5,9 +5,12 @@ import {SettingDefaultValues, SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingPrimaryColorRadio from '@/modules/settings/components/SettingPrimaryColorRadio';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Theme'});
+const ACCENT_COLOR_NAME = formatMessage({defaultMessage: 'Accent Color'});
+const ACCENT_COLOR_DESCRIPTION = formatMessage({defaultMessage: 'The primary accent color of the theme.'});
 
 function Theme({ref, ...props}) {
   const [value, setValue] = useStorageState(SettingIds.PRIMARY_COLOR);
@@ -24,16 +27,22 @@ function Theme({ref, ...props}) {
         showProBadge
         value={normalizedValue}
         onChange={setNormalizedValue}
-        name={formatMessage({defaultMessage: 'Accent Color'})}
-        description={formatMessage({defaultMessage: 'The primary accent color of the theme.'})}
+        name={ACCENT_COLOR_NAME}
+        description={ACCENT_COLOR_DESCRIPTION}
       />
     </SettingGroup>
   );
 }
 
+registerSearchEntry({
+  query: ACCENT_COLOR_NAME,
+  description: ACCENT_COLOR_DESCRIPTION,
+  settingPanelId: SettingPanelIds.THEME,
+});
+
 SettingStore.registerSetting(Theme, {
   settingPanelId: SettingPanelIds.THEME,
-  settingCategoryId: SettingCategoryIds.APPEARANCE,
+  settingCategoryId: SettingCategoryIds.INTERFACE,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
 });

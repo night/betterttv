@@ -1,11 +1,9 @@
-import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Autocomplete,
   Avatar,
   Button,
   Kbd,
-  NativeSelect,
   Pill,
   Table,
   TableTbody,
@@ -19,13 +17,15 @@ import {
 } from '@mantine/core';
 import {useDisclosure, useFocusTrap} from '@mantine/hooks';
 import classNames from 'classnames';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
-import Icon from '@/common/components/Icon';
+import {Info, Trash2} from 'lucide-react';
+import React, {useCallback, useMemo, useState} from 'react';
+import SelectMenu from '@/common/components/SelectMenu';
 import useBadgeOptions from '@/common/hooks/BadgeOptions';
 import useCurrentChannel from '@/common/hooks/CurrentChannel';
+import useEntryListState from '@/common/hooks/EntryListState';
 import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
-import {openModal} from '@/common/utils/modal';
+import {openModal, WIDE_MODAL_SIZE} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
 import {KeywordTypes} from '@/utils/keywords';
 import ColorPicker from './ColorPicker';
@@ -91,9 +91,16 @@ function RegexGuideModalBody() {
 function openRegexGuideModal() {
   return openModal({
     title: formatMessage({defaultMessage: 'Advanced Keywords'}),
+    size: WIDE_MODAL_SIZE,
     children: <RegexGuideModalBody />,
   });
 }
+
+const KEYWORD_TYPE_OPTIONS = [
+  {label: formatMessage({defaultMessage: 'Message'}), value: KeywordTypes.MESSAGE},
+  {label: formatMessage({defaultMessage: 'Username'}), value: KeywordTypes.USER},
+  {label: formatMessage({defaultMessage: 'Badge'}), value: KeywordTypes.BADGE},
+];
 
 function renderBadgeOption({option}) {
   return (
@@ -117,6 +124,7 @@ function KeywordRow({
   const portalRef = usePortalRef();
   const onUpdate = useCallback((newKeywordData) => updateHandler(id, newKeywordData), [updateHandler, id]);
   const onDelete = useCallback(() => deleteHandler(id), [deleteHandler, id]);
+  const handleTypeChange = useCallback((type) => onUpdate({type}), [onUpdate]);
   const keywordInputRef = useCallback((ref) => keywordInputRefCallback(id, ref), [keywordInputRefCallback, id]);
   const [opened, {open, close}] = useDisclosure(false);
   const channels = data?.channels ?? [];
@@ -141,17 +149,13 @@ function KeywordRow({
         </TableTd>
       ) : null}
       <TableTd className={classNames(tableStyles.dataCell, tableStyles.selectColumn)}>
-        <NativeSelect
-          variant="unstyled"
-          classNames={{input: tableStyles.selectInput}}
+        <SelectMenu
+          variant="transparent"
+          className={tableStyles.selectTrigger}
+          ariaLabel={formatMessage({defaultMessage: 'Keyword target'})}
+          options={KEYWORD_TYPE_OPTIONS}
           value={data.type}
-          data={[
-            {label: formatMessage({defaultMessage: 'Message'}), value: KeywordTypes.MESSAGE},
-            {label: formatMessage({defaultMessage: 'Username'}), value: KeywordTypes.USER},
-            {label: formatMessage({defaultMessage: 'Badge'}), value: KeywordTypes.BADGE},
-          ]}
-          size="lg"
-          onChange={({target: {value}}) => onUpdate({type: parseInt(value, 10)})}
+          onChange={handleTypeChange}
         />
       </TableTd>
       <TableTd className={tableStyles.dataCell}>
@@ -232,7 +236,7 @@ function KeywordRow({
           size="sm"
           classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
-          <Icon icon={faTrash} />
+          <Trash2 size={16} />
         </ActionIcon>
       </TableTd>
     </TableTr>
@@ -269,11 +273,11 @@ function KeywordsTable({
                 className={styles.infoButton}
                 aria-label={formatMessage({defaultMessage: 'Advanced keywords'})}
                 onClick={openRegexGuideModal}>
-                <Icon icon={faCircleInfo} />
+                <Info size={16} />
               </ActionIcon>
             </div>
           </TableTh>
-          <TableTh className={styles.channelsColumn}>{formatMessage({defaultMessage: 'Channels'})}</TableTh>
+          <TableTh>{formatMessage({defaultMessage: 'Channels'})}</TableTh>
           <TableTh className={tableStyles.actionsColumn} />
         </TableTr>
       </TableThead>
@@ -298,7 +302,7 @@ function KeywordsTable({
 function SettingKeywords({value, setValue, colorColumn = null}) {
   const currentChannel = useCurrentChannel();
   const [search, setSearch] = useState('');
-  const entryList = useMemo(() => Object.entries(value ?? {}).reverse(), [value]);
+  const {entryList, addEntry, updateHandler, deleteHandler, focusInputRefCallback} = useEntryListState(value, setValue);
 
   const filteredEntryList = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -311,53 +315,11 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
   }, [entryList, search]);
 
   const showColorColumn = colorColumn != null;
-  const pendingKeywordFocusRef = useRef(null);
 
   const newEntryHandler = useCallback(() => {
     setSearch('');
-    const newEntry = createNewEntry();
-
-    setValue((prevKeywords) => {
-      const nextKeywords = {...prevKeywords};
-      nextKeywords[newEntry.id] = newEntry;
-      return nextKeywords;
-    });
-
-    pendingKeywordFocusRef.current = newEntry.id;
-  }, [setValue]);
-
-  const deleteHandler = useCallback(
-    (id) => {
-      setValue((prevKeywords) => {
-        const nextKeywords = {...prevKeywords};
-
-        if (nextKeywords[id] == null) {
-          return prevKeywords;
-        }
-
-        delete nextKeywords[id];
-        return nextKeywords;
-      });
-    },
-    [setValue]
-  );
-
-  const updateHandler = useCallback(
-    (id, newKeywordData) => {
-      setValue((prevKeywords) => {
-        const nextKeywords = {...prevKeywords};
-        const existingKeyword = nextKeywords[id];
-
-        if (existingKeyword == null) {
-          return prevKeywords;
-        }
-
-        nextKeywords[id] = {...existingKeyword, ...newKeywordData};
-        return nextKeywords;
-      });
-    },
-    [setValue]
-  );
+    addEntry(createNewEntry());
+  }, [addEntry]);
 
   const handlePaste = useCallback(
     (event) => {
@@ -385,15 +347,6 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
     [setValue]
   );
 
-  const keywordInputRefCallback = useCallback((id, ref) => {
-    if (pendingKeywordFocusRef.current !== id) {
-      return;
-    }
-
-    ref.focus();
-    pendingKeywordFocusRef.current = null;
-  }, []);
-
   return (
     <Panel
       title={
@@ -411,7 +364,7 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
           {formatMessage({defaultMessage: 'New Entry'})}
         </Button>
       }
-      className={styles.settingGroupContent}>
+      className={tableStyles.settingGroupContent}>
       {filteredEntryList.length > 0 ? (
         <KeywordsTable
           entryList={filteredEntryList}
@@ -419,12 +372,12 @@ function SettingKeywords({value, setValue, colorColumn = null}) {
           colorColumn={colorColumn}
           updateHandler={updateHandler}
           deleteHandler={deleteHandler}
-          keywordInputRefCallback={keywordInputRefCallback}
+          keywordInputRefCallback={focusInputRefCallback}
           currentChannel={currentChannel}
           onPaste={handlePaste}
         />
       ) : entryList.length > 0 ? (
-        <Text className={styles.noKeywordsText} c="dimmed">
+        <Text className={tableStyles.emptyText} c="dimmed">
           {formatMessage({defaultMessage: 'No keywords match your search.'})}
         </Text>
       ) : (
