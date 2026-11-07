@@ -12,8 +12,7 @@ const entries = [];
 //     where the setting isn't supported. Accepting it goes to the setting unless onAccept says else
 //   categoryId: a category's own result
 //   href: a page it opens in a new tab, which the result marks with an icon
-//   onAccept: what accepting it does, given {setPage, goToCategory, goToSetting, flashSetting}; runs
-//     before href. flashSetting scrolls to a row or group by its name and marks it out
+//   onAccept: what accepting it does, given {setPage, goToCategory, goToSetting, flashSetting}; runs before href
 export function registerSearchEntry(entry) {
   entries.push({...entry, id: entries.length});
 }

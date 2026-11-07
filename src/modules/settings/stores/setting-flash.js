@@ -1,9 +1,7 @@
 import {create} from 'zustand';
 
-// matches the flash in SettingsModal.module.css
 const FLASH_DURATION = 1400;
 
-// The setting a search jumped to, by name, so a row or group can flash on a page that's yet to render
 const useSettingFlashStore = create(() => ({settingName: null}));
 
 let timeout = null;

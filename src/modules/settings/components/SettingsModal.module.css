@@ -30,7 +30,6 @@
 
 .pageColumn {
   position: relative;
-  /* keeps the page header's z-index in here, so the search's dim in the sidebar reaches over it */
   isolation: isolate;
   flex: 1;
   display: flex;
@@ -46,7 +45,6 @@
   overflow: hidden;
 }
 
-/* laid over what a search jumped to, since a group's pane would hide a fill behind it */
 .pageContent [data-flash] {
   position: relative;
 }
@@ -60,7 +58,6 @@
   animation: flash 1400ms ease-out;
 }
 
-/* a group can share its name with a row inside it */
 .pageContent [data-flash] [data-flash]::after {
   display: none;
 }
