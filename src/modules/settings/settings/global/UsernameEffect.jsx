@@ -4,7 +4,7 @@ import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingUsernameEffect from '@/modules/settings/components/SettingUsernameEffect';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
-const SETTING_NAME = formatMessage({defaultMessage: 'Username Effect'});
+const SETTING_NAME = formatMessage({defaultMessage: 'Effect'});
 
 function UsernameEffect({ref, ...props}) {
   return (
@@ -19,6 +19,7 @@ SettingStore.registerSetting(UsernameEffect, {
   settingCategoryId: SettingCategoryIds.USERNAME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
+  keywords: ['username'],
 });
 
 export default UsernameEffect;

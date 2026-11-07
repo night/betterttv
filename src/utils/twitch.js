@@ -174,6 +174,14 @@ export default {
       chatColor = node.memoizedProps.data.currentUser.chatColor;
     } catch (_) {}
 
+    // the carousel is only on pages with a chat input; twitch's cache has the account everywhere
+    if (chatColor == null) {
+      try {
+        const store = this.getApolloClient().cache.data;
+        chatColor = store.lookup(store.lookup('ROOT_QUERY').currentUser.__ref).chatColor ?? null;
+      } catch (_) {}
+    }
+
     return chatColor;
   },
 

@@ -5,7 +5,7 @@ import SettingUsernameHoverEffect from '@/modules/settings/components/SettingUse
 import {useHasPromotion} from '@/modules/settings/stores/promotion-store';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
-const SETTING_NAME = formatMessage({defaultMessage: 'Username Hover Effect'});
+const SETTING_NAME = formatMessage({defaultMessage: 'Hover Effect'});
 
 function UsernameHoverEffect({ref, ...props}) {
   const hasPromotion = useHasPromotion(SettingPanelIds.USERNAME_HOVER_EFFECT);
@@ -22,6 +22,7 @@ SettingStore.registerSetting(UsernameHoverEffect, {
   settingCategoryId: SettingCategoryIds.USERNAME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
+  keywords: ['username'],
 });
 
 export default UsernameHoverEffect;
