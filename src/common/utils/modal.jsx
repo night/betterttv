@@ -2,11 +2,12 @@ import {Text} from '@mantine/core';
 import {modals} from '@mantine/modals';
 import {ChevronRight} from 'lucide-react';
 import React from 'react';
+import AccountMismatch from '@/common/components/AccountMismatch';
 import DeviceCodeSignIn from '@/common/components/DeviceCodeSignIn';
 import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
 import socketClient from '@/socket-client';
-import useAuthStore from '@/stores/auth';
+import useAuthStore, {waitForUserSync} from '@/stores/auth';
 import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
 import {PopupBlockedError} from '@/utils/oauth';
 import {isUserPro} from '@/utils/pro';
@@ -149,7 +150,7 @@ function openDeviceCodeSignInModal({signal} = {}) {
   });
 }
 
-export async function executeSignIn({signal} = {}) {
+async function signInWithPopupOrDeviceCode({signal}) {
   if (!canOpenPopup()) {
     return openDeviceCodeSignInModal({signal});
   }
@@ -162,6 +163,34 @@ export async function executeSignIn({signal} = {}) {
     }
 
     return openDeviceCodeSignInModal({signal});
+  }
+}
+
+function openAccountMismatchModal() {
+  function handleCancel() {
+    modals.close(modalId);
+  }
+
+  // straight from the click, so the sign in popup isn't blocked; a mismatch opens this modal again
+  function handleTryAgain() {
+    modals.close(modalId);
+    executeSignIn().catch(() => {});
+  }
+
+  const modalId = openModal({
+    title: formatMessage({defaultMessage: 'Account Mismatch'}),
+    description: <AccountMismatch onCancel={handleCancel} onTryAgain={handleTryAgain} />,
+  });
+}
+
+// the website hands back whichever BetterTTV account it's signed in to, which may not match this user
+export async function executeSignIn({signal} = {}) {
+  await signInWithPopupOrDeviceCode({signal});
+  await waitForUserSync();
+
+  if (useAuthStore.getState().accountMismatch) {
+    openAccountMismatchModal();
+    throw new Error('Signed in to a BetterTTV account not connected to this user');
   }
 }
 

@@ -13,6 +13,8 @@ const useAuthStore = create(
   persist(
     subscribeWithSelector((set, get) => ({
       user: null,
+      // signed in to a BetterTTV account that isn't connected to the platform user on the page
+      accountMismatch: false,
       credentials: {accessToken: null, refreshToken: null},
       setCredentials(credentials) {
         if (credentials == null) {
@@ -57,11 +59,11 @@ export async function getActions() {
   return {getConnections, getMe};
 }
 
-export async function syncCurrentUserFromCredentials(credentialsParam = null) {
-  const resolved = credentialsParam ?? getCredentials();
+let userSync = Promise.resolve();
 
-  if (resolved.accessToken == null) {
-    useAuthStore.setState({user: null});
+async function syncUser(credentials) {
+  if (credentials.accessToken == null) {
+    useAuthStore.setState({user: null, accountMismatch: false});
     return;
   }
 
@@ -82,10 +84,21 @@ export async function syncCurrentUserFromCredentials(credentialsParam = null) {
   );
 
   if (!hasConnectedAccount) {
+    useAuthStore.setState({accountMismatch: true});
     return;
   }
 
-  useAuthStore.setState({user: me});
+  useAuthStore.setState({user: me, accountMismatch: false});
+}
+
+export function syncCurrentUserFromCredentials(credentialsParam = null) {
+  userSync = syncUser(credentialsParam ?? getCredentials());
+  return userSync;
+}
+
+// settles once the latest credentials have resolved to a user, or a mismatched one
+export function waitForUserSync() {
+  return userSync;
 }
 
 useAuthStore.subscribe((state) => state.credentials, syncCurrentUserFromCredentials);

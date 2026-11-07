@@ -1,0 +1,24 @@
+.avatar {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  overflow: hidden;
+  border-radius: 50%;
+  background-color: var(--avatar-color, var(--mantine-color-elevated-hover));
+  font-size: calc(var(--avatar-size) * 0.45);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--mantine-color-dimmed);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar[data-initial] {
+  color: var(--mantine-color-white);
+}
