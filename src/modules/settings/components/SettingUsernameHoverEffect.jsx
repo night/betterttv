@@ -100,7 +100,7 @@ function SettingUsernameHoverEffect() {
   const user = useAuthStore((state) => state.user);
   const previewDisplayName = getPreviewDisplayName(currentUser, user);
 
-  const [value, handleChange, isLocked] = useUsernameEffectSetting({
+  const [value, handleChange, isLocked, handlePreview] = useUsernameEffectSetting({
     userField: 'usernameHoverEffect',
     saveEffect: updateUsernameHoverEffect,
     isEligible: isEligibleForUsernameHoverEffect,
@@ -113,6 +113,7 @@ function SettingUsernameHoverEffect() {
       <SettingRadioCard
         key={NONE}
         value={NONE}
+        onHover={handlePreview}
         className={styles.usernameCard}
         tooltip={formatMessage({defaultMessage: 'Disable effect'})}
         ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
@@ -123,6 +124,7 @@ function SettingUsernameHoverEffect() {
         <SettingRadioCard
           key={effectValue}
           value={effectValue}
+          onHover={handlePreview}
           locked={isLocked(effectValue)}
           className={classNames(styles.usernameCard, effects.hoverTrigger)}
           tooltip={label}

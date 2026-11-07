@@ -1,0 +1,55 @@
+/* the website's chat preview box, in the picked scheme; the name takes the chat colour, which the
+   effects build on */
+.box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 128px;
+  padding: 16px 24px;
+  border: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6));
+  border-radius: var(--mantine-radius-lg);
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-9));
+  color: var(--chat-color, inherit);
+}
+
+.schemeToggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.box[data-scheme='dark'] {
+  color-scheme: dark;
+}
+
+.box[data-scheme='light'] {
+  color-scheme: light;
+}
+
+/* well up from chat's 13px, so the effects read clearly */
+.line {
+  max-width: 100%;
+  font-size: 20px;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* chat's 18px badge with its 3px corners and gap, scaled with the text */
+.badge {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+  border-radius: 4px;
+  vertical-align: -4px;
+}
+
+.name {
+  font-weight: 700;
+}
+
+.text {
+  color: light-dark(var(--mantine-color-gray-9), var(--mantine-color-dark-0));
+}
