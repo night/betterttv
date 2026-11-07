@@ -5,9 +5,7 @@ import formatMessage from '@/i18n/index';
 import PageHeader from '@/modules/settings/components/PageHeader';
 import PageScrollBody from '@/modules/settings/components/PageScrollBody';
 import Panel from '@/modules/settings/components/Panel';
-import UsernameChatPreview from '@/modules/settings/components/UsernameChatPreview';
 import promotionStore from '@/modules/settings/stores/promotion-store';
-import {SettingCategoryIds} from '@/modules/settings/stores/setting-store';
 import extension from '@/utils/extension';
 import styles from './Settings.module.css';
 
@@ -80,7 +78,6 @@ const SettingsList = React.memo(function SettingsList({settings, handleSettingRe
 function Settings({category, handleSettingRefCallback}) {
   return (
     <PageScrollBody header={<PageHeader leftContent={category.label} />}>
-      {category.id === SettingCategoryIds.USERNAME ? <UsernameChatPreview /> : null}
       <SettingsList settings={category.settings} handleSettingRefCallback={handleSettingRefCallback} />
     </PageScrollBody>
   );

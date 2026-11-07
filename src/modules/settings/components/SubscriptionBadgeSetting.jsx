@@ -11,7 +11,6 @@ import formatMessage from '@/i18n';
 import socketClient from '@/socket-client';
 import useAuthStore from '@/stores/auth';
 import useFeatureEligibilityStore, {fetchEligibility} from '@/stores/feature-eligibility';
-import {setTriedLook} from '@/stores/username-looks';
 import {getCurrentChannel} from '@/utils/channel';
 import {isUserPro} from '@/utils/pro';
 import SettingGroup from './SettingGroup';
@@ -168,23 +167,6 @@ function SubscriptionBadgeSetting({name, ref, ...props}) {
     [badgeEnabled, setBadgeEnabled, setSelectedBadgeId]
   );
 
-  // a hovered card tries its badge in the chat preview; leaving it passes undefined, which ends the try
-  const handleBadgePreview = useCallback(
-    (newValue) => {
-      if (newValue === undefined) {
-        setTriedLook('subscriptionBadgeUrl', undefined);
-        return;
-      }
-
-      const badge =
-        newValue === LATEST
-          ? eligibleBadges?.[0]
-          : eligibleBadges?.find((eligibleBadge) => eligibleBadge.badgeId === newValue);
-      setTriedLook('subscriptionBadgeUrl', badge?.badgeUrl ?? null);
-    },
-    [eligibleBadges]
-  );
-
   const nextBadgeCountdown = nextBadgeUnlocksAt != null ? getUnlockCountdown(nextBadgeUnlocksAt, now) : null;
 
   const isPro = isUserPro(user);
@@ -222,7 +204,6 @@ function SubscriptionBadgeSetting({name, ref, ...props}) {
           fixedCardWidth>
           <SettingRadioCard
             value={DISABLED}
-            onHover={handleBadgePreview}
             tooltip={disableBadgeLabel}
             ariaLabel={disableBadgeLabel}
             withIndicators={false}>
@@ -230,26 +211,19 @@ function SubscriptionBadgeSetting({name, ref, ...props}) {
           </SettingRadioCard>
           <SettingRadioCard
             value={LATEST}
-            onHover={handleBadgePreview}
             tooltip={latestBadgeLabel}
             ariaLabel={latestBadgeLabel}
             withIndicators={false}>
             <Repeat className={styles.cardIcon} />
           </SettingRadioCard>
           {eligibleBadges.map(({badgeId, badgeUrl}) => (
-            <SettingRadioCard
-              key={badgeId}
-              value={badgeId}
-              onHover={handleBadgePreview}
-              ariaLabel={badgeLabel}
-              withIndicators={false}>
+            <SettingRadioCard key={badgeId} value={badgeId} ariaLabel={badgeLabel} withIndicators={false}>
               <BadgeImage src={badgeUrl} />
             </SettingRadioCard>
           ))}
           {nextBadgeUnlocksAt != null ? (
             <SettingRadioCard
               value={NEXT}
-              onHover={handleBadgePreview}
               withIndicators={false}
               className={styles.nextBadgeCard}
               tooltip={
