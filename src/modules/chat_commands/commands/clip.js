@@ -67,6 +67,8 @@ commandStore.registerCommand({
       return;
     }
 
+    // opened now because browsers only allow new tabs straight after the keypress
+    const clipWindow = window.open('', '_blank');
     twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Creating clip, please wait...'}));
 
     try {
@@ -86,13 +88,14 @@ commandStore.registerCommand({
       }
 
       if (await waitForClip(slug)) {
-        twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Clip created: {url}'}, {url}), true);
-      } else {
-        twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Error: Unable to create clip.'}));
+        clipWindow?.location.assign(url);
+        twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Clip created: {url}'}, {url}));
+        return;
       }
-    } catch (error) {
-      twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Error: Unable to create clip.'}));
-    }
+    } catch (_) {}
+
+    clipWindow?.close();
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Error: Unable to create clip.'}));
   },
   permissionLevel: PermissionLevels.VIEWER,
 });
