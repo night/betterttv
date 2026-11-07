@@ -158,7 +158,7 @@ function SettingUsernameEffect() {
   const usernameFont = useUsernameLook('usernameFont');
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
 
-  const [value, handleChange, isLocked] = useUsernameEffectSetting({
+  const [value, handleChange, isLocked, handlePreview] = useUsernameEffectSetting({
     userField: 'usernameEffect',
     saveEffect: updateUsernameEffect,
     isEligible: isEligibleForUsernameEffect,
@@ -171,6 +171,7 @@ function SettingUsernameEffect() {
       <SettingRadioCard
         key={NONE}
         value={NONE}
+        onHover={handlePreview}
         className={styles.usernameCard}
         tooltip={formatMessage({defaultMessage: 'Disable effect'})}
         ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
@@ -181,6 +182,7 @@ function SettingUsernameEffect() {
         <SettingRadioCard
           key={effectValue}
           value={effectValue}
+          onHover={handlePreview}
           locked={isLocked(effectValue)}
           className={styles.usernameCard}
           tooltip={label}
