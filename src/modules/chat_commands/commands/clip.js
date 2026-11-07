@@ -71,7 +71,7 @@ commandStore.registerCommand({
 
     // opened now because browsers only allow new tabs straight after the keypress
     const clipWindow = window.open('', '_blank');
-    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Creating clip, please wait...'}));
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Creating clip, redirecting when finished...'}));
 
     try {
       const {data} = await twitch.graphqlMutation(createClipMutation, {
