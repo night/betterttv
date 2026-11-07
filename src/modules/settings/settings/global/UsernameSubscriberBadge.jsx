@@ -17,6 +17,10 @@ registerSearchEntry({
   query: DISPLAY_BADGE_NAME,
   description: DISPLAY_BADGE_DESCRIPTION,
   keywords: ['subscriber', 'pro'],
+  onAccept: ({goToSetting, flashSetting}) => {
+    goToSetting(SettingPanelIds.SUBSCRIPTION_BADGE);
+    flashSetting(SETTING_NAME);
+  },
   settingPanelId: SettingPanelIds.SUBSCRIPTION_BADGE,
 });
 

@@ -30,6 +30,7 @@
 
 .pageColumn {
   position: relative;
+  isolation: isolate;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -42,6 +43,30 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.pageContent [data-flash] {
+  position: relative;
+}
+
+.pageContent [data-flash]::after {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: calc(var(--mantine-radius-md) + 12px);
+  pointer-events: none;
+  animation: flash 1400ms ease-out;
+}
+
+.pageContent [data-flash] [data-flash]::after {
+  display: none;
+}
+
+@keyframes flash {
+  0%,
+  30% {
+    background-color: color-mix(in srgb, var(--mantine-primary-color-filled) 20%, transparent);
+  }
 }
 
 .pageScrollBody {

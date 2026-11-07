@@ -1,3 +1,5 @@
+import {flashSetting} from '@/modules/settings/stores/setting-flash';
+
 const entries = [];
 
 // Adds a result to the settings search. Call it from the file that owns what the result leads to.
@@ -10,7 +12,7 @@ const entries = [];
 //     where the setting isn't supported. Accepting it goes to the setting unless onAccept says else
 //   categoryId: a category's own result
 //   href: a page it opens in a new tab, which the result marks with an icon
-//   onAccept: what accepting it does, given {setPage, goToCategory, goToSetting}; runs before href
+//   onAccept: what accepting it does, given {setPage, goToCategory, goToSetting, flashSetting}; runs before href
 export function registerSearchEntry(entry) {
   entries.push({...entry, id: entries.length});
 }
@@ -81,11 +83,12 @@ export function searchEntries(text, isAvailable) {
 
 export function acceptSearchEntry({query, categoryId, href, settingPanelId, onAccept}, navigation) {
   if (onAccept != null) {
-    onAccept(navigation);
+    onAccept({...navigation, flashSetting});
   } else if (categoryId != null) {
     navigation.goToCategory(categoryId);
   } else if (href == null) {
-    navigation.goToSetting(settingPanelId, query);
+    navigation.goToSetting(settingPanelId);
+    flashSetting(query);
   }
 
   if (href != null) {
