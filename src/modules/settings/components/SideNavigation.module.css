@@ -24,24 +24,12 @@
   overflow-x: hidden;
 }
 
-.avatar {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-}
-
-.avatarImage {
-  width: 24px;
-  height: 24px;
-}
-
 .navigationIcon {
   width: 16px;
   height: 16px;
 }
 
-/* shown on the User Settings button when no BetterTTV account is linked */
+/* shown on the User Settings button when the signed in BetterTTV account isn't linked to this user */
 .warningIcon {
   width: 18px;
   height: 18px;

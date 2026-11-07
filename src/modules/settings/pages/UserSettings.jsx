@@ -3,6 +3,7 @@ import {saveAs} from 'file-saver';
 import {UserCog} from 'lucide-react';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
+import {formatAccountMismatchMessage} from '@/common/components/AccountMismatch';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import {executeSignIn, openConfirmModal} from '@/common/utils/modal';
@@ -91,21 +92,20 @@ function useSignIn() {
   return [signingIn, signIn];
 }
 
-function SignInAlert() {
-  const user = useAuthStore(useShallow((state) => state.user));
+function AccountMismatchAlert() {
+  const accountMismatch = useAuthStore((state) => state.accountMismatch);
   const [signingIn, signIn] = useSignIn();
 
-  if (user != null) {
+  if (!accountMismatch) {
     return null;
   }
 
   return (
     <Alert
-      message={formatMessage({defaultMessage: 'You are not signed in!'})}
-      description={formatMessage({defaultMessage: 'Some features are unavailable until you sign in.'})}
+      description={formatAccountMismatchMessage()}
       rightContent={
         <Anchor component="button" type="button" underline="always" c="inherit" onClick={signIn} disabled={signingIn}>
-          {formatMessage({defaultMessage: 'Connect Account'})}
+          {formatMessage({defaultMessage: 'Switch Account'})}
         </Anchor>
       }
     />
@@ -209,7 +209,7 @@ function UserSettings() {
 
   return (
     <PageScrollBody header={<PageHeader leftContent={USER_SETTINGS_NAME} />}>
-      <SignInAlert />
+      <AccountMismatchAlert />
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />
         <BackupSetting description={BACKUP_SETTINGS_DESCRIPTION} disabled={resetting} />

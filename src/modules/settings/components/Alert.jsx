@@ -9,7 +9,7 @@ function Alert({message, description, rightContent}) {
     <Panel className={styles.alert}>
       <TriangleAlert className={styles.warningIcon} />
       <div className={styles.text}>
-        <Text className={styles.message}>{message}</Text>
+        {message != null ? <Text className={styles.message}>{message}</Text> : null}
         {description != null ? <Text className={styles.description}>{description}</Text> : null}
       </div>
       {rightContent != null ? <div className={styles.rightContent}>{rightContent}</div> : null}
