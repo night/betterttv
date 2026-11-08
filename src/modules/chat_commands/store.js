@@ -1,4 +1,3 @@
-import formatMessage from '@/i18n/index';
 import twitch from '@/utils/twitch';
 import watcher from '@/watcher';
 
@@ -9,13 +8,36 @@ export const PermissionLevels = {
   BROADCASTER: 3,
 };
 
-const ADDED_BY_BTTV_SUFFIX = formatMessage({defaultMessage: '(Added by BetterTTV)'});
+const BTTV_COMMAND_GROUP = 'betterttv';
+const TWITCH_COMMAND_GROUP = 'twitch';
 
-function buildInjectedDescription(description) {
-  if (description == null) {
-    return ADDED_BY_BTTV_SUFFIX;
+let twitchDetermineGroup = null;
+
+function determineGroup(command) {
+  if (command.group != null) {
+    return command.group;
   }
-  return `${description} ${ADDED_BY_BTTV_SUFFIX}`;
+  return twitchDetermineGroup.call(this, command) ?? TWITCH_COMMAND_GROUP;
+}
+
+function getAutocompleteCommandProvider() {
+  const autocompleteNode = twitch.getAutocompleteStateNode();
+  if (autocompleteNode == null) {
+    return null;
+  }
+
+  const autocompleteProviders = autocompleteNode.stateNode.providers;
+  return autocompleteProviders.find(({autocompleteType}) => autocompleteType === 'command');
+}
+
+function patchCommandGroups() {
+  const commandProvider = getAutocompleteCommandProvider();
+  if (commandProvider?.determineGroup == null || commandProvider.determineGroup === determineGroup) {
+    return;
+  }
+
+  twitchDetermineGroup = commandProvider.determineGroup;
+  commandProvider.determineGroup = determineGroup;
 }
 
 class CommandStore {
@@ -25,6 +47,8 @@ class CommandStore {
   }
 
   loadCommands() {
+    patchCommandGroups();
+
     const twitchCommandStore = twitch.getChatCommandStore();
     if (twitchCommandStore == null || this.commands.length === 0) {
       return;
@@ -35,13 +59,14 @@ class CommandStore {
   }
 
   registerCommand(command) {
-    const injectedCommand = {...command, description: buildInjectedDescription(command.description)};
+    const injectedCommand = {...command, group: BTTV_COMMAND_GROUP};
     this.commands.push(injectedCommand);
 
     const twitchCommandStore = twitch.getChatCommandStore();
     if (twitchCommandStore == null) {
       return;
     }
+    patchCommandGroups();
     twitchCommandStore.addCommand(injectedCommand);
   }
 }
