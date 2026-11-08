@@ -52,15 +52,6 @@ async function waitForClip(slug) {
   return false;
 }
 
-function renderLoadingPage(clipWindow) {
-  const {document: clipDocument} = clipWindow;
-  const message = formatMessage({defaultMessage: 'Creating clip...'});
-  clipDocument.title = message;
-  clipDocument.body.textContent = message;
-  clipDocument.body.style.cssText =
-    'margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0e0e10; color: #efeff1; font: 600 20px Inter, Roobert, Helvetica, Arial, sans-serif;';
-}
-
 commandStore.registerCommand({
   name: 'clip',
   commandArgs: [{name: 'title', required: false}],
@@ -78,11 +69,6 @@ commandStore.registerCommand({
       return;
     }
 
-    // opened now because browsers only allow new tabs straight after the keypress
-    const clipWindow = window.open('', '_blank');
-    if (clipWindow != null) {
-      renderLoadingPage(clipWindow);
-    }
     twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Creating clip, opening when finished...'}));
 
     try {
@@ -102,13 +88,12 @@ commandStore.registerCommand({
       }
 
       if (await waitForClip(slug)) {
-        clipWindow?.location.assign(url);
+        window.open(url, '_blank');
         twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Clip created: {url}'}, {url}));
         return;
       }
     } catch (_) {}
 
-    clipWindow?.close();
     twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Error: Unable to create clip.'}));
   },
   permissionLevel: PermissionLevels.VIEWER,
