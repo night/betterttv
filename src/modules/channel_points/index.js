@@ -1,24 +1,49 @@
+import gql from 'graphql-tag';
 import {SettingIds, ChannelPointsFlags, PlatformTypes} from '@/constants';
-import domObserver from '@/observers/dom';
 import settings from '@/settings';
 import {hasFlag} from '@/utils/flags';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import twitch from '@/utils/twitch';
+import watcher from '@/watcher';
 
-// the classic claim button wraps a stable .claimable-bonus__icon, so it's caught however twitch inserts it.
-// the OneChat button has no stable class, so fall back to the transition twitch mounts around it.
-const CLAIM_BONUS_SELECTOR = '.claimable-bonus__icon, .tw-transition';
-const COMMUNITY_POINTS_SUMMARY_SELECTOR = '[data-test-selector="community-points-summary"]';
+const claimCommunityPointsMutation = gql`
+  mutation BTTVClaimCommunityPoints($input: ClaimCommunityPointsInput!) {
+    claimCommunityPoints(input: $input) {
+      error {
+        code
+      }
+    }
+  }
+`;
 
-let removeChannelPointsListener;
-// nested transitions and the icon emit together on mount, so remember which buttons were already clicked
-const clickedClaimButtons = new WeakSet();
+let removePubSubListener = null;
+
+function isAutoClaimEnabled() {
+  return hasFlag(settings.get(SettingIds.CHANNEL_POINTS), ChannelPointsFlags.AUTO_CLAIM);
+}
+
+function handlePubSubNotification(event) {
+  let message;
+  try {
+    message = JSON.parse(event.detail);
+  } catch (_) {
+    return;
+  }
+
+  if (message?.type !== 'claim-available') {
+    return;
+  }
+
+  const {id: claimID, channel_id: channelID} = message.data.claim;
+  twitch.graphqlMutation(claimCommunityPointsMutation, {input: {channelID, claimID}}).catch(() => {});
+}
 
 class ChannelPoints {
   constructor() {
     this.loadAutoClaimBonusChannelPoints();
     this.loadHideChannelPoints();
 
+    watcher.on('load.chat', () => this.loadAutoClaimBonusChannelPoints());
     settings.on(`changed.${SettingIds.CHANNEL_POINTS}`, () => {
       this.loadAutoClaimBonusChannelPoints();
       this.loadHideChannelPoints();
@@ -26,29 +51,19 @@ class ChannelPoints {
   }
 
   loadAutoClaimBonusChannelPoints() {
-    if (hasFlag(settings.get(SettingIds.CHANNEL_POINTS), ChannelPointsFlags.AUTO_CLAIM)) {
-      if (removeChannelPointsListener) return;
-
-      removeChannelPointsListener = domObserver.on(CLAIM_BONUS_SELECTOR, (node, isConnected) => {
-        if (!isConnected || node.closest(COMMUNITY_POINTS_SUMMARY_SELECTOR) == null) return;
-
-        const claimButton = node.closest('button') ?? node.querySelector('button');
-        if (claimButton == null || clickedClaimButtons.has(claimButton)) return;
-
-        const claimableBonus = twitch.getClaimableBonus(claimButton);
-        if (claimableBonus == null || claimableBonus.state.error) return;
-
-        clickedClaimButtons.add(claimButton);
-        claimButton.click();
-      });
-
+    if (!isAutoClaimEnabled()) {
+      removePubSubListener?.();
+      removePubSubListener = null;
       return;
     }
 
-    if (!removeChannelPointsListener) return;
+    const twitchPubSubEvents = window.__twitch_pubsub_events;
+    if (removePubSubListener != null || twitchPubSubEvents == null) {
+      return;
+    }
 
-    removeChannelPointsListener();
-    removeChannelPointsListener = undefined;
+    twitchPubSubEvents.addEventListener('notification', handlePubSubNotification);
+    removePubSubListener = () => twitchPubSubEvents.removeEventListener('notification', handlePubSubNotification);
   }
 
   loadHideChannelPoints() {
