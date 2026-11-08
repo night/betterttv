@@ -11,6 +11,8 @@ const clipThumbnailQuery = gql`
   query BTTVGetClipThumbnail($slug: ID!) {
     clip(slug: $slug) {
       id
+      title
+      url
       thumbnailURL
     }
   }
@@ -20,7 +22,6 @@ const createClipMutation = gql`
   mutation BTTVCreateClip($input: CreateClipInput!) {
     createClip(input: $input) {
       clip {
-        url
         slug
       }
     }
@@ -46,10 +47,10 @@ async function waitForClip(slug) {
     if (!data.clip?.thumbnailURL) {
       continue;
     }
-    return true;
+    return data.clip;
   }
 
-  return false;
+  return null;
 }
 
 commandStore.registerCommand({
@@ -69,10 +70,9 @@ commandStore.registerCommand({
       return;
     }
 
-    // opened now because browsers only allow new tabs straight after the keypress
-    const clipWindow = window.open('', '_blank');
-    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Creating clip, opening when finished...'}));
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Creating clip...'}));
 
+    let clip = null;
     try {
       const {data} = await twitch.graphqlMutation(createClipMutation, {
         input: {
@@ -83,21 +83,24 @@ commandStore.registerCommand({
         },
       });
 
-      const {slug, url} = data.createClip.clip;
+      const {slug} = data.createClip.clip;
 
       if (title != null && title.length > 0) {
         await twitch.graphqlMutation(renameClipMutation, {input: {slug, title}});
       }
 
-      if (await waitForClip(slug)) {
-        clipWindow?.location.assign(url);
-        twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Clip created: {url}'}, {url}));
-        return;
-      }
+      clip = await waitForClip(slug);
     } catch (_) {}
 
-    clipWindow?.close();
-    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Error: Unable to create clip.'}));
+    if (clip == null) {
+      twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Error: Unable to create clip.'}));
+      return;
+    }
+
+    twitch.sendChatAdminMessage(
+      formatMessage({defaultMessage: 'Clip "{title}" created: {url}'}, {title: clip.title, url: clip.url}),
+      true
+    );
   },
   permissionLevel: PermissionLevels.VIEWER,
 });
