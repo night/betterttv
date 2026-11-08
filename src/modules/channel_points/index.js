@@ -81,12 +81,12 @@ class ChannelPoints {
 
     watcher.on('load.chat', () => this.loadAutoClaimBonusChannelPoints());
     settings.on(`changed.${SettingIds.CHANNEL_POINTS}`, () => {
-      this.loadAutoClaimBonusChannelPoints();
+      this.loadAutoClaimBonusChannelPoints(true);
       this.loadHideChannelPoints();
     });
   }
 
-  loadAutoClaimBonusChannelPoints() {
+  loadAutoClaimBonusChannelPoints(shouldClaimAvailableBonus = false) {
     if (!isAutoClaimEnabled()) {
       removePubSubListener?.();
       removePubSubListener = null;
@@ -100,6 +100,11 @@ class ChannelPoints {
 
     twitchPubSubEvents.addEventListener('notification', handlePubSubNotification);
     removePubSubListener = () => twitchPubSubEvents.removeEventListener('notification', handlePubSubNotification);
+
+    if (!shouldClaimAvailableBonus) {
+      return;
+    }
+
     claimAvailableBonus().catch(() => {});
   }
 
