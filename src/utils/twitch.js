@@ -905,20 +905,6 @@ export default {
     return privateCalloutEvent;
   },
 
-  getClaimableBonus(element) {
-    let claimableBonus;
-    try {
-      const node = searchReactParents(
-        getReactInstance(element),
-        (n) => n.memoizedProps?.claimCommunityPoints != null && n.stateNode?.state != null,
-        30
-      );
-      claimableBonus = node.stateNode;
-    } catch (e) {}
-
-    return claimableBonus;
-  },
-
   graphqlQuery(query, variables, options = {}) {
     const client = this.getApolloClient();
     if (client == null) {
