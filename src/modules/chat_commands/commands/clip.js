@@ -11,6 +11,7 @@ const clipThumbnailQuery = gql`
   query BTTVGetClipThumbnail($slug: ID!) {
     clip(slug: $slug) {
       id
+      title
       thumbnailURL
     }
   }
@@ -46,10 +47,10 @@ async function waitForClip(slug) {
     if (!data.clip?.thumbnailURL) {
       continue;
     }
-    return true;
+    return data.clip;
   }
 
-  return false;
+  return null;
 }
 
 commandStore.registerCommand({
@@ -69,7 +70,7 @@ commandStore.registerCommand({
       return;
     }
 
-    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Creating clip, opening when finished...'}));
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Creating clip...'}));
 
     try {
       const {data} = await twitch.graphqlMutation(createClipMutation, {
@@ -87,9 +88,12 @@ commandStore.registerCommand({
         await twitch.graphqlMutation(renameClipMutation, {input: {slug, title}});
       }
 
-      if (await waitForClip(slug)) {
-        window.open(url, '_blank');
-        twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Clip created: {url}'}, {url}));
+      const clip = await waitForClip(slug);
+      if (clip != null) {
+        twitch.sendChatAdminMessage(
+          formatMessage({defaultMessage: 'Clip "{title}" created: {url}'}, {title: clip.title, url}),
+          true
+        );
         return;
       }
     } catch (_) {}
