@@ -8,34 +8,26 @@ export const PermissionLevels = {
   BROADCASTER: 3,
 };
 
-const BTTV_COMMAND_GROUP = 'betterttv';
-const TWITCH_COMMAND_GROUP = 'twitch';
+const PATCHED_SENTINEL = Symbol('patched symbol');
 
 let twitchDetermineGroup = null;
 
 function determineGroup(command) {
-  if (command.__bttvInjectedCommand) {
-    return BTTV_COMMAND_GROUP;
+  if (command.__bttvInjectedCommand === true) {
+    return 'betterttv';
   }
-  return twitchDetermineGroup.call(this, command) ?? TWITCH_COMMAND_GROUP;
-}
-
-function getAutocompleteCommandProvider() {
-  const autocompleteNode = twitch.getAutocompleteStateNode();
-  if (autocompleteNode == null) {
-    return null;
-  }
-
-  const autocompleteProviders = autocompleteNode.stateNode.providers;
-  return autocompleteProviders.find(({autocompleteType}) => autocompleteType === 'command');
+  return twitchDetermineGroup.call(this, command);
 }
 
 function patchCommandGroups() {
-  const commandProvider = getAutocompleteCommandProvider();
-  if (commandProvider?.determineGroup == null || commandProvider.determineGroup === determineGroup) {
+  const commandProvider = twitch
+    .getAutocompleteStateNode()
+    ?.stateNode.providers.find(({autocompleteType}) => autocompleteType === 'command');
+  if (commandProvider?.determineGroup == null || commandProvider.__bttvCommandGroupsPatched === PATCHED_SENTINEL) {
     return;
   }
 
+  commandProvider.__bttvCommandGroupsPatched = PATCHED_SENTINEL;
   twitchDetermineGroup = commandProvider.determineGroup;
   commandProvider.determineGroup = determineGroup;
 }
