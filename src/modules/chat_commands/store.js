@@ -1,4 +1,3 @@
-import formatMessage from '@/i18n/index';
 import twitch from '@/utils/twitch';
 import watcher from '@/watcher';
 
@@ -9,13 +8,28 @@ export const PermissionLevels = {
   BROADCASTER: 3,
 };
 
-const ADDED_BY_BTTV_SUFFIX = formatMessage({defaultMessage: '(Added by BetterTTV)'});
+const PATCHED_SENTINEL = Symbol('patched symbol');
 
-function buildInjectedDescription(description) {
-  if (description == null) {
-    return ADDED_BY_BTTV_SUFFIX;
+let twitchDetermineGroup = null;
+
+function determineGroup(command) {
+  if (command.__bttvInjectedCommand === true) {
+    return 'betterttv';
   }
-  return `${description} ${ADDED_BY_BTTV_SUFFIX}`;
+  return twitchDetermineGroup.call(this, command) ?? 'twitch';
+}
+
+function patchCommandGroups() {
+  const commandProvider = twitch
+    .getAutocompleteStateNode()
+    ?.stateNode.providers.find(({autocompleteType}) => autocompleteType === 'command');
+  if (commandProvider?.determineGroup == null || commandProvider.__bttvCommandGroupsPatched === PATCHED_SENTINEL) {
+    return;
+  }
+
+  commandProvider.__bttvCommandGroupsPatched = PATCHED_SENTINEL;
+  twitchDetermineGroup = commandProvider.determineGroup;
+  commandProvider.determineGroup = determineGroup;
 }
 
 class CommandStore {
@@ -25,6 +39,8 @@ class CommandStore {
   }
 
   loadCommands() {
+    patchCommandGroups();
+
     const twitchCommandStore = twitch.getChatCommandStore();
     if (twitchCommandStore == null || this.commands.length === 0) {
       return;
@@ -35,13 +51,14 @@ class CommandStore {
   }
 
   registerCommand(command) {
-    const injectedCommand = {...command, description: buildInjectedDescription(command.description)};
+    const injectedCommand = {...command, __bttvInjectedCommand: true};
     this.commands.push(injectedCommand);
 
     const twitchCommandStore = twitch.getChatCommandStore();
     if (twitchCommandStore == null) {
       return;
     }
+    patchCommandGroups();
     twitchCommandStore.addCommand(injectedCommand);
   }
 }
