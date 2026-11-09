@@ -16,7 +16,7 @@ function determineGroup(command) {
   if (command.__bttvInjectedCommand === true) {
     return 'betterttv';
   }
-  return twitchDetermineGroup.call(this, command);
+  return twitchDetermineGroup.call(this, command) ?? 'twitch';
 }
 
 function patchCommandGroups() {
