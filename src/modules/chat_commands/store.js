@@ -14,8 +14,8 @@ const TWITCH_COMMAND_GROUP = 'twitch';
 let twitchDetermineGroup = null;
 
 function determineGroup(command) {
-  if (command.group != null) {
-    return command.group;
+  if (command.__bttvInjectedCommand) {
+    return BTTV_COMMAND_GROUP;
   }
   return twitchDetermineGroup.call(this, command) ?? TWITCH_COMMAND_GROUP;
 }
@@ -59,7 +59,7 @@ class CommandStore {
   }
 
   registerCommand(command) {
-    const injectedCommand = {...command, group: BTTV_COMMAND_GROUP};
+    const injectedCommand = {...command, __bttvInjectedCommand: true};
     this.commands.push(injectedCommand);
 
     const twitchCommandStore = twitch.getChatCommandStore();
