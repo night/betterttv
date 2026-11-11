@@ -1,0 +1,73 @@
+.entrypoint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--mantine-color-default-border);
+  background-color: var(--mantine-color-body-secondary);
+}
+
+.collectionButton {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 4px;
+  border: none;
+  border-radius: var(--mantine-radius-md);
+  background-color: transparent;
+  color: var(--mantine-color-text);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--mantine-color-default-hover);
+  }
+}
+
+.image {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--mantine-radius-sm);
+}
+
+.name {
+  overflow: hidden;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.progress {
+  margin-left: auto;
+  color: var(--mantine-color-dimmed);
+  font-variant-numeric: tabular-nums;
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--mantine-color-dimmed);
+}
+
+.chestsButton {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border: none;
+  border-radius: var(--mantine-radius-md);
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-primary-color-contrast);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--mantine-primary-color-filled-hover);
+  }
+}

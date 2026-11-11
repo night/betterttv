@@ -964,4 +964,20 @@ export default {
 
     return gifPickerController;
   },
+
+  getChatCalloutContext() {
+    let calloutContext;
+    try {
+      // twitch's chat callout provider (the panels shown above the chat input) wraps the whole chat
+      // column, so it sits a few hundred fibers above the chat input
+      const node = searchReactParents(
+        getReactInstance(document.querySelector(CHAT_INPUT_CONTAINER)),
+        (n) => n.memoizedProps?.value?.pushPriorityCallout != null,
+        500
+      );
+      calloutContext = node.memoizedProps.value;
+    } catch (_) {}
+
+    return calloutContext;
+  },
 };
