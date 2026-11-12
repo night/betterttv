@@ -2,14 +2,16 @@ import {Text} from '@mantine/core';
 import {modals} from '@mantine/modals';
 import {ChevronRight} from 'lucide-react';
 import React from 'react';
+import AccountMismatch, {formatPlatformSignInRequiredMessage} from '@/common/components/AccountMismatch';
 import DeviceCodeSignIn from '@/common/components/DeviceCodeSignIn';
 import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
 import socketClient from '@/socket-client';
-import useAuthStore from '@/stores/auth';
+import useAuthStore, {waitForUserSync} from '@/stores/auth';
 import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
 import {PopupBlockedError} from '@/utils/oauth';
 import {isUserPro} from '@/utils/pro';
+import {getCurrentUser} from '@/utils/user';
 import {canOpenPopup} from '@/utils/window';
 import styles from './Modal.module.css';
 
@@ -149,7 +151,7 @@ function openDeviceCodeSignInModal({signal} = {}) {
   });
 }
 
-export async function executeSignIn({signal} = {}) {
+async function signInWithPopupOrDeviceCode({signal}) {
   if (!canOpenPopup()) {
     return openDeviceCodeSignInModal({signal});
   }
@@ -165,7 +167,70 @@ export async function executeSignIn({signal} = {}) {
   }
 }
 
+function openAccountMismatchModal() {
+  function handleCancel() {
+    modals.close(modalId);
+  }
+
+  // straight from the click, so the sign in popup isn't blocked; a mismatch opens this modal again
+  function handleTryAgain() {
+    modals.close(modalId);
+    executeSignIn().catch(() => {});
+  }
+
+  const modalId = openModal({
+    title: formatMessage({defaultMessage: 'Account Mismatch'}),
+    description: <AccountMismatch onCancel={handleCancel} onTryAgain={handleTryAgain} />,
+  });
+}
+
+// the website hands back whichever BetterTTV account it's signed in to, which may not match this user
+export async function executeSignIn({signal} = {}) {
+  if (getCurrentUser() == null) {
+    throw new Error('Not signed in to the platform');
+  }
+
+  await signInWithPopupOrDeviceCode({signal});
+  await waitForUserSync();
+
+  if (useAuthStore.getState().accountMismatch) {
+    openAccountMismatchModal();
+    throw new Error('Signed in to a BetterTTV account not connected to this user');
+  }
+}
+
 export function openSignInModal(props = {}, callback = () => {}) {
+  const modalProps = {
+    title: formatMessage({defaultMessage: 'Sign In Required'}),
+    description: formatMessage({defaultMessage: 'You must be signed in to use this feature.'}),
+    labels: {
+      confirm: formatMessage({defaultMessage: 'Sign In'}),
+      cancel: formatMessage({defaultMessage: 'Cancel'}),
+    },
+    ...props,
+  };
+
+  // signing in needs the platform user, so explain that under the modal's content and keep sign in disabled
+  if (getCurrentUser() == null) {
+    return openConfirmModal({
+      ...modalProps,
+      children: (
+        <React.Fragment>
+          {modalProps.children ?? (
+            <Text size="lg" className={styles.modalDescription}>
+              {modalProps.description}
+            </Text>
+          )}
+          <Text size="lg" className={styles.modalDescription}>
+            {formatPlatformSignInRequiredMessage()}
+          </Text>
+        </React.Fragment>
+      ),
+      onConfirm: () => {},
+      confirmProps: {...DEFAULT_CONFIRM_PROPS, disabled: true},
+    });
+  }
+
   const controller = new AbortController();
   const {signal} = controller;
 
@@ -193,18 +258,12 @@ export function openSignInModal(props = {}, callback = () => {}) {
   }
 
   return openConfirmModal({
-    title: formatMessage({defaultMessage: 'Sign In Required'}),
-    description: formatMessage({defaultMessage: 'You must be signed in to use this feature.'}),
     onConfirm: () => onConfirm().then(callback),
     onClose: () => {
       controller.abort();
       unsubscribeUserUpdated?.();
     },
-    labels: {
-      confirm: formatMessage({defaultMessage: 'Sign In'}),
-      cancel: formatMessage({defaultMessage: 'Cancel'}),
-    },
-    ...props,
+    ...modalProps,
   });
 }
 

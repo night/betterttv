@@ -3,6 +3,7 @@ import sortBy from 'lodash.sortby';
 import uniqBy from 'lodash.uniqby';
 import {SettingIds, EmoteCategories, EmoteProviders} from '@/constants';
 import Icons from '@/modules/emote_menu/components/Icons';
+import LegendaryEmotesEntrypoint from '@/modules/emote_menu/twitch/LegendaryEmotesEntrypoint';
 import Emote from '@/modules/emotes/emote';
 import settings from '@/settings';
 import {getCurrentChannel} from '@/utils/channel';
@@ -73,6 +74,10 @@ const TWITCH_EMOTE_CDN = (id, size, isDark = true, static_ = false) =>
     isDark ? 'dark' : 'light'
   }/${size}`;
 
+// twitch's emote type for legendary emotes. owned ones arrive in ownerless sets, so we fold them into
+// twitch global next to the base legendary emotes
+const COLLECTIONS_EMOTE_TYPE = 'COLLECTIONS';
+
 function getCategoryForSet(setId, owner) {
   switch (setId) {
     case '0':
@@ -81,6 +86,8 @@ function getCategoryForSet(setId, owner) {
         provider: EmoteProviders.TWITCH,
         displayName: 'Twitch Global',
         icon: Icons.TWITCH,
+        // links to the channel's legendary emotes collection, when it has one
+        HeaderAccessory: LegendaryEmotesEntrypoint,
       };
     case '33':
     case '42':
@@ -164,7 +171,9 @@ export async function loadTwitchEmotes() {
     const category = getCategoryForSet(setId, owner);
     const locked = product && channelSelfAvailableEmoteSets.find(({id}) => id === setId) == null;
 
-    const categoryEmotes = emotes.map((emote) => {
+    const emotesByCategory = {};
+
+    for (const emote of emotes) {
       const {id: emoteId, token: emoteToken, type, assetType} = emote;
       let newToken;
 
@@ -181,10 +190,14 @@ export async function loadTwitchEmotes() {
 
       const animated = assetType === 'ANIMATED';
 
-      return new Emote({
+      const isLegendary = type === COLLECTIONS_EMOTE_TYPE;
+      const emoteCategory = isLegendary ? getCategoryForSet('0') : category;
+
+      const categoryEmote = new Emote({
         id: emoteId,
-        category,
-        channel: owner?.displayName,
+        category: emoteCategory,
+        // legendary emotes belong to twitch's placeholder account rather than a real channel
+        channel: isLegendary ? undefined : owner?.displayName,
         code: newToken,
         images: {
           '1x': TWITCH_EMOTE_CDN(emoteId, '1.0', isDark),
@@ -200,17 +213,22 @@ export async function loadTwitchEmotes() {
           isLocked: predicate,
         },
       });
-    });
 
-    tempCategories[category.id] = {
-      category,
-      // twitch seperates emotes by tier, so we merge them into one set
-      // uniqBy also priortises the available emotes over the locked emotes here
-      emotes: sortBy(
-        uniqBy([...(tempCategories[category.id]?.emotes || []), ...categoryEmotes], 'id'),
-        ({code, metadata}) => [metadata.isLocked(), code.toLowerCase()]
-      ),
-    };
+      emotesByCategory[emoteCategory.id] ??= {category: emoteCategory, emotes: []};
+      emotesByCategory[emoteCategory.id].emotes.push(categoryEmote);
+    }
+
+    for (const {category: emoteCategory, emotes: categoryEmotes} of Object.values(emotesByCategory)) {
+      tempCategories[emoteCategory.id] = {
+        category: emoteCategory,
+        // twitch seperates emotes by tier, so we merge them into one set
+        // uniqBy also priortises the available emotes over the locked emotes here
+        emotes: sortBy(
+          uniqBy([...(tempCategories[emoteCategory.id]?.emotes || []), ...categoryEmotes], 'id'),
+          ({code, metadata}) => [metadata.isLocked(), code.toLowerCase()]
+        ),
+      };
+    }
   }
 
   return sortBy(Object.values(tempCategories), [

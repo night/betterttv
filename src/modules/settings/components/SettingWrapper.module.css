@@ -9,20 +9,6 @@
   flex-wrap: wrap;
 }
 
-/* points out the row a search jumped to; the shadow spreads the fill past the row's tight box */
-.root[data-flash] {
-  border-radius: var(--mantine-radius-md);
-  animation: flash 1400ms ease-out;
-}
-
-@keyframes flash {
-  0%,
-  30% {
-    background-color: color-mix(in srgb, var(--mantine-primary-color-filled) 20%, transparent);
-    box-shadow: 0 0 0 12px color-mix(in srgb, var(--mantine-primary-color-filled) 20%, transparent);
-  }
-}
-
 .text {
   display: flex;
   flex-direction: column;

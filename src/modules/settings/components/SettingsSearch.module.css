@@ -1,7 +1,7 @@
 /* the website's browse search (betterttv-web/src/components/emotes/EmoteSearch.module.css) */
 .root {
-  flex-shrink: 0;
-  padding: var(--sidenav-h-padding) var(--sidenav-h-padding) 8px;
+  flex: 1;
+  min-width: 0;
 }
 
 /* the site's field in px, since the extension's own sizes run smaller */
@@ -17,6 +17,32 @@
 
 .root input:focus {
   border-color: var(--mantine-primary-color-filled);
+}
+
+/* the icon and the shortcut sit over the input, so a click anywhere on the field lands in it */
+.root [data-position] {
+  pointer-events: none;
+}
+
+/* until it's used: a faint wash, no border. only leaving fades, so focusing by keyboard is instant */
+.root[data-ghost] input {
+  background-color: color-mix(in srgb, var(--mantine-color-text) 4%, transparent);
+  border-color: transparent;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+/* the brand colour the sidebar's logo had; a Pro primary colour on the icon still wins */
+.ghostLogo {
+  display: flex;
+  color: var(--bttv-brand-color);
+}
+
+/* the 20px logo with 10px on every side, as the shortcut chip sits on the right */
+.root[data-ghost] [data-position='left'] {
+  justify-content: flex-start;
+  padding-inline-start: 10px;
 }
 
 /* dims the settings around an open search; Mantine's popover overlay portals out of the shadow root */
@@ -39,25 +65,20 @@
   z-index: 2;
 }
 
+/* the text lines up with the category labels below, focused or not, so it doesn't shift */
 .wrapper {
-  --input-left-section-width: 40px;
+  --input-left-section-width: 42px;
 }
 
-/* room for the shortcut's two keys (Windows' Ctrl is the wider) */
+/* room for the shortcut (Windows' Ctrl K is the wider) */
 .wrapperHint {
   --input-right-section-width: 72px;
 }
 
-/* the keys sit against the right edge, as far in as they are from the top and bottom */
+/* the shortcut sits against the right edge, as far in as it is from the top and bottom */
 .wrapperHint [data-position='right'] {
   justify-content: flex-end;
   padding-inline-end: 10px;
-}
-
-.hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
 }
 
 /* flat keycaps instead of Mantine's bevelled ones */

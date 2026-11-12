@@ -1,9 +1,12 @@
-import {Anchor, Button} from '@mantine/core';
+import {Anchor, Button, Tooltip} from '@mantine/core';
 import {saveAs} from 'file-saver';
 import {UserCog} from 'lucide-react';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
+import {formatAccountMismatchMessage, formatPlatformSignInRequiredMessage} from '@/common/components/AccountMismatch';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
+import useCurrentUser from '@/common/hooks/CurrentUser';
+import usePortalRef from '@/common/hooks/PortalRef';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import {executeSignIn, openConfirmModal} from '@/common/utils/modal';
 import {EXT_VER, PageTypes} from '@/constants';
@@ -26,6 +29,7 @@ const USER_SETTINGS_NAME = formatMessage({defaultMessage: 'User Settings'});
 const CLOUD_BACKUP_NAME = formatMessage({defaultMessage: 'Cloud Backup'});
 const CLOUD_BACKUP_DESCRIPTION = formatMessage({defaultMessage: 'Backup your settings to the cloud.'});
 const SIGN_IN_NAME = formatMessage({defaultMessage: 'Sign In to BetterTTV'});
+const SIGN_OUT_NAME = formatMessage({defaultMessage: 'Sign Out'});
 const BACKUP_SETTINGS_NAME = formatMessage({defaultMessage: 'Backup Settings'});
 const BACKUP_SETTINGS_DESCRIPTION = formatMessage({defaultMessage: 'Download a copy of your settings to a JSON file.'});
 const RESTORE_BACKUP_DESCRIPTION = formatMessage({defaultMessage: 'Restore your settings from a backup file.'});
@@ -91,21 +95,20 @@ function useSignIn() {
   return [signingIn, signIn];
 }
 
-function SignInAlert() {
-  const user = useAuthStore(useShallow((state) => state.user));
+function AccountMismatchAlert() {
+  const accountMismatch = useAuthStore((state) => state.accountMismatch);
   const [signingIn, signIn] = useSignIn();
 
-  if (user != null) {
+  if (!accountMismatch) {
     return null;
   }
 
   return (
     <Alert
-      message={formatMessage({defaultMessage: 'You are not signed in!'})}
-      description={formatMessage({defaultMessage: 'Some features are unavailable until you sign in.'})}
+      description={formatAccountMismatchMessage()}
       rightContent={
         <Anchor component="button" type="button" underline="always" c="inherit" onClick={signIn} disabled={signingIn}>
-          {formatMessage({defaultMessage: 'Connect Account'})}
+          {formatMessage({defaultMessage: 'Switch Account'})}
         </Anchor>
       }
     />
@@ -114,6 +117,8 @@ function SignInAlert() {
 
 function SignInButton() {
   const user = useAuthStore(useShallow((state) => state.user));
+  const platformUser = useCurrentUser();
+  const portalRef = usePortalRef();
   const [signingIn, signIn] = useSignIn();
   const [, setCloudBackupSettings] = useCloudBackupSettings();
 
@@ -142,9 +147,23 @@ function SignInButton() {
         reverse
         name={SIGN_IN_NAME}
         description={formatMessage({defaultMessage: 'Authenticated users gain access to additional features.'})}>
-        <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
-          {formatMessage({defaultMessage: 'Sign In'})}
-        </Button>
+        <Tooltip
+          label={formatPlatformSignInRequiredMessage()}
+          disabled={platformUser != null}
+          withArrow
+          portalProps={{target: portalRef.current}}>
+          {/* data-disabled rather than disabled, so the button still gets the hover that shows the tooltip */}
+          <Button
+            size="lg"
+            variant="elevated"
+            color="contrast"
+            onClick={platformUser != null ? signIn : undefined}
+            loading={signingIn}
+            data-disabled={platformUser == null || undefined}
+            aria-disabled={platformUser == null || undefined}>
+            {formatMessage({defaultMessage: 'Sign In'})}
+          </Button>
+        </Tooltip>
       </SettingWrapper>
     );
   }
@@ -152,7 +171,7 @@ function SignInButton() {
   return (
     <SettingWrapper
       reverse
-      name={formatMessage({defaultMessage: 'Sign Out'})}
+      name={SIGN_OUT_NAME}
       description={formatMessage({defaultMessage: 'Unlink account from extension.'})}>
       <Button size="lg" onClick={handleSignOut}>
         {formatMessage({defaultMessage: 'Sign Out'})}
@@ -161,15 +180,9 @@ function SignInButton() {
   );
 }
 
-function openUserSettings({setPage}) {
+function openUserSetting({setPage, flashSetting}, name) {
   setPage(PageTypes.USER_SETTINGS);
-}
-
-function acceptSignIn(navigation) {
-  openUserSettings(navigation);
-  if (useAuthStore.getState().user == null) {
-    executeSignIn();
-  }
+  flashSetting(name);
 }
 
 for (const entry of [
@@ -182,7 +195,8 @@ for (const entry of [
   {
     query: SIGN_IN_NAME,
     keywords: ['log in', 'login', 'log out', 'logout', 'sign out', 'account'],
-    onAccept: acceptSignIn,
+    onAccept: (navigation) =>
+      openUserSetting(navigation, useAuthStore.getState().user == null ? SIGN_IN_NAME : SIGN_OUT_NAME),
   },
   {
     query: BACKUP_SETTINGS_NAME,
@@ -200,7 +214,7 @@ for (const entry of [
     keywords: ['defaults', 'clear'],
   },
 ]) {
-  registerSearchEntry({icon: UserCog, onAccept: openUserSettings, ...entry});
+  registerSearchEntry({icon: UserCog, onAccept: (navigation) => openUserSetting(navigation, entry.query), ...entry});
 }
 
 function UserSettings() {
@@ -209,7 +223,7 @@ function UserSettings() {
 
   return (
     <PageScrollBody header={<PageHeader leftContent={USER_SETTINGS_NAME} />}>
-      <SignInAlert />
+      <AccountMismatchAlert />
       <SettingGroup name={formatMessage({defaultMessage: 'Extension'})}>
         <CloudBackupSetting />
         <BackupSetting description={BACKUP_SETTINGS_DESCRIPTION} disabled={resetting} />

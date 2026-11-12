@@ -1,10 +1,11 @@
-import {ActionIcon, Avatar, Button, Overlay, useMantineTheme} from '@mantine/core';
+import {ActionIcon, Button, Overlay, useMantineTheme} from '@mantine/core';
 import classNames from 'classnames';
-import {Flame, PanelLeftClose, TriangleAlert, UserCog} from 'lucide-react';
-import React, {use, useCallback} from 'react';
+import {Flame, PanelLeftClose, TriangleAlert} from 'lucide-react';
+import React, {use, useCallback, useMemo} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import ProBadge from '@/common/components/ProBadge';
 import Scrollbar from '@/common/components/Scrollbar';
+import UserAvatar from '@/common/components/UserAvatar';
 import UsernameEffectText from '@/common/components/UsernameEffectText';
 import useCurrentUser from '@/common/hooks/CurrentUser';
 import {PageDecendants, PageTypes} from '@/constants';
@@ -15,7 +16,6 @@ import useAuthStore from '@/stores/auth';
 import {useUsernameLook} from '@/stores/username-looks';
 import {isUserPro} from '@/utils/pro';
 import {getCurrentUserProfilePicture} from '@/utils/user';
-import AnimatedLogo from './AnimatedLogo';
 import clickableStyles from './ClickableContainer.module.css';
 import SettingsSearch from './SettingsSearch';
 import styles from './SideNavigation.module.css';
@@ -72,12 +72,20 @@ function CategoryButton({category, active, hasPromotion, onClick}) {
 
 function UserSettingsNavigationButton({active, onClick}) {
   const currentUser = useCurrentUser();
-  const bttvUser = useAuthStore(useShallow((state) => state.user));
+  const {bttvUser, accountMismatch} = useAuthStore(
+    useShallow((state) => ({bttvUser: state.user, accountMismatch: state.accountMismatch}))
+  );
   const usernameEffect = useUsernameLook('usernameEffect');
   const usernameFont = useUsernameLook('usernameFont');
   const avatarSrc = bttvUser?.avatar ?? getCurrentUserProfilePicture();
-  const {primaryColor} = useMantineTheme();
-  const activeColor = active ? primaryColor : undefined;
+  const avatarUser = useMemo(
+    () => ({
+      name: bttvUser?.name ?? currentUser?.name ?? '',
+      displayName: bttvUser?.displayName ?? currentUser?.displayName,
+      avatar: avatarSrc,
+    }),
+    [bttvUser, currentUser, avatarSrc]
+  );
 
   return (
     <NavigationButton
@@ -96,19 +104,9 @@ function UserSettingsNavigationButton({active, onClick}) {
         )
       }
       rightSection={
-        bttvUser == null ? <TriangleAlert className={styles.warningIcon} /> : isUserPro(bttvUser) ? <ProBadge /> : null
+        accountMismatch ? <TriangleAlert className={styles.warningIcon} /> : isUserPro(bttvUser) ? <ProBadge /> : null
       }>
-      {avatarSrc != null ? (
-        <Avatar
-          color={activeColor}
-          src={avatarSrc}
-          size="md"
-          className={styles.avatar}
-          classNames={{image: styles.avatarImage}}
-        />
-      ) : (
-        <UserCog className={styles.navigationIcon} />
-      )}
+      <UserAvatar user={avatarUser} size={24} />
     </NavigationButton>
   );
 }
@@ -139,11 +137,10 @@ function SideNavigation({open, setOpen}) {
   return (
     <React.Fragment>
       <div className={classNames(styles.sidenavContainer, {[styles.open]: open})}>
-        <div className={styles.logoContainer}>
-          <AnimatedLogo className={styles.logo} />
+        <div className={styles.header}>
+          <SettingsSearch onAccept={close} />
           <CloseMenuButton onClick={close} className={styles.closeButton} />
         </div>
-        <SettingsSearch onAccept={close} />
         <Scrollbar mirrorPadding className={styles.settingsScrollArea}>
           {categories.map((category) => (
             <CategoryButton

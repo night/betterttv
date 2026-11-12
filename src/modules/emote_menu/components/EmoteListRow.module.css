@@ -30,6 +30,10 @@
   font-weight: 700;
 }
 
+.headerAccessory {
+  margin-left: auto;
+}
+
 .row {
   display: flex;
   justify-content: left;
@@ -39,4 +43,8 @@
 .row,
 .header {
   padding: 0 0 0 8px;
+}
+
+.header {
+  padding-right: 8px;
 }

@@ -11,6 +11,7 @@ import ProHome from '@/modules/settings/pages/ProHome';
 import SelfBotCommands from '@/modules/settings/pages/SelfBotCommands';
 import SelfBotTimers from '@/modules/settings/pages/SelfBotTimers';
 import Settings from '@/modules/settings/pages/Settings';
+import TextReplacements from '@/modules/settings/pages/TextReplacements';
 import UserSettings from '@/modules/settings/pages/UserSettings';
 import {groupSettingsByCategory} from '@/modules/settings/setting-categories';
 import SettingStore, {PageSettingPanelIds} from '@/modules/settings/stores/setting-store';
@@ -26,6 +27,8 @@ function Page({page, category, handleSettingRefCallback}) {
       return <HighlightKeywords />;
     case PageTypes.BLACKLIST_KEYWORDS:
       return <BlacklistKeywords />;
+    case PageTypes.TEXT_REPLACEMENTS:
+      return <TextReplacements />;
     case PageTypes.SELF_BOT_COMMANDS:
       return <SelfBotCommands />;
     case PageTypes.SELF_BOT_TIMERS:
@@ -53,11 +56,6 @@ function PageContainer({children, className, scrollRef, onMount}) {
   );
 }
 
-function flashRow(row) {
-  row.addEventListener('animationend', () => row.removeAttribute('data-flash'), {once: true});
-  row.setAttribute('data-flash', '');
-}
-
 function SettingsModal({setHandleOpen}) {
   const {width} = useViewportSize();
   const [page, setPage] = useState(PageTypes.SETTINGS);
@@ -73,19 +71,9 @@ function SettingsModal({setHandleOpen}) {
   const categories = useMemo(() => groupSettingsByCategory(SettingStore.getSupportedSettings()), []);
   const activeCategory = categories.find((category) => category.id === categoryId) ?? categories[0];
 
-  // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView. A named
-  // row can sit far down a long panel, so it's centred instead, and flashed to mark it out.
-  const scrollToPanel = useCallback((settingPanelId, settingName) => {
-    const panel = settingRefsRef.current[settingPanelId];
-    const row = settingName != null ? panel?.querySelector(`[data-setting-name="${CSS.escape(settingName)}"]`) : null;
-
-    if (row == null) {
-      panel?.scrollIntoView({block: 'start'});
-      return;
-    }
-
-    row.scrollIntoView({block: 'center'});
-    flashRow(row);
+  // Panel scroll targets use scroll-margin on the panels; scrolling is just scrollIntoView.
+  const scrollToPanel = useCallback((settingPanelId) => {
+    settingRefsRef.current[settingPanelId]?.scrollIntoView({block: 'start'});
   }, []);
 
   function handlePageChange(newPage) {
@@ -125,18 +113,18 @@ function SettingsModal({setHandleOpen}) {
     settingRefsRef.current[settingPanelId] = ref;
   }, []);
 
-  function handleGotoSettingPanel(settingPanelId, settingName) {
+  function handleGotoSettingPanel(settingPanelId) {
     if (settingPanelId == null) {
       return;
     }
 
     if (settingRefsRef.current[settingPanelId] != null) {
-      scrollToPanel(settingPanelId, settingName);
+      scrollToPanel(settingPanelId);
       return;
     }
 
     handleGotoCategory(SettingStore.settings[settingPanelId]?.settingCategoryId ?? null);
-    pendingScrollTargetRef.current = {settingPanelId, settingName};
+    pendingScrollTargetRef.current = settingPanelId;
   }
 
   useEffect(() => {
@@ -173,32 +161,31 @@ function SettingsModal({setHandleOpen}) {
   useWindowEvent('keydown', handleKeyDown);
 
   // Runs when a page mounts: scroll to a pending setting panel, otherwise restore the
-  // parent page's scroll position (or start at the top).
+  // parent page's scroll position.
   const handlePageMount = useCallback(() => {
     const scroller = pageContentRef.current;
     if (scroller == null) {
       return;
     }
 
-    const pendingTarget = pendingScrollTargetRef.current;
+    const pendingPanelId = pendingScrollTargetRef.current;
     pendingScrollTargetRef.current = null;
 
-    if (
-      page === PageTypes.SETTINGS &&
-      pendingTarget != null &&
-      settingRefsRef.current[pendingTarget.settingPanelId] != null
-    ) {
-      scrollToPanel(pendingTarget.settingPanelId, pendingTarget.settingName);
+    if (page === PageTypes.SETTINGS && pendingPanelId != null && settingRefsRef.current[pendingPanelId] != null) {
+      scrollToPanel(pendingPanelId);
       return;
     }
 
-    scroller.scrollTop = lastParentDataRef.current.page === page ? lastParentDataRef.current.scrollTop : 0;
+    if (lastParentDataRef.current.page === page) {
+      scroller.scrollTop = lastParentDataRef.current.scrollTop;
+    }
   }, [page, scrollToPanel]);
 
   return (
     <Modal
       size="xl"
-      radius="lg"
+      // 18px on twitch's 10px root (Mantine reads px against 16px), parallel to the 10px corners 8px inside
+      radius="1.8rem"
       centered
       withinPortal={false}
       fullScreen={width < 800}
@@ -222,7 +209,6 @@ function SettingsModal({setHandleOpen}) {
           categories,
           activeCategory,
           handleGotoCategory,
-          handleGotoSettingPanel,
           closeModal: modalHandlers.close,
         }}>
         <SideNavigation open={sidenavOpen} setOpen={setSidenavOpen} />

@@ -4,7 +4,7 @@ import SettingGroup from '@/modules/settings/components/SettingGroup';
 import SettingUsernameFont from '@/modules/settings/components/SettingUsernameFont';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
-const SETTING_NAME = formatMessage({defaultMessage: 'Username Font'});
+const SETTING_NAME = formatMessage({defaultMessage: 'Font'});
 
 function UsernameFont({ref, ...props}) {
   return (
@@ -19,6 +19,7 @@ SettingStore.registerSetting(UsernameFont, {
   settingCategoryId: SettingCategoryIds.USERNAME,
   name: SETTING_NAME,
   supportsStandaloneWindow: true,
+  keywords: ['username'],
 });
 
 export default UsernameFont;

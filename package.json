@@ -1,7 +1,7 @@
 {
   "name": "BetterTTV",
   "author": "Night",
-  "version": "7.7.30",
+  "version": "7.7.32",
   "description": "BetterTTV enhances Twitch with new features, emotes, and more.",
   "main": "betterttv.js",
   "type": "module",
@@ -11,7 +11,7 @@
     "build": "vite build --mode development",
     "build:prod": "vite build",
     "lint": "eslint . && prettier --check .",
-    "extract-i18n": "formatjs extract 'src/**/*.{js,jsx}' --out-file build/i18n/messages/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --preserve-whitespace && formatjs compile build/i18n/messages/en.json --out-file build/i18n/messages/en.json"
+    "extract-i18n": "formatjs extract 'src/**/*.{js,jsx}' --out-file build/i18n/messages/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --preserve-whitespace"
   },
   "repository": {
     "type": "git",
@@ -24,16 +24,16 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@floating-ui/react": "^0.27.20",
     "@formatjs/intl": "6.1.4",
-    "@mantine/core": "^9.7.4",
-    "@mantine/hooks": "^9.7.4",
-    "@mantine/modals": "^9.7.4",
-    "@sentry/browser": "11.10.0",
+    "@mantine/core": "^9.7.5",
+    "@mantine/hooks": "^9.7.5",
+    "@mantine/modals": "^9.7.5",
+    "@sentry/browser": "11.11.0",
     "@twemoji/api": "17.0.3",
     "classnames": "2.5.1",
     "delegated-events": "1.1.2",
     "events": "3.3.0",
     "file-saver": "2.0.5",
-    "framer-motion": "14.9.0",
+    "framer-motion": "14.10.1",
     "fuse.js": "7.5.0",
     "graphql-tag": "2.12.7",
     "lodash.chunk": "4.2.0",
@@ -50,8 +50,8 @@
     "react-string-replace": "2.0.1",
     "reconnecting-eventsource": "1.6.5",
     "safe-regex2": "5.1.2",
-    "semver": "7.8.5",
-    "zustand": "^5.0.16"
+    "semver": "7.8.6",
+    "zustand": "^5.1.0"
   },
   "browserslist": [
     "last 1 version",
@@ -59,19 +59,19 @@
   ],
   "devDependencies": {
     "@eslint-react/eslint-plugin": "5.28.8",
-    "@formatjs/cli": "6.16.36",
-    "@formatjs/unplugin": "^1.2.15",
-    "@sentry/vite-plugin": "11.10.0",
+    "@formatjs/cli": "6.18.0",
+    "@formatjs/unplugin": "^1.2.17",
+    "@sentry/vite-plugin": "11.11.0",
     "autoprefixer": "10.6.2",
     "browserslist-to-esbuild": "2.1.1",
     "emoji-toolkit": "11.0.0",
     "eslint": "10.14.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "4.4.5",
-    "eslint-plugin-import-x": "4.17.1",
+    "eslint-plugin-import-x": "4.18.0",
     "eslint-plugin-prettier": "5.5.7",
     "git-rev-sync": "3.0.2",
-    "globals": "17.13.0",
+    "globals": "17.14.0",
     "got": "16.2.0",
     "postcss": "8.5.32",
     "postcss-hexrgba": "2.1.0",
@@ -79,7 +79,7 @@
     "postcss-preset-env": "^11.6.2",
     "postcss-url": "10.1.4",
     "prettier": "3.9.10",
-    "vite": "8.3.5"
+    "vite": "8.3.6"
   },
   "overrides": {
     "minimatch@<10.0.3": "^10.2.5",

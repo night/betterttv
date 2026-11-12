@@ -57,6 +57,7 @@ function EmoteMenu({
   boundingQuerySelector,
   offsetOptions = {},
   emoteMenuToggleButtonSelector,
+  onOpen,
 }) {
   const handleRef = useRef(null);
   const emoteMenuContentRef = useRef(null);
@@ -136,7 +137,9 @@ function EmoteMenu({
 
     const chatTextArea = document.querySelector(boundingQuerySelector);
     refs.setPositionReference(chatTextArea);
-  }, [open, boundingQuerySelector, refs]);
+
+    onOpen?.();
+  }, [open, onOpen, boundingQuerySelector, refs]);
 
   const handleScrollToPendingRow = useCallback((pendingScrollRowIndex) => {
     const listEl = emoteListRef.current;
@@ -232,6 +235,8 @@ function EmoteMenu({
   useEffect(() => {
     handleCloseRef.current = handleClose;
   }, [handleClose]);
+  // handleClose changes with the section, so the emote list gets one that doesn't and always calls the current one
+  const handleStableClose = useCallback(() => handleCloseRef.current(), []);
 
   const handleClick = useCallback((emote) => {
     if (altPressedRef.current) {
@@ -410,6 +415,7 @@ function EmoteMenu({
               className={styles.emotes}
               section={section}
               onClick={handleClick}
+              onClose={handleStableClose}
               setKeyPressCallback={setKeyPressCallback}
               onSection={onSection}
               navigationMode={navigationMode}

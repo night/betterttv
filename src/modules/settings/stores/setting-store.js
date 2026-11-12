@@ -55,6 +55,7 @@ export const SettingCategoryIds = {
 export const PageSettingPanelIds = {
   [PageTypes.HIGHLIGHT_KEYWORDS]: SettingPanelIds.HIGHLIGHTS,
   [PageTypes.BLACKLIST_KEYWORDS]: SettingPanelIds.BLACKLIST_KEYWORDS,
+  [PageTypes.TEXT_REPLACEMENTS]: SettingPanelIds.CHAT,
   [PageTypes.SELF_BOT_COMMANDS]: SettingPanelIds.SELF_BOT,
   [PageTypes.SELF_BOT_TIMERS]: SettingPanelIds.SELF_BOT,
 };
@@ -64,7 +65,7 @@ class SettingStore {
     this.settings = {};
   }
 
-  registerSetting(Component, {name, settingPanelId, settingCategoryId, supportsStandaloneWindow = false}) {
+  registerSetting(Component, {name, settingPanelId, settingCategoryId, supportsStandaloneWindow = false, keywords}) {
     if (name == null || typeof name !== 'string') {
       throw new Error('Name is required');
     }
@@ -87,7 +88,7 @@ class SettingStore {
       render: ({...props}) => React.createElement(Component, {key: settingPanelId, ...props}),
     };
 
-    registerSearchEntry({query: name, settingPanelId});
+    registerSearchEntry({query: name, settingPanelId, keywords});
   }
 
   getSupportedSettings() {

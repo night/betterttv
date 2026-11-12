@@ -1,13 +1,20 @@
-import React from 'react';
+import {Button} from '@mantine/core';
+import React, {use} from 'react';
 import useStorageState from '@/common/hooks/StorageState';
-import {SettingIds, ChatFlags} from '@/constants';
+import {ChatFlags, PageTypes, SettingIds} from '@/constants';
 import formatMessage from '@/i18n/index';
 import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
+import SettingWrapper from '@/modules/settings/components/SettingWrapper';
+import {PageContext} from '@/modules/settings/contexts/PageContext';
 import {registerSearchEntry} from '@/modules/settings/search-entries';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
 const SETTING_NAME = formatMessage({defaultMessage: 'Chat Features'});
+const TEXT_REPLACEMENTS_NAME = formatMessage({defaultMessage: 'Text Replacements'});
+const TEXT_REPLACEMENTS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Create custom text replacements so typing a trigger in chat sends a different string.',
+});
 const CHAT_REPLIES_NAME = formatMessage({defaultMessage: 'Chat Replies'});
 const CHAT_REPLIES_DESCRIPTION = formatMessage({defaultMessage: 'Show the reply button in chat.'});
 const BITS_NAME = formatMessage({defaultMessage: 'Bits'});
@@ -42,6 +49,7 @@ const AI_STREAM_SUMMARIES_DESCRIPTION = formatMessage({
 });
 
 function ChatFeatures({ref, ...props}) {
+  const {setPage} = use(PageContext);
   const [chat, setChat] = useStorageState(SettingIds.CHAT);
 
   return (
@@ -52,6 +60,11 @@ function ChatFeatures({ref, ...props}) {
       value={chat}
       onChange={setChat}
       flags={Object.values(ChatFlags)}>
+      <SettingWrapper name={TEXT_REPLACEMENTS_NAME} reverse description={TEXT_REPLACEMENTS_DESCRIPTION}>
+        <Button size="lg" onClick={() => setPage(PageTypes.TEXT_REPLACEMENTS)}>
+          {formatMessage({defaultMessage: 'Edit'})}
+        </Button>
+      </SettingWrapper>
       <SettingCheckbox value={ChatFlags.CHAT_REPLIES} name={CHAT_REPLIES_NAME} description={CHAT_REPLIES_DESCRIPTION} />
       <SettingCheckbox value={ChatFlags.BITS} name={BITS_NAME} description={BITS_DESCRIPTION} />
       <SettingCheckbox
@@ -89,6 +102,13 @@ function ChatFeatures({ref, ...props}) {
     </SettingCheckboxGroup>
   );
 }
+
+registerSearchEntry({
+  query: TEXT_REPLACEMENTS_NAME,
+  description: TEXT_REPLACEMENTS_DESCRIPTION,
+  settingPanelId: SettingPanelIds.CHAT,
+  onAccept: ({setPage}) => setPage(PageTypes.TEXT_REPLACEMENTS),
+});
 
 registerSearchEntry({
   query: CHAT_REPLIES_NAME,

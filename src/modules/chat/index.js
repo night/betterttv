@@ -29,6 +29,7 @@ import {getPlatform} from '@/utils/window';
 import watcher from '@/watcher';
 
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
+const CLIP_LINK_REGEX = /^https:\/\/(?:clips\.twitch\.tv\/|www\.twitch\.tv\/\w+\/clip\/)[\w-]+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 const EMOTE_SELECTOR =
@@ -82,6 +83,15 @@ const steamLobbyJoinTemplate = (joinLink) => {
   const anchor = document.createElement('a');
   anchor.href = joinLink;
   anchor.innerText = joinLink;
+  return anchor;
+};
+const clipLinkTemplate = (clipLink) => {
+  const anchor = document.createElement('a');
+  anchor.href = clipLink;
+  anchor.innerText = clipLink;
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+  anchor.classList.add('link-fragment');
   return anchor;
 };
 
@@ -321,6 +331,13 @@ class ChatModule {
         const steamJoinLink = part.match(STEAM_LOBBY_JOIN_REGEX);
         if (steamJoinLink) {
           parts[j] = steamLobbyJoinTemplate(steamJoinLink[0]);
+          modified = true;
+          continue;
+        }
+
+        const clipLink = part.match(CLIP_LINK_REGEX);
+        if (clipLink) {
+          parts[j] = clipLinkTemplate(clipLink[0]);
           modified = true;
           continue;
         }
