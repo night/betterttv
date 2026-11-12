@@ -5,21 +5,23 @@
   padding-bottom: 0;
   overflow: hidden;
   box-shadow: var(--mantine-shadow-md);
+  background-color: var(--mantine-color-body-secondary);
+  border: 1px solid var(--mantine-color-default-border);
 }
 
 .option {
-  border-radius: 8px;
+  border-radius: calc(var(--mantine-radius-lg) - 4px);
   transition: background-color 100ms ease;
 }
 
 .option:hover:not([data-combobox-disabled]),
 .option[data-combobox-selected] {
-  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
+  background-color: var(--mantine-color-elevated-hover);
   color: inherit;
 }
 
 .option:active:not([data-combobox-disabled]) {
-  background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-9));
+  background-color: var(--mantine-color-elevated-active);
 }
 
 .scrollAreaContent {

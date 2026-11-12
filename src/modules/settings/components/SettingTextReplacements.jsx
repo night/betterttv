@@ -1,4 +1,3 @@
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Button,
@@ -11,8 +10,8 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
+import {Trash2} from 'lucide-react';
 import React, {useCallback, useMemo, useRef} from 'react';
-import Icon from '@/common/components/Icon';
 import formatMessage from '@/i18n/index';
 import Panel from './Panel';
 import styles from './SettingTextReplacements.module.css';
@@ -55,7 +54,7 @@ function ReplacementRow({id, data, updateHandler, deleteHandler, triggerInputRef
           size="sm"
           classNames={{icon: styles.actionIconIcon}}
           onClick={onDelete}>
-          <Icon icon={faTrash} />
+          <Trash2 size={16} />
         </ActionIcon>
       </TableTd>
     </TableTr>

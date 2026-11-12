@@ -3,8 +3,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  /* matches the sidebar logo container so the two line up (64px content + 1px border). border-box
-     is explicit so the 1px border is counted inside --header-height rather than added on top. */
+  /* border-box keeps the 1px border inside --header-height, so it lines up with the sidebar header */
   box-sizing: border-box;
   min-height: var(--header-height);
   padding: 0 var(--horizontal-padding);
@@ -18,15 +17,17 @@
    invisible hit-area inset — sits on the header padding line, flush with the settings panels. */
 .closeButton {
   margin-left: auto;
+  margin-right: -2px;
   --cb-icon-size: 100%;
   background-color: transparent;
   color: var(--mantine-color-dimmed);
 }
 
-/* the X path only spans 9.012 of the icon's 15-unit viewBox (the rest is built-in whitespace), so
-   scale by 15 / 9.012 to make the drawn X itself fill the button, with no layout impact */
+/* the X only spans 12 of the icon's 24 units (the rest is built-in whitespace), so scale it up, with
+   no layout impact; the margin keeps its drawn edge on the header's padding line */
 .closeButton svg {
-  transform: scale(1.664);
+  transform: scale(1.5);
+  stroke-width: 1.75;
 }
 
 .closeButton:hover {

@@ -1,6 +1,7 @@
 import {getCachedBadges} from '@/actions/badges';
 import clickableStyles from '@/common/styles/Clickable.module.css';
 import effects from '@/common/styles/UsernameEffects.module.css';
+import fonts from '@/common/styles/UsernameFonts.module.css';
 import {shouldReduceMotion} from '@/common/utils/reduced-motion';
 import injectUsernameEffectFilters from '@/common/utils/username-effect-filters';
 import {
@@ -28,6 +29,7 @@ import {getPlatform} from '@/utils/window';
 import watcher from '@/watcher';
 
 const STEAM_LOBBY_JOIN_REGEX = /^steam:\/\/joinlobby\/\d+\/\d+\/\d+$/;
+const CLIP_LINK_REGEX = /^https:\/\/(?:clips\.twitch\.tv\/|www\.twitch\.tv\/\w+\/clip\/)[\w-]+$/;
 const EMOTES_TO_CAP = ['567b5b520e984428652809b6'];
 const MAX_EMOTES_WHEN_CAPPED = 10;
 const EMOTE_SELECTOR =
@@ -81,6 +83,15 @@ const steamLobbyJoinTemplate = (joinLink) => {
   const anchor = document.createElement('a');
   anchor.href = joinLink;
   anchor.innerText = joinLink;
+  return anchor;
+};
+const clipLinkTemplate = (clipLink) => {
+  const anchor = document.createElement('a');
+  anchor.href = clipLink;
+  anchor.innerText = clipLink;
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+  anchor.classList.add('link-fragment');
   return anchor;
 };
 
@@ -324,6 +335,13 @@ class ChatModule {
           continue;
         }
 
+        const clipLink = part.match(CLIP_LINK_REGEX);
+        if (clipLink) {
+          parts[j] = clipLinkTemplate(clipLink[0]);
+          modified = true;
+          continue;
+        }
+
         if (emoteModifiersEnabled && PREFIX_EMOTE_MODIFIERS_LIST.includes(part)) {
           partMetadata[j] = {modifier: part, type: 'prefix'};
           hasModifiers = true;
@@ -448,6 +466,15 @@ class ChatModule {
     fromNode.classList.add(effectClassName);
   }
 
+  applyUsernameFont(fromNode, userId) {
+    const className = fonts[subscribers.getUsernameFont(userId)];
+    if (className == null) {
+      return;
+    }
+
+    fromNode.classList.add(className);
+  }
+
   applyUsernameHoverEffect(fromNode, userId) {
     if (shouldReduceMotion()) {
       return;
@@ -490,6 +517,7 @@ class ChatModule {
     }
 
     this.applyUsernameEffect(fromNode, user.id);
+    this.applyUsernameFont(fromNode, user.id);
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
       element

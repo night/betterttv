@@ -1,10 +1,21 @@
-.settingGroup {
+.section {
+  display: flex;
+  flex-direction: column;
   --setting-panel-padding: 0;
+  gap: 12px;
+  scroll-margin-top: 20px;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--mantine-color-dimmed);
+}
+
+.settingGroup {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.panelContainer {
-  scroll-margin-top: 20px;
 }

@@ -1,4 +1,3 @@
-import {faCircleInfo, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
   ActionIcon,
   Button,
@@ -14,14 +13,14 @@ import {
   Tooltip,
 } from '@mantine/core';
 import classNames from 'classnames';
+import {Info, Trash2} from 'lucide-react';
 import React, {useCallback, useMemo, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import Icon from '@/common/components/Icon';
 import ProBadge from '@/common/components/ProBadge';
 import useEntryListState from '@/common/hooks/EntryListState';
 import usePortalRef from '@/common/hooks/PortalRef';
 import tableStyles from '@/common/styles/SettingEntryTable.module.css';
-import {openModal, openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
+import {openModal, openSignInModal, openSubscriptionUpgradeModal, WIDE_MODAL_SIZE} from '@/common/utils/modal';
 import formatMessage from '@/i18n/index';
 import {
   DEFAULT_TIMER_INTERVAL_MINUTES,
@@ -59,6 +58,7 @@ function ChatLinesGuideModalBody() {
 function openChatLinesGuideModal() {
   return openModal({
     title: formatMessage({defaultMessage: 'Chat Lines'}),
+    size: WIDE_MODAL_SIZE,
     children: <ChatLinesGuideModalBody />,
   });
 }
@@ -216,7 +216,7 @@ function TimerRow({id, data, updateHandler, deleteHandler, messageInputRefCallba
           size="sm"
           classNames={{icon: tableStyles.actionIconIcon}}
           onClick={onDelete}>
-          <Icon icon={faTrash} />
+          <Trash2 size={16} />
         </ActionIcon>
       </TableTd>
     </TableTr>
@@ -251,7 +251,7 @@ function TimersTable({entryList, updateHandler, deleteHandler, messageInputRefCa
                 className={styles.infoButton}
                 aria-label={formatMessage({defaultMessage: 'About chat lines'})}
                 onClick={openChatLinesGuideModal}>
-                <Icon icon={faCircleInfo} />
+                <Info size={16} />
               </ActionIcon>
             </div>
           </TableTh>

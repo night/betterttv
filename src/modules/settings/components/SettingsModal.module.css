@@ -12,8 +12,8 @@
      Defined here so both the sidebar and page CSS can reference the same semantic colors. */
   --sidebar-bg: var(--mantine-color-body);
   --page-bg: var(--mantine-color-body-secondary);
-  /* page-header height; shared with PageHeader min-height */
-  --header-height: 64px;
+  /* both headers' height, border included: the 40px search with 8px above and below it */
+  --header-height: 57px;
   position: relative;
   display: flex;
   align-items: stretch;
@@ -30,6 +30,7 @@
 
 .pageColumn {
   position: relative;
+  isolation: isolate;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -42,6 +43,30 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+.pageContent [data-flash] {
+  position: relative;
+}
+
+.pageContent [data-flash]::after {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: calc(var(--mantine-radius-md) + 12px);
+  pointer-events: none;
+  animation: flash 1400ms ease-out;
+}
+
+.pageContent [data-flash] [data-flash]::after {
+  display: none;
+}
+
+@keyframes flash {
+  0%,
+  30% {
+    background-color: color-mix(in srgb, var(--mantine-primary-color-filled) 20%, transparent);
+  }
 }
 
 .pageScrollBody {
@@ -63,12 +88,6 @@
   gap: 20px;
   /* gap between the header and the first item */
   padding: 20px;
-  --page-scroll-margin-top: 20px;
-}
-
-/* breathing room when a panel is scrolled into view */
-.pageScrollContent > * {
-  scroll-margin-top: var(--page-scroll-margin-top);
 }
 
 @media (max-width: 800px) {

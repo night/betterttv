@@ -13,6 +13,8 @@ import {loadLegacySettings} from '@/utils/legacy-settings';
 import {isUserPro} from '@/utils/pro';
 import SettingWrapper from './SettingWrapper';
 
+export const IMPORT_SETTING_NAME = formatMessage({defaultMessage: 'Restore a backup'});
+
 function loadJSON(string) {
   let json = null;
 
@@ -107,7 +109,7 @@ function ImportSetting({description, disabled, importing, setImporting}) {
   }
 
   return (
-    <SettingWrapper reverse name={formatMessage({defaultMessage: 'Import Settings'})} description={description}>
+    <SettingWrapper reverse name={IMPORT_SETTING_NAME} description={description}>
       <input
         type="file"
         hidden

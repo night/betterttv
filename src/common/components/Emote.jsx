@@ -1,12 +1,11 @@
-import {faLock} from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
+import {Lock} from 'lucide-react';
 import React, {useMemo, useState} from 'react';
 import {EmoteTypeFlags, SettingIds} from '@/constants';
 import settings from '@/settings';
 import {hasFlag} from '@/utils/flags';
 import {createSrcSet, createSrc, DEFAULT_SIZES} from '@/utils/image';
 import styles from './Emote.module.css';
-import Icon from './Icon';
 
 export default function Emote({emote, className, locked, sizes = DEFAULT_SIZES, animating = false}) {
   const imageRef = React.useRef(null);
@@ -59,7 +58,7 @@ export default function Emote({emote, className, locked, sizes = DEFAULT_SIZES, 
     return (
       <div className={styles.lockedEmote}>
         {image}
-        <Icon icon={faLock} className={styles.lockIcon} />
+        <Lock className={styles.lockIcon} />
       </div>
     );
   }

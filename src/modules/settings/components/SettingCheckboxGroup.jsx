@@ -1,14 +1,14 @@
 import {CheckboxGroup} from '@mantine/core';
 import React from 'react';
-import {hasFlag} from '@/utils/flags';
+import {hasFlag, setFlag} from '@/utils/flags';
 import SettingGroup from './SettingGroup';
 
 function SettingCheckboxGroup({name, value, onChange, flags, disabled, children, ref}) {
   const groupValue = flags.filter((flag) => hasFlag(value, flag)).map(String);
 
   function handleChange(stringArray) {
-    const newBitmask = stringArray.map(Number).reduce((a, b) => a | b, 0);
-    onChange(newBitmask);
+    // a setting's flags can be split across groups, so leave the ones outside this group alone
+    onChange(flags.reduce((bits, flag) => setFlag(bits, flag, stringArray.includes(String(flag))), value));
   }
 
   return (

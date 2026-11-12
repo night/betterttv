@@ -3,6 +3,23 @@ import extension from '@/utils/extension';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import {getPlatform} from '@/utils/window';
 
+function waitForBody() {
+  if (document.body != null) {
+    return Promise.resolve(document.body);
+  }
+
+  return new Promise((resolve) => {
+    const observer = new MutationObserver(() => {
+      if (document.body == null) {
+        return;
+      }
+      observer.disconnect();
+      resolve(document.body);
+    });
+    observer.observe(document.documentElement, {childList: true});
+  });
+}
+
 class GlobalCSSModule {
   constructor() {
     loadModuleForPlatforms(
@@ -13,7 +30,7 @@ class GlobalCSSModule {
 
   loadGlobalCSS() {
     if (getPlatform() === PlatformTypes.YOUTUBE) {
-      document.body.classList.toggle('bttv-youtube', true);
+      waitForBody().then((body) => body.classList.toggle('bttv-youtube', true));
     }
 
     const extensionCSSUrl = extension.url('betterttv.css', true);
@@ -27,8 +44,9 @@ class GlobalCSSModule {
       css.setAttribute('type', 'text/css');
       css.setAttribute('rel', 'stylesheet');
       css.addEventListener('load', () => resolve());
-      css.addEventListener('error', (err) => reject(err));
-      document.body.appendChild(css);
+      css.addEventListener('error', () => reject(new Error(`Failed to load global CSS from ${extensionCSSUrl}`)));
+      // the body may not exist yet when we're injected early in page load
+      waitForBody().then((body) => body.appendChild(css));
     });
   }
 }

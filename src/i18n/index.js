@@ -1,6 +1,6 @@
 import {createIntl, createIntlCache} from '@formatjs/intl';
-import cookies from 'cookies-js';
 import {Settings} from 'luxon';
+import {getCookie} from '@/utils/cookies';
 
 const DEFAULT_LOCALE = 'en';
 const SUPPORTED_LOCALES = [
@@ -39,7 +39,7 @@ let intl;
 const cache = createIntlCache();
 
 function getSiteLocale() {
-  let locale = cookies.get('language') ?? cookies.get('PREF')?.split('hl=')[1]?.split('&')[0];
+  let locale = getCookie('language') ?? getCookie('PREF')?.split('hl=')[1]?.split('&')[0];
   if (locale == null) {
     return locale;
   }

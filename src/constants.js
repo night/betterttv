@@ -52,6 +52,7 @@ export const SettingIds = {
   DELETED_MESSAGES: 'deletedMessages',
   BLACKLIST_KEYWORDS: 'blacklistKeywords',
   HIGHLIGHT_KEYWORDS: 'highlightKeywords',
+  TEXT_REPLACEMENTS: 'textReplacements',
   SIDEBAR: 'sidebar',
   EMOTES: 'emotes',
   CHAT: 'chat',
@@ -210,7 +211,6 @@ export const EmoteAvailabilityRestrictionTypes = {
 export const AsyncStatuses = {
   IDLE: 'idle',
   PENDING: 'pending',
-  SUCCESS: 'success',
   ERROR: 'error',
 };
 
@@ -267,12 +267,8 @@ export const SettingsPromotions = {
   // CHATBOT_COMMAND_AUTOCOMPLETE: 'settingsPromotionDismissedChatbotCommandAutocomplete',
   // SELF_BOT: 'settingsPromotionDismissedSelfBot',
   // SUBSCRIPTION_BADGE: 'settingsPromotionDismissedSubscriptionBadge',
-  SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
-  USERNAME_HOVER_EFFECT: 'settingsPromotionDismissedUsernameHoverEffect',
-};
-
-export const SettingsPrompts = {
-  SIGN_IN: 'settingsSignInPromptSeen',
+  // SELF_BOT_TIMERS: 'settingsPromotionDismissedSelfBotTimers',
+  // USERNAME_HOVER_EFFECT: 'settingsPromotionDismissedUsernameHoverEffect',
 };
 
 /** Default Mantine `theme.primaryColor` key when unset or invalid. */
@@ -312,6 +308,7 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTE_AUTOCOMPLETE]: true,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
+  [SettingIds.TEXT_REPLACEMENTS]: null,
   [SettingIds.SIDEBAR]: [
     SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
       SidebarFlags.RECOMMENDED_CHANNELS |
@@ -419,7 +416,15 @@ export const ExternalLinks = {
   TERMS: 'https://betterttv.com/terms',
   PRIVACY: 'https://betterttv.com/privacy',
   DEVELOPER_API: 'https://betterttv.com/developers/api',
-  PRO: 'https://betterttv.com/dashboard/pro',
+  PRO: 'https://betterttv.com/dashboard/account/subscription',
+  DASHBOARD_CHANNEL_EMOTES: 'https://betterttv.com/dashboard/emotes/channel',
+  DASHBOARD_PERSONAL_EMOTES: 'https://betterttv.com/dashboard/emotes/personal',
+  DASHBOARD_UPLOADS: 'https://betterttv.com/dashboard/emotes/upload',
+  DASHBOARD_APPEARANCE: 'https://betterttv.com/dashboard/account/appearance',
+  DASHBOARD_CONNECTIONS: 'https://betterttv.com/dashboard/account/connections',
+  DASHBOARD_EDITORS: 'https://betterttv.com/dashboard/editors',
+  DASHBOARD_BOTS: 'https://betterttv.com/dashboard/bots',
+  DASHBOARD_CHANNEL_POINTS: 'https://betterttv.com/dashboard/twitch_channel_points_reward',
 };
 
 export const CommandProviders = {
@@ -489,4 +494,11 @@ export const UsernameHoverEffects = {
   FLIP: 'flip',
   BOUNCE: 'bounce',
   WAVE: 'wave',
+};
+
+// api contract strings, keep in sync with betterttv-private
+export const UsernameFonts = {
+  FORMAL: 'formal',
+  TYPEWRITER: 'typewriter',
+  COMIC: 'comic',
 };

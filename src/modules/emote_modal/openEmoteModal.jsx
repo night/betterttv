@@ -5,7 +5,7 @@ import useAuthStore from '@/stores/auth';
 import {EmoteProviderMetadata} from '@/utils/emote';
 import styles from './EmoteModal.module.css';
 import EmoteModalContent from './EmoteModalContent';
-import {fetchAvailability, resetAdd} from './store';
+import {fetchAvailability, fetchEmoteSets, resetAdd} from './store';
 import {canAddEmote} from './utils';
 
 function emoteTitle(emote) {
@@ -26,6 +26,7 @@ export default function openEmoteModal(emote) {
   const {user} = useAuthStore.getState();
   if (canAddEmote(emote) && user != null) {
     fetchAvailability(emote.id, user.id);
+    fetchEmoteSets(user.id);
   }
 
   function handleClose() {

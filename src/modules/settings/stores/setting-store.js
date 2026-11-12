@@ -1,9 +1,11 @@
 import React from 'react';
 import {PageTypes} from '@/constants';
+import {registerSearchEntry} from '@/modules/settings/search-entries';
 import {isStandaloneWindow} from '@/utils/window';
 
 export const SettingPanelIds = {
   EMOTES: 'emotes',
+  EMOTE_DISPLAY: 'emoteDisplay',
   THEME: 'theme',
   EMOTE_MENU: 'emoteMenu',
   EMOTE_AUTOCOMPLETE: 'emoteAutocomplete',
@@ -34,11 +36,12 @@ export const SettingPanelIds = {
   SUBSCRIPTION_BADGE: 'subscriptionBadge',
   USERNAME_EFFECT: 'usernameEffect',
   USERNAME_HOVER_EFFECT: 'usernameHoverEffect',
+  USERNAME_FONT: 'usernameFont',
   ACCESSIBILITY: 'accessibility',
 };
 
 export const SettingCategoryIds = {
-  APPEARANCE: 'appearance',
+  USERNAME: 'username',
   EMOTES: 'emotes',
   BOTS: 'bots',
   CHAT: 'chat',
@@ -48,7 +51,7 @@ export const SettingCategoryIds = {
   OTHER: 'other',
 };
 
-// Descendant pages belong to a setting panel; while one is open its panel's nav entry stays active.
+// Descendant pages belong to a setting panel, so its category stays active while one is open.
 export const PageSettingPanelIds = {
   [PageTypes.HIGHLIGHT_KEYWORDS]: SettingPanelIds.HIGHLIGHTS,
   [PageTypes.BLACKLIST_KEYWORDS]: SettingPanelIds.BLACKLIST_KEYWORDS,
@@ -62,7 +65,7 @@ class SettingStore {
     this.settings = {};
   }
 
-  registerSetting(Component, {name, settingPanelId, settingCategoryId, supportsStandaloneWindow = false}) {
+  registerSetting(Component, {name, settingPanelId, settingCategoryId, supportsStandaloneWindow = false, keywords}) {
     if (name == null || typeof name !== 'string') {
       throw new Error('Name is required');
     }
@@ -84,6 +87,8 @@ class SettingStore {
       supportsStandaloneWindow,
       render: ({...props}) => React.createElement(Component, {key: settingPanelId, ...props}),
     };
+
+    registerSearchEntry({query: name, settingPanelId, keywords});
   }
 
   getSupportedSettings() {

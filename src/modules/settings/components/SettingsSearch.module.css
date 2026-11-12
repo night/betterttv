@@ -1,0 +1,199 @@
+/* the website's browse search (betterttv-web/src/components/emotes/EmoteSearch.module.css) */
+.root {
+  flex: 1;
+  min-width: 0;
+}
+
+/* the site's field in px, since the extension's own sizes run smaller */
+.root input {
+  height: 40px;
+  min-height: 40px;
+  font-size: 15px;
+  border-width: 0.5px;
+  border-radius: 10px;
+  background-color: var(--mantine-color-body-secondary);
+  border-color: var(--mantine-color-default-border);
+}
+
+.root input:focus {
+  border-color: var(--mantine-primary-color-filled);
+}
+
+/* the icon and the shortcut sit over the input, so a click anywhere on the field lands in it */
+.root [data-position] {
+  pointer-events: none;
+}
+
+/* until it's used: a faint wash, no border. only leaving fades, so focusing by keyboard is instant */
+.root[data-ghost] input {
+  background-color: color-mix(in srgb, var(--mantine-color-text) 4%, transparent);
+  border-color: transparent;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+/* the brand colour the sidebar's logo had; a Pro primary colour on the icon still wins */
+.ghostLogo {
+  display: flex;
+  color: var(--bttv-brand-color);
+}
+
+/* the 20px logo with 10px on every side, as the shortcut chip sits on the right */
+.root[data-ghost] [data-position='left'] {
+  justify-content: flex-start;
+  padding-inline-start: 10px;
+}
+
+/* dims the settings around an open search; Mantine's popover overlay portals out of the shadow root */
+.dim {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background-color: rgb(0 0 0 / 40%);
+  animation: dimIn 100ms ease-out;
+}
+
+@keyframes dimIn {
+  from {
+    opacity: 0;
+  }
+}
+
+.field {
+  position: relative;
+  z-index: 2;
+}
+
+/* the text lines up with the category labels below, focused or not, so it doesn't shift */
+.wrapper {
+  --input-left-section-width: 42px;
+}
+
+/* room for the shortcut (Windows' Ctrl K is the wider) */
+.wrapperHint {
+  --input-right-section-width: 72px;
+}
+
+/* the shortcut sits against the right edge, as far in as it is from the top and bottom */
+.wrapperHint [data-position='right'] {
+  justify-content: flex-end;
+  padding-inline-end: 10px;
+}
+
+/* flat keycaps instead of Mantine's bevelled ones */
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--mantine-color-dimmed);
+  background-color: var(--mantine-color-elevated-hover);
+  border: 1px solid var(--mantine-color-body-raised-border);
+  border-radius: 5px;
+}
+
+/* square, and pressed while Enter is held */
+.kbdEnter {
+  width: 20px;
+  padding: 0;
+  transition:
+    background-color 80ms ease,
+    border-color 80ms ease,
+    color 80ms ease,
+    transform 80ms ease;
+}
+
+.kbdEnter[data-pressed] {
+  color: var(--mantine-color-text);
+  background-color: var(--mantine-color-elevated-active);
+  border-color: var(--mantine-color-dimmed);
+  transform: translateY(1px);
+}
+
+.dropdown {
+  max-height: 400px;
+  padding: 4px;
+  overflow-y: auto;
+  background-color: var(--mantine-color-body-secondary);
+  border: 1px solid var(--mantine-color-default-border);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 36px;
+  padding: 4px 12px;
+  /* matches the dropdown's padding, so keyboard scrolling keeps the row off its edges */
+  scroll-margin-block: 4px;
+  border: 0;
+  border-radius: calc(var(--mantine-radius-lg) - 4px);
+  background: none;
+  font-family: inherit;
+  font-size: var(--mantine-font-size-lg);
+  color: var(--mantine-color-text);
+  text-align: start;
+  cursor: pointer;
+}
+
+.row[data-selected] {
+  background-color: var(--mantine-color-elevated-hover);
+}
+
+.row:active,
+.row[data-pressed] {
+  background-color: var(--mantine-color-elevated-active);
+}
+
+.rowMore {
+  color: var(--mantine-color-dimmed);
+}
+
+.rowIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 24px;
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowTitle,
+.rowDescription {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowDescription {
+  font-size: var(--mantine-font-size-md);
+  color: var(--mantine-color-dimmed);
+}
+
+.rowExternal {
+  flex-shrink: 0;
+  color: var(--mantine-color-dimmed);
+}
+
+.rowText mark {
+  color: var(--mantine-primary-color-filled);
+  background: none;
+}
+
+.empty {
+  padding: 8px 12px;
+  font-size: var(--mantine-font-size-md);
+  color: var(--mantine-color-dimmed);
+}

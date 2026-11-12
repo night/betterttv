@@ -1,0 +1,6 @@
+/* Lucide's X draws 12 of its 24 units, so it needs a larger box than Mantine's 70% default to read
+   the same size */
+.icon {
+  width: var(--cb-icon-size, 84%);
+  height: var(--cb-icon-size, 84%);
+}

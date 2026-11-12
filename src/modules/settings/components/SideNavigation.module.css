@@ -13,34 +13,15 @@
     inset -2px 0 2px -2px rgba(0, 0, 0, 0.1);
 }
 
-/* only the settings list scrolls; the logo and user-settings sections stay fixed */
+/* only the settings list scrolls; the header and user-settings sections stay fixed */
 .settingsScrollArea {
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* equal padding on all sides of the scrollable list */
+  gap: 4px;
   padding: var(--sidenav-h-padding);
   overflow-y: auto;
   overflow-x: hidden;
-}
-
-.logo {
-  padding: 0px !important;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.avatar {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-}
-
-.avatarImage {
-  width: 24px;
-  height: 24px;
 }
 
 .navigationIcon {
@@ -48,16 +29,11 @@
   height: 16px;
 }
 
-/* shown on the User Settings button when no BetterTTV account is linked */
+/* shown on the User Settings button when the signed in BetterTTV account isn't linked to this user */
 .warningIcon {
   width: 18px;
   height: 18px;
   color: var(--mantine-color-yellow-5);
-}
-
-.fireIcon {
-  /* faFire overflows its viewBox above y=0; default clipping flat-tops the flame */
-  overflow: visible;
 }
 
 .navigationButton {
@@ -72,29 +48,12 @@
   border: 1px solid transparent;
 }
 
-/* the scroll list scrolls rather than squashing its rows (category buttons and collapse wrappers) */
+/* the scroll list scrolls rather than squashing its category buttons */
 .settingsScrollArea > * {
   flex-shrink: 0;
 }
 
-/* disable Mantine's press-down (translateY) when the button is clicked */
-.navigationButton:active {
-  transform: none;
-}
-
-/* top-level nav items for each individual setting. These use
-   Mantine's transparent variant, so there's no background fill in any state (rest, hover, or
-   active) — hovering only undims the label (see the hover rule below), Discord-style, and the
-   pill treatment stays exclusive to the category rows. */
-.settingNavigationButton {
-  height: 40px;
-  font-weight: 400;
-  /* match the list's top/bottom padding when scrolled into view */
-  scroll-margin-top: var(--sidenav-h-padding);
-  scroll-margin-bottom: var(--sidenav-h-padding);
-}
-
-/* dot on the right of a setting (or its collapsed category) with an unseen promotion */
+/* dot on the right of a category with an unseen promotion */
 .promotionDot {
   width: 8px;
   height: 8px;
@@ -103,8 +62,8 @@
 }
 
 /* category header: reuses the settings button component and the shared clickable container,
-   styled as a dimmed, uppercase section header. Clickable to collapse/expand its settings; sits
-   flat (no background) until hovered, pressed, or active. */
+   styled as a dimmed, uppercase row. Opens its category's page; sits flat (no background) until
+   hovered, pressed, or active. */
 .categoryButton {
   height: 40px;
   font-size: 11px;
@@ -112,9 +71,6 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--mantine-color-dimmed);
-  /* match the list's top/bottom padding when scrolled into view */
-  scroll-margin-top: var(--sidenav-h-padding);
-  scroll-margin-bottom: var(--sidenav-h-padding);
   --surface-bg: transparent;
   transition: none;
 }
@@ -135,12 +91,6 @@
 .categoryButton[data-active='true'] {
   color: var(--button-color);
   box-shadow: var(--mantine-shadow-xs);
-}
-
-/* wraps a category's settings inside the Mantine <Collapse> so they keep stacking full-width */
-.categorySettings {
-  display: flex;
-  flex-direction: column;
 }
 
 .navigationLabel {
@@ -164,7 +114,7 @@
   color: var(--mantine-color-dimmed);
 }
 
-/* the user-settings card shows the display name at full strength, not dimmed like the other rows */
+/* the user-settings row shows the display name at full strength, not dimmed like the other rows */
 .userSettingsNavigationButton[data-active='false'] .navigationLabel {
   color: var(--mantine-color-text);
 }
@@ -202,28 +152,25 @@
   padding-left: var(--mantine-spacing-xs);
 }
 
-/* fixed above the scrollable settings list; spans the full sidebar width (the container has no
-   horizontal padding of its own) so its bottom-border divider reaches edge to edge. The left
-   padding optically lines the logo up with the nav icons below it. */
-.logoContainer {
+/* fixed above the scrollable settings list, with the search inset like the list below it */
+.header {
   display: flex;
   align-items: center;
-  height: 64px;
+  gap: 8px;
+  box-sizing: border-box;
+  height: var(--header-height);
   flex-shrink: 0;
-  padding: 0 24px;
+  padding: 0 var(--sidenav-h-padding);
   border-bottom: 1px solid var(--mantine-color-default-border);
 }
 
-/* fixed below the scrollable settings list; spans the full sidebar width so its top-border
-   divider reaches edge to edge, with horizontal padding matching the list above */
+/* fixed below the scrollable settings list, with horizontal padding matching the list above */
 .userSettingsContainer {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-top: 8px;
   padding-left: var(--sidenav-h-padding);
   padding-right: var(--sidenav-h-padding);
-  border-top: 1px solid var(--mantine-color-default-border);
 }
 
 /* the user-settings card reuses the shared clickable container (see ClickableContainer.module.css)
@@ -245,9 +192,8 @@
 }
 
 .closeButtonIcon {
-  width: 24px;
-  height: 24px;
-  transform: rotate(180deg);
+  width: 18px;
+  height: 18px;
   color: var(--mantine-color-dimmed);
 }
 
@@ -289,20 +235,10 @@
     transform: translateX(0);
   }
 
-  .closeButton,
-  .logo {
+  .closeButton {
     width: 40px;
     height: 40px;
-  }
-
-  .closeButton {
-    /* pin the close arrow to the right edge of the logo container */
-    margin-left: auto;
     padding: 8px;
-  }
-
-  .logo {
-    padding: 4px !important;
   }
 
   .userSettingsContainer {

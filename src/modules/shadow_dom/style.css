@@ -2,3 +2,15 @@
   position: relative;
   z-index: 9999;
 }
+
+/* the same look for everything that scrolls without the Scrollbar component */
+.bttv-mantine-scope * {
+  scrollbar-color: var(--mantine-color-dimmed) transparent;
+  scrollbar-width: thin;
+}
+
+/* Mantine writes its transitions inline; this also covers the Reduce motion setting, which its
+   own respectReducedMotion can't see */
+.bttv-mantine-scope[data-reduced-motion] * {
+  transition: none !important;
+}

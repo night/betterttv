@@ -8,7 +8,7 @@ import SettingSelfBotTimers from '@/modules/settings/components/SettingSelfBotTi
 import {PageContext} from '@/modules/settings/contexts/PageContext';
 
 function SelfBotTimers() {
-  const {setPage} = use(PageContext);
+  const {setPage, activeCategory} = use(PageContext);
   const [value, setValue] = useStorageState(SettingIds.SELF_BOT_TIMERS_LIST);
   const handleBack = useCallback(() => setPage(PageTypes.SETTINGS), [setPage]);
 
@@ -17,7 +17,7 @@ function SelfBotTimers() {
       header={
         <PageHeader
           breadcrumbs={[
-            {label: formatMessage({defaultMessage: 'Settings'}), onClick: handleBack},
+            {label: activeCategory.label, onClick: handleBack},
             {label: formatMessage({defaultMessage: 'Self Bot Timers'})},
           ]}
         />

@@ -1,5 +1,5 @@
-import cookies from 'cookies-js';
 import gql from 'graphql-tag';
+import {getCookie} from '@/utils/cookies';
 import watcher from '@/watcher';
 import {getCurrentChannel, setCurrentChannel} from './channel';
 import debug from './debug';
@@ -106,7 +106,7 @@ function searchReactChildren(node, predicate, maxDepth = 15, depth = 0) {
 let chatClient;
 const profilePicturesByUserId = {};
 
-const userCookie = cookies.get('twilight-user');
+const userCookie = getCookie('twilight-user');
 if (userCookie) {
   try {
     const {id, login, displayName} = JSON.parse(userCookie);
@@ -173,6 +173,14 @@ export default {
       );
       chatColor = node.memoizedProps.data.currentUser.chatColor;
     } catch (_) {}
+
+    // the carousel is only on pages with a chat input; twitch's cache has the account everywhere
+    if (chatColor == null) {
+      try {
+        const store = this.getApolloClient().cache.data;
+        chatColor = store.lookup(store.lookup('ROOT_QUERY').currentUser.__ref).chatColor ?? null;
+      } catch (_) {}
+    }
 
     return chatColor;
   },
@@ -902,7 +910,11 @@ export default {
     if (client == null) {
       return Promise.reject(new Error('unable to locate Twitch Apollo client'));
     }
-    return client.query({query, variables, ...options});
+    // our queries only read, so keep their results out of twitch's normalized cache. a selection
+    // that lacks the fields twitch keys an entity on (e.g. channel.self without id) is written
+    // inline over twitch's reference, orphaning everything it cached there and forcing it to
+    // refetch, which is what broke the native emote picker
+    return client.query({query, variables, fetchPolicy: 'no-cache', ...options});
   },
 
   graphqlMutation(mutation, variables) {

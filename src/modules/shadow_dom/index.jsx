@@ -64,13 +64,19 @@ function syncHostToFullscreen() {
   reparentHost(fullscreenElement);
 }
 
+function stopPropagation(event) {
+  event.stopPropagation();
+}
+
 function toggleDarkModeClass() {
   const dark = settings.get(SettingIds.DARKENED_MODE) === true;
   mountNode.classList.toggle(DARK_MODE_CLASS, dark);
 }
 
 function toggleReducedMotionClass() {
-  mountNode.classList.toggle(effects.reducedMotion, shouldReduceMotion());
+  const reduceMotion = shouldReduceMotion();
+  mountNode.classList.toggle(effects.reducedMotion, reduceMotion);
+  mountNode.toggleAttribute('data-reduced-motion', reduceMotion);
 }
 
 function setAdoptedStyleSheet(cssList) {
@@ -145,6 +151,10 @@ injectUsernameEffectFilters(shadowRoot);
 document.documentElement.appendChild(host);
 
 document.addEventListener('fullscreenchange', syncHostToFullscreen);
+
+// The page can't see into the closed shadow root, so a key typed in here reads to it as a shortcut
+// (twitch's player pauses on k). React listens below this node, so our own handlers still run.
+shadowRoot.addEventListener('keydown', stopPropagation);
 
 injectMantineVariables();
 addStyleSheet();

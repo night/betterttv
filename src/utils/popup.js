@@ -17,7 +17,7 @@ class Popup extends SafeEventEmitter {
     this.popup = window.open(url, this.windowName, windowOptions);
 
     if (this.popup == null) {
-      return;
+      return false;
     }
 
     const interval = setInterval(() => {
@@ -28,6 +28,7 @@ class Popup extends SafeEventEmitter {
     }, CLOSE_INTERVAL);
 
     window.addEventListener('message', this.handlePopupMessage);
+    return true;
   }
 
   handlePopupMessage = (event) => {

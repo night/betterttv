@@ -1,23 +1,23 @@
-import {faXmark} from '@fortawesome/free-solid-svg-icons';
 import {Text} from '@mantine/core';
 import classNames from 'classnames';
+import {X} from 'lucide-react';
 import React, {useMemo} from 'react';
 import {updateUsernameEffect} from '../../../actions/account';
-import Icon from '../../../common/components/Icon';
 import useCurrentUser from '../../../common/hooks/CurrentUser';
 import useUsernameEffectSetting, {NONE} from '../../../common/hooks/UsernameEffectSetting';
 import effects from '../../../common/styles/UsernameEffects.module.css';
+import fonts from '../../../common/styles/UsernameFonts.module.css';
 import {openSignInModal, openSubscriptionUpgradeModal} from '../../../common/utils/modal';
 import {CHAT_COLOR_USERNAME_EFFECTS, UsernameEffects} from '../../../constants';
 import formatMessage from '../../../i18n/index';
 import useAuthStore from '../../../stores/auth';
+import {useUsernameLook} from '../../../stores/username-looks';
 import {isUserPro} from '../../../utils/pro';
 import twitch from '../../../utils/twitch';
 import {getCurrentUser, getPreviewDisplayName} from '../../../utils/user';
 import SettingRadioCard from './SettingRadioCard';
 import SettingRadioCardGroup from './SettingRadioCardGroup';
 import styles from './SettingUsernameEffect.module.css';
-import SettingWrapper from './SettingWrapper';
 
 function getChatColorStyle(effect, chatColor) {
   if (!CHAT_COLOR_USERNAME_EFFECTS.includes(effect) || chatColor == null) {
@@ -155,9 +155,10 @@ function openUsernameEffectSignInModal(value, callback) {
 function SettingUsernameEffect() {
   const currentUser = useCurrentUser();
   const user = useAuthStore((state) => state.user);
+  const usernameFont = useUsernameLook('usernameFont');
   const chatColor = useMemo(() => twitch.getCurrentUserChatColor(), []);
 
-  const [value, handleChange] = useUsernameEffectSetting({
+  const [value, handleChange, isLocked] = useUsernameEffectSetting({
     userField: 'usernameEffect',
     saveEffect: updateUsernameEffect,
     isEligible: isEligibleForUsernameEffect,
@@ -166,44 +167,35 @@ function SettingUsernameEffect() {
   });
 
   return (
-    <React.Fragment>
-      <SettingWrapper
-        reverse
-        name={formatMessage({defaultMessage: 'Username effect'})}
-        description={formatMessage({defaultMessage: 'Choose how your username is styled in chat.'})}
-        showProBadge
-      />
-      <div className={styles.cards}>
-        <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
-          <SettingRadioCard
-            key={NONE}
-            value={NONE}
-            className={styles.usernameCard}
-            tooltip={formatMessage({defaultMessage: 'Disable effect'})}
-            ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
-            withIndicators={false}>
-            <Icon icon={faXmark} className={styles.cardIcon} />
-          </SettingRadioCard>
-          {EFFECT_CARDS.map(({value: effectValue, label}) => (
-            <SettingRadioCard
-              key={effectValue}
-              value={effectValue}
-              className={styles.usernameCard}
-              tooltip={label}
-              ariaLabel={label}
-              withIndicators={false}>
-              <Text
-                truncate
-                size="xl"
-                style={getChatColorStyle(effectValue, chatColor)}
-                className={UsernameEffectRequirementClassNamesByEffect[effectValue]}>
-                {getPreviewDisplayName(currentUser, user)}
-              </Text>
-            </SettingRadioCard>
-          ))}
-        </SettingRadioCardGroup>
-      </div>
-    </React.Fragment>
+    <SettingRadioCardGroup value={value} onChange={handleChange} capAtFourPerRow>
+      <SettingRadioCard
+        key={NONE}
+        value={NONE}
+        className={styles.usernameCard}
+        tooltip={formatMessage({defaultMessage: 'Disable effect'})}
+        ariaLabel={formatMessage({defaultMessage: 'Disable effect'})}
+        withIndicators={false}>
+        <X className={styles.cardIcon} />
+      </SettingRadioCard>
+      {EFFECT_CARDS.map(({value: effectValue, label}) => (
+        <SettingRadioCard
+          key={effectValue}
+          value={effectValue}
+          locked={isLocked(effectValue)}
+          className={styles.usernameCard}
+          tooltip={label}
+          ariaLabel={label}
+          withIndicators={false}>
+          <Text
+            truncate
+            size="xl"
+            style={getChatColorStyle(effectValue, chatColor)}
+            className={classNames(UsernameEffectRequirementClassNamesByEffect[effectValue], fonts[usernameFont])}>
+            {getPreviewDisplayName(currentUser, user)}
+          </Text>
+        </SettingRadioCard>
+      ))}
+    </SettingRadioCardGroup>
   );
 }
 

@@ -1,14 +1,13 @@
 import {autoUpdate, offset as floatingOffset, size, useDismiss, useFloating, useInteractions} from '@floating-ui/react';
-import {faArrowDown, faArrowTurnDown, faArrowUp} from '@fortawesome/free-solid-svg-icons';
 import {Kbd, Text} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import classNames from 'classnames';
+import {ArrowDown, ArrowUp, CornerDownLeft} from 'lucide-react';
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import useDomObserver from '@/common/hooks/DomObserver';
 import formatMessage from '@/i18n/index';
 import keyCodes from '@/utils/keycodes';
 import styles from './Autocomplete.module.css';
-import Icon from './Icon';
 import LogoIcon from './LogoIcon';
 import Scrollbar from './Scrollbar';
 
@@ -376,14 +375,14 @@ function Autocomplete({
       {showKeyboardNavigationTips ? (
         <div className={styles.autocompleteFooter}>
           <Kbd className={styles.kbd}>
-            <Icon icon={faArrowUp} className={styles.kbdIcon} />
+            <ArrowUp className={styles.kbdIcon} />
           </Kbd>
           <Kbd className={styles.kbd}>
-            <Icon icon={faArrowDown} className={styles.kbdIcon} />
+            <ArrowDown className={styles.kbdIcon} />
           </Kbd>
           <Text>{formatMessage({defaultMessage: 'Navigate'})}</Text>
           <Kbd className={classNames(styles.kbd, styles.floatRight)}>
-            <Icon icon={faArrowTurnDown} className={classNames(styles.kbdIcon, styles.kbdIconTurn)} />
+            <CornerDownLeft className={styles.kbdIcon} />
           </Kbd>
           <Text>{formatMessage({defaultMessage: 'Select'})}</Text>
         </div>

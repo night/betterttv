@@ -6,12 +6,13 @@ import {getCurrentUser} from '@/utils/user';
 
 const users = new Map();
 
-function updateSubscription({providerId, subscribed, badge, usernameEffect, usernameHoverEffect}) {
+function updateSubscription({providerId, subscribed, badge, usernameEffect, usernameHoverEffect, usernameFont}) {
   users.set(providerId, {
     badge,
     subscribed,
     usernameEffect,
     usernameHoverEffect,
+    usernameFont,
   });
 }
 
@@ -47,6 +48,10 @@ class SubscribersModule {
 
   getUsernameHoverEffect(providerId) {
     return getEffectSource(providerId)?.usernameHoverEffect ?? null;
+  }
+
+  getUsernameFont(providerId) {
+    return getEffectSource(providerId)?.usernameFont ?? null;
   }
 
   hasLegacySubscription(providerId) {

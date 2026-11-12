@@ -1,6 +1,11 @@
 import {getCredentials, setCredentials} from '@/stores/auth';
 import HTTPError from './http-error';
-import {exchangeCodeForCredentials, executeOAuth2AuthorizationFlow, refreshAccessToken} from './oauth';
+import {
+  exchangeCodeForCredentials,
+  executeOAuth2AuthorizationFlow,
+  pollDeviceCodeForCredentials,
+  refreshAccessToken,
+} from './oauth';
 
 let inFlightRefresh = null;
 
@@ -50,5 +55,10 @@ export async function refreshAndSetCredentials() {
 export async function executeOAuth2SignInAndSetCredentials({signal} = {}) {
   const {codeVerifier, code, redirectUri} = await executeOAuth2AuthorizationFlow({signal});
   const {access_token, refresh_token} = await exchangeCodeForCredentials({codeVerifier, code, redirectUri, signal});
+  setCredentials({accessToken: access_token, refreshToken: refresh_token});
+}
+
+export async function pollDeviceCodeAndSetCredentials({deviceCode, interval, signal} = {}) {
+  const {access_token, refresh_token} = await pollDeviceCodeForCredentials({deviceCode, interval, signal});
   setCredentials({accessToken: access_token, refreshToken: refresh_token});
 }

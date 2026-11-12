@@ -269,11 +269,6 @@ function EmoteMenu({
       handleKeyEvent(event);
       handleToggleHotkey(event);
 
-      /* Events like keydown are sometimes prevented by twitch,
-      likely because it can't locate the focused element inside the shadow dom.
-      To prevent this we stop it from bubbling upstream */
-      event.stopPropagation();
-
       if (mode === EmoteMenuModes.GIFS) {
         return;
       }
