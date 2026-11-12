@@ -45,12 +45,12 @@ class Settings extends SafeEventEmitter {
     const oldSettings = storage.get(SETTINGS_STORAGE_KEY);
     settings = {...defaultSettings, ...oldSettings};
 
-    this.upgrade(settings.version ?? EXT_VER, oldSettings);
-
-    if (settings.version == null) {
+    if (oldSettings == null || (oldSettings != null && oldSettings.version == null)) {
       settings = {...settings, version: EXT_VER};
       storage.set(SETTINGS_STORAGE_KEY, settings);
     }
+
+    this.upgrade(settings.version);
   }
 
   getSettings() {
@@ -113,7 +113,7 @@ class Settings extends SafeEventEmitter {
     return value;
   }
 
-  upgrade(version, oldSettings) {
+  upgrade(version) {
     if (semver.lt(version, '7.5.5')) {
       // now storing emote menu as an enum rather than a boolean
       const oldEmoteMenuValue = this.get(SettingIds.LEGACY_EMOTE_MENU);
@@ -131,29 +131,27 @@ class Settings extends SafeEventEmitter {
       }
     }
 
-    if (oldSettings != null) {
-      this.migrateSidebarWatchStreaks(oldSettings);
-    }
     this.applyFlagDefaults();
   }
 
-  migrateSidebarWatchStreaks(oldSettings) {
-    const newSidebarFlags = SidebarFlags.WATCH_STREAKS | SidebarFlags.SAVE_YOUR_STREAK;
-    const [defaultSidebarFlags] = SettingDefaultValues[SettingIds.SIDEBAR];
-    const oldDefaults = defaultSidebarFlags & ~newSidebarFlags;
-    const sidebar = oldSettings[SettingIds.SIDEBAR] == null ? oldDefaults : settings[SettingIds.SIDEBAR];
-    const [flags, changedFlags] = Array.isArray(sidebar) ? sidebar : [sidebar, getChangedFlags(oldDefaults, sidebar)];
+  // the sidebar's watch streaks flag split off chat's, which used to hide them everywhere. sidebar flags from
+  // before the split have the bit in neither the flags nor the changed bits, so a viewer who'd hidden watch
+  // streaks keeps them hidden in the sidebar. this runs whenever flags are filled in, on load and after cloud
+  // backup replaces the settings, so a backup from before the split carries over too
+  carryOverWatchStreaks() {
+    const [sidebarFlags, sidebarChangedBits] = settings[SettingIds.SIDEBAR];
+    if (hasFlag(sidebarFlags | sidebarChangedBits, SidebarFlags.WATCH_STREAKS)) {
+      return;
+    }
 
-    // An enabled bit or an explicit override means the sidebar choice is already independent.
-    if (hasFlag(flags | changedFlags, SidebarFlags.WATCH_STREAKS)) return;
+    const [chatFlags, chatChangedBits] = settings[SettingIds.CHAT];
+    if (!hasFlag(chatChangedBits, ChatFlags.WATCH_STREAKS) || hasFlag(chatFlags, ChatFlags.WATCH_STREAKS)) {
+      return;
+    }
 
-    const chat = oldSettings[SettingIds.CHAT];
-    const [chatFlags, changedChatFlags] = typeof chat === 'number' ? [chat, ChatFlags.WATCH_STREAKS] : (chat ?? [0, 0]);
-    const hideWatchStreaks =
-      hasFlag(changedChatFlags, ChatFlags.WATCH_STREAKS) && !hasFlag(chatFlags, ChatFlags.WATCH_STREAKS);
     this.set(SettingIds.SIDEBAR, [
-      setFlag(flags | (newSidebarFlags & ~changedFlags), SidebarFlags.WATCH_STREAKS, !hideWatchStreaks),
-      changedFlags | (hideWatchStreaks ? SidebarFlags.WATCH_STREAKS : 0),
+      setFlag(sidebarFlags, SidebarFlags.WATCH_STREAKS, false),
+      sidebarChangedBits | SidebarFlags.WATCH_STREAKS,
     ]);
   }
 
@@ -178,8 +176,14 @@ class Settings extends SafeEventEmitter {
       else if (typeof oldValue === 'number') {
         this.set(flagSettingId, [oldValue, getChangedFlags(inferredDefaultFlags, oldValue)]);
       }
+    }
 
-      // upgrade flags where default bits changed
+    // before default bits are added below, which would make the sidebar look like it's from after the split
+    this.carryOverWatchStreaks();
+
+    // upgrade flags where default bits changed
+    for (const flagSettingId of FlagSettings) {
+      const [defaultFlags] = SettingDefaultValues[flagSettingId];
       const [oldFlags, oldChangedBits] = settings[flagSettingId];
       const flagsToAdd = setFlag(defaultFlags, oldChangedBits, false);
       const newFlags = setFlag(oldFlags, flagsToAdd, true);

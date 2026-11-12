@@ -102,7 +102,7 @@ class HideSidebarElementsModule {
 
   loadHideWatchStreaks() {
     const setting = settings.get(SettingIds.SIDEBAR);
-    document.body.classList.toggle('bttv-hide-watch-streaks', !hasFlag(setting, SidebarFlags.WATCH_STREAKS));
+    document.body.classList.toggle(styles.hideWatchStreaks, !hasFlag(setting, SidebarFlags.WATCH_STREAKS));
     document.body.classList.toggle(styles.hideSaveYourStreak, !hasFlag(setting, SidebarFlags.SAVE_YOUR_STREAK));
   }
 

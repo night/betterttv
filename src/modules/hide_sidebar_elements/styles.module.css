@@ -11,7 +11,19 @@
   display: none !important;
 }
 
+/* The sidebar watch streak indicator has no class or attribute of its own, so it's matched by
+   its flame icon. Twitch renders it as a row of exactly two children, the icon wrapper (with the
+   flame somewhere under it, which has been nested at different depths) and a <p> label, and the
+   rule matches that row's shape: a div with a direct <p> and no third child. Containers further
+   up, like the card's metadata column, have more children, so the rule can never climb to them
+   or the channel card. */
+.hideWatchStreaks
+  :global(.side-nav-card)
+  div:has(> div svg path[d^='M11 4.5L9 2L4.80069 6.89']):has(> p):not(:has(> :nth-child(3))) {
+  display: none !important;
+}
+
 /* Match the group by its streak rows so this works in every locale. */
-.hideSaveYourStreak [role='group']:has(> [class*='saveYourStreakSideNavRow--']) {
+.hideSaveYourStreak :global(.side-nav) [role='group']:has(> [class*='saveYourStreakSideNavRow--']) {
   display: none !important;
 }
