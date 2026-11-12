@@ -6,7 +6,7 @@ import SettingCheckbox from '@/modules/settings/components/SettingCheckbox';
 import SettingCheckboxGroup from '@/modules/settings/components/SettingCheckboxGroup';
 import SettingStore, {SettingCategoryIds, SettingPanelIds} from '@/modules/settings/stores/setting-store';
 
-const SETTING_NAME = formatMessage({defaultMessage: 'Celebrations'});
+const SETTING_NAME = formatMessage({defaultMessage: 'On-Screen Effects'});
 
 function Celebrations({ref, ...props}) {
   const [celebrations, setCelebrations] = useStorageState(SettingIds.CELEBRATIONS);
@@ -23,14 +23,14 @@ function Celebrations({ref, ...props}) {
         value={CelebrationFlags.CELEBRATIONS}
         name={formatMessage({defaultMessage: 'Celebrations'})}
         description={formatMessage({
-          defaultMessage: 'Show on-screen channel celebration overlays, such as when a milestone is reached.',
+          defaultMessage: 'Show On-Screen Celebrations that viewers buy with Bits, such as fireworks and emote rain.',
         })}
       />
       <SettingCheckbox
-        value={CelebrationFlags.CHEER_EFFECTS}
-        name={formatMessage({defaultMessage: 'Cheer Effects'})}
+        value={CelebrationFlags.HYPE_TRAIN_ANIMATIONS}
+        name={formatMessage({defaultMessage: 'Hype Train Animations'})}
         description={formatMessage({
-          defaultMessage: 'Show on-screen confetti and particle effects from cheers and Power-ups.',
+          defaultMessage: 'Show the confetti and fireworks that play when a Hype Train levels up.',
         })}
       />
     </SettingCheckboxGroup>

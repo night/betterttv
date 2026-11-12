@@ -1,11 +1,18 @@
+/* on-screen celebrations (the power-up) render into a wrapper named after the area they play in:
+   celebration-animation-chat, -video, -everywhere, or -unknown */
 .hideCelebrations {
-  :global(.celebration__overlay) {
+  :global(.celebration-animation-chat),
+  :global(.celebration-animation-video),
+  :global(.celebration-animation-everywhere),
+  :global(.celebration-animation-unknown) {
     display: none !important;
   }
 }
 
-.hideCheerEffects {
-  :global(.particle-canvas) {
+/* hype train level up animations. twitch draws them on either canvas depending on the animation */
+.hideHypeTrainAnimations {
+  :global(.particle-canvas),
+  :global(.adaptive-particle-canvas) {
     display: none !important;
   }
 }

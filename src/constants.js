@@ -137,7 +137,7 @@ export const ChannelPointsFlags = {
 
 export const CelebrationFlags = {
   CELEBRATIONS: 1 << 0,
-  CHEER_EFFECTS: 1 << 1,
+  HYPE_TRAIN_ANIMATIONS: 1 << 1,
 };
 
 export const AutoPlayFlags = {
@@ -355,7 +355,7 @@ export const SettingDefaultValues = {
   ],
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
   [SettingIds.AUTO_CLAIM]: [0, 0],
-  [SettingIds.CELEBRATIONS]: [CelebrationFlags.CELEBRATIONS | CelebrationFlags.CHEER_EFFECTS, 0],
+  [SettingIds.CELEBRATIONS]: [CelebrationFlags.CELEBRATIONS | CelebrationFlags.HYPE_TRAIN_ANIMATIONS, 0],
   [SettingIds.LIVE_CHAT_VIEW]: false,
   [SettingIds.EMOTE_MENU_WIDTH]: 498,
   [SettingIds.HYPE_CHAT]: true,

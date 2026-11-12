@@ -13,7 +13,10 @@ class HideCelebrationsModule {
   load() {
     const celebrations = settings.get(SettingIds.CELEBRATIONS);
     document.body.classList.toggle(styles.hideCelebrations, !hasFlag(celebrations, CelebrationFlags.CELEBRATIONS));
-    document.body.classList.toggle(styles.hideCheerEffects, !hasFlag(celebrations, CelebrationFlags.CHEER_EFFECTS));
+    document.body.classList.toggle(
+      styles.hideHypeTrainAnimations,
+      !hasFlag(celebrations, CelebrationFlags.HYPE_TRAIN_ANIMATIONS)
+    );
   }
 }
 
