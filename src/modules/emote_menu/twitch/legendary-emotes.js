@@ -32,8 +32,9 @@ export const LEGENDARY_EMOTE_SEASON_QUERY = gql`
 `;
 
 // twitch's own query for the viewer's emote sets, field for field and with its variables (see
-// AVAILABLE_EMOTES_VARIABLES): twitch keeps it watched with chat, and adds emotes to it as they're granted. it's
-// only ever read from twitch's cache, never fetched
+// getTwitchAvailableEmotesVariables). twitch keeps it watched with chat, and adds emotes to it when it's told they
+// were granted, which isn't always right after a chest is opened (the same for twitch's own collection view).
+// it's only ever read from twitch's cache, never fetched
 export const TWITCH_AVAILABLE_EMOTES_QUERY = gql`
   query AvailableEmotesForChannelPaginated($channelID: ID!, $withOwner: Boolean!, $pageLimit: Int!, $cursor: Cursor) {
     channel(id: $channelID) {
@@ -138,7 +139,8 @@ export function parseLegendaryEmoteSeason(channelId, season, ownedEmoteIds = new
     return null;
   }
 
-  const emotePool = season.emotePool ?? [];
+  // as twitch's collection view counts them, leaving out entries without an emote
+  const emotePool = (season.emotePool ?? []).filter(({emote}) => emote?.id != null && emote?.token != null);
   const chestCounts = getChestCounts(season.userProgress?.chestInventory);
 
   return {

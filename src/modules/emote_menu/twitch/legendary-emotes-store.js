@@ -25,7 +25,7 @@ const useLegendaryEmotesStore = create(() => ({
 // the season is followed in twitch's cache for one channel at a time, the same as twitch's own emote picker and
 // collection view read it: twitch fetches it once per channel and keeps the chest counts current from pubsub
 // (chests granted, and its decrement when one is opened). which emotes are owned comes from the viewer's emote
-// sets in twitch's cache too (only read, never fetched), which twitch adds won emotes to
+// sets in twitch's cache too (only read, never fetched), as current as twitch keeps them
 let watchedChannelId = null;
 let unwatchSeason = null;
 let unwatchEmoteSets = null;
@@ -56,12 +56,10 @@ function getWatchableChannelId() {
 
 export function stopLegendaryEmoteSeason() {
   unwatchSeason?.();
-  unwatchEmoteSets?.();
   unwatchSeason = null;
-  unwatchEmoteSets = null;
+  stopWatchingEmoteSets();
   watchedChannelId = null;
   seasonData = null;
-  ownedEmoteIds = new Set();
   failedAt = -Infinity;
   setSeason(null);
 }
@@ -74,9 +72,17 @@ function handleChannelUpdated() {
   }
 }
 
+function stopWatchingEmoteSets() {
+  unwatchEmoteSets?.();
+  unwatchEmoteSets = null;
+  ownedEmoteIds = new Set();
+}
+
+// only while the channel has a season, since that's all the emote sets are needed for
 function watchEmoteSets(channelId) {
+  let failed = false;
   // cache-only, so a channel twitch hasn't loaded them for just doesn't add any
-  unwatchEmoteSets = twitch.graphqlWatchQuery(
+  const unwatch = twitch.graphqlWatchQuery(
     TWITCH_AVAILABLE_EMOTES_QUERY,
     getTwitchAvailableEmotesVariables(channelId),
     {
@@ -86,10 +92,28 @@ function watchEmoteSets(channelId) {
           showSeason();
         }
       },
-      error: (error) => debug.log('failed to watch twitch emote sets', error),
+      // the watch ends on an error, so the next season update or open watches again
+      error: (error) => {
+        debug.log('failed to watch twitch emote sets', error);
+        failed = true;
+        if (watchedChannelId === channelId) {
+          unwatchEmoteSets = null;
+        }
+      },
     },
     {fetchPolicy: 'cache-only'}
   );
+  if (!failed) {
+    unwatchEmoteSets = unwatch;
+  }
+}
+
+function updateEmoteSetsWatch(channelId) {
+  if (seasonData?.campaign == null) {
+    stopWatchingEmoteSets();
+  } else if (unwatchEmoteSets == null) {
+    watchEmoteSets(channelId);
+  }
 }
 
 function watchSeason(channelId) {
@@ -101,6 +125,7 @@ function watchSeason(channelId) {
       next: ({data}) => {
         if (watchedChannelId === channelId && data != null) {
           seasonData = data.legendaryEmoteSeason;
+          updateEmoteSetsWatch(channelId);
           showSeason();
         }
       },
@@ -139,9 +164,7 @@ export function updateLegendaryEmoteSeason() {
 
   watchedChannelId = channelId;
 
-  if (unwatchEmoteSets == null) {
-    watchEmoteSets(channelId);
-  }
+  updateEmoteSetsWatch(channelId);
 
   if (unwatchSeason == null && Date.now() - failedAt >= RETRY_DELAY) {
     watchSeason(channelId);
