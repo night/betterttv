@@ -917,6 +917,33 @@ export default {
     return client.query({query, variables, fetchPolicy: 'no-cache', ...options});
   },
 
+  // follows a query in twitch's own cache, so the result stays current with twitch's own updates to it (e.g. from
+  // pubsub). cache-first fetches it only when twitch hasn't cached it, and unlike graphqlQuery writes the result
+  // into twitch's cache, so the query's selection must be exactly twitch's own for the same field, with every
+  // field twitch keys an entity on. cache-only never fetches or writes, and only finds the data when the
+  // selection and variables match what twitch cached, emitting partial results (`partial: true`) until
+  // then. returns an unsubscribe function, or null without a client or when the watch can't start (the error goes
+  // to `error`)
+  graphqlWatchQuery(query, variables, {next, error}, {fetchPolicy = 'cache-first'} = {}) {
+    const client = this.getApolloClient();
+    if (client == null) {
+      return null;
+    }
+
+    try {
+      // after the first result it only reads the cache: if twitch's own query for the field ever drifts from ours,
+      // a cache-first watch would go back to the network on every one of twitch's writes, and could take turns
+      // with twitch's own watch refetching. this way it emits partial results instead, which callers can ignore
+      const subscription = client
+        .watchQuery({query, variables, fetchPolicy, nextFetchPolicy: 'cache-only'})
+        .subscribe({next, error});
+      return () => subscription.unsubscribe();
+    } catch (watchError) {
+      error?.(watchError);
+      return null;
+    }
+  },
+
   graphqlMutation(mutation, variables) {
     const client = this.getApolloClient();
     if (client == null) {
@@ -963,5 +990,21 @@ export default {
     } catch (_) {}
 
     return gifPickerController;
+  },
+
+  getChatCalloutContext() {
+    let calloutContext;
+    try {
+      // twitch's chat callout provider (the panels shown above the chat input) wraps the whole chat
+      // column, so it sits a few hundred fibers above the chat input
+      const node = searchReactParents(
+        getReactInstance(document.querySelector(CHAT_INPUT_CONTAINER)),
+        (n) => n.memoizedProps?.value?.pushPriorityCallout != null,
+        500
+      );
+      calloutContext = node.memoizedProps.value;
+    } catch (_) {}
+
+    return calloutContext;
   },
 };

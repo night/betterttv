@@ -15,7 +15,7 @@ import VirtualizedList from './VirtualizedList';
 
 const GUARD_HEIGHT = 8;
 
-const BrowseEmotes = ({emoteListRows, onClick, onSection, setCoords, coords, className, headerRows, ref}) => {
+const BrowseEmotes = ({emoteListRows, onClick, onClose, onSection, setCoords, coords, className, headerRows, ref}) => {
   const renderRow = useCallback(
     ({index: y, ...props}) => {
       const row = emoteListRows[y];
@@ -25,12 +25,12 @@ const BrowseEmotes = ({emoteListRows, onClick, onSection, setCoords, coords, cla
       }
 
       if (!Array.isArray(row)) {
-        return <HeaderRow row={row} {...props} />;
+        return <HeaderRow row={row} onClose={onClose} {...props} />;
       }
 
       return <EmoteRow row={row} rowIndex={y} coords={coords} onClick={onClick} onMouseOver={setCoords} {...props} />;
     },
-    // eslint-disable-next-line @eslint-react/exhaustive-deps -- onClick/setCoords props are stable
+    // eslint-disable-next-line @eslint-react/exhaustive-deps -- onClick/onClose/setCoords props are stable
     [coords, emoteListRows]
   );
 
@@ -66,6 +66,7 @@ const BrowseEmotes = ({emoteListRows, onClick, onSection, setCoords, coords, cla
 const EmoteList = ({
   data,
   onClick,
+  onClose,
   selected,
   section,
   onSection,
@@ -178,6 +179,7 @@ const EmoteList = ({
         section={section}
         onSection={onSection}
         onClick={onClick}
+        onClose={onClose}
         emoteListRows={rows}
         coords={coords}
         setCoords={handleCoordsChangeByMouse}
@@ -192,6 +194,7 @@ export default React.memo(EmoteList, (prevProps, nextProps) => {
   return (
     prevProps.selected === nextProps.selected &&
     prevProps.onClick === nextProps.onClick &&
+    prevProps.onClose === nextProps.onClose &&
     prevProps.setKeyPressCallback === nextProps.setKeyPressCallback &&
     prevProps.data.rows === nextProps.data.rows &&
     prevProps.data.totalCols === nextProps.data.totalCols &&

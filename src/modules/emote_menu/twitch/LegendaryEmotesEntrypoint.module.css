@@ -1,0 +1,60 @@
+.entrypoint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.collectionButton,
+.chestsButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 4px;
+  border: none;
+  border-radius: var(--mantine-radius-sm);
+  font: inherit;
+  font-size: var(--mantine-font-size-sm);
+  cursor: pointer;
+}
+
+.collectionButton {
+  background-color: transparent;
+  color: var(--mantine-color-dimmed);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--mantine-color-default-hover);
+    color: var(--mantine-color-text);
+  }
+}
+
+.chestsButton {
+  padding: 0 6px;
+  background-color: var(--mantine-primary-color-filled);
+  color: var(--mantine-primary-color-contrast);
+  font-weight: 600;
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--mantine-primary-color-filled-hover);
+  }
+}
+
+.image {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--mantine-radius-xs);
+}
+
+.progress {
+  font-variant-numeric: tabular-nums;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
