@@ -159,7 +159,8 @@ function SignInButton() {
             color="contrast"
             onClick={platformUser != null ? signIn : undefined}
             loading={signingIn}
-            data-disabled={platformUser == null || undefined}>
+            data-disabled={platformUser == null || undefined}
+            aria-disabled={platformUser == null || undefined}>
             {formatMessage({defaultMessage: 'Sign In'})}
           </Button>
         </Tooltip>

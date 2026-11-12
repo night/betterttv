@@ -62,36 +62,58 @@ export async function getActions() {
 }
 
 let userSync = Promise.resolve();
-// the platform user the latest sync checked the BetterTTV account against
+// what the stored user (or mismatch) was last checked against. only set once a check succeeds, so a
+// failed one runs again on the next credentials or platform user update
+let syncedCredentials = null;
 let syncedPlatformUserId = null;
+// the platform user a check is in flight for, so repeated user.updated events don't stack checks
+let syncingPlatformUserId = null;
 
-async function syncUser(credentials) {
-  if (credentials.accessToken == null) {
-    syncedPlatformUserId = null;
-    useAuthStore.setState({user: null, accountMismatch: false});
+function setUserState(user, accountMismatch) {
+  const state = useAuthStore.getState();
+  if (state.user === user && state.accountMismatch === accountMismatch) {
     return;
   }
 
+  useAuthStore.setState({user, accountMismatch});
+}
+
+async function syncUser(credentials) {
   // youtube only knows who is signed in once its chat input renders, and nobody is when signed out
   // of the platform. this runs again once the platform user loads
   const platformUser = getCurrentUser();
-  if (platformUser == null) {
+
+  if (credentials.accessToken == null || platformUser == null) {
+    syncedCredentials = null;
     syncedPlatformUserId = null;
-    useAuthStore.setState({user: null, accountMismatch: false});
+    setUserState(null, false);
     return;
   }
 
-  const {user} = useAuthStore.getState();
-
-  if (user != null && syncedPlatformUserId === platformUser.id) {
+  if (syncedCredentials === credentials && syncedPlatformUserId === platformUser.id) {
     return;
   }
 
-  syncedPlatformUserId = platformUser.id;
+  // the stored user belongs to another platform user, so don't keep showing it while checking
+  if (syncedPlatformUserId != null && syncedPlatformUserId !== platformUser.id) {
+    syncedCredentials = null;
+    syncedPlatformUserId = null;
+    setUserState(null, false);
+  }
+
   const provider = getProvider();
+  syncingPlatformUserId = platformUser.id;
 
-  const {getConnections, getMe} = await getActions();
-  const [connections, {user: me}] = await Promise.all([getConnections(), getMe()]);
+  let connections;
+  let me;
+  try {
+    const {getConnections, getMe} = await getActions();
+    [connections, {user: me}] = await Promise.all([getConnections(), getMe()]);
+  } finally {
+    if (syncingPlatformUserId === platformUser.id) {
+      syncingPlatformUserId = null;
+    }
+  }
 
   // a newer sign in, sign out or platform user took over while this was in flight
   if (getCredentials() !== credentials || getCurrentUser()?.id !== platformUser.id) {
@@ -102,12 +124,9 @@ async function syncUser(credentials) {
     (account) => account.provider === provider && account.providerId === platformUser.id
   );
 
-  if (!hasConnectedAccount) {
-    useAuthStore.setState({user: null, accountMismatch: true});
-    return;
-  }
-
-  useAuthStore.setState({user: me, accountMismatch: false});
+  syncedCredentials = credentials;
+  syncedPlatformUserId = platformUser.id;
+  setUserState(hasConnectedAccount ? me : null, !hasConnectedAccount);
 }
 
 export function syncCurrentUserFromCredentials(credentialsParam = null) {
@@ -117,12 +136,18 @@ export function syncCurrentUserFromCredentials(credentialsParam = null) {
 
 // settles once the latest credentials have resolved to a user, or a mismatched one
 export async function waitForUserSync() {
-  // a sync started while waiting (e.g. the platform user loading) supersedes the one being waited on
+  // a sync started while waiting (e.g. the platform user loading) supersedes the one being waited on,
+  // so only the latest one's failure counts
   let sync;
+  let result;
   do {
     sync = userSync;
-    await sync;
+    [result] = await Promise.allSettled([sync]);
   } while (sync !== userSync);
+
+  if (result.status === 'rejected') {
+    throw result.reason;
+  }
 }
 
 function syncInBackground(credentials) {
@@ -133,7 +158,11 @@ useAuthStore.subscribe((state) => state.credentials, syncInBackground);
 syncInBackground();
 
 watcher.on('user.updated', (platformUser) => {
-  if (platformUser?.id === syncedPlatformUserId) {
+  if (getCredentials().accessToken == null) {
+    return;
+  }
+
+  if (platformUser?.id === syncedPlatformUserId || platformUser?.id === syncingPlatformUserId) {
     return;
   }
 
