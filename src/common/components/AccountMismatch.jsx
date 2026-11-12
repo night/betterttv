@@ -10,10 +10,23 @@ import LogoIcon from './LogoIcon';
 
 const MARK_SIZE = 32;
 
+function getPlatformName() {
+  return getProvider() === ProviderTypes.YOUTUBE ? 'YouTube' : 'Twitch';
+}
+
 export function formatAccountMismatchMessage() {
   return formatMessage(
     {defaultMessage: "The BetterTTV account you signed in with doesn't match your {platform} account."},
-    {platform: getProvider() === ProviderTypes.YOUTUBE ? 'YouTube' : 'Twitch'}
+    {platform: getPlatformName()}
+  );
+}
+
+// BetterTTV accounts are matched to the platform account, so there's nothing to sign in to when
+// signed out of the platform
+export function formatPlatformSignInRequiredMessage() {
+  return formatMessage(
+    {defaultMessage: 'Log in to {platform} to sign in to BetterTTV.'},
+    {platform: getPlatformName()}
   );
 }
 
