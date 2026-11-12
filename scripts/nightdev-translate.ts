@@ -17,7 +17,7 @@
 //
 //   nightdev-translate push [--dry-run]          upload source strings
 //   nightdev-translate pull                      write approved translations to the translation files
-//   nightdev-translate upload [--approve]        upload existing translation files (e.g. moving off Crowdin)
+//   nightdev-translate upload [--approve]        upload existing translation files (e.g. when first moving a project)
 //   nightdev-translate status                    show progress per language
 
 import fs from 'node:fs';
