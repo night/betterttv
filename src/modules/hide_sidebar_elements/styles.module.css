@@ -23,7 +23,8 @@
   display: none !important;
 }
 
-/* Match the group by its streak rows so this works in every locale. */
-.hideSaveYourStreak :global(.side-nav) [role='group']:has(> [class*='saveYourStreakSideNavRow--']) {
+/* The "Save your Streak" prompt at the top of the sidebar. Match the group by its streak rows so this works in
+   every locale. */
+.hideWatchStreaks :global(.side-nav) [role='group']:has(> [class*='saveYourStreakSideNavRow--']) {
   display: none !important;
 }

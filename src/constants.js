@@ -104,7 +104,6 @@ export const SidebarFlags = {
   STORIES: 1 << 7,
   RECOMMENDED_CATEGORIES: 1 << 8,
   WATCH_STREAKS: 1 << 9,
-  SAVE_YOUR_STREAK: 1 << 10,
 };
 
 export const EmoteTypeFlags = {
@@ -318,8 +317,7 @@ export const SettingDefaultValues = {
       SidebarFlags.SIMILAR_CHANNELS |
       SidebarFlags.STORIES |
       SidebarFlags.RECOMMENDED_CATEGORIES |
-      SidebarFlags.WATCH_STREAKS |
-      SidebarFlags.SAVE_YOUR_STREAK,
+      SidebarFlags.WATCH_STREAKS,
     0,
   ],
   [SettingIds.EMOTES]: [

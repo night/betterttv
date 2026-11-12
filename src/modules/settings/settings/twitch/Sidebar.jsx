@@ -32,11 +32,7 @@ const STORIES_NAME = formatMessage({defaultMessage: 'Stories'});
 const STORIES_DESCRIPTION = formatMessage({defaultMessage: 'Show stories in the sidebar.'});
 const WATCH_STREAKS_NAME = formatMessage({defaultMessage: 'Watch Streaks'});
 const WATCH_STREAKS_DESCRIPTION = formatMessage({
-  defaultMessage: 'Show watch streaks on followed channels in the sidebar.',
-});
-const SAVE_YOUR_STREAK_NAME = formatMessage({defaultMessage: 'Save your Streak'});
-const SAVE_YOUR_STREAK_DESCRIPTION = formatMessage({
-  defaultMessage: 'Show the "Save your Streak" prompt in the sidebar.',
+  defaultMessage: 'Show watch streaks on followed channels and the "Save your Streak" prompt in the sidebar.',
 });
 
 function SidebarComponent({ref, ...props}) {
@@ -85,11 +81,6 @@ function SidebarComponent({ref, ...props}) {
         value={SidebarFlags.WATCH_STREAKS}
         name={WATCH_STREAKS_NAME}
         description={WATCH_STREAKS_DESCRIPTION}
-      />
-      <SettingCheckbox
-        value={SidebarFlags.SAVE_YOUR_STREAK}
-        name={SAVE_YOUR_STREAK_NAME}
-        description={SAVE_YOUR_STREAK_DESCRIPTION}
       />
     </SettingCheckboxGroup>
   );
@@ -140,12 +131,6 @@ registerSearchEntry({
 registerSearchEntry({
   query: WATCH_STREAKS_NAME,
   description: WATCH_STREAKS_DESCRIPTION,
-  settingPanelId: SettingPanelIds.SIDEBAR,
-});
-
-registerSearchEntry({
-  query: SAVE_YOUR_STREAK_NAME,
-  description: SAVE_YOUR_STREAK_DESCRIPTION,
   settingPanelId: SettingPanelIds.SIDEBAR,
 });
 
