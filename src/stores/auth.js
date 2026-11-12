@@ -94,10 +94,15 @@ async function syncUser(credentials) {
     return;
   }
 
-  // with a user already matched to this platform user, new credentials are a token refresh (sign in only
-  // runs without a user), so there's nothing to check again. re-checking would cost every open tab a sync
-  // per refresh, and could put back a user from before a save that triggered the refresh
-  if (syncedPlatformUserId === platformUser.id && useAuthStore.getState().user != null) {
+  // a token refresh keeps the sign in's id (utils/auth.js), so with a user already matched to this platform
+  // user there's nothing to check again. re-checking would cost every open tab a sync per refresh, and could
+  // put back a user from before a save that triggered the refresh. a sign in has a new id, so it's checked
+  if (
+    syncedCredentials != null &&
+    credentials.signInId === syncedCredentials.signInId &&
+    syncedPlatformUserId === platformUser.id &&
+    useAuthStore.getState().user != null
+  ) {
     syncedCredentials = credentials;
     return;
   }
