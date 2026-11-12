@@ -20,14 +20,19 @@ export async function refreshAndSetCredentials() {
     throw result.reason;
   }
 
-  inFlightRefresh = (async () => {
-    const {refreshToken, signInId} = getCredentials();
+  const {refreshToken, signInId} = getCredentials();
 
+  inFlightRefresh = (async () => {
     if (refreshToken == null) {
       throw new Error('No refresh token available');
     }
 
     const newCredentials = await refreshAccessToken(refreshToken);
+
+    // a sign in or sign out while this was in flight replaced the credentials being refreshed, so keep those
+    if (getCredentials().refreshToken !== refreshToken) {
+      return newCredentials;
+    }
 
     // the same sign in, so it keeps its id (stores/auth.js doesn't check the account again)
     setCredentials({
@@ -44,7 +49,8 @@ export async function refreshAndSetCredentials() {
       throw error;
     }
 
-    if (error.status === 400 || error.status === 401) {
+    // only sign out the credentials that failed, not a sign in that replaced them meanwhile
+    if ((error.status === 400 || error.status === 401) && getCredentials().refreshToken === refreshToken) {
       setCredentials(null);
     }
 
