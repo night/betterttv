@@ -52,6 +52,7 @@ export const SettingIds = {
   DELETED_MESSAGES: 'deletedMessages',
   BLACKLIST_KEYWORDS: 'blacklistKeywords',
   HIGHLIGHT_KEYWORDS: 'highlightKeywords',
+  TEXT_REPLACEMENTS: 'textReplacements',
   SIDEBAR: 'sidebar',
   EMOTES: 'emotes',
   CHAT: 'chat',
@@ -162,12 +163,14 @@ export const PageTypes = {
   SELF_BOT_COMMANDS: 6,
   SELF_BOT_TIMERS: 7,
   PRO_HOME: 8,
+  TEXT_REPLACEMENTS: 9,
 };
 
 export const PageDecendants = {
   [PageTypes.SETTINGS]: [
     PageTypes.HIGHLIGHT_KEYWORDS,
     PageTypes.BLACKLIST_KEYWORDS,
+    PageTypes.TEXT_REPLACEMENTS,
     PageTypes.SELF_BOT_COMMANDS,
     PageTypes.SELF_BOT_TIMERS,
   ],
@@ -305,6 +308,7 @@ export const SettingDefaultValues = {
   [SettingIds.EMOTE_AUTOCOMPLETE]: true,
   [SettingIds.BLACKLIST_KEYWORDS]: {},
   [SettingIds.HIGHLIGHT_KEYWORDS]: null,
+  [SettingIds.TEXT_REPLACEMENTS]: null,
   [SettingIds.SIDEBAR]: [
     SidebarFlags.OFFLINE_FOLLOWED_CHANNELS |
       SidebarFlags.RECOMMENDED_CHANNELS |

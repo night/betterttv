@@ -11,6 +11,7 @@ import ProHome from '@/modules/settings/pages/ProHome';
 import SelfBotCommands from '@/modules/settings/pages/SelfBotCommands';
 import SelfBotTimers from '@/modules/settings/pages/SelfBotTimers';
 import Settings from '@/modules/settings/pages/Settings';
+import TextReplacements from '@/modules/settings/pages/TextReplacements';
 import UserSettings from '@/modules/settings/pages/UserSettings';
 import {groupSettingsByCategory} from '@/modules/settings/setting-categories';
 import SettingStore, {PageSettingPanelIds} from '@/modules/settings/stores/setting-store';
@@ -26,6 +27,8 @@ function Page({page, category, handleSettingRefCallback}) {
       return <HighlightKeywords />;
     case PageTypes.BLACKLIST_KEYWORDS:
       return <BlacklistKeywords />;
+    case PageTypes.TEXT_REPLACEMENTS:
+      return <TextReplacements />;
     case PageTypes.SELF_BOT_COMMANDS:
       return <SelfBotCommands />;
     case PageTypes.SELF_BOT_TIMERS:
