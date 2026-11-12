@@ -124,8 +124,10 @@ function watchSeason(channelId) {
     LEGENDARY_EMOTE_SEASON_QUERY,
     {channelID: channelId},
     {
-      next: ({data}) => {
-        if (watchedChannelId === channelId && data != null) {
+      // a partial result (the cache has only some of the fields, e.g. if twitch's query drifts from ours) is
+      // ignored, so what's shown is the last complete season
+      next: ({data, partial}) => {
+        if (watchedChannelId === channelId && data != null && !partial) {
           seasonData = data.legendaryEmoteSeason;
           updateEmoteSetsWatch(channelId);
           showSeason();
