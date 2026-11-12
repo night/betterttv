@@ -56,12 +56,14 @@ class HideSidebarElementsModule {
       this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
       this.loadHideStories();
+      this.loadHideWatchStreaks();
     });
     watcher.on('load', () => {
       this.loadHideOfflineChannels();
       this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
       this.loadHideStories();
+      this.loadHideWatchStreaks();
     });
   }
 
@@ -96,6 +98,11 @@ class HideSidebarElementsModule {
     const setting = settings.get(SettingIds.SIDEBAR);
     const enabled = hasFlag(setting, SidebarFlags.STORIES);
     document.body.classList.toggle(styles.hideStories, !enabled);
+  }
+
+  loadHideWatchStreaks() {
+    const enabled = hasFlag(settings.get(SettingIds.SIDEBAR), SidebarFlags.WATCH_STREAKS);
+    document.body.classList.toggle(styles.hideWatchStreaks, !enabled);
   }
 
   loadHideOfflineChannels() {

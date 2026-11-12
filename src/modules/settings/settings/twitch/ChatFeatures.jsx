@@ -31,9 +31,9 @@ const COMMUNITY_HIGHLIGHTS_NAME = formatMessage({defaultMessage: 'Community High
 const COMMUNITY_HIGHLIGHTS_DESCRIPTION = formatMessage({
   defaultMessage: 'Show alerts above chat window for hype trains, polls, predictions, drops, pinned messages, etc.',
 });
-const WATCH_STREAKS_NAME = formatMessage({defaultMessage: 'Watch Streaks'});
+const WATCH_STREAKS_NAME = formatMessage({defaultMessage: 'Watch Streaks in Chat'});
 const WATCH_STREAKS_DESCRIPTION = formatMessage({
-  defaultMessage: 'Show watch streaks in chat and on followed channels in the sidebar.',
+  defaultMessage: 'Show watch streak milestone messages in the chat window.',
 });
 const MESSAGE_HISTORY_NAME = formatMessage({defaultMessage: 'Message History'});
 const MESSAGE_HISTORY_DESCRIPTION = formatMessage({

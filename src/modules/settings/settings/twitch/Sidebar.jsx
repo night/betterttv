@@ -30,6 +30,10 @@ const AUTO_EXPAND_CHANNELS_DESCRIPTION = formatMessage({
 });
 const STORIES_NAME = formatMessage({defaultMessage: 'Stories'});
 const STORIES_DESCRIPTION = formatMessage({defaultMessage: 'Show stories in the sidebar.'});
+const WATCH_STREAKS_NAME = formatMessage({defaultMessage: 'Watch Streaks'});
+const WATCH_STREAKS_DESCRIPTION = formatMessage({
+  defaultMessage: 'Show watch streaks on followed channels and the "Save your Streak" prompt in the sidebar.',
+});
 
 function SidebarComponent({ref, ...props}) {
   const [sidebar, setSidebar] = useStorageState(SettingIds.SIDEBAR);
@@ -73,6 +77,11 @@ function SidebarComponent({ref, ...props}) {
         description={AUTO_EXPAND_CHANNELS_DESCRIPTION}
       />
       <SettingCheckbox value={SidebarFlags.STORIES} name={STORIES_NAME} description={STORIES_DESCRIPTION} />
+      <SettingCheckbox
+        value={SidebarFlags.WATCH_STREAKS}
+        name={WATCH_STREAKS_NAME}
+        description={WATCH_STREAKS_DESCRIPTION}
+      />
     </SettingCheckboxGroup>
   );
 }
@@ -116,6 +125,12 @@ registerSearchEntry({
 registerSearchEntry({
   query: STORIES_NAME,
   description: STORIES_DESCRIPTION,
+  settingPanelId: SettingPanelIds.SIDEBAR,
+});
+
+registerSearchEntry({
+  query: WATCH_STREAKS_NAME,
+  description: WATCH_STREAKS_DESCRIPTION,
   settingPanelId: SettingPanelIds.SIDEBAR,
 });
 
