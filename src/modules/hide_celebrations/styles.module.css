@@ -1,5 +1,5 @@
-/* on-screen celebrations (the power-up) render into a wrapper named after the area they play in:
-   celebration-animation-chat, -video, -everywhere, or -unknown */
+/* on-screen celebrations (the power-up, and twitch's automatic ones for gifted subs) render into a wrapper
+   named after the area they play in: celebration-animation-chat, -video, -everywhere, or -unknown */
 .hideCelebrations {
   :global(.celebration-animation-chat),
   :global(.celebration-animation-video),
@@ -9,7 +9,8 @@
   }
 }
 
-/* hype train level up animations. twitch draws them on either canvas depending on the animation */
+/* hype train animations (level ups, and the one that loops while a train is active). twitch draws them on
+   either canvas depending on the animation, and uses these canvases for nothing else */
 .hideHypeTrainAnimations {
   :global(.particle-canvas),
   :global(.adaptive-particle-canvas) {
