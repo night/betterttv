@@ -32,7 +32,7 @@ let unwatchEmoteSets = null;
 let seasonData = null;
 let ownedEmoteIds = new Set();
 let failedAt = -Infinity;
-let watchingChannelUpdates = false;
+let unwatchChannelUpdates = null;
 
 function setSeason(season) {
   if (useLegendaryEmotesStore.getState().season !== season) {
@@ -55,6 +55,8 @@ function getWatchableChannelId() {
 }
 
 export function stopLegendaryEmoteSeason() {
+  unwatchChannelUpdates?.();
+  unwatchChannelUpdates = null;
   unwatchSeason?.();
   unwatchSeason = null;
   stopWatchingEmoteSets();
@@ -148,11 +150,6 @@ function watchSeason(channelId) {
 
 // runs whenever the emote menu opens
 export function updateLegendaryEmoteSeason() {
-  if (!watchingChannelUpdates) {
-    watchingChannelUpdates = true;
-    watcher.on('channel.updated', handleChannelUpdated);
-  }
-
   const channelId = getWatchableChannelId();
   if (channelId !== watchedChannelId) {
     stopLegendaryEmoteSeason();
@@ -163,6 +160,8 @@ export function updateLegendaryEmoteSeason() {
   }
 
   watchedChannelId = channelId;
+  // only while a channel is watched, so it's gone once the menu is turned off
+  unwatchChannelUpdates ??= watcher.on('channel.updated', handleChannelUpdated);
 
   updateEmoteSetsWatch(channelId);
 

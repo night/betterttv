@@ -928,8 +928,18 @@ export default {
       return null;
     }
 
-    const subscription = client.watchQuery({query, variables, fetchPolicy}).subscribe({next, error});
-    return () => subscription.unsubscribe();
+    try {
+      // after the first result it only reads the cache: if twitch's own query for the field ever drifts from ours,
+      // a cache-first watch would go back to the network on every one of twitch's writes, and could take turns
+      // with twitch's own watch refetching. this way it goes stale instead
+      const subscription = client
+        .watchQuery({query, variables, fetchPolicy, nextFetchPolicy: 'cache-only'})
+        .subscribe({next, error});
+      return () => subscription.unsubscribe();
+    } catch (watchError) {
+      error?.(watchError);
+      return null;
+    }
   },
 
   graphqlMutation(mutation, variables) {
