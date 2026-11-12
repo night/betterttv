@@ -4,7 +4,7 @@ import {ChatLayoutTypes, EmoteMenuTypes, SettingIds, ShadowDOMComponentIds} from
 import formatMessage from '@/i18n/index';
 import EmoteMenu from '@/modules/emote_menu/components/EmoteMenu';
 import {resetGifCooldown} from '@/modules/emote_menu/stores/gif-picker-store';
-import {updateLegendaryEmoteSeason} from '@/modules/emote_menu/twitch/legendary-emotes-store';
+import {stopLegendaryEmoteSeason, updateLegendaryEmoteSeason} from '@/modules/emote_menu/twitch/legendary-emotes-store';
 import shadowDOM from '@/modules/shadow_dom/index';
 import {bindTooltip} from '@/modules/tooltip/index';
 import domObserver from '@/observers/dom';
@@ -182,6 +182,7 @@ function loadButton() {
 
 function unloadEmoteMenu() {
   shadowDOM.unmount(ShadowDOMComponentIds.EMOTE_MENU);
+  stopLegendaryEmoteSeason();
 }
 
 function loadEmoteMenu(onMount, onError) {

@@ -4,6 +4,7 @@ import {LEGENDARY_EMOTE_SEASON_QUERY, parseLegendaryEmoteSeason} from '@/modules
 import {getCurrentChannel} from '@/utils/channel';
 import debug from '@/utils/debug';
 import twitch from '@/utils/twitch';
+import {getCurrentUser} from '@/utils/user';
 import {getPlatform} from '@/utils/window';
 import watcher from '@/watcher';
 
@@ -16,37 +17,63 @@ const useLegendaryEmotesStore = create(() => ({
 }));
 
 // the season is followed in twitch's cache for one channel at a time: twitch fetches it once per channel and
-// keeps its counts current from pubsub (chests granted and opened), the same as for its own emote picker
+// keeps the chest counts current from pubsub (chests granted, and its optimistic decrement when one is opened),
+// the same as for its own emote picker
 let watchedChannelId = null;
-let unwatch = null;
+let watch = null;
 let failedAt = -Infinity;
+// twitch never updates which emotes are owned after a chest opened in this tab (its own picker doesn't show
+// that count), so a drop in unopened chests marks the season to be fetched again on the next open
+let chestsOpened = false;
 let watchingChannelUpdates = false;
 
 function setSeason(season) {
-  if (useLegendaryEmotesStore.getState().season !== season) {
-    useLegendaryEmotesStore.setState({season});
+  const {season: currentSeason} = useLegendaryEmotesStore.getState();
+  if (currentSeason === season) {
+    return;
   }
+
+  if (currentSeason != null && season != null && season.unopenedChestCount < currentSeason.unopenedChestCount) {
+    chestsOpened = true;
+  }
+
+  useLegendaryEmotesStore.setState({season});
 }
 
-function getTwitchChannelId() {
+// twitch has no season for viewers who aren't logged in (it skips the query), and only does this on twitch
+function getWatchableChannelId() {
   const channel = getCurrentChannel();
-  return getPlatform() === PlatformTypes.TWITCH && channel?.provider === 'twitch' ? channel.id : null;
+  if (getPlatform() !== PlatformTypes.TWITCH || channel?.provider !== 'twitch' || getCurrentUser() == null) {
+    return null;
+  }
+
+  return channel.id;
 }
 
-function stopWatching() {
-  unwatch?.();
-  unwatch = null;
+export function stopLegendaryEmoteSeason() {
+  watch?.unsubscribe();
+  watch = null;
   watchedChannelId = null;
   failedAt = -Infinity;
+  chestsOpened = false;
   setSeason(null);
 }
 
 // the menu stays open across navigation, so the old channel's season goes with it. the new channel's is watched
 // once the menu opens there, so channels it's never opened on cost nothing
 function handleChannelUpdated() {
-  if (getTwitchChannelId() !== watchedChannelId) {
-    stopWatching();
+  if (getWatchableChannelId() !== watchedChannelId) {
+    stopLegendaryEmoteSeason();
   }
+}
+
+function refetchOwnedEmotes() {
+  chestsOpened = false;
+  // the result goes through the cache to the watch. a failure ends the watch (see error below), and a later
+  // open fetches it again
+  watch.refetch().catch(() => {
+    chestsOpened = true;
+  });
 }
 
 // runs whenever the emote menu opens
@@ -56,18 +83,29 @@ export function updateLegendaryEmoteSeason() {
     watcher.on('channel.updated', handleChannelUpdated);
   }
 
-  const channelId = getTwitchChannelId();
+  const channelId = getWatchableChannelId();
   if (channelId !== watchedChannelId) {
-    stopWatching();
+    stopLegendaryEmoteSeason();
   }
 
-  if (channelId == null || unwatch != null || Date.now() - failedAt < RETRY_DELAY) {
+  if (channelId == null) {
+    return;
+  }
+
+  if (watch != null) {
+    if (chestsOpened) {
+      refetchOwnedEmotes();
+    }
+    return;
+  }
+
+  if (Date.now() - failedAt < RETRY_DELAY) {
     return;
   }
 
   watchedChannelId = channelId;
   let failed = false;
-  const stop = twitch.graphqlWatchQuery(
+  const newWatch = twitch.graphqlWatchQuery(
     LEGENDARY_EMOTE_SEASON_QUERY,
     {channelID: channelId},
     {
@@ -81,7 +119,7 @@ export function updateLegendaryEmoteSeason() {
         debug.log('failed to watch legendary emote season', error);
         failed = true;
         if (watchedChannelId === channelId) {
-          unwatch = null;
+          watch = null;
           failedAt = Date.now();
         }
       },
@@ -89,7 +127,7 @@ export function updateLegendaryEmoteSeason() {
   );
   // an error can also arrive before the watch is returned
   if (!failed) {
-    unwatch = stop;
+    watch = newWatch;
   }
 }
 
