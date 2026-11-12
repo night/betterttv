@@ -1,6 +1,5 @@
 import gql from 'graphql-tag';
 import {PlatformTypes} from '@/constants';
-import {getCurrentChannel} from '@/utils/channel';
 import debug from '@/utils/debug';
 import twitch from '@/utils/twitch';
 import {getPlatform} from '@/utils/window';
@@ -10,18 +9,12 @@ import {getPlatform} from '@/utils/window';
 const LEGENDARY_EMOTE_SEASON_QUERY = gql`
   query BTTVLegendaryEmoteSeason($channelID: ID) {
     legendaryEmoteSeason(channelID: $channelID) {
-      id
       campaign {
-        id
         name
         imageURL
       }
       emotePool {
-        tier
         isOwned
-        emote {
-          id
-        }
       }
       userProgress {
         chestInventory {
@@ -63,19 +56,19 @@ function getChestCounts(chestInventory) {
   return counts;
 }
 
-export async function fetchLegendaryEmoteSeason() {
-  const currentChannel = getCurrentChannel();
-  if (getPlatform() !== PlatformTypes.TWITCH || currentChannel?.provider !== 'twitch') {
+// null when the channel has no season. throws when the fetch fails, so a failure isn't taken for that
+export async function fetchLegendaryEmoteSeason(channel) {
+  if (getPlatform() !== PlatformTypes.TWITCH || channel?.provider !== 'twitch') {
     return null;
   }
 
   let season;
   try {
-    const {data} = await twitch.graphqlQuery(LEGENDARY_EMOTE_SEASON_QUERY, {channelID: currentChannel.id});
+    const {data} = await twitch.graphqlQuery(LEGENDARY_EMOTE_SEASON_QUERY, {channelID: channel.id});
     season = data?.legendaryEmoteSeason;
   } catch (error) {
     debug.log('failed to fetch legendary emote season', error);
-    return null;
+    throw error;
   }
 
   if (season?.campaign == null) {
@@ -86,15 +79,14 @@ export async function fetchLegendaryEmoteSeason() {
   const chestCounts = getChestCounts(season.userProgress?.chestInventory);
 
   return {
-    channelId: currentChannel.id,
+    channelId: channel.id,
     name: season.campaign.name,
     imageURL: season.campaign.imageURL,
     ownedCount: emotePool.filter(({isOwned}) => isOwned).length,
     totalCount: emotePool.length,
     chestCounts,
     unopenedChestCount: chestCounts.paidCount + chestCounts.ftueCount + chestCounts.freeCount,
-    // twitch's entrypoint calls out premium chests when there are any, and free ones otherwise
-    hasUnopenedPremiumChests: chestCounts.paidCount + chestCounts.ftueCount > 0,
+    premiumChestCount: chestCounts.paidCount + chestCounts.ftueCount,
   };
 }
 
