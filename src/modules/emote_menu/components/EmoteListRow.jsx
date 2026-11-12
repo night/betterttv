@@ -5,13 +5,15 @@ import {getEmoteKey} from '@/modules/emote_menu/utils/emote-list-grid';
 import EmoteButton from './EmoteButton';
 import styles from './EmoteListRow.module.css';
 
-export function HeaderRow({style, className, row}) {
+export function HeaderRow({style, className, row, onClose}) {
+  const {HeaderAccessory} = row;
   return (
     <div style={style} className={classNames(className, styles.header)}>
       <span className={styles.headerIcon}>{row.icon}</span>
       <Text c="dimmed" size="sm" className={styles.headerText}>
         {row.displayName}
       </Text>
+      {HeaderAccessory != null ? <HeaderAccessory className={styles.headerAccessory} onClose={onClose} /> : null}
     </div>
   );
 }

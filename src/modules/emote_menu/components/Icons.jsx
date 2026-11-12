@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import {
   Box,
-  Crown,
   Clock,
   Flag,
   Heart,
@@ -45,7 +44,6 @@ export default {
   FLAG: <Flag className={styles.icon} />,
   CLOCK: <Clock className={styles.icon} />,
   UNLOCK: <LockOpen className={styles.icon} />,
-  LEGENDARY: <Crown className={styles.icon} />,
   LOCK: <Lock className={styles.icon} />,
   BULB: <Lightbulb className={styles.icon} />,
   TWITCH: <TwitchMark className={styles.icon} />,

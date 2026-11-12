@@ -58,7 +58,6 @@ function EmoteMenu({
   offsetOptions = {},
   emoteMenuToggleButtonSelector,
   onOpen,
-  HeaderAccessory,
 }) {
   const handleRef = useRef(null);
   const emoteMenuContentRef = useRef(null);
@@ -392,9 +391,6 @@ function EmoteMenu({
             gifsAvailable={gifContext != null}
             onModeChange={handleModeChange}
           />
-          {HeaderAccessory != null && mode === EmoteMenuModes.EMOTES && emoteListData.search.length === 0 ? (
-            <HeaderAccessory onClose={handleClose} />
-          ) : null}
           <Sidebar
             className={styles.sidebar}
             section={mode === EmoteMenuModes.GIFS ? null : section}
@@ -416,6 +412,7 @@ function EmoteMenu({
               className={styles.emotes}
               section={section}
               onClick={handleClick}
+              onClose={handleClose}
               setKeyPressCallback={setKeyPressCallback}
               onSection={onSection}
               navigationMode={navigationMode}

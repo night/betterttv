@@ -3,6 +3,7 @@ import sortBy from 'lodash.sortby';
 import uniqBy from 'lodash.uniqby';
 import {SettingIds, EmoteCategories, EmoteProviders} from '@/constants';
 import Icons from '@/modules/emote_menu/components/Icons';
+import LegendaryEmotesEntrypoint from '@/modules/emote_menu/twitch/LegendaryEmotesEntrypoint';
 import Emote from '@/modules/emotes/emote';
 import settings from '@/settings';
 import {getCurrentChannel} from '@/utils/channel';
@@ -73,16 +74,9 @@ const TWITCH_EMOTE_CDN = (id, size, isDark = true, static_ = false) =>
     isDark ? 'dark' : 'light'
   }/${size}`;
 
-// twitch's emote type for legendary emotes. owned ones arrive mixed into other sets, so like twitch's
-// own picker we pull them into their own category
+// twitch's emote type for legendary emotes. owned ones arrive in ownerless sets, so we fold them into
+// twitch global next to the base legendary emotes
 const COLLECTIONS_EMOTE_TYPE = 'COLLECTIONS';
-
-const LEGENDARY_EMOTES_CATEGORY = {
-  id: EmoteCategories.TWITCH_LEGENDARY,
-  provider: EmoteProviders.TWITCH,
-  displayName: 'Legendary Emotes',
-  icon: Icons.LEGENDARY,
-};
 
 function getCategoryForSet(setId, owner) {
   switch (setId) {
@@ -92,6 +86,8 @@ function getCategoryForSet(setId, owner) {
         provider: EmoteProviders.TWITCH,
         displayName: 'Twitch Global',
         icon: Icons.TWITCH,
+        // links to the channel's legendary emotes collection, when it has one
+        HeaderAccessory: LegendaryEmotesEntrypoint,
       };
     case '33':
     case '42':
@@ -195,7 +191,7 @@ export async function loadTwitchEmotes() {
       const animated = assetType === 'ANIMATED';
 
       const isLegendary = type === COLLECTIONS_EMOTE_TYPE;
-      const emoteCategory = isLegendary ? LEGENDARY_EMOTES_CATEGORY : category;
+      const emoteCategory = isLegendary ? getCategoryForSet('0') : category;
 
       const categoryEmote = new Emote({
         id: emoteId,

@@ -5,7 +5,6 @@ import formatMessage from '@/i18n/index';
 import EmoteMenu from '@/modules/emote_menu/components/EmoteMenu';
 import {resetGifCooldown} from '@/modules/emote_menu/stores/gif-picker-store';
 import {updateLegendaryEmoteSeason} from '@/modules/emote_menu/twitch/legendary-emotes-store';
-import LegendaryEmotesEntrypoint from '@/modules/emote_menu/twitch/LegendaryEmotesEntrypoint';
 import shadowDOM from '@/modules/shadow_dom/index';
 import {bindTooltip} from '@/modules/tooltip/index';
 import domObserver from '@/observers/dom';
@@ -209,7 +208,6 @@ function loadEmoteMenu(onMount, onError) {
       offsetOptions={{mainAxis: 8}}
       placement={placement}
       onOpen={updateLegendaryEmoteSeason}
-      HeaderAccessory={LegendaryEmotesEntrypoint}
     />
   );
 }
