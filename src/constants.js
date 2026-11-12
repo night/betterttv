@@ -410,7 +410,7 @@ export const ExternalLinks = {
   GITHUB: 'https://github.com/night/betterttv',
   GITHUB_ISSUES: 'https://github.com/night/betterttv/issues',
   GITHUB_DISCUSSIONS: 'https://github.com/night/betterttv/discussions',
-  CROWDIN: 'https://crowdin.com/project/betterttv',
+  TRANSLATE: 'https://translate.nightdev.com/betterttv',
   DISCORD: 'https://discord.gg/nightdev',
   EMAIL: 'https://nightdev.com/contact',
   TERMS: 'https://betterttv.com/terms',
