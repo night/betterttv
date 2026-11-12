@@ -200,35 +200,34 @@ export async function executeSignIn({signal} = {}) {
 }
 
 export function openSignInModal(props = {}, callback = () => {}) {
-  // signing in needs the platform user, so explain that under whatever the caller shows
-  if (getCurrentUser() == null) {
-    const {description = formatMessage({defaultMessage: 'You must be signed in to use this feature.'}), children} =
-      props;
+  const modalProps = {
+    title: formatMessage({defaultMessage: 'Sign In Required'}),
+    description: formatMessage({defaultMessage: 'You must be signed in to use this feature.'}),
+    labels: {
+      confirm: formatMessage({defaultMessage: 'Sign In'}),
+      cancel: formatMessage({defaultMessage: 'Cancel'}),
+    },
+    ...props,
+  };
 
+  // signing in needs the platform user, so explain that under the modal's content and keep sign in disabled
+  if (getCurrentUser() == null) {
     return openConfirmModal({
-      title: formatMessage({defaultMessage: 'Sign In Required'}),
-      onConfirm: () => {},
-      labels: {
-        confirm: formatMessage({defaultMessage: 'Sign In'}),
-        cancel: formatMessage({defaultMessage: 'Cancel'}),
-      },
-      ...props,
+      ...modalProps,
       children: (
         <React.Fragment>
-          {children ??
-            (typeof description === 'string' ? (
-              <Text size="lg" className={styles.modalDescription}>
-                {description}
-              </Text>
-            ) : (
-              description
-            ))}
+          {modalProps.children ?? (
+            <Text size="lg" className={styles.modalDescription}>
+              {modalProps.description}
+            </Text>
+          )}
           <Text size="lg" className={styles.modalDescription}>
             {formatPlatformSignInRequiredMessage()}
           </Text>
         </React.Fragment>
       ),
-      confirmProps: {...DEFAULT_CONFIRM_PROPS, ...props.confirmProps, disabled: true},
+      onConfirm: () => {},
+      confirmProps: {...DEFAULT_CONFIRM_PROPS, disabled: true},
     });
   }
 
@@ -259,18 +258,12 @@ export function openSignInModal(props = {}, callback = () => {}) {
   }
 
   return openConfirmModal({
-    title: formatMessage({defaultMessage: 'Sign In Required'}),
-    description: formatMessage({defaultMessage: 'You must be signed in to use this feature.'}),
     onConfirm: () => onConfirm().then(callback),
     onClose: () => {
       controller.abort();
       unsubscribeUserUpdated?.();
     },
-    labels: {
-      confirm: formatMessage({defaultMessage: 'Sign In'}),
-      cancel: formatMessage({defaultMessage: 'Cancel'}),
-    },
-    ...props,
+    ...modalProps,
   });
 }
 
