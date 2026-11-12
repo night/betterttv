@@ -1,0 +1,8 @@
+{
+  "url": "https://translate.nightdev.com",
+  "project": "betterttv",
+  "component": "extension",
+  "source": "build/i18n/messages/en.json",
+  "translations": "src/i18n/messages/{locale}.json",
+  "minPercent": 0
+}

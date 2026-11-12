@@ -1,6 +1,6 @@
 # <img src="src/assets/logos/logo.svg" height="40" style="margin-bottom: -1px;"> BetterTTV
 
-[![Build Status](https://github.com/night/betterttv/actions/workflows/ci.yml/badge.svg)](https://github.com/night/betterttv/actions/workflows/ci.yml) [![Discord](https://img.shields.io/discord/229471495087194112?color=5865F2&label=discord)](https://discord.gg/nightdev) [![Crowdin](https://badges.crowdin.net/betterttv/localized.svg)](https://crowdin.com/project/betterttv)
+[![Build Status](https://github.com/night/betterttv/actions/workflows/ci.yml/badge.svg)](https://github.com/night/betterttv/actions/workflows/ci.yml) [![Discord](https://img.shields.io/discord/229471495087194112?color=5865F2&label=discord)](https://discord.gg/nightdev) [![Translate](https://img.shields.io/badge/translate-NightDev%20Translate-6441a5)](https://translate.nightdev.com/betterttv)
 
 # Building BetterTTV
 
@@ -54,6 +54,12 @@ Type this in the JavaScript console to enable console logging:
 ```
 BetterTTV.settings.set('consoleLog', true);
 ```
+
+## Translations
+
+BetterTTV is translated on [NightDev Translate](https://translate.nightdev.com/betterttv): sign in there to suggest translations. Don't edit the files in `src/i18n/messages` by hand, because they're updated from there automatically.
+
+In code, write user-facing text in English with `formatMessage({defaultMessage: '...'})`. New strings reach translators once they're merged into master. Add a `description` when the text alone doesn't make its meaning clear, since translators see it.
 
 ## Linting
 

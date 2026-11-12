@@ -11,7 +11,7 @@
     "build": "vite build --mode development",
     "build:prod": "vite build",
     "lint": "eslint . && prettier --check .",
-    "extract-i18n": "formatjs extract 'src/**/*.{js,jsx}' --out-file build/i18n/messages/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --preserve-whitespace && formatjs compile build/i18n/messages/en.json --out-file build/i18n/messages/en.json"
+    "extract-i18n": "formatjs extract 'src/**/*.{js,jsx}' --out-file build/i18n/messages/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --preserve-whitespace"
   },
   "repository": {
     "type": "git",

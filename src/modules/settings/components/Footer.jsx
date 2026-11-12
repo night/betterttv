@@ -7,6 +7,7 @@ import {
   CreditCard,
   Globe,
   History,
+  Languages,
   Lightbulb,
   Link,
   Lock,
@@ -18,7 +19,7 @@ import {
   Users,
 } from 'lucide-react';
 import React, {use} from 'react';
-import {ChannelPointsGlyph, CrowdinMark, DiscordMark, GithubMark, XMark} from '@/common/components/BrandMarks';
+import {ChannelPointsGlyph, DiscordMark, GithubMark, XMark} from '@/common/components/BrandMarks';
 import usePortalRef from '@/common/hooks/PortalRef';
 import {EXT_VER, ExternalLinks, PageTypes} from '@/constants';
 import formatMessage from '@/i18n/index';
@@ -48,9 +49,9 @@ const FOOTER_EXPLORE_LINKS = [
     label: formatMessage({defaultMessage: 'Submit Ideas'}),
   },
   {
-    href: ExternalLinks.CROWDIN,
+    href: ExternalLinks.TRANSLATE,
     keywords: ['language', 'localization'],
-    icon: CrowdinMark,
+    icon: Languages,
     label: formatMessage({defaultMessage: 'Submit Translations'}),
   },
 ];

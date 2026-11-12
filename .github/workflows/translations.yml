@@ -1,0 +1,67 @@
+name: Translations
+
+# Keeps the extension in sync with NightDev Translate (translate.nightdev.com): the `betterttv` project's
+# `extension` component (.nightdev-translate.json). Every push to master extracts the strings and pushes them, so
+# new and changed ones reach translators within minutes (only master: strings from unmerged branches would go out
+# and then be marked removed). Once a day, and on a manual run, it pulls approved translations into one "Update
+# translations" pull request; a push only pushes, so merging a change never opens one by itself.
+#
+# Run it by hand with "upload" to send the translations already in src/i18n/messages to the platform as approved
+# (once, when moving the project there, before the first pull).
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - '.nightdev-translate.json'
+      - 'scripts/nightdev-translate.ts'
+      - '.github/workflows/translations.yml'
+  schedule:
+    - cron: '0 6 * * *' # translations approved since the last push
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: Upload the translations in this repo as approved, and don't pull
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: translations
+
+jobs:
+  sync:
+    # a manual run from another branch would push that branch's strings
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NIGHTDEV_I18N_TOKEN: ${{ secrets.NIGHTDEV_TRANSLATE_TOKEN }}
+      # push: strings only. schedule and manual runs: then pull (or, with "upload", upload instead)
+      MODE: ${{ github.event_name == 'push' && 'push' || (inputs.upload && 'upload' || 'pull') }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: npm
+      - run: npm ci
+      - run: npm run extract-i18n
+      - run: node scripts/nightdev-translate.ts push
+      - if: env.MODE == 'upload'
+        run: node scripts/nightdev-translate.ts upload --approve
+      - if: env.MODE == 'pull'
+        run: node scripts/nightdev-translate.ts pull
+      - if: env.MODE == 'pull'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: translations
+          title: Update translations
+          commit-message: Update translations
+          body: Approved translations from translate.nightdev.com (the `betterttv` project's `extension` component), pulled by `.github/workflows/translations.yml`.
+          add-paths: src/i18n/messages
+          delete-branch: true
