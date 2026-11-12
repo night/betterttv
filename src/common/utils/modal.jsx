@@ -2,7 +2,7 @@ import {Text} from '@mantine/core';
 import {modals} from '@mantine/modals';
 import {ChevronRight} from 'lucide-react';
 import React from 'react';
-import AccountMismatch from '@/common/components/AccountMismatch';
+import AccountMismatch, {formatPlatformSignInRequiredMessage} from '@/common/components/AccountMismatch';
 import DeviceCodeSignIn from '@/common/components/DeviceCodeSignIn';
 import {ExternalLinks} from '@/constants';
 import formatMessage from '@/i18n/index';
@@ -11,6 +11,7 @@ import useAuthStore, {waitForUserSync} from '@/stores/auth';
 import {executeOAuth2SignInAndSetCredentials} from '@/utils/auth';
 import {PopupBlockedError} from '@/utils/oauth';
 import {isUserPro} from '@/utils/pro';
+import {getCurrentUser} from '@/utils/user';
 import {canOpenPopup} from '@/utils/window';
 import styles from './Modal.module.css';
 
@@ -185,6 +186,10 @@ function openAccountMismatchModal() {
 
 // the website hands back whichever BetterTTV account it's signed in to, which may not match this user
 export async function executeSignIn({signal} = {}) {
+  if (getCurrentUser() == null) {
+    throw new Error('Not signed in to the platform');
+  }
+
   await signInWithPopupOrDeviceCode({signal});
   await waitForUserSync();
 
@@ -195,6 +200,38 @@ export async function executeSignIn({signal} = {}) {
 }
 
 export function openSignInModal(props = {}, callback = () => {}) {
+  // signing in needs the platform user, so explain that under whatever the caller shows
+  if (getCurrentUser() == null) {
+    const {description = formatMessage({defaultMessage: 'You must be signed in to use this feature.'}), children} =
+      props;
+
+    return openConfirmModal({
+      title: formatMessage({defaultMessage: 'Sign In Required'}),
+      onConfirm: () => {},
+      labels: {
+        confirm: formatMessage({defaultMessage: 'Sign In'}),
+        cancel: formatMessage({defaultMessage: 'Cancel'}),
+      },
+      ...props,
+      children: (
+        <React.Fragment>
+          {children ??
+            (typeof description === 'string' ? (
+              <Text size="lg" className={styles.modalDescription}>
+                {description}
+              </Text>
+            ) : (
+              description
+            ))}
+          <Text size="lg" className={styles.modalDescription}>
+            {formatPlatformSignInRequiredMessage()}
+          </Text>
+        </React.Fragment>
+      ),
+      confirmProps: {...DEFAULT_CONFIRM_PROPS, ...props.confirmProps, disabled: true},
+    });
+  }
+
   const controller = new AbortController();
   const {signal} = controller;
 

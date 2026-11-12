@@ -1,7 +1,9 @@
 import {create} from 'zustand';
 import {persist, subscribeWithSelector} from 'zustand/middleware';
+import debug from '@/utils/debug';
 import {getCurrentUser} from '@/utils/user';
 import {getProvider} from '@/utils/window';
+import watcher from '@/watcher';
 
 const STORAGE_ID = 'bttvPrivate_credentials';
 
@@ -60,31 +62,48 @@ export async function getActions() {
 }
 
 let userSync = Promise.resolve();
+// the platform user the latest sync checked the BetterTTV account against
+let syncedPlatformUserId = null;
 
 async function syncUser(credentials) {
   if (credentials.accessToken == null) {
+    syncedPlatformUserId = null;
+    useAuthStore.setState({user: null, accountMismatch: false});
+    return;
+  }
+
+  // youtube only knows who is signed in once its chat input renders, and nobody is when signed out
+  // of the platform. this runs again once the platform user loads
+  const platformUser = getCurrentUser();
+  if (platformUser == null) {
+    syncedPlatformUserId = null;
     useAuthStore.setState({user: null, accountMismatch: false});
     return;
   }
 
   const {user} = useAuthStore.getState();
 
-  if (user != null) {
+  if (user != null && syncedPlatformUserId === platformUser.id) {
     return;
   }
 
-  const platformUser = getCurrentUser();
+  syncedPlatformUserId = platformUser.id;
   const provider = getProvider();
 
   const {getConnections, getMe} = await getActions();
   const [connections, {user: me}] = await Promise.all([getConnections(), getMe()]);
+
+  // a newer sign in, sign out or platform user took over while this was in flight
+  if (getCredentials() !== credentials || getCurrentUser()?.id !== platformUser.id) {
+    return;
+  }
 
   const hasConnectedAccount = connections.some(
     (account) => account.provider === provider && account.providerId === platformUser.id
   );
 
   if (!hasConnectedAccount) {
-    useAuthStore.setState({accountMismatch: true});
+    useAuthStore.setState({user: null, accountMismatch: true});
     return;
   }
 
@@ -97,12 +116,29 @@ export function syncCurrentUserFromCredentials(credentialsParam = null) {
 }
 
 // settles once the latest credentials have resolved to a user, or a mismatched one
-export function waitForUserSync() {
-  return userSync;
+export async function waitForUserSync() {
+  // a sync started while waiting (e.g. the platform user loading) supersedes the one being waited on
+  let sync;
+  do {
+    sync = userSync;
+    await sync;
+  } while (sync !== userSync);
 }
 
-useAuthStore.subscribe((state) => state.credentials, syncCurrentUserFromCredentials);
-syncCurrentUserFromCredentials();
+function syncInBackground(credentials) {
+  syncCurrentUserFromCredentials(credentials).catch((error) => debug.log('failed to sync BetterTTV user', error));
+}
+
+useAuthStore.subscribe((state) => state.credentials, syncInBackground);
+syncInBackground();
+
+watcher.on('user.updated', (platformUser) => {
+  if (platformUser?.id === syncedPlatformUserId) {
+    return;
+  }
+
+  syncInBackground();
+});
 
 window.addEventListener('storage', (event) => {
   if (event.storageArea !== window.localStorage) {

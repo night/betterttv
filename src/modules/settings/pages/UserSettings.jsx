@@ -1,10 +1,12 @@
-import {Anchor, Button} from '@mantine/core';
+import {Anchor, Button, Tooltip} from '@mantine/core';
 import {saveAs} from 'file-saver';
 import {UserCog} from 'lucide-react';
 import React, {useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
-import {formatAccountMismatchMessage} from '@/common/components/AccountMismatch';
+import {formatAccountMismatchMessage, formatPlatformSignInRequiredMessage} from '@/common/components/AccountMismatch';
 import useCloudBackupSettings from '@/common/hooks/CloudBackup';
+import useCurrentUser from '@/common/hooks/CurrentUser';
+import usePortalRef from '@/common/hooks/PortalRef';
 import useProRequiredState from '@/common/hooks/ProRequiredState';
 import {executeSignIn, openConfirmModal} from '@/common/utils/modal';
 import {EXT_VER, PageTypes} from '@/constants';
@@ -115,6 +117,8 @@ function AccountMismatchAlert() {
 
 function SignInButton() {
   const user = useAuthStore(useShallow((state) => state.user));
+  const platformUser = useCurrentUser();
+  const portalRef = usePortalRef();
   const [signingIn, signIn] = useSignIn();
   const [, setCloudBackupSettings] = useCloudBackupSettings();
 
@@ -143,9 +147,22 @@ function SignInButton() {
         reverse
         name={SIGN_IN_NAME}
         description={formatMessage({defaultMessage: 'Authenticated users gain access to additional features.'})}>
-        <Button size="lg" variant="elevated" color="contrast" onClick={signIn} loading={signingIn}>
-          {formatMessage({defaultMessage: 'Sign In'})}
-        </Button>
+        <Tooltip
+          label={formatPlatformSignInRequiredMessage()}
+          disabled={platformUser != null}
+          withArrow
+          portalProps={{target: portalRef.current}}>
+          {/* data-disabled rather than disabled, so the button still gets the hover that shows the tooltip */}
+          <Button
+            size="lg"
+            variant="elevated"
+            color="contrast"
+            onClick={platformUser != null ? signIn : undefined}
+            loading={signingIn}
+            data-disabled={platformUser == null || undefined}>
+            {formatMessage({defaultMessage: 'Sign In'})}
+          </Button>
+        </Tooltip>
       </SettingWrapper>
     );
   }
