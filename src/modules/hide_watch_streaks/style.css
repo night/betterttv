@@ -1,6 +1,11 @@
-/* Twitch can nest the flame one level deeper. Match that row by its direct text
-   paragraph and icon wrapper so the entire indicator collapses. */
-.bttv-hide-watch-streaks .side-nav-card :has(> div > svg path[d^='M11 4.5L9 2L4.80069 6.89']),
-.bttv-hide-watch-streaks .side-nav-card div:has(> p):has(> div > div > svg path[d^='M11 4.5L9 2L4.80069 6.89']) {
+/* The sidebar watch streak indicator has no class or attribute of its own, so it's matched by
+   its flame icon. Twitch renders it as a row of exactly two children, the icon wrapper (with the
+   flame somewhere under it, which has been nested at different depths) and a <p> label, and the
+   rule matches that row's shape: a div with a direct <p> and no third child. Containers further
+   up, like the card's metadata column, have more children, so the rule can never climb to them
+   or the channel card. */
+.bttv-hide-watch-streaks
+  .side-nav-card
+  div:has(> div svg path[d^='M11 4.5L9 2L4.80069 6.89']):has(> p):not(:has(> :nth-child(3))) {
   display: none !important;
 }
