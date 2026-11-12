@@ -134,27 +134,6 @@ class Settings extends SafeEventEmitter {
     this.applyFlagDefaults();
   }
 
-  // the sidebar's watch streaks flag split off chat's, which used to hide them everywhere. sidebar flags from
-  // before the split have the bit in neither the flags nor the changed bits, so a viewer who'd hidden watch
-  // streaks keeps them hidden in the sidebar. this runs whenever flags are filled in, on load and after cloud
-  // backup replaces the settings, so a backup from before the split carries over too
-  carryOverWatchStreaks() {
-    const [sidebarFlags, sidebarChangedBits] = settings[SettingIds.SIDEBAR];
-    if (hasFlag(sidebarFlags | sidebarChangedBits, SidebarFlags.WATCH_STREAKS)) {
-      return;
-    }
-
-    const [chatFlags, chatChangedBits] = settings[SettingIds.CHAT];
-    if (!hasFlag(chatChangedBits, ChatFlags.WATCH_STREAKS) || hasFlag(chatFlags, ChatFlags.WATCH_STREAKS)) {
-      return;
-    }
-
-    this.set(SettingIds.SIDEBAR, [
-      setFlag(sidebarFlags, SidebarFlags.WATCH_STREAKS, false),
-      sidebarChangedBits | SidebarFlags.WATCH_STREAKS,
-    ]);
-  }
-
   applyFlagDefaults() {
     for (const flagSettingId of FlagSettings) {
       const defaultValue = SettingDefaultValues[flagSettingId];
@@ -176,14 +155,8 @@ class Settings extends SafeEventEmitter {
       else if (typeof oldValue === 'number') {
         this.set(flagSettingId, [oldValue, getChangedFlags(inferredDefaultFlags, oldValue)]);
       }
-    }
 
-    // before default bits are added below, which would make the sidebar look like it's from after the split
-    this.carryOverWatchStreaks();
-
-    // upgrade flags where default bits changed
-    for (const flagSettingId of FlagSettings) {
-      const [defaultFlags] = SettingDefaultValues[flagSettingId];
+      // upgrade flags where default bits changed
       const [oldFlags, oldChangedBits] = settings[flagSettingId];
       const flagsToAdd = setFlag(defaultFlags, oldChangedBits, false);
       const newFlags = setFlag(oldFlags, flagsToAdd, true);
