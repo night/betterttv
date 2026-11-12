@@ -31,6 +31,75 @@ export const LEGENDARY_EMOTE_SEASON_QUERY = gql`
   }
 `;
 
+// twitch's own query for the viewer's emote sets, field for field and with its variables (see
+// AVAILABLE_EMOTES_VARIABLES): twitch keeps it watched with chat, and adds emotes to it as they're granted. it's
+// only ever read from twitch's cache, never fetched
+export const TWITCH_AVAILABLE_EMOTES_QUERY = gql`
+  query AvailableEmotesForChannelPaginated($channelID: ID!, $withOwner: Boolean!, $pageLimit: Int!, $cursor: Cursor) {
+    channel(id: $channelID) {
+      id
+      self {
+        id
+        availableEmoteSetsPaginated(pageLimit: $pageLimit, after: $cursor) {
+          edges {
+            ...EmoteSetsEdgeFragment
+          }
+          pageInfo {
+            hasNextPage
+          }
+        }
+      }
+    }
+  }
+
+  fragment EmoteSetsEdgeFragment on EmoteSetsEdge {
+    cursor
+    node {
+      id
+      emotes {
+        id
+        setID
+        token
+        modifiers {
+          code
+          name
+        }
+        type
+        assetType
+      }
+      owner @include(if: $withOwner) {
+        id
+        login
+        displayName
+        profileImageURL(width: 28)
+      }
+    }
+  }
+`;
+
+// what twitch caches the query under: its pages are merged into the first one, which has no cursor
+export function getTwitchAvailableEmotesVariables(channelId) {
+  return {channelID: channelId, withOwner: true, pageLimit: 350};
+}
+
+// the ids of the emotes in the viewer's emote sets, from TWITCH_AVAILABLE_EMOTES_QUERY's data for this channel
+export function getOwnedEmoteIds(channelId, data) {
+  const ids = new Set();
+  if (data?.channel?.id !== channelId) {
+    return ids;
+  }
+
+  for (const edge of data.channel.self?.availableEmoteSetsPaginated?.edges ?? []) {
+    for (const emote of edge?.node?.emotes ?? []) {
+      if (emote?.id != null) {
+        ids.add(emote.id);
+      }
+    }
+  }
+
+  return ids;
+}
+
 // twitch's chat callout types for the legendary emotes collection and chest opening panels
 const EMOTE_LEVELING_COLLECTION_CALLOUT_TYPE = 'emote-leveling-collection';
 const EMOTE_LEVELING_CHEST_CALLOUT_TYPE = 'emote-leveling-chest';
@@ -61,8 +130,10 @@ function getChestCounts(chestInventory) {
   return counts;
 }
 
-// the season as the emote menu shows it, from the query's data. null when the channel has none
-export function parseLegendaryEmoteSeason(channelId, season) {
+// the season as the emote menu shows it, from the query's data. null when the channel has none. the season's
+// isOwned isn't updated as chests are opened, so like twitch's collection view, an emote also counts as owned
+// once it's in the viewer's emote sets
+export function parseLegendaryEmoteSeason(channelId, season, ownedEmoteIds = new Set()) {
   if (season?.campaign == null) {
     return null;
   }
@@ -74,7 +145,7 @@ export function parseLegendaryEmoteSeason(channelId, season) {
     channelId,
     name: season.campaign.name,
     imageURL: season.campaign.imageURL,
-    ownedCount: emotePool.filter(({isOwned}) => isOwned).length,
+    ownedCount: emotePool.filter(({isOwned, emote}) => isOwned || ownedEmoteIds.has(emote?.id)).length,
     totalCount: emotePool.length,
     chestCounts,
     unopenedChestCount: chestCounts.paidCount + chestCounts.ftueCount + chestCounts.freeCount,
