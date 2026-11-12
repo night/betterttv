@@ -2,31 +2,28 @@ import classNames from 'classnames';
 import {ChevronRight} from 'lucide-react';
 import React, {useCallback} from 'react';
 import formatMessage from '@/i18n/index';
-import useLegendaryEmotesStore from '@/modules/emote_menu/stores/legendary-emotes-store';
-import {
-  openLegendaryEmoteChests,
-  openLegendaryEmotesCollection,
-} from '@/modules/emote_menu/utils/twitch-legendary-emotes';
+import {openLegendaryEmoteChests, openLegendaryEmotesCollection} from '@/modules/emote_menu/twitch/legendary-emotes';
+import useLegendaryEmotesStore from '@/modules/emote_menu/twitch/legendary-emotes-store';
 import styles from './LegendaryEmotesEntrypoint.module.css';
 
-function LegendaryEmotesEntrypoint({className, onOpen}) {
+function LegendaryEmotesEntrypoint({className, onClose}) {
   const season = useLegendaryEmotesStore((state) => state.season);
 
   const handleOpenCollection = useCallback(() => {
     if (season == null) {
       return;
     }
-    onOpen();
+    onClose();
     openLegendaryEmotesCollection(season.channelId);
-  }, [season, onOpen]);
+  }, [season, onClose]);
 
   const handleOpenChests = useCallback(() => {
     if (season == null) {
       return;
     }
-    onOpen();
+    onClose();
     openLegendaryEmoteChests(season.channelId, season.chestCounts);
-  }, [season, onOpen]);
+  }, [season, onClose]);
 
   if (season == null) {
     return null;

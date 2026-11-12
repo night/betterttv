@@ -20,7 +20,6 @@ import useGifPickerStore, {
   updateGifResults,
   updateGifResultsDebounced,
 } from '@/modules/emote_menu/stores/gif-picker-store';
-import {updateLegendaryEmoteSeason} from '@/modules/emote_menu/stores/legendary-emotes-store';
 import {
   getCoordsOfSelected,
   getFirstCoords,
@@ -35,7 +34,6 @@ import EmoteList from './EmoteList';
 import styles from './EmoteMenu.module.css';
 import GifPicker from './GifPicker';
 import Header from './Header';
-import LegendaryEmotesEntrypoint from './LegendaryEmotesEntrypoint';
 import Sidebar from './Sidebar';
 import Tip, {markTipAsSeen} from './Tip';
 
@@ -59,6 +57,8 @@ function EmoteMenu({
   boundingQuerySelector,
   offsetOptions = {},
   emoteMenuToggleButtonSelector,
+  onOpen,
+  HeaderAccessory,
 }) {
   const handleRef = useRef(null);
   const emoteMenuContentRef = useRef(null);
@@ -135,11 +135,11 @@ function EmoteMenu({
   const handleOpen = useCallback(() => {
     open();
     updateGifPickerContext();
-    updateLegendaryEmoteSeason();
+    onOpen?.();
 
     const chatTextArea = document.querySelector(boundingQuerySelector);
     refs.setPositionReference(chatTextArea);
-  }, [open, boundingQuerySelector, refs]);
+  }, [open, onOpen, boundingQuerySelector, refs]);
 
   const handleScrollToPendingRow = useCallback((pendingScrollRowIndex) => {
     const listEl = emoteListRef.current;
@@ -392,8 +392,8 @@ function EmoteMenu({
             gifsAvailable={gifContext != null}
             onModeChange={handleModeChange}
           />
-          {mode === EmoteMenuModes.EMOTES && emoteListData.search.length === 0 ? (
-            <LegendaryEmotesEntrypoint onOpen={handleClose} />
+          {HeaderAccessory != null && mode === EmoteMenuModes.EMOTES && emoteListData.search.length === 0 ? (
+            <HeaderAccessory onClose={handleClose} />
           ) : null}
           <Sidebar
             className={styles.sidebar}

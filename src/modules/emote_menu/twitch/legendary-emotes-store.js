@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {fetchLegendaryEmoteSeason} from '@/modules/emote_menu/utils/twitch-legendary-emotes';
+import {fetchLegendaryEmoteSeason} from '@/modules/emote_menu/twitch/legendary-emotes';
 import {getCurrentChannel} from '@/utils/channel';
 
 const useLegendaryEmotesStore = create(() => ({
