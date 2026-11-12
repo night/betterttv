@@ -1,20 +1,25 @@
 import gql from 'graphql-tag';
-import {PlatformTypes} from '@/constants';
-import debug from '@/utils/debug';
 import twitch from '@/utils/twitch';
-import {getPlatform} from '@/utils/window';
 
-// mirrors the query twitch's own emote picker uses to decide whether to show its legendary emotes
-// entrypoint. campaign is null on channels without legendary emotes
-const LEGENDARY_EMOTE_SEASON_QUERY = gql`
+// twitch's own legendaryEmoteSeason query, field for field: it's read from and kept in twitch's cache (see
+// twitch.graphqlWatchQuery), where twitch updates it from pubsub as chests are granted and opened, so the
+// selection has to match what twitch writes there. campaign is null on channels without legendary emotes
+export const LEGENDARY_EMOTE_SEASON_QUERY = gql`
   query BTTVLegendaryEmoteSeason($channelID: ID) {
     legendaryEmoteSeason(channelID: $channelID) {
+      id
       campaign {
+        id
         name
         imageURL
       }
       emotePool {
+        tier
         isOwned
+        emote {
+          id
+          token
+        }
       }
       userProgress {
         chestInventory {
@@ -56,21 +61,8 @@ function getChestCounts(chestInventory) {
   return counts;
 }
 
-// null when the channel has no season. throws when the fetch fails, so a failure isn't taken for that
-export async function fetchLegendaryEmoteSeason(channel) {
-  if (getPlatform() !== PlatformTypes.TWITCH || channel?.provider !== 'twitch') {
-    return null;
-  }
-
-  let season;
-  try {
-    const {data} = await twitch.graphqlQuery(LEGENDARY_EMOTE_SEASON_QUERY, {channelID: channel.id});
-    season = data?.legendaryEmoteSeason;
-  } catch (error) {
-    debug.log('failed to fetch legendary emote season', error);
-    throw error;
-  }
-
+// the season as the emote menu shows it, from the query's data. null when the channel has none
+export function parseLegendaryEmoteSeason(channelId, season) {
   if (season?.campaign == null) {
     return null;
   }
@@ -79,7 +71,7 @@ export async function fetchLegendaryEmoteSeason(channel) {
   const chestCounts = getChestCounts(season.userProgress?.chestInventory);
 
   return {
-    channelId: channel.id,
+    channelId,
     name: season.campaign.name,
     imageURL: season.campaign.imageURL,
     ownedCount: emotePool.filter(({isOwned}) => isOwned).length,

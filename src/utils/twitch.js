@@ -917,6 +917,20 @@ export default {
     return client.query({query, variables, fetchPolicy: 'no-cache', ...options});
   },
 
+  // reads and follows a query in twitch's own cache, fetching it only when twitch hasn't cached it, so the result
+  // stays current with twitch's own updates to it (e.g. from pubsub). unlike graphqlQuery this writes into
+  // twitch's cache, so the query's selection must be exactly twitch's own for the same field, with every field
+  // twitch keys an entity on. returns an unsubscribe function, or null without a client
+  graphqlWatchQuery(query, variables, {next, error}) {
+    const client = this.getApolloClient();
+    if (client == null) {
+      return null;
+    }
+
+    const subscription = client.watchQuery({query, variables, fetchPolicy: 'cache-first'}).subscribe({next, error});
+    return () => subscription.unsubscribe();
+  },
+
   graphqlMutation(mutation, variables) {
     const client = this.getApolloClient();
     if (client == null) {

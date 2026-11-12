@@ -3,9 +3,7 @@ import {ChevronRight, Gift} from 'lucide-react';
 import React, {useCallback} from 'react';
 import formatMessage from '@/i18n/index';
 import {openLegendaryEmoteChests, openLegendaryEmotesCollection} from '@/modules/emote_menu/twitch/legendary-emotes';
-import useLegendaryEmotesStore, {
-  invalidateLegendaryEmoteSeason,
-} from '@/modules/emote_menu/twitch/legendary-emotes-store';
+import useLegendaryEmotesStore from '@/modules/emote_menu/twitch/legendary-emotes-store';
 import styles from './LegendaryEmotesEntrypoint.module.css';
 
 // sits in the twitch global section header and links to twitch's own legendary emotes panels
@@ -17,7 +15,6 @@ function LegendaryEmotesEntrypoint({className, onClose}) {
       return;
     }
     onClose?.();
-    invalidateLegendaryEmoteSeason(season.channelId);
     openLegendaryEmotesCollection(season.channelId);
   }, [season, onClose]);
 
@@ -26,7 +23,6 @@ function LegendaryEmotesEntrypoint({className, onClose}) {
       return;
     }
     onClose?.();
-    invalidateLegendaryEmoteSeason(season.channelId);
     openLegendaryEmoteChests(season.channelId, season.chestCounts);
   }, [season, onClose]);
 
