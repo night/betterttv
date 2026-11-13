@@ -38,7 +38,7 @@ export const SettingPanelIds = {
   USERNAME_HOVER_EFFECT: 'usernameHoverEffect',
   USERNAME_FONT: 'usernameFont',
   ACCESSIBILITY: 'accessibility',
-  CELEBRATIONS: 'celebrations',
+  ON_SCREEN_EFFECTS: 'onScreenEffects',
 };
 
 export const SettingCategoryIds = {

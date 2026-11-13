@@ -1,6 +1,6 @@
 /* on-screen celebrations (the power-up, and twitch's automatic ones for gifted subs) render into a wrapper
    named after the area they play in: celebration-animation-chat, -video, -everywhere, or -unknown */
-.hideCelebrations {
+.hideOnScreenCelebrations {
   :global(.celebration-animation-chat),
   :global(.celebration-animation-video),
   :global(.celebration-animation-everywhere),
