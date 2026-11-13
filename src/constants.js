@@ -67,6 +67,7 @@ export const SettingIds = {
   SELF_BOT_COMMANDS_LIST: 'selfBotCommandsList',
   SELF_BOT_TIMERS_LIST: 'selfBotTimersList',
   REDUCED_MOTION: 'reducedMotion',
+  ON_SCREEN_EFFECTS: 'onScreenEffects',
 };
 
 export const CategoryTypes = {
@@ -133,6 +134,11 @@ export const ChannelPointsFlags = {
   CHANNEL_POINTS: 1 << 0,
   AUTO_CLAIM: 1 << 1,
   MESSAGE_HIGHLIGHTS: 1 << 2,
+};
+
+export const OnScreenEffectFlags = {
+  ON_SCREEN_CELEBRATIONS: 1 << 0,
+  HYPE_TRAIN_ANIMATIONS: 1 << 1,
 };
 
 export const AutoPlayFlags = {
@@ -351,6 +357,10 @@ export const SettingDefaultValues = {
   ],
   [SettingIds.CHANNEL_POINTS]: [ChannelPointsFlags.CHANNEL_POINTS | ChannelPointsFlags.MESSAGE_HIGHLIGHTS, 0],
   [SettingIds.AUTO_CLAIM]: [0, 0],
+  [SettingIds.ON_SCREEN_EFFECTS]: [
+    OnScreenEffectFlags.ON_SCREEN_CELEBRATIONS | OnScreenEffectFlags.HYPE_TRAIN_ANIMATIONS,
+    0,
+  ],
   [SettingIds.LIVE_CHAT_VIEW]: false,
   [SettingIds.EMOTE_MENU_WIDTH]: 498,
   [SettingIds.HYPE_CHAT]: true,
@@ -370,6 +380,7 @@ export const FlagSettings = [
   SettingIds.USERNAMES,
   SettingIds.CHANNEL_POINTS,
   SettingIds.AUTO_CLAIM,
+  SettingIds.ON_SCREEN_EFFECTS,
 ];
 
 export const PlatformTypes = {
