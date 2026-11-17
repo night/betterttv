@@ -57,7 +57,7 @@ jobs:
       - if: env.MODE == 'pull'
         run: node scripts/nightdev-translate.ts pull
       - if: env.MODE == 'pull'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: translations
           title: Update translations
