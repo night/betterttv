@@ -10,43 +10,41 @@ import styles from './styles.module.css';
 const sidebarSectionSelector = '.side-nav-section';
 const offlineChannelSelector = '.side-nav-card';
 
+// Twitch appends experiment and version suffixes to these ids (e.g.
+// provider-sidenav-recommended-categories-followedrecs-gta6-1), so sections are matched by prefix.
+const SIDEBAR_SECTION_FLAGS = [
+  ['provider-side-nav-recommended-streams', SidebarFlags.RECOMMENDED_CHANNELS],
+  ['provider-side-nav-similar-streamer-currently-watching', SidebarFlags.SIMILAR_CHANNELS],
+  ['provider-sidenav-recommended-categories', SidebarFlags.RECOMMENDED_CATEGORIES],
+  /* deprecated */
+  ['RECENTLY_VISITED_SECTION', SidebarFlags.RECENTLY_WATCHED_CHANNELS],
+  ['RECOMMENDED_SECTION', SidebarFlags.RECOMMENDED_CHANNELS],
+  ['SIMILAR_SECTION', SidebarFlags.SIMILAR_CHANNELS],
+];
+const HIDEABLE_SECTION_FLAGS = [...new Set(SIDEBAR_SECTION_FLAGS.map(([, flag]) => flag))];
+
 let offlineChannelObserverRemover = null;
 let sidebarSectionObserverRemover = null;
 
-function toggleSidebarSectionClass(node, flags) {
+function getSidebarSectionFlag(sectionId) {
+  if (typeof sectionId !== 'string') {
+    return null;
+  }
+  return SIDEBAR_SECTION_FLAGS.find(([prefix]) => sectionId.startsWith(prefix))?.[1] ?? null;
+}
+
+function toggleSidebarSectionClass(node) {
   const sidebarSection = twitch.getSidebarSection(node);
   if (sidebarSection == null) {
     return;
   }
 
-  const setting = flags ?? settings.get(SettingIds.SIDEBAR);
-  switch (sidebarSection.sectionId ?? /* deprecated */ sidebarSection.type) {
-    /* deprecated */
-    case 'RECENTLY_VISITED_SECTION': {
-      node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECENTLY_WATCHED_CHANNELS));
-      break;
-    }
-    /* deprecated */
-    case 'RECOMMENDED_SECTION':
-    case 'provider-side-nav-recommended-streams-1': {
-      node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECOMMENDED_CHANNELS));
-      break;
-    }
-    /* deprecated */
-    case 'SIMILAR_SECTION':
-    case 'provider-side-nav-similar-streamer-currently-watching-1': {
-      node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.SIMILAR_CHANNELS));
-      break;
-    }
-    case 'provider-sidenav-recommended-categories-default-1':
-    case 'provider-sidenav-recommended-categories-followedrecs-1': {
-      node.classList.toggle(styles.hide, !hasFlag(setting, SidebarFlags.RECOMMENDED_CATEGORIES));
-      break;
-    }
-    default: {
-      break;
-    }
+  const flag = getSidebarSectionFlag(sidebarSection.sectionId ?? /* deprecated */ sidebarSection.type);
+  if (flag == null) {
+    return;
   }
+
+  node.classList.toggle(styles.hide, !hasFlag(settings.get(SettingIds.SIDEBAR), flag));
 }
 
 class HideSidebarElementsModule {
@@ -69,17 +67,14 @@ class HideSidebarElementsModule {
 
   loadHideSidebarElements() {
     const setting = settings.get(SettingIds.SIDEBAR);
-    const hideRecentlyWatched = !hasFlag(setting, SidebarFlags.RECENTLY_WATCHED_CHANNELS);
-    const hideRecommended = !hasFlag(setting, SidebarFlags.RECOMMENDED_CHANNELS);
-    const hideSimilar = !hasFlag(setting, SidebarFlags.SIMILAR_CHANNELS);
-    const enabled = hideRecentlyWatched || hideRecommended || hideSimilar;
+    const enabled = HIDEABLE_SECTION_FLAGS.some((flag) => !hasFlag(setting, flag));
 
     if (enabled && sidebarSectionObserverRemover == null) {
       sidebarSectionObserverRemover = domObserver.on(sidebarSectionSelector, (node, isConnected) => {
         if (!isConnected) {
           return;
         }
-        toggleSidebarSectionClass(node, setting);
+        toggleSidebarSectionClass(node);
       });
     }
 
@@ -90,7 +85,7 @@ class HideSidebarElementsModule {
 
     const sidebarSections = document.querySelectorAll(sidebarSectionSelector);
     for (const section of sidebarSections) {
-      toggleSidebarSectionClass(section, setting);
+      toggleSidebarSectionClass(section);
     }
   }
 
