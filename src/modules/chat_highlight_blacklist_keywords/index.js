@@ -10,6 +10,7 @@ import {extractRegex} from '@/utils/keyword-regex';
 import {computeKeywords, KeywordTypes} from '@/utils/keywords';
 import {loadModuleForPlatforms} from '@/utils/modules';
 import {escapeRegExp} from '@/utils/regex';
+import twitch from '@/utils/twitch';
 import {getCurrentUser} from '@/utils/user';
 import watcher from '@/watcher';
 
@@ -229,6 +230,17 @@ function fieldContainsKeyword(keywords, from, field, onColorChange) {
   return false;
 }
 
+// Twitch decorates a badge image's alt text (e.g. "Moderator badge"), so badge keywords are matched against the
+// badge's own title as well, which is what the keyword editor suggests.
+function getBadgeNames(message) {
+  const names = new Set();
+  for (const badge of message.querySelectorAll(CHAT_BADGE_SELECTOR)) {
+    names.add(twitch.getChatBadge(badge)?.title);
+    names.add(badge.getAttribute('alt'));
+  }
+  return [...names].filter((name) => typeof name === 'string' && name.length > 0);
+}
+
 function isReply(message) {
   return message.closest('.chat-input-tray__open') != null;
 }
@@ -280,7 +292,7 @@ class ChatHighlightBlacklistKeywordsModule {
     const from = login ?? user.userLogin;
     const messageText = notice ? message.textContent : messageTextFromAST(messageParts);
     const date = new Date(timestamp);
-    const badges = [...message.querySelectorAll(CHAT_BADGE_SELECTOR)].map((badge) => badge.getAttribute('alt') || '');
+    const badges = getBadgeNames(message);
 
     let color;
     function handleColorChange(newColor) {
@@ -337,7 +349,7 @@ class ChatHighlightBlacklistKeywordsModule {
       emote.getAttribute('alt')
     );
     const messageContent = `${messageContainer.textContent.replace(/^:/, '')} ${emotes.join(' ')}`;
-    const badges = [...message.querySelectorAll(CHAT_BADGE_SELECTOR)].map((badge) => badge.getAttribute('alt') || '');
+    const badges = getBadgeNames(message);
 
     let color;
     function handleColorChange(newColor) {

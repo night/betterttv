@@ -895,6 +895,17 @@ export default {
     return sidebarSection;
   },
 
+  // the badge Twitch rendered for a chat badge image: {setID, version, title, ...}
+  getChatBadge(element) {
+    let badge;
+    try {
+      const node = searchReactParents(getReactInstance(element), (n) => n.memoizedProps?.badge?.setID != null);
+      badge = node.memoizedProps.badge;
+    } catch (e) {}
+
+    return badge;
+  },
+
   getPrivateCalloutEvent(element) {
     let privateCalloutEvent;
     try {
