@@ -520,8 +520,8 @@ class ChatModule {
     this.applyUsernameFont(fromNode, user.id);
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
-      [...element.querySelectorAll('img.chat-badge')]
-        .find((badge) => twitch.getChatBadge(badge)?.setID === 'moderator')
+      element
+        .querySelector('img.chat-badge[alt^="Moderator"]')
         ?.replaceWith(badgeTemplate(cdn.url('tags/bot.png'), formatMessage({defaultMessage: 'Bot'})));
     }
 
