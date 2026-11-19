@@ -108,6 +108,20 @@ function isDuplicateHighlight({date, from, message}) {
   return false;
 }
 
+// The badge autocomplete used to save keywords anchored at both ends (~/^Moderator$/), which can't match now that
+// twitch decorates the badge's alt text (e.g. "Moderator badge"). Drop the end anchor so they match by prefix.
+const ANCHORED_BADGE_KEYWORD_REGEX = /^(~\/\^.+?)(\\*)\$\/$/;
+
+function repairAnchoredBadgeKeyword(keyword) {
+  const matches = ANCHORED_BADGE_KEYWORD_REGEX.exec(keyword);
+  // an odd number of backslashes before the $ makes it a literal dollar sign, not an anchor
+  if (matches == null || matches[2].length % 2 !== 0) {
+    return keyword;
+  }
+
+  return `${matches[1]}${matches[2]}/`;
+}
+
 function readRepairKeywords() {
   const highlightKeywordsValue = settings.get(SettingIds.HIGHLIGHT_KEYWORDS);
   const blacklistKeywordsValue = settings.get(SettingIds.BLACKLIST_KEYWORDS);
@@ -134,6 +148,15 @@ function readRepairKeywords() {
         }
 
         value.type = Number.parseInt(trimmed, 10);
+      }
+
+      if (value.type === KeywordTypes.BADGE) {
+        const repairedKeyword = repairAnchoredBadgeKeyword(value.keyword);
+        if (repairedKeyword !== value.keyword) {
+          value.keyword = repairedKeyword;
+          updated = true;
+        }
+        continue;
       }
 
       if (![KeywordTypes.EXACT, KeywordTypes.WILDCARD].includes(value.type)) {

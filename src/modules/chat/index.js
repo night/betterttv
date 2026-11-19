@@ -521,7 +521,7 @@ class ChatModule {
 
     if ((globalBots.includes(user.name) || channelBots.includes(user.name)) && user.mod) {
       element
-        .querySelector('img.chat-badge[alt="Moderator"]')
+        .querySelector('img.chat-badge[alt^="Moderator"]')
         ?.replaceWith(badgeTemplate(cdn.url('tags/bot.png'), formatMessage({defaultMessage: 'Bot'})));
     }
 

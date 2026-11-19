@@ -3,9 +3,10 @@ import debug from '@/utils/debug';
 import twitch from '@/utils/twitch';
 
 // escapes only true regex metacharacters, unlike escapeRegExp, so the
-// keyword stays substring-matchable by mantine's built-in option filter
+// keyword stays substring-matchable by mantine's built-in option filter.
+// matches by prefix because twitch decorates the badge's alt text (e.g. "Moderator badge")
 function badgeKeyword(title) {
-  return `~/^${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$/`;
+  return `~/^${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`;
 }
 
 function buildBadgeOptions(globalBadges) {
