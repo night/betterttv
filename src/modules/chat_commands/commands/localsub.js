@@ -7,7 +7,7 @@ commandStore.registerCommand({
   name: 'localsub',
   commandArgs: [],
   description: formatMessage({
-    defaultMessage: 'Usage: "/localsub" - Turns on local sub-only mode (only your chat is sub-only mode)',
+    defaultMessage: 'Usage: "/localsub" - Turns on local sub-only mode (for your chat only)',
   }),
   handler: () => {
     chat.subsOnly(true);

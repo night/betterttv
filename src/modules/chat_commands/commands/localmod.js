@@ -7,7 +7,7 @@ commandStore.registerCommand({
   name: 'localmod',
   commandArgs: [],
   description: formatMessage({
-    defaultMessage: 'Usage: "/localmod" - Turns on local mod-only mode (only your chat is mod-only mode)',
+    defaultMessage: 'Usage: "/localmod" - Turns on local mod-only mode (for your chat only)',
   }),
   handler: () => {
     chat.modsOnly(true);

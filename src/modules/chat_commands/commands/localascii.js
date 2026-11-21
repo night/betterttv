@@ -7,7 +7,7 @@ commandStore.registerCommand({
   name: 'localascii',
   commandArgs: [],
   description: formatMessage({
-    defaultMessage: 'Usage: "/localascii" - Turns on local ascii-only mode (only your chat is ascii-only mode)',
+    defaultMessage: 'Usage: "/localascii" - Turns on local ascii-only mode (for your chat only)',
   }),
   handler: () => {
     chat.asciiOnly(true);
