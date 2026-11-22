@@ -81,12 +81,12 @@ class ChannelPoints {
 
     watcher.on('load.chat', () => this.loadAutoClaimBonusChannelPoints());
     settings.on(`changed.${SettingIds.CHANNEL_POINTS}`, () => {
-      this.loadAutoClaimBonusChannelPoints(true);
+      this.loadAutoClaimBonusChannelPoints();
       this.loadHideChannelPoints();
     });
   }
 
-  loadAutoClaimBonusChannelPoints(shouldClaimAvailableBonus = false) {
+  loadAutoClaimBonusChannelPoints() {
     if (!isAutoClaimEnabled()) {
       removePubSubListener?.();
       removePubSubListener = null;
@@ -94,17 +94,17 @@ class ChannelPoints {
     }
 
     const twitchPubSubEvents = window.__twitch_pubsub_events;
-    if (removePubSubListener != null || twitchPubSubEvents == null) {
+    if (twitchPubSubEvents == null) {
       return;
     }
 
-    twitchPubSubEvents.addEventListener('notification', handlePubSubNotification);
-    removePubSubListener = () => twitchPubSubEvents.removeEventListener('notification', handlePubSubNotification);
-
-    if (!shouldClaimAvailableBonus) {
-      return;
+    if (removePubSubListener == null) {
+      twitchPubSubEvents.addEventListener('notification', handlePubSubNotification);
+      removePubSubListener = () => twitchPubSubEvents.removeEventListener('notification', handlePubSubNotification);
     }
 
+    // twitch announces a bonus only once, so one that was already waiting when the channel loaded (or whose event
+    // was missed) would otherwise never be claimed
     claimAvailableBonus().catch(() => {});
   }
 
