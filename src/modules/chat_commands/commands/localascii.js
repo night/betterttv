@@ -7,11 +7,11 @@ commandStore.registerCommand({
   name: 'localascii',
   commandArgs: [],
   description: formatMessage({
-    defaultMessage: 'Usage: "/localascii" - Turns on local ascii-only mode (only your chat is ascii-only mode)',
+    defaultMessage: 'Usage: "/localascii" - Turns on local ASCII-only mode (for your chat only)',
   }),
   handler: () => {
     chat.asciiOnly(true);
-    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Local ascii-only mode enabled.'}));
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Local ASCII-only mode enabled.'}));
   },
   permissionLevel: PermissionLevels.VIEWER,
 });
@@ -20,11 +20,11 @@ commandStore.registerCommand({
   name: 'localasciioff',
   commandArgs: [],
   description: formatMessage({
-    defaultMessage: 'Usage: "/localasciioff" - Turns off local ascii-only mode',
+    defaultMessage: 'Usage: "/localasciioff" - Turns off local ASCII-only mode',
   }),
   handler: () => {
     chat.asciiOnly(false);
-    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Local ascii-only mode disabled.'}));
+    twitch.sendChatAdminMessage(formatMessage({defaultMessage: 'Local ASCII-only mode disabled.'}));
   },
   permissionLevel: PermissionLevels.VIEWER,
 });
