@@ -131,13 +131,15 @@ function patchEmoteImage(image, isConnected) {
     return;
   }
 
-  const imageButton = image.closest('div[data-test-selector="emote-button"]');
+  // twitch renders our injected emotes itself in the echo of a message you send. the wrapper has been both a div and
+  // a span, so match it by its test selector alone
+  const imageButton = image.closest('[data-test-selector="emote-button"]');
   const imageButtonMessage = imageButton?.closest('.chat-line__message');
   const imageButtonMessageObject = imageButtonMessage != null ? twitch.getChatMessageObject(imageButtonMessage) : null;
   if (imageButtonMessage != null && imageButtonMessageObject?.user != null) {
     let span;
     const {previousSibling} = imageButton;
-    if (previousSibling != null && previousSibling.matches('span[data-a-target="chat-message-text"]')) {
+    if (previousSibling?.matches?.('span[data-a-target="chat-message-text"]')) {
       span = previousSibling;
       imageButton.remove();
     } else {
