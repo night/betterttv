@@ -74,13 +74,6 @@ function emoteSetName(emoteSet) {
   return emoteSet.name ?? formatMessage({defaultMessage: 'Unnamed set'});
 }
 
-// Escape closes the menu, so the modal it sits in doesn't close with it
-function keepEscapeInMenu(event) {
-  if (event.key === 'Escape') {
-    event.stopPropagation();
-  }
-}
-
 function renderEmphasis(chunks) {
   return (
     <span key="emphasis" className={styles.menuTitleEmphasis}>
@@ -187,7 +180,7 @@ function EmoteSetRow({emoteId, emoteSet, state}) {
 
 // The up-front destination: its add, then once the emote is in, a ticked button in the same place whose menu
 // removes it again
-function UpFrontButton({emote, destination, state, addLabel, statusLabel, onAdd}) {
+function UpFrontButton({emote, destination, state, addLabel, statusLabel, title, onAdd}) {
   const portalRef = usePortalRef();
   const removeFailed = useEmoteModalStore((store) => store.removeErrors[destination] === true);
   const {added} = state;
@@ -240,6 +233,8 @@ function UpFrontButton({emote, destination, state, addLabel, statusLabel, onAdd}
             data-disabled={actionDisabled || undefined}
             aria-disabled={actionDisabled || undefined}
             aria-haspopup={added ? 'menu' : undefined}
+            // a long set name ellipsises, so it's whole on hover
+            title={added || tooltip != null ? undefined : title}
             onClick={handleClick}>
             <AnimatedWidth className={styles.labelBox}>
               <span className={styles.swap}>
@@ -251,6 +246,7 @@ function UpFrontButton({emote, destination, state, addLabel, statusLabel, onAdd}
                 <span
                   className={classNames(styles.swapLayer, styles.statusLayer)}
                   data-shown={added || undefined}
+                  data-error={removeFailed || undefined}
                   aria-hidden={!added || undefined}>
                   <CircleCheck size={16} className={styles.statusCheck} />
                   <span className={styles.labelText}>
@@ -263,7 +259,7 @@ function UpFrontButton({emote, destination, state, addLabel, statusLabel, onAdd}
           </Button>
         </Tooltip>
       </Menu.Target>
-      <Menu.Dropdown ref={refs.setFloating} {...getFloatingProps({onKeyDown: keepEscapeInMenu})}>
+      <Menu.Dropdown ref={refs.setFloating} {...getFloatingProps()}>
         <div className={styles.statusMenuTitle}>
           {formatMessage({defaultMessage: 'As <b>{code}</b>'}, {code: emote.code, b: renderEmphasis})}
         </div>
@@ -446,6 +442,7 @@ export default function EmoteAddButtons({emote}) {
                     : formatMessage({defaultMessage: 'Add to Channel'})
                 }
                 statusLabel={liveSet != null ? emoteSetName(liveSet) : formatMessage({defaultMessage: 'Channel'})}
+                title={liveSet != null ? emoteSetName(liveSet) : undefined}
                 onAdd={handleAddUpFront}
               />
               <Button

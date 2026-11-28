@@ -11,11 +11,12 @@
   padding: 4px 12px;
   border-radius: calc(var(--mantine-radius-lg) - 4px);
   font-size: var(--mantine-font-size-lg);
-  color: var(--mantine-color-text);
+  color: var(--menu-item-color, var(--mantine-color-text));
 }
 
+/* a coloured item (Remove's red) keeps Mantine's wash of its colour */
 .item[data-hovered] {
-  background-color: var(--mantine-color-elevated-hover);
+  background-color: var(--menu-item-hover, var(--mantine-color-elevated-hover));
 }
 
 /* the label takes the row, so the tick sits at the right edge */
@@ -31,5 +32,13 @@
   display: grid;
   place-items: center;
   min-width: 24px;
-  color: var(--mantine-color-text);
+  color: var(--menu-item-color, var(--mantine-color-text));
+}
+
+/* a row's leading icon in a 20px slot, so a 16px one sits 12px from its text */
+.itemSection[data-position='left'] {
+  min-width: 20px;
+  margin-inline-end: 8px;
+  justify-content: start;
+  justify-items: start;
 }

@@ -110,6 +110,11 @@
   padding-inline: calc(var(--button-padding-x-lg) / 1.5);
 }
 
+/* the cap is for long set names; a failed remove's word is short and should read whole */
+.statusLayer[data-error] {
+  max-width: none;
+}
+
 .swapLayer:not([data-shown]) {
   position: absolute;
   top: 0;
