@@ -1,4 +1,3 @@
-import {useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 import {Button, Menu, Popover, Skeleton, Text, Tooltip} from '@mantine/core';
 import {useDisclosure, useTimeout} from '@mantine/hooks';
 import classNames from 'classnames';
@@ -7,6 +6,7 @@ import React, {useCallback, useLayoutEffect, useRef, useState} from 'react';
 import {useShallow} from 'zustand/react/shallow';
 import ProBadge from '@/common/components/ProBadge';
 import usePortalRef from '@/common/hooks/PortalRef';
+import useShadowDismiss from '@/common/hooks/ShadowDismiss';
 import {
   AsyncStatuses,
   EmoteAddDestinations,
@@ -19,7 +19,6 @@ import channelEmotes from '@/modules/emotes/channel-emotes';
 import personalEmotes from '@/modules/emotes/personal-emotes';
 import useAuthStore from '@/stores/auth';
 import {getCurrentChannel} from '@/utils/channel';
-import isPressOn from '@/utils/press';
 import {isUserPro} from '@/utils/pro';
 import {getCurrentUser} from '@/utils/user';
 import styles from './EmoteModal.module.css';
@@ -96,7 +95,7 @@ function DisabledAddButtons() {
           className={styles.menuChevron}
           disabled
           aria-label={formatMessage({defaultMessage: 'More add options'})}>
-          <ChevronDown size={24} className={styles.chevron} />
+          <ChevronDown size={24} />
         </Button>
       </Button.Group>
     </div>
@@ -115,9 +114,7 @@ function AnimatedWidth({className, children}) {
       return undefined;
     }
     function measure() {
-      const {paddingLeft, paddingRight} = getComputedStyle(outer);
-      const width = inner.offsetWidth + Number.parseFloat(paddingLeft) + Number.parseFloat(paddingRight);
-      outer.style.width = `${width}px`;
+      outer.style.width = `${inner.offsetWidth}px`;
     }
     measure();
     const observer = new ResizeObserver(measure);
@@ -178,26 +175,17 @@ function EmoteSetRow({emoteId, emoteSet, state}) {
   return <AddMenuRow label={emoteSetName(emoteSet)} state={state} onClick={handleAdd} />;
 }
 
-// The up-front destination: its add, then once the emote is in, a ticked button in the same place whose menu
-// removes it again
+// the up-front destination's add, then once it's in, a ticked button whose menu removes it
 function UpFrontButton({emote, destination, state, addLabel, statusLabel, title, onAdd}) {
   const portalRef = usePortalRef();
   const removeFailed = useEmoteModalStore((store) => store.removeErrors[destination] === true);
   const {added} = state;
   const [opened, setOpened] = useState(false);
-  const {refs, context} = useFloating({open: added && opened, onOpenChange: setOpened});
-  // the closed shadow root hides the press's path from the document, so it's checked by position
-  const isOutsidePress = useCallback(
-    (event) => !isPressOn(refs.floating.current, event) && !isPressOn(refs.reference.current, event),
-    [refs]
-  );
-  const dismiss = useDismiss(context, {outsidePress: isOutsidePress});
-  const {getReferenceProps, getFloatingProps} = useInteractions([dismiss]);
+  const {refs, getReferenceProps, getFloatingProps} = useShadowDismiss(added && opened, setOpened);
   const handleChange = useCallback((isOpen) => setOpened(added && isOpen), [added]);
   const actionDisabled = !added && state.disabled;
   const actionReady = !actionDisabled && state.status === AsyncStatuses.IDLE;
-  // the Tooltip passes on the button's own click over Menu.Target's, so the click is all here: a status's
-  // opens the menu, an add's is its own
+  // the Tooltip keeps the button's onClick over Menu.Target's, so this one click opens the menu or adds
   const handleClick = useCallback(() => {
     if (added) {
       setOpened((isOpen) => !isOpen);
@@ -283,18 +271,11 @@ export default function EmoteAddButtons({emote}) {
   const liveSetId = useEmoteModalStore((state) => (userId != null ? state.liveSetIds[userId] : null));
 
   const [menuOpened, {close: closeMenu, toggle: toggleMenu}] = useDisclosure(false);
-  const {refs, context} = useFloating({open: menuOpened, onOpenChange: closeMenu});
-  // the closed shadow root hides the press's path from the document, so it's checked by position
-  const isOutsidePress = useCallback(
-    (event) => !isPressOn(refs.floating.current, event) && !isPressOn(refs.reference.current, event),
-    [refs]
-  );
-  const dismiss = useDismiss(context, {outsidePress: isOutsidePress});
-  const {getReferenceProps, getFloatingProps} = useInteractions([dismiss]);
-
+  const {refs, getReferenceProps, getFloatingProps} = useShadowDismiss(menuOpened, closeMenu);
   // the swap animates only just after a click in the control, not as the modal's data comes in
   const [animated, setAnimated] = useState(false);
-  const {start: startAnimationEnd, clear: clearAnimationEnd} = useTimeout(() => setAnimated(false), SWAP_ANIMATION_MS);
+  const handleAnimationEnd = useCallback(() => setAnimated(false), []);
+  const {start: startAnimationEnd, clear: clearAnimationEnd} = useTimeout(handleAnimationEnd, SWAP_ANIMATION_MS);
   const handleClickCapture = useCallback(() => {
     setAnimated(true);
     clearAnimationEnd();
@@ -313,8 +294,7 @@ export default function EmoteAddButtons({emote}) {
   const liveSetPending =
     availabilityEligible && (liveSetId === undefined || (liveSetId != null && loadedEmoteSets == null));
   const upFrontDestination = liveSet?.id ?? EmoteAddDestinations.CHANNEL;
-  // local signals that need no api round-trip and keep working when it's unreachable: your own
-  // channel's chat emotes (its live set's) are already loaded, and your personal emotes arrive over the socket
+  // no api round-trip: your own channel's chat (its live set) is loaded, personal emotes arrive over the socket
   const currentChannel = getCurrentChannel();
   const platformUser = getCurrentUser();
   const isOwnChannel = currentUser != null && platformUser != null && currentChannel?.id === platformUser.id;
