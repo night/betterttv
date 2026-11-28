@@ -105,6 +105,7 @@ export const SidebarFlags = {
   STORIES: 1 << 7,
   RECOMMENDED_CATEGORIES: 1 << 8,
   WATCH_STREAKS: 1 << 9,
+  LUNA_GAMES: 1 << 10,
 };
 
 export const EmoteTypeFlags = {
@@ -323,7 +324,8 @@ export const SettingDefaultValues = {
       SidebarFlags.SIMILAR_CHANNELS |
       SidebarFlags.STORIES |
       SidebarFlags.RECOMMENDED_CATEGORIES |
-      SidebarFlags.WATCH_STREAKS,
+      SidebarFlags.WATCH_STREAKS |
+      SidebarFlags.LUNA_GAMES,
     0,
   ],
   [SettingIds.EMOTES]: [

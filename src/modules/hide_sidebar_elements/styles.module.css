@@ -28,3 +28,7 @@
 .hideWatchStreaks :global(.side-nav) [role='group']:has(> [class*='saveYourStreakSideNavRow--']) {
   display: none !important;
 }
+
+.hideLunaGames [data-test-selector='luna-side-nav-section'] {
+  display: none !important;
+}
