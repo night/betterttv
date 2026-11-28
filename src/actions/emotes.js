@@ -16,6 +16,10 @@ export async function addSharedEmote(emoteId, userId, emoteSetId) {
   return api.put(`emotes/${emoteId}/shared/${userId}/${emoteSetId}`);
 }
 
+export async function removeSharedEmote(emoteId, userId, emoteSetId) {
+  return api.delete(`emotes/${emoteId}/shared/${userId}/${emoteSetId}`);
+}
+
 export async function addPersonalEmote(emoteId, userId) {
   return api.put(`emotes/${emoteId}/personal/${userId}`);
 }

@@ -39,7 +39,130 @@
 }
 
 .addButtonGroup {
+  /* the gap, the corners and the button's width ease out together, with no spring */
+  --split-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
   display: inline-flex;
+}
+
+/* the add control while the live set loads: Add to Channel and its chevron */
+.addSkeleton {
+  width: 180px;
+  height: 36px;
+  border-radius: var(--mantine-radius-lg);
+}
+
+/* Button.Group joins the pair; once the emote's in (data-split) they part, their corners rounded */
+.actions {
+  gap: 0;
+}
+
+.actions[data-split] {
+  gap: 16px;
+}
+
+.addButtonGroup .actions[data-split] > .channelButton:not(:only-child):first-child {
+  border-radius: var(--mantine-radius-lg);
+  border-inline-end-width: var(--button-border-width);
+}
+
+.addButtonGroup .actions[data-split] > .menuChevron:not(:only-child):last-child {
+  border-radius: var(--mantine-radius-lg);
+  border-inline-start-width: 1px;
+}
+
+/* the button's sides are its label's own (.swapLayer), inside the width that eases (.labelBox) */
+.addButtonGroup .channelButton {
+  padding-inline: 0;
+}
+
+.animatedWidth {
+  display: inline-flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.animatedWidthInner {
+  display: inline-flex;
+  align-items: baseline;
+  flex: none;
+  white-space: nowrap;
+}
+
+/* the label in use sizes the button; the other lies centred over it, blurred away */
+.swap {
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+
+/* its own sides and cap in use or not, so its text never reflows */
+.swapLayer {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  max-width: calc(180px - 2px);
+  padding-inline: var(--button-padding-x-lg);
+}
+
+/* the status's sides, as Mantine pads a button with sections */
+.statusLayer {
+  padding-inline: calc(var(--button-padding-x-lg) / 1.5);
+}
+
+/* the cap is for long set names; a failed remove's word is short and should read whole */
+.statusLayer[data-error] {
+  max-width: none;
+}
+
+.swapLayer:not([data-shown]) {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: max-content;
+  translate: -50%;
+  opacity: 0;
+  transform: scale(0.9);
+  filter: blur(4px);
+}
+
+/* 1.25, not the button's 1: one em cuts off descenders */
+.labelText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.25;
+}
+
+/* the website's added mark green, with the gaps Mantine's sections had: sm before the name, xs after */
+.statusCheck {
+  flex: none;
+  margin-inline-end: var(--mantine-spacing-sm);
+  color: light-dark(var(--mantine-color-green-5), var(--mantine-color-green-6));
+}
+
+.statusChevron {
+  flex: none;
+  margin-inline-start: var(--mantine-spacing-xs);
+}
+
+/* lucide's ring (62.4 long) and tick (11.3, tip to tail), dashed so each draws itself, the tick tail first */
+.statusCheck circle {
+  stroke-dasharray: 63 70;
+}
+
+.statusCheck path {
+  stroke-dasharray: 12 16;
+}
+
+.swapLayer:not([data-shown]) .statusCheck circle {
+  stroke-dashoffset: 65;
+}
+
+.swapLayer:not([data-shown]) .statusCheck path {
+  stroke-dashoffset: -14;
 }
 
 .menuChevron {
@@ -47,6 +170,115 @@
   min-width: 36px;
   padding-left: 0;
   padding-right: 0;
+}
+
+/* the chevron and the status's plus share the menu's button, one spinning into the other */
+.menuIcons {
+  display: grid;
+  place-items: center;
+}
+
+.menuIcon {
+  grid-area: 1 / 1;
+  display: flex;
+}
+
+.menuIcon:not([data-shown]) {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+
+.menuIcon:first-child:not([data-shown]) {
+  transform: rotate(90deg) scale(0.5);
+}
+
+/* flips while its menu is open */
+.chevron {
+  transition: transform 150ms ease;
+}
+
+.menuChevron[aria-expanded='true'] .chevron,
+.channelButton[data-opened] .chevron {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}
+
+/* the swap, only just after a click in the control (data-animated), so loading data doesn't play it */
+@media (prefers-reduced-motion: no-preference) {
+  .addButtonGroup[data-animated] .actions {
+    transition: gap 300ms var(--split-ease);
+  }
+
+  .addButtonGroup[data-animated] .channelButton,
+  .addButtonGroup[data-animated] .menuChevron {
+    transition:
+      border-radius 300ms var(--split-ease),
+      background-color 220ms ease,
+      border-color 220ms ease,
+      box-shadow 220ms ease;
+  }
+
+  /* AnimatedWidth sets the label's measured width outright; it eases here, in step with the gap */
+  .addButtonGroup[data-animated] .labelBox {
+    transition: width 300ms var(--split-ease);
+  }
+
+  .addButtonGroup[data-animated] .swapLayer {
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease,
+      filter 200ms ease;
+  }
+
+  /* the surface inverts, so text colour flips at once; the label going out keeps its own until it has faded */
+  .addButtonGroup[data-animated] .swapLayer:not([data-shown]) {
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease,
+      filter 200ms ease,
+      color 0s linear 200ms;
+  }
+
+  .addButtonGroup[data-animated] .menuIcon {
+    transition:
+      opacity 340ms ease,
+      transform 340ms cubic-bezier(0.34, 1.5, 0.64, 1);
+  }
+
+  .addButtonGroup[data-animated] .swapLayer[data-shown] .statusCheck circle {
+    transition: stroke-dashoffset 300ms ease 120ms;
+  }
+
+  .addButtonGroup[data-animated] .swapLayer[data-shown] .statusCheck path {
+    transition: stroke-dashoffset 200ms ease 380ms;
+  }
+
+  /* going out, it stays drawn until the status has faded */
+  .addButtonGroup[data-animated] .swapLayer:not([data-shown]) .statusCheck * {
+    transition: stroke-dashoffset 0s 200ms;
+  }
+}
+
+/* the status menu's heading, the theme's menu rows' 12px sides */
+.statusMenuTitle {
+  padding: 8px 12px 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--mantine-font-size-md);
+  font-weight: 600;
+  color: color-mix(in srgb, var(--mantine-color-text) 55%, transparent);
+}
+
+/* what the menu acts on, undimmed */
+.menuTitleEmphasis {
+  margin-inline: 4px;
+  color: var(--mantine-color-text);
 }
 
 /* an inverted surface, at least as wide as the button */

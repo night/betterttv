@@ -1,10 +1,9 @@
-import {useDismiss, useFloating, useInteractions} from '@floating-ui/react';
 import {Button, Menu} from '@mantine/core';
 import {Check, ChevronDown} from 'lucide-react';
 import React, {useCallback, useState} from 'react';
 import usePortalRef from '@/common/hooks/PortalRef';
+import useShadowDismiss from '@/common/hooks/ShadowDismiss';
 import {flatButtonVars} from '@/modules/shadow_dom/vars';
-import isPressOn from '@/utils/press';
 import styles from './SelectMenu.module.css';
 
 // the fill and border of the website's select, Mantine's default input
@@ -42,13 +41,8 @@ function SelectMenuOption({option, active, onPick}) {
 function SelectMenu({value, options, onChange, disabled = false, variant = 'filled', className, ariaLabel}) {
   const portalRef = usePortalRef();
   const [opened, setOpened] = useState(false);
-  const {refs, context} = useFloating({open: opened, onOpenChange: setOpened});
-  // the press is seen on the document, where the closed shadow root hides its path, so it's placed by
-  // position; otherwise the trigger's press would close the menu and its click reopen it
-  const dismiss = useDismiss(context, {
-    outsidePress: (event) => !isPressOn(refs.floating.current, event) && !isPressOn(refs.reference.current, event),
-  });
-  const {getReferenceProps, getFloatingProps} = useInteractions([dismiss]);
+  // placed by position, otherwise the trigger's press would close the menu and its click reopen it
+  const {refs, getReferenceProps, getFloatingProps} = useShadowDismiss(opened, setOpened);
   const current = options.find((option) => option.value === value);
   // Mantine's returnFocus only finds the shadow host, since that's all document.activeElement shows
   const handleChange = useCallback(

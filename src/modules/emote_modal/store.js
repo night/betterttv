@@ -1,5 +1,12 @@
 import {create} from 'zustand';
-import {addPersonalEmote, addSharedEmote, getEmoteAvailability, getEmoteSets} from '@/actions/emotes';
+import {
+  addPersonalEmote,
+  addSharedEmote,
+  getEmoteAvailability,
+  getEmoteSets,
+  removeSharedEmote,
+} from '@/actions/emotes';
+import {getUser} from '@/actions/users';
 import {openSignInModal, openSubscriptionUpgradeModal} from '@/common/utils/modal';
 import {AsyncStatuses, EmoteAddDestinations, EmoteAvailabilityRestrictionTypes} from '@/constants';
 import useAuthStore from '@/stores/auth';
@@ -19,8 +26,12 @@ const useEmoteModalStore = create(() => ({
   availability: {},
   // add destination (an emote set's id for a set) -> AsyncStatuses value
   addStatuses: {...IDLE_ADD_STATUSES},
-  // user id -> the user's emote sets besides their channel's own
+  // user id -> the user's emote sets besides their channel's own, absent while the first read runs
   emoteSets: {},
+  // user id -> the id of the set live in their chat, null for their channel's own emotes, absent while it loads
+  liveSetIds: {},
+  // add destination -> true while a failed remove says so
+  removeErrors: {},
 }));
 
 // in-flight requests, keyed like the cache, so concurrent callers share one request
@@ -75,7 +86,20 @@ export async function fetchEmoteSets(userId) {
     useEmoteModalStore.setState((state) => ({emoteSets: {...state.emoteSets, [userId]: emoteSets}}));
   } catch {
     // keeps what's known, the menu just offers fewer destinations
+    useEmoteModalStore.setState((state) => ({emoteSets: {[userId]: [], ...state.emoteSets}}));
   }
+}
+
+// the primary set can change on the website too; one that can't be read leaves Channel up front
+export async function fetchLiveSet(userId) {
+  let liveSetId = null;
+  try {
+    const {primaryEmoteSetId} = await getUser(userId);
+    liveSetId = primaryEmoteSetId == null || primaryEmoteSetId === userId ? null : primaryEmoteSetId;
+  } catch {
+    // Channel up front
+  }
+  useEmoteModalStore.setState((state) => ({liveSetIds: {...state.liveSetIds, [userId]: liveSetId}}));
 }
 
 function addToDestination(emoteId, userId, destination) {
@@ -110,6 +134,14 @@ export async function performAdd(emoteId, destination) {
   }
 
   fetchAvailability(emoteId, user.id);
+  // signed in from the gate, the modal hasn't read the account's sets yet
+  const {liveSetIds, emoteSets} = useEmoteModalStore.getState();
+  if (!(user.id in liveSetIds)) {
+    fetchLiveSet(user.id);
+  }
+  if (emoteSets[user.id] == null) {
+    fetchEmoteSets(user.id);
+  }
 
   if (destination === EmoteAddDestinations.PERSONAL && !isUserPro(user)) {
     openSubscriptionUpgradeModal({}, () => performAdd(emoteId, destination));
@@ -150,10 +182,48 @@ export async function performAdd(emoteId, destination) {
   }
 }
 
+function setAvailabilityEntry(key, destination, entry) {
+  useEmoteModalStore.setState((state) => ({
+    availability: {...state.availability, [key]: {...state.availability[key], [destination]: entry}},
+  }));
+}
+
+function setRemoveError(destination, failed) {
+  useEmoteModalStore.setState((state) => ({removeErrors: {...state.removeErrors, [destination]: failed}}));
+}
+
+// takes the emote out of a set (the user's id for their channel's own) at once, putting it back if the api refuses
+export async function performRemove(emoteId, destination) {
+  const {user} = useAuthStore.getState();
+  if (user == null) {
+    return;
+  }
+
+  const key = availabilityKey(user.id, emoteId);
+  const previous = useEmoteModalStore.getState().availability[key]?.[destination];
+  const epoch = addEpoch;
+  // removed outranks what the chat still shows, until the socket catches up
+  setAvailabilityEntry(key, destination, {canAdd: true, restriction: null, removed: true});
+  setRemoveError(destination, false);
+  try {
+    await removeSharedEmote(emoteId, user.id, destination === EmoteAddDestinations.CHANNEL ? user.id : destination);
+  } catch {
+    setAvailabilityEntry(key, destination, previous);
+    if (epoch !== addEpoch) {
+      return;
+    }
+    setRemoveError(destination, true);
+    await wait(ERROR_STATUS_DURATION);
+    if (epoch === addEpoch) {
+      setRemoveError(destination, false);
+    }
+  }
+}
+
 // statuses outlive the modal, so every open resets them and supersedes in-flight adds
 export function resetAdd() {
   addEpoch += 1;
-  useEmoteModalStore.setState({addStatuses: {...IDLE_ADD_STATUSES}});
+  useEmoteModalStore.setState({addStatuses: {...IDLE_ADD_STATUSES}, removeErrors: {}});
 }
 
 export default useEmoteModalStore;
