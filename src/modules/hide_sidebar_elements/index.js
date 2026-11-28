@@ -54,6 +54,7 @@ class HideSidebarElementsModule {
       this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
       this.loadHideStories();
+      this.loadHideLunaGames();
       this.loadHideWatchStreaks();
     });
     watcher.on('load', () => {
@@ -61,6 +62,7 @@ class HideSidebarElementsModule {
       this.loadHideSidebarElements();
       this.toggleAutoExpandChannels();
       this.loadHideStories();
+      this.loadHideLunaGames();
       this.loadHideWatchStreaks();
     });
   }
@@ -98,6 +100,12 @@ class HideSidebarElementsModule {
   loadHideWatchStreaks() {
     const enabled = hasFlag(settings.get(SettingIds.SIDEBAR), SidebarFlags.WATCH_STREAKS);
     document.body.classList.toggle(styles.hideWatchStreaks, !enabled);
+  }
+
+  loadHideLunaGames() {
+    const setting = settings.get(SettingIds.SIDEBAR);
+    const enabled = hasFlag(setting, SidebarFlags.LUNA_GAMES);
+    document.body.classList.toggle(styles.hideLunaGames, !enabled);
   }
 
   loadHideOfflineChannels() {

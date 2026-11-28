@@ -34,6 +34,8 @@ const WATCH_STREAKS_NAME = formatMessage({defaultMessage: 'Watch Streaks'});
 const WATCH_STREAKS_DESCRIPTION = formatMessage({
   defaultMessage: 'Show watch streaks on followed channels and the "Save your Streak" prompt in the sidebar.',
 });
+const LUNA_GAMES_NAME = formatMessage({defaultMessage: 'Play on Luna'});
+const LUNA_GAMES_DESCRIPTION = formatMessage({defaultMessage: 'Show Amazon Luna games in the sidebar.'});
 
 function SidebarComponent({ref, ...props}) {
   const [sidebar, setSidebar] = useStorageState(SettingIds.SIDEBAR);
@@ -82,6 +84,7 @@ function SidebarComponent({ref, ...props}) {
         name={WATCH_STREAKS_NAME}
         description={WATCH_STREAKS_DESCRIPTION}
       />
+      <SettingCheckbox value={SidebarFlags.LUNA_GAMES} name={LUNA_GAMES_NAME} description={LUNA_GAMES_DESCRIPTION} />
     </SettingCheckboxGroup>
   );
 }
@@ -131,6 +134,12 @@ registerSearchEntry({
 registerSearchEntry({
   query: WATCH_STREAKS_NAME,
   description: WATCH_STREAKS_DESCRIPTION,
+  settingPanelId: SettingPanelIds.SIDEBAR,
+});
+
+registerSearchEntry({
+  query: LUNA_GAMES_NAME,
+  description: LUNA_GAMES_DESCRIPTION,
   settingPanelId: SettingPanelIds.SIDEBAR,
 });
 
